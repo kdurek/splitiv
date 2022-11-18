@@ -14,20 +14,6 @@ function AxiosProvider({ children }) {
     loginWithRedirect,
   } = useAuth0();
 
-  const handleLogin = async () => {
-    try {
-      await loginWithRedirect();
-      const accessToken = await getAccessTokenSilently();
-      await axios.get(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
-
   useEffect(() => {
     const setAxiosInterceptors = async () => {
       try {
@@ -54,7 +40,7 @@ function AxiosProvider({ children }) {
 
   return (
     <Center h="100vh">
-      <Button onClick={handleLogin}>Zaloguj</Button>
+      <Button onClick={loginWithRedirect}>Zaloguj</Button>
     </Center>
   );
 }

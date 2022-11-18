@@ -27,7 +27,4 @@ func Initialize(router *fiber.App) {
 	users := router.Group("/users", middleware.TokenCheck)
 	users.Get("/", controller.GetUsers)
 	users.Get("/me", controller.GetCurrentUser)
-
-	auth := router.Group("/auth", middleware.TokenCheck)
-	auth.Get("/login", controller.Login)
 }

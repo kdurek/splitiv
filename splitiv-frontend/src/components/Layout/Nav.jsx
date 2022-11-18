@@ -1,11 +1,14 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
   Button,
   HStack,
   Link,
   Stack,
+  useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { IconLogout } from "@tabler/icons";
 import PropTypes from "prop-types";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -76,6 +79,7 @@ function MobileNavItem({ label, href, onClose }) {
 
 export function MobileNav({ onClose }) {
   const { logout } = useAuth0();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
     <Stack
@@ -87,14 +91,22 @@ export function MobileNav({ onClose }) {
         {NAV_ITEMS.map((navItem) => (
           <MobileNavItem key={navItem.label} onClose={onClose} {...navItem} />
         ))}
-        <Button
-          alignSelf="start"
-          variant="unstyled"
-          onClick={() => logout({ returnTo: window.location.origin })}
-          display={{ md: "none" }}
-        >
-          Wyloguj
-        </Button>
+        <HStack>
+          <Button
+            w="full"
+            leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+            onClick={toggleColorMode}
+          >
+            {colorMode === "light" ? "Ciemny" : "Jasny"}
+          </Button>
+          <Button
+            w="full"
+            leftIcon={<IconLogout />}
+            onClick={() => logout({ returnTo: window.location.origin })}
+          >
+            Wyloguj
+          </Button>
+        </HStack>
       </Stack>
     </Stack>
   );

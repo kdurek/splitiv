@@ -14,6 +14,8 @@ function AxiosProvider({ children }) {
     loginWithRedirect,
   } = useAuth0();
 
+  const handleLogin = () => loginWithRedirect({ connection: "google-oauth2" });
+
   useEffect(() => {
     const setAxiosInterceptors = async () => {
       try {
@@ -40,7 +42,7 @@ function AxiosProvider({ children }) {
 
   return (
     <Center h="100vh">
-      <Button onClick={loginWithRedirect}>Zaloguj</Button>
+      <Button onClick={handleLogin}>Zaloguj</Button>
     </Center>
   );
 }

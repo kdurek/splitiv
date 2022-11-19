@@ -34,7 +34,7 @@ func onSuccess(c *fiber.Ctx) error {
 		req := a.Request()
 		req.Header.SetMethod(fiber.MethodGet)
 		req.Header.Set("Authorization", token)
-		req.SetRequestURI("https://splitiv.eu.auth0.com/userinfo")
+		req.SetRequestURI("https://" + config.Env("AUTH0_DOMAIN") + "/userinfo")
 		if err := a.Parse(); err != nil {
 			return c.SendStatus(fiber.StatusBadRequest)
 		}

@@ -2,15 +2,22 @@ package config
 
 import (
 	"fmt"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func ConnectDB() {
-	db, err := gorm.Open(sqlite.Open("main.db"), &gorm.Config{})
-
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
+		Env("DB_HOST"),
+		Env("DB_PORT"),
+		Env("DB_USER"),
+		Env("DB_NAME"),
+		Env("DB_PASSWORD"),
+	)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect database")
 	}

@@ -1,0 +1,66 @@
+version: '3'
+services:
+  frontend:
+    container_name: splitiv-frontend
+    build: ./splitiv-frontend
+    ports:
+      - '37533:80'
+    restart: on-failure
+    volumes:
+      - splitiv-frontend:/usr/src/frontend
+    depends_on:
+      - backend
+      - postgres
+    networks:
+      - splitiv
+
+  backend:
+    container_name: splitiv-backend
+    build: ./splitiv-backend
+    ports:
+      - '37534:37534'
+    restart: on-failure
+    volumes:
+      - splitiv-backend:/usr/src/backend
+    depends_on:
+      - postgres
+    networks:
+      - splitiv
+
+  postgres:
+    container_name: splitiv-postgres
+    image: postgres:latest
+    environment:
+      - DATABASE_HOST=${DB_HOST}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - splitiv-postgres:/var/lib/postgresql/data
+    networks:
+      - splitiv
+
+  pgadmin:
+    container_name: splitiv-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - postgres
+    ports:
+      - '5050:80'
+    networks:
+      - splitiv
+    restart: unless-stopped
+
+volumes:
+  splitiv-frontend:
+  splitiv-backend:
+  splitiv-postgres:
+
+networks:
+  splitiv:
+    driver: bridge

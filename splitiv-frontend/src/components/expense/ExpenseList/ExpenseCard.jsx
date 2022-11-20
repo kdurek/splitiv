@@ -43,10 +43,13 @@ function ExpenseCard({ groupId, expense }) {
       <AccordionPanel pb={4}>
         <Stack>
           {payers.map((user) => (
-            <Text>{`${user.user.givenName} zapłacił/a ${user.paid} zł`}</Text>
+            <Text
+              key={user.id}
+            >{`${user.user.givenName} zapłacił/a ${user.paid} zł`}</Text>
           ))}
           {owers.map((user) => (
             <Text
+              key={user.id}
               pl={4}
             >{`${user.user.givenName} pożyczył/a ${user.owed} zł`}</Text>
           ))}

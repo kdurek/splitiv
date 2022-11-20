@@ -1,50 +1,45 @@
 import {
+  AccordionButton,
+  AccordionItem,
   Box,
-  Divider,
   HStack,
-  Stack,
-  StackDivider,
+  Icon,
   Text,
 } from "@chakra-ui/react";
+import { IconCash } from "@tabler/icons";
 import React from "react";
 
 function PaymentCard({ groupId, expense, members }) {
   // const { mutate: deleteExpense } = useDeleteExpense({ groupId });
+  const { amount, from, to } = expense.repayments[0];
   const getUserNickname = (userId) =>
-    members.find((user) => user.id === userId).name;
+    members.find((user) => user.id === userId).givenName;
+  const paymentFromUser = getUserNickname(from);
+  const paymentToUser = getUserNickname(to);
 
   return (
-    <Box p={4} borderWidth="1px" borderRadius="md">
-      <HStack justify="space-between">
-        <Box>
-          <Text fontWeight="bold">{expense.name}</Text>
-          <Text fontSize="sm">{expense.amount} zł</Text>
+    <AccordionItem>
+      <AccordionButton px={2}>
+        <Box flex="1" textAlign="left">
+          <HStack spacing={2}>
+            <Icon as={IconCash} boxSize={8} />
+            <Text fontSize="md" fontWeight="light" noOfLines={1}>
+              {`${paymentFromUser} zapłacił/a ${paymentToUser} ${amount} zł`}
+            </Text>
+
+            {/* <ConfirmDialog */}
+            {/*  title="Usuń płatność" */}
+            {/*  variant="ghost" */}
+            {/*  colorScheme="red" */}
+            {/*  onClick={() => deleteExpense(expense.id)} */}
+            {/* > */}
+            {/*  Usuń */}
+            {/* </ConfirmDialog> */}
+          </HStack>
         </Box>
-        {/* <ConfirmDialog */}
-        {/*  title="Usuń płatność" */}
-        {/*  variant="ghost" */}
-        {/*  colorScheme="red" */}
-        {/*  onClick={() => deleteExpense(expense.id)} */}
-        {/* > */}
-        {/*  Usuń */}
-        {/* </ConfirmDialog> */}
-      </HStack>
-      <Divider my={2} />
-      <Stack divider={<StackDivider />}>
-        {expense.repayments?.map((payment) => (
-          <Text key={payment.from + payment.to}>{`${getUserNickname(
-            payment.from
-          )} przekazał ${getUserNickname(payment.to)} ${
-            payment.amount
-          } zł`}</Text>
-          // <HStack>
-          //   <Text>{getUserNickname(payment.from)} przekazał/a</Text>
-          //   <Badge colorScheme="green">{`${payment.amount} zł`}</Badge>
-          //   <Text>dla {getUserNickname(payment.to)}</Text>
-          // </HStack>
-        ))}
-      </Stack>
-    </Box>
+        <Text ml={2} fontWeight="light">{`${amount} zł`}</Text>
+      </AccordionButton>
+    </AccordionItem>
   );
 }
 

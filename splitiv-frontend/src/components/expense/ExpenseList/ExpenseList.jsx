@@ -1,4 +1,4 @@
-import { Stack } from "@chakra-ui/react";
+import { Accordion } from "@chakra-ui/react";
 import React from "react";
 
 import ExpenseCard from "./ExpenseCard";
@@ -8,7 +8,7 @@ function ExpenseList({ groupId, expenses, members }) {
   if (!groupId || !expenses || !members) return null;
 
   return (
-    <Stack spacing={4}>
+    <Accordion allowToggle>
       {expenses.map((expense) => {
         if (expense.type === "expense")
           return (
@@ -25,7 +25,7 @@ function ExpenseList({ groupId, expenses, members }) {
           );
         return null;
       })}
-    </Stack>
+    </Accordion>
   );
 }
 

@@ -93,7 +93,7 @@ function AddUserToGroupModal({ groupId, members, users }) {
               colorScheme="blue"
               ml={4}
             >
-              Stwórz
+              Dodaj
             </Button>
           </ModalFooter>
         </ModalContent>

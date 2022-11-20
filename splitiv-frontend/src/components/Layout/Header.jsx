@@ -1,5 +1,4 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -14,6 +13,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
+import { IconMenu2, IconMoon, IconSun, IconX } from "@tabler/icons";
 
 import Logo from "./Logo";
 import { DesktopNav, MobileNav } from "./Nav";
@@ -40,13 +40,7 @@ export default function Header() {
           >
             <IconButton
               onClick={onToggle}
-              icon={
-                isOpen ? (
-                  <CloseIcon w={3} h={3} />
-                ) : (
-                  <HamburgerIcon w={5} h={5} />
-                )
-              }
+              icon={isOpen ? <IconX w={3} h={3} /> : <IconMenu2 w={5} h={5} />}
               variant="ghost"
               aria-label="Toggle Navigation"
             />
@@ -77,7 +71,7 @@ export default function Header() {
             display={{ base: "none", md: "block" }}
             aria-label="Toggle Color Mode"
           >
-            {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+            {colorMode === "light" ? <IconMoon /> : <IconSun />}
           </IconButton>
           <Button
             onClick={() => logout({ returnTo: window.location.origin })}

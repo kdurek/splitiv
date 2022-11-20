@@ -1,5 +1,4 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
   Button,
   HStack,
@@ -8,7 +7,7 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { IconLogout } from "@tabler/icons";
+import { IconLogout, IconMoon, IconSun } from "@tabler/icons";
 import PropTypes from "prop-types";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -94,7 +93,7 @@ export function MobileNav({ onClose }) {
         <HStack>
           <Button
             w="full"
-            leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+            leftIcon={colorMode === "light" ? <IconMoon /> : <IconSun />}
             onClick={toggleColorMode}
           >
             {colorMode === "light" ? "Ciemny" : "Jasny"}

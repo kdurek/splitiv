@@ -24,7 +24,7 @@ function PaymentCard({ groupId, expense, members }) {
           <HStack spacing={2}>
             <Icon as={IconCash} boxSize={8} />
             <Text fontSize="md" fontWeight="light" noOfLines={1}>
-              {`${paymentFromUser} zapłacił/a ${paymentToUser} ${amount} zł`}
+              {`${paymentToUser} zapłacił/a ${paymentFromUser}`}
             </Text>
 
             {/* <ConfirmDialog */}

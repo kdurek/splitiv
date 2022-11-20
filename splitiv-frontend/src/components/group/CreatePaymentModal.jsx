@@ -27,34 +27,36 @@ import { useCreateGroupExpense } from "../../hooks/useCreateGroupExpense";
 function CreatePaymentForm({ groupId, members, debts, onClose }) {
   const { mutate: createGroupExpense } = useCreateGroupExpense(groupId);
 
-  const { register, reset, setValue, handleSubmit } = useFormContext();
+  const { register, reset, getValues, setValue, handleSubmit } =
+    useFormContext();
 
   useEffect(() => {
     const firstDebtFound = debts?.[0];
     if (firstDebtFound) {
-      setValue("payer", firstDebtFound.from);
-      setValue("owedBy", firstDebtFound.to);
+      setValue("ower", firstDebtFound.from);
+      setValue("payer", firstDebtFound.to);
       setValue("amount", firstDebtFound.amount);
     }
   }, [debts?.length]);
 
   const onSubmit = (values) => {
-    const { name, amount, payer, owedBy } = values;
+    const { name, amount, payer, ower } = values;
     const type = "payment";
     const users = [
       {
         paid: amount,
         owed: "0.00",
-        userId: payer,
+        userId: ower,
       },
       {
         paid: "0.00",
         owed: amount,
-        userId: owedBy,
+        userId: payer,
       },
     ];
 
     const requestData = { name, amount, type, users };
+    console.log("requestData: ", requestData);
 
     onClose();
     reset();
@@ -95,10 +97,11 @@ function CreatePaymentForm({ groupId, members, debts, onClose }) {
             </InputGroup>
           </Box>
           <Box>
-            <FormLabel htmlFor="payer">Oddane przez</FormLabel>
+            <FormLabel htmlFor="ower">Od</FormLabel>
             <Select
-              {...register("payer", {
+              {...register("ower", {
                 required: "Pole jest wymagane",
+                validate: (v) => getValues("payer") !== v,
                 setValueAs: (v) => parseFloat(v),
               })}
             >
@@ -110,11 +113,12 @@ function CreatePaymentForm({ groupId, members, debts, onClose }) {
             </Select>
           </Box>
           <Box>
-            <FormLabel htmlFor="owedBy">Oddane dla</FormLabel>
+            <FormLabel htmlFor="payer">Dla</FormLabel>
             <Select
-              {...register("owedBy", {
+              {...register("payer", {
                 required: "Pole jest wymagane",
                 setValueAs: (v) => parseFloat(v),
+                validate: (v) => getValues("ower") !== v,
               })}
             >
               {members.map((user) => (

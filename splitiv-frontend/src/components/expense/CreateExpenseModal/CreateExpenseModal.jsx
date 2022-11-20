@@ -162,6 +162,7 @@ function CreateExpenseModal({ groupId, members }) {
 
   const methods = useForm({
     defaultValues: {
+      amount: "",
       method: "equal",
       equal: equalDefaults,
       unequal: unequalDefaults,

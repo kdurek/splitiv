@@ -98,11 +98,7 @@ export function MobileNav({ onClose }) {
           >
             {colorMode === "light" ? "Ciemny" : "Jasny"}
           </Button>
-          <Button
-            w="full"
-            leftIcon={<IconLogout />}
-            onClick={() => logout({ returnTo: window.location.origin })}
-          >
+          <Button w="full" leftIcon={<IconLogout />} onClick={logout}>
             Wyloguj
           </Button>
         </HStack>

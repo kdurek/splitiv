@@ -73,10 +73,7 @@ export default function Header() {
           >
             {colorMode === "light" ? <IconMoon /> : <IconSun />}
           </IconButton>
-          <Button
-            onClick={() => logout({ returnTo: window.location.origin })}
-            display={{ base: "none", md: "block" }}
-          >
+          <Button onClick={logout} display={{ base: "none", md: "block" }}>
             Wyloguj
           </Button>
         </HStack>

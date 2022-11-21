@@ -34,7 +34,7 @@ function AxiosProvider({ children }) {
     };
 
     setAxiosInterceptors();
-  }, []);
+  }, [isAuthenticated]);
 
   if (isLoading) return null;
 

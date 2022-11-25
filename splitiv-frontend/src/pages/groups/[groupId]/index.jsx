@@ -1,4 +1,4 @@
-import { HStack, Heading, IconButton, Stack } from "@chakra-ui/react";
+import { HStack, Heading, IconButton, Skeleton, Stack } from "@chakra-ui/react";
 import { IconChevronLeft, IconSettings } from "@tabler/icons";
 import { useNavigate, useParams } from "react-router";
 
@@ -6,7 +6,6 @@ import CreateExpenseModal from "../../../components/expense/CreateExpenseModal/C
 import ExpenseList from "../../../components/expense/ExpenseList/ExpenseList";
 import CreatePaymentModal from "../../../components/group/CreatePaymentModal";
 import UserBalance from "../../../components/group/UserBalance";
-import SkeletonWrapper from "../../../components/SkeletonWrapper";
 import { useGroup } from "../../../hooks/useGroup";
 import { useGroupExpenses } from "../../../hooks/useGroupExpenses";
 
@@ -18,7 +17,7 @@ function Group() {
     useGroupExpenses(groupId);
 
   return (
-    <SkeletonWrapper isLoaded={isSuccessGroup && isSuccessGroupExpenses}>
+    <Skeleton isLoaded={isSuccessGroup && isSuccessGroupExpenses}>
       {group && expenses && (
         <Stack spacing={4}>
           <HStack justify="space-between">
@@ -29,30 +28,30 @@ function Group() {
                 icon={<IconChevronLeft />}
                 onClick={() => navigate("/groups")}
               />
-              <Heading>{group?.name}</Heading>
+              <Heading>{group.name}</Heading>
             </HStack>
             <IconButton
               variant="ghost"
               aria-label="Group settings"
               icon={<IconSettings />}
-              onClick={() => navigate(`/groups/${group?.id}/settings`)}
+              onClick={() => navigate(`/groups/${group.id}/settings`)}
             />
           </HStack>
-          <UserBalance members={group?.members} debts={group?.debts} />
-          <CreateExpenseModal groupId={groupId} members={group?.members} />
+          <UserBalance members={group.members} debts={group.debts} />
+          <CreateExpenseModal groupId={groupId} members={group.members} />
           <CreatePaymentModal
             groupId={groupId}
-            members={group?.members}
-            debts={group?.debts}
+            members={group.members}
+            debts={group.debts}
           />
           <ExpenseList
             groupId={groupId}
             expenses={expenses}
-            members={group?.members}
+            members={group.members}
           />
         </Stack>
       )}
-    </SkeletonWrapper>
+    </Skeleton>
   );
 }
 

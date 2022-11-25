@@ -2,7 +2,6 @@ import { Button, HStack, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
 
 import CreateGroupModal from "../../components/group/CreateGroupModal";
-import SkeletonWrapper from "../../components/SkeletonWrapper";
 import { useGroups } from "../../hooks/useGroups";
 
 function Groups() {
@@ -10,15 +9,15 @@ function Groups() {
   const { data: groups, isSuccess: isSuccessGroups } = useGroups();
 
   return (
-    <SkeletonWrapper isLoaded={isSuccessGroups}>
-      <Stack spacing={4}>
-        <HStack justify="space-between">
-          <Heading>Moje grupy</Heading>
-          <CreateGroupModal />
-        </HStack>
-        <Skeleton isLoaded={isSuccessGroups}>
+    <Skeleton isLoaded={isSuccessGroups}>
+      {groups && (
+        <Stack spacing={4}>
+          <HStack justify="space-between">
+            <Heading>Moje grupy</Heading>
+            <CreateGroupModal />
+          </HStack>
           <Stack>
-            {groups?.map((group) => (
+            {groups.map((group) => (
               <Button
                 key={group.id}
                 variant="outline"
@@ -28,9 +27,9 @@ function Groups() {
               </Button>
             ))}
           </Stack>
-        </Skeleton>
-      </Stack>
-    </SkeletonWrapper>
+        </Stack>
+      )}
+    </Skeleton>
   );
 }
 

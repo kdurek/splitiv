@@ -1,9 +1,8 @@
-import { HStack, Heading, IconButton, Stack } from "@chakra-ui/react";
+import { HStack, Heading, IconButton, Skeleton, Stack } from "@chakra-ui/react";
 import { IconChevronLeft } from "@tabler/icons";
 import { useNavigate, useParams } from "react-router";
 
 import AddUserToGroupModal from "../../../components/group/AddUserToGroupModal";
-import SkeletonWrapper from "../../../components/SkeletonWrapper";
 import { useGroup } from "../../../hooks/useGroup";
 import { useUsers } from "../../../hooks/useUsers";
 
@@ -15,12 +14,12 @@ function GroupSettings() {
   // const { mutateAsync: deleteGroup } = useDeleteGroup();
 
   // const handleDeleteGroup = async () => {
-  //   await deleteGroup(group?.id);
+  //   await deleteGroup(group.id);
   //   return navigate("/groups");
   // };
 
   return (
-    <SkeletonWrapper isLoaded={isSuccessGroup && isSuccessUsers}>
+    <Skeleton isLoaded={isSuccessGroup && isSuccessUsers}>
       {group && users && (
         <Stack spacing={4}>
           <HStack justify="space-between">
@@ -29,7 +28,7 @@ function GroupSettings() {
                 variant="ghost"
                 aria-label="Cofnij do grupy"
                 icon={<IconChevronLeft />}
-                onClick={() => navigate(`/groups/${group?.id}`)}
+                onClick={() => navigate(`/groups/${group.id}`)}
               />
               <Heading>Ustawienia grupy</Heading>
             </HStack>
@@ -49,7 +48,7 @@ function GroupSettings() {
           {/* </ConfirmDialog> */}
         </Stack>
       )}
-    </SkeletonWrapper>
+    </Skeleton>
   );
 }
 

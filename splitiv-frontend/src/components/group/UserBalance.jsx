@@ -1,8 +1,6 @@
 import { Avatar, Box, Flex, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 
-import SkeletonWrapper from "../SkeletonWrapper";
-
 function UserDebts({ member, members, debts }) {
   if (!debts) return null;
 
@@ -35,7 +33,7 @@ function UserDebts({ member, members, debts }) {
   );
 }
 
-function UserBalances({ members, debts }) {
+function UserBalance({ members, debts }) {
   return members?.map((member) => (
     <Stack
       key={member.id}
@@ -51,19 +49,9 @@ function UserBalances({ members, debts }) {
           <Text fontSize="sm">{member.balance} zł</Text>
         </Box>
       </Flex>
-      <SkeletonWrapper isLoaded={debts}>
-        <UserDebts member={member} members={members} debts={debts} />
-      </SkeletonWrapper>
+      <UserDebts member={member} members={members} debts={debts} />
     </Stack>
   ));
 }
 
-function DebtList({ members, debts }) {
-  return (
-    <SkeletonWrapper isLoaded={members}>
-      <UserBalances members={members} debts={debts} />
-    </SkeletonWrapper>
-  );
-}
-
-export default DebtList;
+export default UserBalance;

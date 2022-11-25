@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router";
 import CreateExpenseModal from "../../../components/expense/CreateExpenseModal/CreateExpenseModal";
 import ExpenseList from "../../../components/expense/ExpenseList/ExpenseList";
 import CreatePaymentModal from "../../../components/group/CreatePaymentModal";
-import DebtList from "../../../components/group/DebtList";
+import UserBalance from "../../../components/group/UserBalance";
 import SkeletonWrapper from "../../../components/SkeletonWrapper";
 import { useGroup } from "../../../hooks/useGroup";
 import { useGroupExpenses } from "../../../hooks/useGroupExpenses";
@@ -38,7 +38,7 @@ function Group() {
             onClick={() => navigate(`/groups/${group?.id}/settings`)}
           />
         </HStack>
-        <DebtList members={group?.members} debts={group?.debts} />
+        <UserBalance members={group?.members} debts={group?.debts} />
         <CreateExpenseModal groupId={groupId} members={group?.members} />
         <CreatePaymentModal
           groupId={groupId}

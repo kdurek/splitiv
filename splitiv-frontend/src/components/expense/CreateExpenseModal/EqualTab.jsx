@@ -1,10 +1,11 @@
 import { Checkbox, FormLabel, HStack, Stack, Text } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 const getBalancedSplit = (amount = 0, users = []) => {
   const breakIntoParts = (num, parts) =>
     [...Array(parts)].map((_, i) => {
+      // eslint-disable-next-line no-bitwise
       return 0 | (num / parts + (i < num % parts));
     });
 

@@ -1,6 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Button, Heading, VStack } from "@chakra-ui/react";
-import React from "react";
 import { useNavigate } from "react-router";
 
 function Index() {

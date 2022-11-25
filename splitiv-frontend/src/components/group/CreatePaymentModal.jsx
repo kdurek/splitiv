@@ -19,10 +19,12 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import { arrayOf, func, string } from "prop-types";
+import { useEffect } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
 import { useCreateGroupExpense } from "../../hooks/useCreateGroupExpense";
+import { debtType, userType } from "../../types";
 
 function CreatePaymentForm({ groupId, members, debts, onClose }) {
   const { mutate: createGroupExpense } = useCreateGroupExpense(groupId);
@@ -56,7 +58,6 @@ function CreatePaymentForm({ groupId, members, debts, onClose }) {
     ];
 
     const requestData = { name, amount, type, users };
-    console.log("requestData: ", requestData);
 
     onClose();
     reset();
@@ -134,6 +135,13 @@ function CreatePaymentForm({ groupId, members, debts, onClose }) {
   );
 }
 
+CreatePaymentForm.propTypes = {
+  groupId: string.isRequired,
+  members: arrayOf(userType).isRequired,
+  debts: arrayOf(debtType).isRequired,
+  onClose: func.isRequired,
+};
+
 function CreatePaymentModal({ groupId, members, debts }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const methods = useForm({
@@ -178,5 +186,11 @@ function CreatePaymentModal({ groupId, members, debts }) {
     </>
   );
 }
+
+CreatePaymentModal.propTypes = {
+  groupId: string.isRequired,
+  members: arrayOf(userType).isRequired,
+  debts: arrayOf(debtType).isRequired,
+};
 
 export default CreatePaymentModal;

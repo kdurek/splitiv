@@ -1,5 +1,7 @@
 import { Accordion } from "@chakra-ui/react";
-import React from "react";
+import { arrayOf, string } from "prop-types";
+
+import { expenseType, userType } from "../../../types";
 
 import ExpenseCard from "./ExpenseCard";
 import PaymentCard from "./PaymentCard";
@@ -28,5 +30,16 @@ function ExpenseList({ groupId, expenses, members }) {
     </Accordion>
   );
 }
+
+ExpenseList.propTypes = {
+  groupId: string.isRequired,
+  expenses: arrayOf(expenseType),
+  members: arrayOf(userType),
+};
+
+ExpenseList.defaultProps = {
+  expenses: [],
+  members: [],
+};
 
 export default ExpenseList;

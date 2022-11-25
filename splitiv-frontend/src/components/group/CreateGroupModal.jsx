@@ -12,7 +12,7 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import { func } from "prop-types";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
 import { useCreateGroup } from "../../hooks/useCreateGroup";
@@ -45,6 +45,10 @@ function CreateGroupForm({ onClose }) {
     </form>
   );
 }
+
+CreateGroupForm.propTypes = {
+  onClose: func.isRequired,
+};
 
 function CreateGroupModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -29,6 +29,7 @@ function AxiosProvider({ children }) {
           };
         });
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log(e.message);
       }
     };

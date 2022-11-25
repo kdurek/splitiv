@@ -9,9 +9,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IconReportMoney } from "@tabler/icons";
-import React from "react";
 
-function ExpenseCard({ groupId, expense }) {
+import { expenseType } from "../../../types";
+
+function ExpenseCard({
+  // groupId,
+  expense,
+}) {
   // const { mutate: deleteExpense } = useDeleteExpense({ groupId });
   const payers = expense.users.filter((user) => user.paid > 0);
   const owers = expense.users.filter((user) => user.owed > 0);
@@ -58,5 +62,9 @@ function ExpenseCard({ groupId, expense }) {
     </AccordionItem>
   );
 }
+
+ExpenseCard.propTypes = {
+  expense: expenseType.isRequired,
+};
 
 export default ExpenseCard;

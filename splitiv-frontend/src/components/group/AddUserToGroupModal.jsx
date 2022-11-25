@@ -14,10 +14,11 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import { arrayOf, func, string } from "prop-types";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
 import { useAddUserToGroup } from "../../hooks/useAddUserToGroup";
+import { userType } from "../../types";
 
 function AddUserToGroupForm({ groupId, usersToAdd, onClose }) {
   const { mutate: addUserToGroup } = useAddUserToGroup(groupId);
@@ -56,6 +57,12 @@ function AddUserToGroupForm({ groupId, usersToAdd, onClose }) {
     </form>
   );
 }
+
+AddUserToGroupForm.propTypes = {
+  groupId: string.isRequired,
+  usersToAdd: arrayOf(userType).isRequired,
+  onClose: func.isRequired,
+};
 
 function AddUserToGroupModal({ groupId, members, users }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -101,5 +108,11 @@ function AddUserToGroupModal({ groupId, members, users }) {
     </>
   );
 }
+
+AddUserToGroupModal.propTypes = {
+  groupId: string.isRequired,
+  members: arrayOf(userType).isRequired,
+  users: arrayOf(userType).isRequired,
+};
 
 export default AddUserToGroupModal;

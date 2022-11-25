@@ -7,9 +7,15 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IconCash } from "@tabler/icons";
-import React from "react";
+import { arrayOf } from "prop-types";
 
-function PaymentCard({ groupId, expense, members }) {
+import { expenseType, userType } from "../../../types";
+
+function PaymentCard({
+  // groupId,
+  expense,
+  members,
+}) {
   // const { mutate: deleteExpense } = useDeleteExpense({ groupId });
   const { amount, from, to } = expense.repayments[0];
   const getUserNickname = (userId) =>
@@ -42,5 +48,10 @@ function PaymentCard({ groupId, expense, members }) {
     </AccordionItem>
   );
 }
+
+PaymentCard.propTypes = {
+  expense: expenseType.isRequired,
+  members: arrayOf(userType).isRequired,
+};
 
 export default PaymentCard;

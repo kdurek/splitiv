@@ -8,6 +8,7 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
+import { func, string } from "prop-types";
 import { useRef } from "react";
 
 function ConfirmDialog({
@@ -61,5 +62,13 @@ function ConfirmDialog({
     </>
   );
 }
+
+ConfirmDialog.propTypes = {
+  children: string.isRequired,
+  title: string.isRequired,
+  onClick: func.isRequired,
+  colorScheme: string.isRequired,
+  variant: string.isRequired,
+};
 
 export default ConfirmDialog;

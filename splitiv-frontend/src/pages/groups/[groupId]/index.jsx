@@ -1,6 +1,5 @@
 import { HStack, Heading, IconButton, Stack } from "@chakra-ui/react";
 import { IconChevronLeft, IconSettings } from "@tabler/icons";
-import React from "react";
 import { useNavigate, useParams } from "react-router";
 
 import CreateExpenseModal from "../../../components/expense/CreateExpenseModal/CreateExpenseModal";
@@ -20,37 +19,39 @@ function Group() {
 
   return (
     <SkeletonWrapper isLoaded={isSuccessGroup && isSuccessGroupExpenses}>
-      <Stack spacing={4}>
-        <HStack justify="space-between">
-          <HStack>
+      {group && expenses && (
+        <Stack spacing={4}>
+          <HStack justify="space-between">
+            <HStack>
+              <IconButton
+                variant="ghost"
+                aria-label="Cofnij do grupy"
+                icon={<IconChevronLeft />}
+                onClick={() => navigate("/groups")}
+              />
+              <Heading>{group?.name}</Heading>
+            </HStack>
             <IconButton
               variant="ghost"
-              aria-label="Cofnij do grupy"
-              icon={<IconChevronLeft />}
-              onClick={() => navigate("/groups")}
+              aria-label="Group settings"
+              icon={<IconSettings />}
+              onClick={() => navigate(`/groups/${group?.id}/settings`)}
             />
-            <Heading>{group?.name}</Heading>
           </HStack>
-          <IconButton
-            variant="ghost"
-            aria-label="Group settings"
-            icon={<IconSettings />}
-            onClick={() => navigate(`/groups/${group?.id}/settings`)}
+          <UserBalance members={group?.members} debts={group?.debts} />
+          <CreateExpenseModal groupId={groupId} members={group?.members} />
+          <CreatePaymentModal
+            groupId={groupId}
+            members={group?.members}
+            debts={group?.debts}
           />
-        </HStack>
-        <UserBalance members={group?.members} debts={group?.debts} />
-        <CreateExpenseModal groupId={groupId} members={group?.members} />
-        <CreatePaymentModal
-          groupId={groupId}
-          members={group?.members}
-          debts={group?.debts}
-        />
-        <ExpenseList
-          groupId={groupId}
-          expenses={expenses}
-          members={group?.members}
-        />
-      </Stack>
+          <ExpenseList
+            groupId={groupId}
+            expenses={expenses}
+            members={group?.members}
+          />
+        </Stack>
+      )}
     </SkeletonWrapper>
   );
 }

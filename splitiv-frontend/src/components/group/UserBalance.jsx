@@ -1,5 +1,7 @@
 import { Avatar, Box, Flex, Stack, Text } from "@chakra-ui/react";
-import React from "react";
+import { arrayOf } from "prop-types";
+
+import { debtType, userType } from "../../types";
 
 function UserDebts({ member, members, debts }) {
   if (!debts) return null;
@@ -33,8 +35,21 @@ function UserDebts({ member, members, debts }) {
   );
 }
 
+UserDebts.propTypes = {
+  members: arrayOf(userType),
+  debts: arrayOf(debtType),
+  member: userType.isRequired,
+};
+
+UserDebts.defaultProps = {
+  members: [],
+  debts: [],
+};
+
 function UserBalance({ members, debts }) {
-  return members?.map((member) => (
+  if (!members) return null;
+
+  return members.map((member) => (
     <Stack
       key={member.id}
       py={2}
@@ -53,5 +68,15 @@ function UserBalance({ members, debts }) {
     </Stack>
   ));
 }
+
+UserBalance.propTypes = {
+  members: arrayOf(userType),
+  debts: arrayOf(debtType),
+};
+
+UserBalance.defaultProps = {
+  members: [],
+  debts: [],
+};
 
 export default UserBalance;

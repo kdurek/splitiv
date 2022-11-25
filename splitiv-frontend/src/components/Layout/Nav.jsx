@@ -8,7 +8,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { IconLogout, IconMoon, IconSun } from "@tabler/icons";
-import PropTypes from "prop-types";
+import PropTypes, { func, string } from "prop-types";
 import { Link as RouterLink } from "react-router-dom";
 
 const NAV_ITEMS = [
@@ -76,6 +76,12 @@ function MobileNavItem({ label, href, onClose }) {
   );
 }
 
+MobileNavItem.propTypes = {
+  label: string.isRequired,
+  href: string.isRequired,
+  onClose: func.isRequired,
+};
+
 export function MobileNav({ onClose }) {
   const { logout } = useAuth0();
   const { colorMode, toggleColorMode } = useColorMode();
@@ -106,3 +112,7 @@ export function MobileNav({ onClose }) {
     </Stack>
   );
 }
+
+MobileNav.propTypes = {
+  onClose: func.isRequired,
+};

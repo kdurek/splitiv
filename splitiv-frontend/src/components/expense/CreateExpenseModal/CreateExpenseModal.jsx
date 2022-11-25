@@ -20,10 +20,11 @@ import {
   StackDivider,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import { arrayOf, func, string } from "prop-types";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
 import { useCreateGroupExpense } from "../../../hooks/useCreateGroupExpense";
+import { userType } from "../../../types";
 
 import MethodTabs from "./MethodTabs";
 
@@ -80,6 +81,8 @@ function CreateExpenseForm({ groupId, members, onClose }) {
         reset();
       }
     }
+
+    return null;
   };
 
   return (
@@ -145,6 +148,12 @@ function CreateExpenseForm({ groupId, members, onClose }) {
   );
 }
 
+CreateExpenseForm.propTypes = {
+  groupId: string.isRequired,
+  members: arrayOf(userType).isRequired,
+  onClose: func.isRequired,
+};
+
 function CreateExpenseModal({ groupId, members }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -204,5 +213,10 @@ function CreateExpenseModal({ groupId, members }) {
     </>
   );
 }
+
+CreateExpenseModal.propTypes = {
+  groupId: string.isRequired,
+  members: arrayOf(userType).isRequired,
+};
 
 export default CreateExpenseModal;

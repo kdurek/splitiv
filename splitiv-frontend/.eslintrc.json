@@ -3,9 +3,17 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    //    "plugin:@typescript-eslint/recommended",
+    //    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:prettier/recommended"
+  ],
   "overrides": [],
   "parserOptions": {
+    "project": "./tsconfig.json",
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
@@ -13,6 +21,8 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
     "import/prefer-default-export": "off",
+    //    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/no-explicit-any": "error",
 
     "import/order": [
       "error",

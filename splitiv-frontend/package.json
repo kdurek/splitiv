@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "prepare": "cd .. && husky install splitiv-frontend/.husky"
   },
   "dependencies": {
@@ -31,6 +33,9 @@
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
     "@hookform/devtools": "^4.2.3",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/auth0": "^2.35.7",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
@@ -47,10 +52,12 @@
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^8.0.0",
+    "jsdom": "^20.0.3",
     "lint-staged": "^13.0.4",
     "prettier": "^2.7.1",
     "typescript": "^4.9.3",
     "vite": "^3.2.4",
-    "vite-plugin-pages": "^0.27.1"
+    "vite-plugin-pages": "^0.27.1",
+    "vitest": "^0.25.3"
   }
 }

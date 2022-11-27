@@ -12,6 +12,7 @@ type APIExpense struct {
 }
 
 func GetExpensesByGroup(id uint) (response []APIExpense, err error) {
+	response = make([]APIExpense, 0)
 	var expenses []model.Expense
 	err = config.DB.Where("group_id = ?", id).Order("created_at desc").Preload("Users.User").Find(&expenses).Error
 

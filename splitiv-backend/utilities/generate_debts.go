@@ -7,7 +7,7 @@ import (
 )
 
 func GenerateDebts(users []model.ExpenseUsers) []model.Debt {
-	var debts []model.Debt
+	debts := make([]model.Debt, 0)
 
 	usersBalance := map[uint]decimal.Decimal{}
 

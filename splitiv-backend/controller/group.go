@@ -44,7 +44,7 @@ func GetGroup(c *fiber.Ctx) error {
 		model.User
 		Balance string `json:"balance"`
 	}
-	var newMembers []MemberWithBalance
+	newMembers := make([]MemberWithBalance, 0)
 	for _, member := range group.Members {
 		var newBalance decimal.Decimal
 		for _, expenseUser := range expenseUsers {

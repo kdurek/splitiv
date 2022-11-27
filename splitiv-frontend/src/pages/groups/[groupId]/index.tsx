@@ -17,43 +17,47 @@ function Group() {
     useGroupExpenses(groupId);
 
   return (
-    <Skeleton isLoaded={isSuccessGroup && isSuccessGroupExpenses}>
-      {group && (
-        <Stack spacing={4}>
-          <HStack justify="space-between">
-            <HStack>
+    <Stack spacing={4}>
+      <Skeleton isLoaded={isSuccessGroup}>
+        {group && (
+          <Stack spacing={4}>
+            <HStack justify="space-between">
+              <HStack>
+                <IconButton
+                  variant="ghost"
+                  aria-label="Cofnij do grupy"
+                  icon={<IconChevronLeft />}
+                  onClick={() => navigate("/groups")}
+                />
+                <Heading>{group.name}</Heading>
+              </HStack>
               <IconButton
                 variant="ghost"
-                aria-label="Cofnij do grupy"
-                icon={<IconChevronLeft />}
-                onClick={() => navigate("/groups")}
+                aria-label="Group settings"
+                icon={<IconSettings />}
+                onClick={() => navigate(`/groups/${group.id}/settings`)}
               />
-              <Heading>{group.name}</Heading>
             </HStack>
-            <IconButton
-              variant="ghost"
-              aria-label="Group settings"
-              icon={<IconSettings />}
-              onClick={() => navigate(`/groups/${group.id}/settings`)}
+            <UserBalance members={group.members} debts={group.debts} />
+            <CreateExpenseModal groupId={groupId} members={group.members} />
+            <CreatePaymentModal
+              groupId={groupId}
+              members={group.members}
+              debts={group.debts}
             />
-          </HStack>
-          <UserBalance members={group.members} debts={group.debts} />
-          <CreateExpenseModal groupId={groupId} members={group.members} />
-          <CreatePaymentModal
+          </Stack>
+        )}
+      </Skeleton>
+      <Skeleton isLoaded={isSuccessGroup && isSuccessGroupExpenses}>
+        {group && expenses && (
+          <ExpenseList
             groupId={groupId}
+            expenses={expenses}
             members={group.members}
-            debts={group.debts}
           />
-        </Stack>
-      )}
-      {group && expenses && (
-        <ExpenseList
-          groupId={groupId}
-          expenses={expenses}
-          members={group.members}
-        />
-      )}
-    </Skeleton>
+        )}
+      </Skeleton>
+    </Stack>
   );
 }
 

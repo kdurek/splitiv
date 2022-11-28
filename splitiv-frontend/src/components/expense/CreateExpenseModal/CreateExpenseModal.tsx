@@ -27,10 +27,9 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { useCreateGroupExpense } from "../../../hooks/useCreateGroupExpense";
-import { User } from "../../../types";
-
-import MethodTabs from "./MethodTabs";
+import MethodTabs from "components/expense/CreateExpenseModal/MethodTabs";
+import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
+import { User } from "types";
 
 interface CreateExpenseFormProps {
   groupId: string | undefined;

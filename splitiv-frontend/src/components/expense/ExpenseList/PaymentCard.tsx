@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { IconCash } from "@tabler/icons";
 
-import { Expense, User } from "../../../types";
+import { Expense, User } from "types";
 
 interface PaymentCardProps {
   expense: Expense;

@@ -2,8 +2,8 @@ import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-import EqualTab from "./EqualTab";
-import UnequalTab from "./UnequalTab";
+import EqualTab from "components/expense/CreateExpenseModal/EqualTab";
+import UnequalTab from "components/expense/CreateExpenseModal/UnequalTab";
 
 function MethodTabs() {
   const { watch, setValue } = useFormContext();

@@ -21,8 +21,8 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { useAddUserToGroup } from "../../hooks/useAddUserToGroup";
-import { User } from "../../types";
+import { useAddUserToGroup } from "hooks/useAddUserToGroup";
+import { User } from "types";
 
 interface AddUserToGroupFormProps {
   groupId: string | undefined;

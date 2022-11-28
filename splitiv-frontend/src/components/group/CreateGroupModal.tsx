@@ -19,7 +19,7 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { useCreateGroup } from "../../hooks/useCreateGroup";
+import { useCreateGroup } from "hooks/useCreateGroup";
 
 interface CreateGroupFormProps {
   onClose: () => void;

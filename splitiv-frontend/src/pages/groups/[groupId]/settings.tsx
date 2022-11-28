@@ -2,9 +2,9 @@ import { HStack, Heading, IconButton, Skeleton, Stack } from "@chakra-ui/react";
 import { IconChevronLeft } from "@tabler/icons";
 import { useNavigate, useParams } from "react-router";
 
-import AddUserToGroupModal from "../../../components/group/AddUserToGroupModal";
-import { useGroup } from "../../../hooks/useGroup";
-import { useUsers } from "../../../hooks/useUsers";
+import AddUserToGroupModal from "components/group/AddUserToGroupModal";
+import { useGroup } from "hooks/useGroup";
+import { useUsers } from "hooks/useUsers";
 
 function GroupSettings() {
   const { groupId } = useParams();

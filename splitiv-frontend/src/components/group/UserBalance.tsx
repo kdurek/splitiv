@@ -1,6 +1,6 @@
 import { Avatar, Box, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { Debt, User } from "../../types";
+import { Debt, User } from "types";
 
 interface UserDebtsProps {
   member: User;

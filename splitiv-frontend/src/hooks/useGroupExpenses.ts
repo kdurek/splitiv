@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-import { Expense } from "../types";
+import { Expense } from "types";
 
 async function getGroupExpenses(groupId: string | undefined) {
   const res = await axios.get(

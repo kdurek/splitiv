@@ -1,8 +1,8 @@
 import { Button, HStack, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
 
-import CreateGroupModal from "../../components/group/CreateGroupModal";
-import { useGroups } from "../../hooks/useGroups";
+import CreateGroupModal from "components/group/CreateGroupModal";
+import { useGroups } from "hooks/useGroups";
 
 function Groups() {
   const navigate = useNavigate();

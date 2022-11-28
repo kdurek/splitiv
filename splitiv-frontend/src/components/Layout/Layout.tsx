@@ -1,7 +1,7 @@
 import { Container } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
-import Header from "./Header";
+import Header from "components/Layout/Header";
 
 interface LayoutProps {
   children: ReactNode;

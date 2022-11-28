@@ -1,9 +1,8 @@
 import { Accordion } from "@chakra-ui/react";
 
-import { Expense, User } from "../../../types";
-
-import ExpenseCard from "./ExpenseCard";
-import PaymentCard from "./PaymentCard";
+import ExpenseCard from "components/expense/ExpenseList/ExpenseCard";
+import PaymentCard from "components/expense/ExpenseList/PaymentCard";
+import { Expense, User } from "types";
 
 interface ExpenseListProps {
   groupId: string | undefined;

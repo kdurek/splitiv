@@ -6,9 +6,10 @@ import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 
-import { AxiosProvider } from "./providers/AxiosProvider";
+import { AxiosProvider } from "providers/AxiosProvider";
 
 // @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import routes from "~react-pages";
 
 function App() {

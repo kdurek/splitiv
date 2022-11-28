@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-import { Group } from "../types";
+import { Group } from "types";
 
 async function getGroup(groupId: string | undefined) {
   const res = await axios.get(

@@ -27,8 +27,8 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { useCreateGroupExpense } from "../../hooks/useCreateGroupExpense";
-import { Debt, User } from "../../types";
+import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
+import { Debt, User } from "types";
 
 interface CreatePaymentFormProps {
   groupId: string | undefined;

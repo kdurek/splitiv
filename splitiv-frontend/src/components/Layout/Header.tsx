@@ -15,8 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { IconMenu2, IconMoon, IconSun, IconX } from "@tabler/icons";
 
-import Logo from "./Logo";
-import { DesktopNav, MobileNav } from "./Nav";
+import Logo from "components/Layout/Logo";
+import { DesktopNav, MobileNav } from "components/Layout/Nav";
 
 export default function Header() {
   const { logout } = useAuth0();

@@ -2,12 +2,12 @@ import { HStack, Heading, IconButton, Skeleton, Stack } from "@chakra-ui/react";
 import { IconChevronLeft, IconSettings } from "@tabler/icons";
 import { useNavigate, useParams } from "react-router";
 
-import CreateExpenseModal from "../../../components/expense/CreateExpenseModal/CreateExpenseModal";
-import ExpenseList from "../../../components/expense/ExpenseList/ExpenseList";
-import CreatePaymentModal from "../../../components/group/CreatePaymentModal";
-import UserBalance from "../../../components/group/UserBalance";
-import { useGroup } from "../../../hooks/useGroup";
-import { useGroupExpenses } from "../../../hooks/useGroupExpenses";
+import CreateExpenseModal from "components/expense/CreateExpenseModal/CreateExpenseModal";
+import ExpenseList from "components/expense/ExpenseList/ExpenseList";
+import CreatePaymentModal from "components/group/CreatePaymentModal";
+import UserBalance from "components/group/UserBalance";
+import { useGroup } from "hooks/useGroup";
+import { useGroupExpenses } from "hooks/useGroupExpenses";
 
 function Group() {
   const { groupId } = useParams();

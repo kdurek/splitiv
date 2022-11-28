@@ -3,7 +3,7 @@ import { Button, Center } from "@chakra-ui/react";
 import axios from "axios";
 import { ReactNode, useEffect } from "react";
 
-import Layout from "../components/Layout/Layout";
+import Layout from "components/Layout/Layout";
 
 interface AxiosProviderProps {
   children: ReactNode;

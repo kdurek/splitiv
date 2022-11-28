@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { IconReportMoney } from "@tabler/icons";
 
-import { Expense } from "../../../types";
+import { Expense } from "types";
 
 interface ExpenseCardProps {
   expense: Expense;

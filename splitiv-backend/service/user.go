@@ -6,6 +6,7 @@ import (
 )
 
 func GetUsers() (users []model.User, err error) {
+	users = make([]model.User, 0)
 	err = config.DB.Preload("Groups").Find(&users).Error
 	return users, err
 }

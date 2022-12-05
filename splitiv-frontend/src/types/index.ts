@@ -1,13 +1,13 @@
 export interface Group {
-  id: number;
+  id: string;
   name: string;
-  admin: number;
+  admin: string;
   members: User[];
   debts: Debt[];
 }
 
 export interface User {
-  id: number;
+  id: string;
   givenName: string;
   familyName: string;
   name: string;
@@ -19,27 +19,27 @@ export interface User {
 }
 
 export interface ExpenseUser {
-  id: number;
+  id: string;
   owed: string;
   paid: string;
-  expenseId: number;
-  userId: number;
+  expenseId: string;
+  userId: string;
   user: User;
 }
 
 export interface Expense {
-  id: number;
+  id: string;
   name: string;
   amount: string;
   users: ExpenseUser[];
-  groupId: number;
+  groupId: string;
   type: string;
   repayments: Debt[];
 }
 
 export interface Debt {
-  expenseId: number;
-  from: number;
-  to: number;
+  expenseId: string;
+  fromId: string;
+  toId: string;
   amount: string;
 }

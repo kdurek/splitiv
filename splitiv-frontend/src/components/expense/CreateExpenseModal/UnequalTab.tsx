@@ -14,10 +14,10 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 interface UnequalTabFormValues {
   amount: string;
   unequal: {
-    id: number;
+    id: string;
     paid: string;
     owed: string;
-    userId: number;
+    userId: string;
     name: string;
   }[];
 }
@@ -30,7 +30,7 @@ function UnequalTab() {
     .reduce((prev, curr) => prev + (parseFloat(curr.owed) || 0), 0)
     .toFixed(2);
   const remainingAmount = (
-    parseFloat(amountWatch) - parseFloat(usedAmount)
+    parseFloat(amountWatch) - parseFloat(usedAmount) || 0
   ).toFixed(2);
 
   const { fields } = useFieldArray({

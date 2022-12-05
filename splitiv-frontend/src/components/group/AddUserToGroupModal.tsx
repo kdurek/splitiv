@@ -46,7 +46,7 @@ function AddUserToGroupForm({
 
   const onSubmit: SubmitHandler<AddUserToGroupFormValues> = (values) => {
     const { user } = values;
-    const requestData = { userId: Number(user) };
+    const requestData = { userId: user };
 
     onClose();
     reset();

@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  email        String         @unique
+  sub          String         @unique
+  givenName    String
+  familyName   String
+  name         String
+  nickname     String
+  picture      String
+  groups       UserGroups[]
+  expenseUsers ExpenseUsers[]
+}
+
+model Group {
+  id        String       @id @default(uuid())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  name      String
+  adminId   String
+  members   UserGroups[]
+  expenses  Expense[]
+}
+
+model UserGroups {
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+
+  @@id([userId, groupId])
+}
+
+model ExpenseUsers {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owed      String
+  paid      String
+  expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Expense {
+  id        String         @id @default(uuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  name      String
+  type      String
+  amount    String
+  users     ExpenseUsers[]
+  group     Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+}

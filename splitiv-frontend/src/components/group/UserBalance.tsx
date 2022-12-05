@@ -11,9 +11,9 @@ interface UserDebtsProps {
 function UserDebts({ member, members, debts }: UserDebtsProps) {
   if (!debts) return null;
 
-  const userDebts = debts.filter((debt) => debt.from === member.id);
-  const userGets = debts.filter((debt) => debt.to === member.id);
-  const getUserNickname = (userId: number) =>
+  const userDebts = debts.filter((debt) => debt.fromId === member.id);
+  const userGets = debts.filter((debt) => debt.toId === member.id);
+  const getUserNickname = (userId: string) =>
     members.find((user) => user.id === userId)?.name;
 
   return (
@@ -21,8 +21,8 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
       {userDebts.length > 0 && (
         <Stack spacing={0}>
           {userDebts.map((debt) => (
-            <Text key={debt.from + debt.to} color="red.400">
-              {`${debt.amount} zł dla ${getUserNickname(debt.to)}`}
+            <Text key={debt.fromId + debt.toId} color="red.400">
+              {`${debt.amount} zł dla ${getUserNickname(debt.toId)}`}
             </Text>
           ))}
         </Stack>
@@ -30,8 +30,8 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
       {userGets.length > 0 && (
         <Stack spacing={0}>
           {userGets.map((debt) => (
-            <Text key={debt.from + debt.to} color="green.400">
-              {`${debt.amount} zł od ${getUserNickname(debt.from)}`}
+            <Text key={debt.fromId + debt.toId} color="green.400">
+              {`${debt.amount} zł od ${getUserNickname(debt.fromId)}`}
             </Text>
           ))}
         </Stack>

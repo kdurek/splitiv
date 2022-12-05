@@ -16,7 +16,7 @@ services:
 
   backend:
     container_name: backend
-    build: ./splitiv-backend
+    build: ./splitiv-fastify
     ports:
       - '37534:37534'
     restart: on-failure

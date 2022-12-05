@@ -40,8 +40,8 @@ interface CreatePaymentFormProps {
 interface CreatePaymentFormValues {
   name: string;
   amount: string;
-  payer: number;
-  ower: number;
+  payer: string;
+  ower: string;
 }
 
 function CreatePaymentForm({
@@ -58,8 +58,8 @@ function CreatePaymentForm({
   useEffect(() => {
     const firstDebtFound = debts?.[0];
     if (firstDebtFound) {
-      setValue("ower", firstDebtFound.from);
-      setValue("payer", firstDebtFound.to);
+      setValue("ower", firstDebtFound.fromId);
+      setValue("payer", firstDebtFound.toId);
       setValue("amount", firstDebtFound.amount);
     }
   }, [debts, setValue]);
@@ -126,7 +126,6 @@ function CreatePaymentForm({
               {...register("ower", {
                 required: "Pole jest wymagane",
                 validate: (v) => getValues("payer") !== v,
-                setValueAs: (v) => parseFloat(v),
               })}
             >
               {members.map((user) => (
@@ -141,7 +140,6 @@ function CreatePaymentForm({
             <Select
               {...register("payer", {
                 required: "Pole jest wymagane",
-                setValueAs: (v) => parseFloat(v),
                 validate: (v) => getValues("ower") !== v,
               })}
             >

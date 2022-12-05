@@ -28,8 +28,8 @@ interface CreateGroupFormProps {
 interface CreateGroupFormValues {
   name: string;
   amount: string;
-  payer: number;
-  ower: number;
+  payer: string;
+  ower: string;
 }
 
 function CreateGroupForm({ onClose }: CreateGroupFormProps) {

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 interface NewUser {
-  userId: number;
+  userId: string;
 }
 
 function useAddUserToGroup(groupId: string | undefined) {

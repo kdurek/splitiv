@@ -16,11 +16,11 @@ interface PaymentCardProps {
 }
 
 function PaymentCard({ expense, members }: PaymentCardProps) {
-  const { amount, from, to } = expense.repayments[0];
-  const getUserNickname = (userId: number) =>
+  const { amount, fromId, toId } = expense.repayments[0];
+  const getUserNickname = (userId: string) =>
     members.find((user) => user.id === userId)?.givenName;
-  const paymentFromUser = getUserNickname(from);
-  const paymentToUser = getUserNickname(to);
+  const paymentFromUser = getUserNickname(fromId);
+  const paymentToUser = getUserNickname(toId);
 
   return (
     <AccordionItem>

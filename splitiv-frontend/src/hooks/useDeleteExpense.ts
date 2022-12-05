@@ -4,7 +4,7 @@ import axios from "axios";
 function useDeleteExpense({ groupId }: { groupId: string }) {
   const queryClient = useQueryClient();
 
-  async function deleteExpense(expenseId: number) {
+  async function deleteExpense(expenseId: string) {
     const res = await axios.delete(
       `${import.meta.env.VITE_API_URL}/groups/${groupId}/expenses/${expenseId}`
     );

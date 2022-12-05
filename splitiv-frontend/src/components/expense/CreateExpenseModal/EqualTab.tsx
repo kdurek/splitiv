@@ -5,16 +5,16 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 interface EqualTabFormValues {
   amount: string;
   equal: {
-    id: number;
+    id: string;
     check: boolean;
     paid: string;
     owed: string;
-    userId: number;
+    userId: string;
     name: string;
   }[];
 }
 
-const getBalancedSplit = (amount = 0, users: number[] = []) => {
+const getBalancedSplit = (amount = 0, users: string[] = []) => {
   const breakIntoParts = (num: number, parts: number) =>
     [...Array(parts)].map((_, i) => {
       // @ts-ignore
@@ -31,13 +31,10 @@ const getBalancedSplit = (amount = 0, users: number[] = []) => {
     users.length
   );
 
-  const final: { [key: number]: string } = {};
+  const final: { [key: string]: string } = {};
   parts.forEach((part, index) => {
     if (users[index]) {
-      // @ts-ignore
-      final[Number(users[index])] = (
-        part + restParts[index] / 100 || 0
-      ).toFixed(2);
+      final[users[index]] = (part + restParts[index] / 100 || 0).toFixed(2);
     }
   });
 

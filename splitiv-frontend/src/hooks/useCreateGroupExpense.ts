@@ -5,7 +5,7 @@ interface NewExpenseValues {
   name: string;
   amount: string;
   type?: string;
-  users: { paid: string; owed: string; userId: number }[];
+  users: { paid: string; owed: string; userId: string }[];
 }
 
 function useCreateGroupExpense(groupId: string | undefined) {

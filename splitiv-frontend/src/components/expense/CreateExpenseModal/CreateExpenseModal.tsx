@@ -40,20 +40,20 @@ interface CreateExpenseFormProps {
 interface CreateExpenseFormValues {
   name: string;
   amount: string;
-  payer: number;
+  payer: string;
   method: string;
   equal: {
-    id: number;
+    id: string;
     check: boolean;
     paid: string;
     owed: string;
-    userId: number;
+    userId: string;
   }[];
   unequal: {
-    id: number;
+    id: string;
     paid: string;
     owed: string;
-    userId: number;
+    userId: string;
   }[];
 }
 
@@ -162,7 +162,6 @@ function CreateExpenseForm({
               <Select
                 {...register("payer", {
                   required: "Pole jest wymagane",
-                  setValueAs: (v) => parseFloat(v),
                 })}
               >
                 {members.map((user) => (

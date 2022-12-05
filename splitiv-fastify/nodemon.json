@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "tsconfig.json", ".env"],
+  "ignore": ["src/**/*.test.ts"],
+  "ext": "ts",
+  "exec": "etsc && node ./dist/index.js"
+}

@@ -5,6 +5,13 @@
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/splitiv-fastify/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/splitiv-fastify/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/splitiv-fastify/.husky/_" />
+      <excludeFolder url="file://$MODULE_DIR$/splitiv-frontend/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/splitiv-frontend/.husky/_" />
+      <excludeFolder url="file://$MODULE_DIR$/splitiv-frontend/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/splitiv-backend" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

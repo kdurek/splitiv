@@ -32,6 +32,7 @@ const jwtCheck: FastifyPluginAsync = fp(async (fastify: FastifyInstance) => {
 
   fastify.register(fastifyJwt, {
     decode: { complete: true },
+    // @ts-ignore
     secret: (_request: FastifyRequest, token) => {
       const {
         header: { kid, alg },

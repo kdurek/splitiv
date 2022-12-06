@@ -4,14 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "prepare": "cd .. && husky install splitiv-frontend/.husky"
+    "prepare": "cd .. && husky install splitiv-frontend/.husky",
+    "start:development": "vite --host 0.0.0.0",
+    "start:production": "vite --host 0.0.0.0"
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.12.0",

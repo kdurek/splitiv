@@ -1,31 +1,57 @@
-version: '3'
+version: '3.4'
 services:
   frontend:
     container_name: frontend
-    build: ./splitiv-frontend
+    build:
+      context: ./splitiv-frontend
+      target: ${NODE_ENV}
+      args:
+        - "NODE_ENV=${NODE_ENV}"
+        - "VITE_HOST=${VITE_HOST}"
+        - "VITE_PORT=${VITE_PORT}"
+        - "VITE_API_URL=${VITE_API_URL}"
+        - "VITE_AUTH0_DOMAIN=${VITE_AUTH0_DOMAIN}"
+        - "VITE_AUTH0_CLIENT_ID=${VITE_AUTH0_CLIENT_ID}"
+        - "VITE_AUTH0_REDIRECT_URI=${VITE_AUTH0_REDIRECT_URI}"
+        - "VITE_AUTH0_AUDIENCE=${VITE_AUTH0_AUDIENCE}"
+        - "VITE_AUTH0_SCOPE=${VITE_AUTH0_SCOPE}"
+    expose:
+      - "${VITE_PORT}"
     ports:
-      - '37533:80'
-    restart: on-failure
+      - '${VITE_PORT_FORWARD}:${VITE_PORT}'
+    restart: unless-stopped
     volumes:
-      - frontend:/usr/src/frontend
+      - "./splitiv-frontend:/usr/src/frontend:delegated"
+      - "/usr/src/frontend/node_modules"
     depends_on:
       - backend
       - postgres
     networks:
       - main
+    env_file:
+      - ".env"
 
   backend:
     container_name: backend
-    build: ./splitiv-fastify
+    build:
+      context: ./splitiv-fastify
+      target: ${NODE_ENV}
+      args:
+        - "NODE_ENV=${NODE_ENV}"
+    expose:
+      - "${SERVER_PORT}"
     ports:
-      - '37534:37534'
-    restart: on-failure
+      - '${SERVER_PORT_FORWARD}:${SERVER_PORT}'
+    restart: unless-stopped
     volumes:
-      - backend:/usr/src/backend
+      - "./splitiv-fastify:/usr/src/backend:delegated"
+      - "/usr/src/backend/node_modules"
     depends_on:
       - postgres
     networks:
       - main
+    env_file:
+      - ".env"
 
   postgres:
     container_name: postgres
@@ -37,6 +63,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - '5432:5432'
+    restart: unless-stopped
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
@@ -52,13 +79,11 @@ services:
       - postgres
     ports:
       - '5050:80'
+    restart: unless-stopped
     networks:
       - main
-    restart: unless-stopped
 
 volumes:
-  frontend:
-  backend:
   postgres:
 
 networks:

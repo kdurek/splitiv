@@ -4,7 +4,9 @@ WORKDIR /usr/src/frontend
 ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 COPY package.json yarn.lock tsconfig.json ./
-RUN yarn
+RUN yarn install
+ENV PATH /usr/src/frontend/node_modules/.bin:$PATH
+WORKDIR /usr/src/frontend/app
 CMD ["yarn", "start:development"]
 
 FROM node:18-alpine as builder
@@ -28,7 +30,7 @@ ENV VITE_AUTH0_AUDIENCE=${VITE_AUTH0_AUDIENCE}
 ARG VITE_AUTH0_SCOPE
 ENV VITE_AUTH0_SCOPE=${VITE_AUTH0_SCOPE}
 COPY package.json yarn.lock tsconfig.json ./
-RUN yarn --production=false
+RUN yarn install --production=false
 COPY . .
 RUN yarn build
 
@@ -36,5 +38,4 @@ FROM nginx:stable-alpine as production
 LABEL maintainer="Krzysztof Durek <walendes@gmail.com>"
 COPY --from=builder /usr/src/frontend/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/templates/default.conf.template
-#COPY nginx.conf /etc/nginx/conf.d/default.conf
-CMD ["nginx", "-g", "daemon off;" ]
+CMD ["nginx", "-g", "daemon off;"]

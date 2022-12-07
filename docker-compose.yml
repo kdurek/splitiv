@@ -1,4 +1,3 @@
-version: '3.4'
 services:
   frontend:
     container_name: frontend
@@ -21,8 +20,8 @@ services:
       - '${VITE_PORT_FORWARD}:${VITE_PORT}'
     restart: unless-stopped
     volumes:
-      - "./splitiv-frontend:/usr/src/frontend:delegated"
-      - "/usr/src/frontend/node_modules"
+      - "./splitiv-frontend:/usr/src/frontend/app:delegated"
+      - "/usr/src/frontend/app/node_modules"
     depends_on:
       - backend
       - postgres
@@ -44,8 +43,8 @@ services:
       - '${SERVER_PORT_FORWARD}:${SERVER_PORT}'
     restart: unless-stopped
     volumes:
-      - "./splitiv-fastify:/usr/src/backend:delegated"
-      - "/usr/src/backend/node_modules"
+      - "./splitiv-fastify:/usr/src/backend/app:delegated"
+      - "/usr/src/backend/app/node_modules"
     depends_on:
       - postgres
     networks:

@@ -12,6 +12,8 @@
       <excludeFolder url="file://$MODULE_DIR$/splitiv-frontend/.husky/_" />
       <excludeFolder url="file://$MODULE_DIR$/splitiv-frontend/dist" />
       <excludeFolder url="file://$MODULE_DIR$/splitiv-backend" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/pgbackups" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

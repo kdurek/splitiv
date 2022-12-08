@@ -79,6 +79,8 @@ services:
     ports:
       - '5050:80'
     restart: unless-stopped
+    volumes:
+      - pgadmin:/var/lib/pgadmin
     networks:
       - main
 
@@ -107,6 +109,7 @@ services:
 
 volumes:
   postgres:
+  pgadmin:
 
 networks:
   main:

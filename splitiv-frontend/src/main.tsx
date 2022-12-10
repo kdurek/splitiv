@@ -6,7 +6,7 @@ import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 
-import { AxiosProvider } from "providers/AxiosProvider";
+import { AuthProvider } from "providers/AuthProvider";
 
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
@@ -27,7 +27,7 @@ function App() {
     >
       <QueryClientProvider client={queryClient}>
         <ChakraProvider>
-          <AxiosProvider>{useRoutes(routes)}</AxiosProvider>
+          <AuthProvider>{useRoutes(routes)}</AuthProvider>
         </ChakraProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

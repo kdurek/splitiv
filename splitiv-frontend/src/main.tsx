@@ -1,20 +1,17 @@
 import { Auth0Provider } from "@auth0/auth0-react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 
 import { AuthProvider } from "providers/AuthProvider";
+import { QueryProvider } from "providers/QueryProvider";
 
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
 import routes from "~react-pages";
 
 function App() {
-  const queryClient = new QueryClient();
-
   return (
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
@@ -25,12 +22,11 @@ function App() {
       useRefreshTokens
       cacheLocation="localstorage"
     >
-      <QueryClientProvider client={queryClient}>
-        <ChakraProvider>
-          <AuthProvider>{useRoutes(routes)}</AuthProvider>
-        </ChakraProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <ChakraProvider>
+        <AuthProvider>
+          <QueryProvider>{useRoutes(routes)}</QueryProvider>
+        </AuthProvider>
+      </ChakraProvider>
     </Auth0Provider>
   );
 }

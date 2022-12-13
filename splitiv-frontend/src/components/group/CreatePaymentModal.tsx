@@ -28,11 +28,12 @@ import {
 } from "react-hook-form";
 
 import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
-import { Debt, User } from "types";
+import { Debt } from "types";
+import { GetUsers } from "utils/trpc";
 
 interface CreatePaymentFormProps {
   groupId: string | undefined;
-  members: User[];
+  members: GetUsers;
   debts: Debt[];
   onClose: () => void;
 }
@@ -50,7 +51,7 @@ function CreatePaymentForm({
   debts,
   onClose,
 }: CreatePaymentFormProps) {
-  const { mutate: createGroupExpense } = useCreateGroupExpense(groupId);
+  const { mutate: createGroupExpense } = useCreateGroupExpense();
 
   const { register, reset, getValues, setValue, handleSubmit } =
     useFormContext<CreatePaymentFormValues>();
@@ -65,6 +66,10 @@ function CreatePaymentForm({
   }, [debts, setValue]);
 
   const onSubmit: SubmitHandler<CreatePaymentFormValues> = (values) => {
+    if (!groupId) {
+      throw new Error("groupId not defined");
+    }
+
     const { name, amount, payer, ower } = values;
     const type = "payment";
     const users = [
@@ -80,11 +85,9 @@ function CreatePaymentForm({
       },
     ];
 
-    const requestData = { name, amount, type, users };
-
     onClose();
     reset();
-    return createGroupExpense(requestData);
+    return createGroupExpense({ groupId, name, amount, type, users });
   };
 
   return (
@@ -112,7 +115,8 @@ function CreatePaymentForm({
                 <NumberInputField
                   {...register("amount", {
                     required: "Pole jest wymagane",
-                    setValueAs: (v) => (v ? parseFloat(v).toFixed(2) : ""),
+                    setValueAs: (v: string) =>
+                      v ? parseFloat(v).toFixed(2) : "",
                   })}
                   placeholder="0.00"
                   borderLeftRadius={0}
@@ -158,7 +162,7 @@ function CreatePaymentForm({
 
 interface CreatePaymentModalProps {
   groupId: string | undefined;
-  members: User[];
+  members: GetUsers;
   debts: Debt[];
 }
 

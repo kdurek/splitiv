@@ -1,24 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-
-interface NewGroupValues {
-  name: string;
-}
-
-async function createGroup(newGroup: NewGroupValues) {
-  const res = await axios.post(
-    `${import.meta.env.VITE_API_URL}/groups`,
-    newGroup
-  );
-  return res.data;
-}
+import { trpc } from "utils/trpc";
 
 function useCreateGroup() {
-  const queryClient = useQueryClient();
+  const utils = trpc.useContext();
 
-  return useMutation((values: NewGroupValues) => createGroup(values), {
-    onSuccess: () => {
-      return queryClient.invalidateQueries(["groups"]);
+  return trpc.groups.createGroup.useMutation({
+    onSuccess() {
+      utils.groups.getGroupsByMe.invalidate();
     },
   });
 }

@@ -1,12 +1,10 @@
 import fastifyCors from "@fastify/cors";
 import fastifyHelmet from "@fastify/helmet";
+import fastifyWebsocket from "@fastify/websocket";
 import Fastify from "fastify";
 
 import envConfig from "./plugins/env";
-import jwtCheck from "./plugins/jwt";
-import prismaPlugin from "./plugins/prisma";
-import groupRoutes from "./routes/groups";
-import userRoutes from "./routes/users";
+import trpcPlugin from "./plugins/trpc";
 
 const setupServer = (options = {}) => {
   const fastify = Fastify(options);
@@ -14,10 +12,8 @@ const setupServer = (options = {}) => {
   fastify.register(envConfig);
   fastify.register(fastifyHelmet, { global: true });
   fastify.register(fastifyCors);
-  fastify.register(jwtCheck);
-  fastify.register(prismaPlugin);
-  fastify.register(groupRoutes, { prefix: "/api/v1/groups" });
-  fastify.register(userRoutes, { prefix: "/api/v1/users" });
+  fastify.register(fastifyWebsocket);
+  fastify.register(trpcPlugin);
 
   return fastify;
 };

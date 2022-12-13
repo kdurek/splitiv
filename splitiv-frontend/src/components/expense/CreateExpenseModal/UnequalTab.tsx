@@ -50,7 +50,8 @@ function UnequalTab() {
             <NumberInput precision={2} step={0.01}>
               <NumberInputField
                 {...register(`unequal.${index}.owed`, {
-                  setValueAs: (v) => (v ? parseFloat(v).toFixed(2) : ""),
+                  setValueAs: (v: string) =>
+                    v ? parseFloat(v).toFixed(2) : "",
                   validate: () => usedAmount === amountWatch,
                 })}
                 placeholder="0.00"

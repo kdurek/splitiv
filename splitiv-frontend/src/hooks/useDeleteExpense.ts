@@ -1,20 +1,14 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { trpc } from "utils/trpc";
 
-function useDeleteExpense({ groupId }: { groupId: string }) {
-  const queryClient = useQueryClient();
+function useDeleteExpense() {
+  const utils = trpc.useContext();
 
-  async function deleteExpense(expenseId: string) {
-    const res = await axios.delete(
-      `${import.meta.env.VITE_API_URL}/groups/${groupId}/expenses/${expenseId}`
-    );
-    return res.data;
-  }
-
-  return useMutation(deleteExpense, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["groups", groupId]);
-      queryClient.invalidateQueries(["groups", groupId, "expenses"]);
+  return trpc.groups.deleteExpense.useMutation({
+    onSuccess(input) {
+      utils.groups.getGroupById.invalidate({ groupId: input.groupId });
+      utils.groups.getExpensesByGroup.invalidate({
+        groupId: input.groupId,
+      });
     },
   });
 }

@@ -1,29 +1,29 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Button, Center } from "@chakra-ui/react";
-import axios from "axios";
-import { ReactNode, createContext, useContext, useEffect } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-import Layout from "../components/Layout/Layout";
+import Layout from "components/Layout/Layout";
 
-const authContext = createContext(null);
+const authContext = createContext<{ token?: string }>({});
 
 const useProvideAuth = () => {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } =
+    useAuth0();
+  const [token, setToken] = useState<string>();
 
   useEffect(() => {
     getAccessTokenSilently().then((accessToken) => {
-      return axios.interceptors.request.use((config) => {
-        return {
-          ...config,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-      });
+      setToken(accessToken);
     });
-  }, [getAccessTokenSilently, isAuthenticated]);
+  }, [getAccessTokenSilently, isAuthenticated, loginWithRedirect]);
 
-  return null;
+  return { token };
 };
 
 interface AuthProviderProps {
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   if (isLoading) return null;
 
-  if (isAuthenticated)
+  if (isAuthenticated && auth.token)
     return (
       <authContext.Provider value={auth}>
         <Layout>{children}</Layout>

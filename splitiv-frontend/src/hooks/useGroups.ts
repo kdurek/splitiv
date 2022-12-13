@@ -1,15 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-
-import { Group } from "types";
-
-async function getGroups() {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/groups`);
-  return res.data;
-}
+import { trpc } from "utils/trpc";
 
 function useGroups() {
-  return useQuery<Group[]>(["groups"], getGroups);
+  return trpc.groups.getGroupsByMe.useQuery();
 }
 
 export { useGroups };

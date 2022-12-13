@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "target": "ESNext",
     "lib": [
       "ESNext",
     ],
     "module": "ESNext",
     "moduleResolution": "Node",
-    "baseUrl": "src",
     "importsNotUsedAsValues": "error",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

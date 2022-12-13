@@ -1,10 +1,11 @@
 import { Avatar, Box, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { Debt, User } from "types";
+import { Debt } from "types";
+import { GetGroupById, GetUsers } from "utils/trpc";
 
 interface UserDebtsProps {
-  member: User;
-  members: User[];
+  member: GetUsers[number];
+  members: GetUsers;
   debts: Debt[];
 }
 
@@ -40,17 +41,12 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
   );
 }
 
-interface UserBalanceProps {
-  members: User[];
-  debts: Debt[];
-}
-
-function UserBalance({ members, debts }: UserBalanceProps) {
-  if (!members) return null;
+function UserBalance({ group }: { group: GetGroupById }) {
+  if (!group?.members) return null;
 
   return (
     <Stack spacing={4}>
-      {members.map((member) => (
+      {group.members.map((member) => (
         <Stack
           key={member.id}
           justifyContent="space-between"
@@ -64,7 +60,11 @@ function UserBalance({ members, debts }: UserBalanceProps) {
               <Text fontSize="sm">{member.balance} zł</Text>
             </Box>
           </HStack>
-          <UserDebts member={member} members={members} debts={debts} />
+          <UserDebts
+            member={member}
+            members={group.members}
+            debts={group.debts}
+          />
         </Stack>
       ))}
     </Stack>

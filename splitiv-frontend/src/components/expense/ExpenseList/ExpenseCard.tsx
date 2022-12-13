@@ -10,10 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { IconReportMoney } from "@tabler/icons";
 
-import { Expense } from "types";
+import { GetExpensesByGroup } from "utils/trpc";
 
 interface ExpenseCardProps {
-  expense: Expense;
+  expense: GetExpensesByGroup[number];
 }
 
 function ExpenseCard({ expense }: ExpenseCardProps) {

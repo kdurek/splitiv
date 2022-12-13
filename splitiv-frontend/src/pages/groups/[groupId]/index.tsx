@@ -38,7 +38,7 @@ function Group() {
                 onClick={() => navigate(`/groups/${group.id}/settings`)}
               />
             </HStack>
-            <UserBalance members={group.members} debts={group.debts} />
+            <UserBalance group={group} />
             <CreateExpenseModal groupId={groupId} members={group.members} />
             <CreatePaymentModal
               groupId={groupId}

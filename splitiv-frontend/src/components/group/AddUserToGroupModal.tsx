@@ -22,11 +22,11 @@ import {
 } from "react-hook-form";
 
 import { useAddUserToGroup } from "hooks/useAddUserToGroup";
-import { User } from "types";
+import { GetUsers } from "utils/trpc";
 
 interface AddUserToGroupFormProps {
   groupId: string | undefined;
-  usersToAdd: User[];
+  usersToAdd: GetUsers;
   onClose: () => void;
 }
 
@@ -40,17 +40,18 @@ function AddUserToGroupForm({
   usersToAdd,
   onClose,
 }: AddUserToGroupFormProps) {
-  const { mutate: addUserToGroup } = useAddUserToGroup(groupId);
+  const { mutate: addUserToGroup } = useAddUserToGroup();
   const { register, reset, handleSubmit } =
     useFormContext<AddUserToGroupFormValues>();
 
   const onSubmit: SubmitHandler<AddUserToGroupFormValues> = (values) => {
-    const { user } = values;
-    const requestData = { userId: user };
+    if (!groupId) {
+      throw new Error("groupId not defined");
+    }
 
     onClose();
     reset();
-    return addUserToGroup(requestData);
+    return addUserToGroup({ userId: values.user, groupId });
   };
 
   return (
@@ -80,8 +81,8 @@ function AddUserToGroupForm({
 
 interface AddUserToGroupModalProps {
   groupId: string | undefined;
-  members: User[];
-  users: User[];
+  members: GetUsers;
+  users: GetUsers;
 }
 
 function AddUserToGroupModal({

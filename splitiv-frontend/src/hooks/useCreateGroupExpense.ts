@@ -1,27 +1,14 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { trpc } from "utils/trpc";
 
-interface NewExpenseValues {
-  name: string;
-  amount: string;
-  type?: string;
-  users: { paid: string; owed: string; userId: string }[];
-}
+function useCreateGroupExpense() {
+  const utils = trpc.useContext();
 
-function useCreateGroupExpense(groupId: string | undefined) {
-  const queryClient = useQueryClient();
-
-  async function createGroupExpense(newExpense: NewExpenseValues) {
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/groups/${groupId}/expenses`,
-      newExpense
-    );
-    return res.data;
-  }
-
-  return useMutation((values: NewExpenseValues) => createGroupExpense(values), {
-    onSuccess: () => {
-      return queryClient.invalidateQueries(["groups", groupId]);
+  return trpc.groups.createExpense.useMutation({
+    onSuccess(input) {
+      utils.groups.getGroupById.invalidate({ groupId: input.groupId });
+      utils.groups.getExpensesByGroup.invalidate({
+        groupId: input.groupId,
+      });
     },
   });
 }

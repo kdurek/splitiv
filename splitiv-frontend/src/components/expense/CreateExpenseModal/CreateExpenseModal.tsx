@@ -29,11 +29,11 @@ import {
 
 import MethodTabs from "components/expense/CreateExpenseModal/MethodTabs";
 import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
-import { User } from "types";
+import { GetUsers } from "utils/trpc";
 
 interface CreateExpenseFormProps {
   groupId: string | undefined;
-  members: User[];
+  members: GetUsers;
   onClose: () => void;
 }
 
@@ -64,9 +64,13 @@ function CreateExpenseForm({
 }: CreateExpenseFormProps) {
   const { register, reset, handleSubmit } =
     useFormContext<CreateExpenseFormValues>();
-  const { mutate: createGroupExpense } = useCreateGroupExpense(groupId);
+  const { mutate: createGroupExpense } = useCreateGroupExpense();
 
   const onSubmit: SubmitHandler<CreateExpenseFormValues> = (values) => {
+    if (!groupId) {
+      throw new Error("groupId not defined");
+    }
+
     const { name, amount, payer, method, equal, unequal } = values;
 
     switch (method) {
@@ -83,11 +87,9 @@ function CreateExpenseForm({
             };
           });
 
-        const requestData = { name, amount, users };
-
         onClose();
         reset();
-        return createGroupExpense(requestData);
+        return createGroupExpense({ groupId, name, amount, users });
       }
 
       case "unequal": {
@@ -103,11 +105,9 @@ function CreateExpenseForm({
             };
           });
 
-        const requestData = { name, amount, users };
-
         onClose();
         reset();
-        return createGroupExpense(requestData);
+        return createGroupExpense({ groupId, name, amount, users });
       }
 
       default: {
@@ -149,7 +149,8 @@ function CreateExpenseForm({
                   <NumberInputField
                     {...register("amount", {
                       required: "Pole jest wymagane",
-                      setValueAs: (v) => (v ? parseFloat(v).toFixed(2) : ""),
+                      setValueAs: (v: string) =>
+                        v ? parseFloat(v).toFixed(2) : "",
                     })}
                     placeholder="0.00"
                     borderLeftRadius={0}
@@ -183,7 +184,7 @@ function CreateExpenseForm({
 
 interface CreateExpenseModalProps {
   groupId: string | undefined;
-  members: User[];
+  members: GetUsers;
 }
 
 function CreateExpenseModal({ groupId, members }: CreateExpenseModalProps) {

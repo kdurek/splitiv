@@ -8,11 +8,11 @@ import {
 } from "@chakra-ui/react";
 import { IconCash } from "@tabler/icons";
 
-import { Expense, User } from "types";
+import { GetExpensesByGroup, GetUsers } from "utils/trpc";
 
 interface PaymentCardProps {
-  expense: Expense;
-  members: User[];
+  expense: GetExpensesByGroup[number];
+  members: GetUsers;
 }
 
 function PaymentCard({ expense, members }: PaymentCardProps) {

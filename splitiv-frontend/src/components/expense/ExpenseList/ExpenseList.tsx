@@ -2,12 +2,12 @@ import { Accordion } from "@chakra-ui/react";
 
 import ExpenseCard from "components/expense/ExpenseList/ExpenseCard";
 import PaymentCard from "components/expense/ExpenseList/PaymentCard";
-import { Expense, User } from "types";
+import { GetExpensesByGroup, GetUsers } from "utils/trpc";
 
 interface ExpenseListProps {
   groupId: string | undefined;
-  expenses: Expense[];
-  members: User[];
+  expenses: GetExpensesByGroup;
+  members: GetUsers;
 }
 
 function ExpenseList({ groupId, expenses, members }: ExpenseListProps) {

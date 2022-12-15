@@ -21,6 +21,8 @@ services:
     restart: unless-stopped
     volumes:
       - "./splitiv-frontend:/usr/src/frontend/app:delegated"
+      - "./splitiv-frontend/package.json:/usr/src/frontend/package.json"
+      - "./splitiv-frontend/yarn.lock:/usr/src/frontend/yarn.lock"
       - "/usr/src/frontend/app/node_modules"
     depends_on:
       - backend
@@ -44,6 +46,8 @@ services:
     restart: unless-stopped
     volumes:
       - "./splitiv-fastify:/usr/src/backend/app:delegated"
+      - "./splitiv-fastify/package.json:/usr/src/backend/package.json"
+      - "./splitiv-fastify/yarn.lock:/usr/src/backend/yarn.lock"
       - "/usr/src/backend/app/node_modules"
     depends_on:
       - postgres

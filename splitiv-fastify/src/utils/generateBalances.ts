@@ -1,5 +1,5 @@
 import { PLN } from "@dinero.js/currencies";
-import { Dinero, subtract } from "dinero.js";
+import { Dinero, subtract, toUnit } from "dinero.js";
 
 import { dineroFromString } from "./dinero";
 import { upsert } from "./upsert";
@@ -40,5 +40,5 @@ export function generateBalances(users: IExpenseUser[]) {
     );
   });
 
-  return usersBalanceArray;
+  return usersBalanceArray.sort((a, b) => toUnit(b.amount) - toUnit(a.amount));
 }

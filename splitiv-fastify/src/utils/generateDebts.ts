@@ -3,23 +3,23 @@
 /* eslint-disable no-param-reassign */
 
 import {
-  Dinero,
   add,
-  equal,
   isNegative,
   isPositive,
-  isZero,
+  minimum,
+  multiply,
   subtract,
   toUnit,
 } from "dinero.js";
 
-import { IExpenseUser, generateBalances } from "./generateBalances";
-import { upsert } from "./upsert";
+import { generateBalances } from "./generateBalances";
+
+import type { IExpenseUser } from "./generateBalances";
 
 interface IDebt {
   fromId: string;
   toId: string;
-  amount: Dinero<number>;
+  amount: string;
 }
 
 function overwrite<T>(array: T[], element: T, elementProp: keyof T) {
@@ -36,80 +36,39 @@ export function generateDebts(users: IExpenseUser[]) {
 
   const debts: IDebt[] = [];
 
-  for (const { userId: paidId, amount: paidAmount } of usersBalanceArray) {
-    if (isZero(paidAmount)) {
-      continue;
+  usersBalanceArray.forEach((from) => {
+    const { userId: fromId, amount: fromAmount } = from;
+    if (isPositive(fromAmount)) {
+      usersBalanceArray.forEach((to) => {
+        const { userId: toId, amount: toAmount } = to;
+        if (toId !== fromId && isNegative(toAmount)) {
+          const fromAmountTrue = usersBalanceArray.find(
+            (user) => user.userId === fromId
+          )!.amount;
+          const toAmountPositive = multiply(toAmount, -1);
+          const amount = minimum([fromAmountTrue, toAmountPositive]);
+
+          overwrite(
+            usersBalanceArray,
+            { userId: fromId, amount: subtract(fromAmountTrue, amount) },
+            "userId"
+          );
+
+          overwrite(
+            usersBalanceArray,
+            { userId: toId, amount: add(toAmount, amount) },
+            "userId"
+          );
+
+          debts.push({
+            fromId: toId,
+            toId: fromId,
+            amount: toUnit(amount).toFixed(2),
+          });
+        }
+      });
     }
-
-    for (const { userId: owedId, amount: owedAmount } of usersBalanceArray) {
-      if (
-        paidId === owedId ||
-        equal(paidAmount, owedAmount) ||
-        isZero(owedAmount)
-      ) {
-        continue;
-      }
-
-      if (isNegative(paidAmount) && isNegative(owedAmount)) {
-        continue;
-      }
-
-      if (isPositive(paidAmount) && isPositive(owedAmount)) {
-        continue;
-      }
-
-      if (isPositive(owedAmount)) {
-        overwrite(
-          usersBalanceArray,
-          { userId: paidId, amount: subtract(paidAmount, paidAmount) },
-          "userId"
-        );
-        overwrite(
-          usersBalanceArray,
-          { userId: owedId, amount: add(owedAmount, paidAmount) },
-          "userId"
-        );
-        upsert(
-          debts,
-          {
-            fromId: paidId,
-            toId: owedId,
-            amount: paidAmount,
-          },
-          "fromId"
-        );
-        break;
-      }
-
-      if (isNegative(owedAmount)) {
-        overwrite(
-          usersBalanceArray,
-          { userId: paidId, amount: add(paidAmount, owedAmount) },
-          "userId"
-        );
-        overwrite(
-          usersBalanceArray,
-          { userId: owedId, amount: subtract(owedAmount, owedAmount) },
-          "userId"
-        );
-
-        upsert(
-          debts,
-          {
-            fromId: owedId,
-            toId: paidId,
-            amount: owedAmount,
-          },
-          "fromId"
-        );
-        break;
-      }
-    }
-  }
-
-  const translatedDebts = debts.map((debt) => {
-    return { ...debt, amount: Math.abs(toUnit(debt.amount)).toFixed(2) };
   });
 
-  return translatedDebts;
+  return debts;
 }

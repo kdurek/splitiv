@@ -26,6 +26,45 @@ function upsertDebt<T extends { amount: string }>(
   } else array.push(element);
 }
 
+function reduceDebts(debts: IDebt[]) {
+  const debtMap: { [key: string]: { [key: string]: number } } = {};
+
+  debts.forEach((debt) => {
+    const { fromId } = debt;
+    const { toId } = debt;
+    const amount = parseFloat(debt.amount);
+
+    if (!debtMap[fromId]) {
+      debtMap[fromId] = {};
+    }
+    if (!debtMap[toId]) {
+      debtMap[toId] = {};
+    }
+
+    debtMap[fromId]![toId] = (debtMap[fromId]![toId] || 0) + amount;
+    debtMap[toId]![fromId] = (debtMap[toId]![fromId] || 0) - amount;
+  });
+
+  const reducedDebts: IDebt[] = [];
+
+  Object.keys(debtMap).forEach((fromId) => {
+    Object.keys(debtMap[fromId] as { [key: string]: number }).forEach(
+      (toId) => {
+        const amount = debtMap[fromId]![toId];
+        if (amount && amount > 0) {
+          reducedDebts.push({
+            fromId,
+            toId,
+            amount: amount.toFixed(2),
+          });
+        }
+      }
+    );
+  });
+
+  return reducedDebts;
+}
+
 export function generateDebts(users: IExpenseUser[]) {
   const fromUsers = users.filter((user) => parseFloat(user.paid) > 0);
   const toUsers = users.filter((user) => parseFloat(user.owed) > 0);
@@ -51,5 +90,5 @@ export function generateDebts(users: IExpenseUser[]) {
     });
   });
 
-  return debts;
+  return reduceDebts(debts);
 }

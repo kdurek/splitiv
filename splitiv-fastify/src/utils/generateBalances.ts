@@ -10,6 +10,8 @@ export interface IUserBalances {
 }
 
 export interface IExpenseUser {
+  id: string;
+  expenseId: string;
   paid: string;
   owed: string;
   userId: string;

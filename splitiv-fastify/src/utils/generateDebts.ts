@@ -72,20 +72,49 @@ export function generateDebts(users: IExpenseUser[]) {
   const debts: IDebt[] = [];
 
   fromUsers.forEach((from) => {
-    const { userId: fromId, paid: fromAmount } = from;
+    const {
+      id: fromId,
+      expenseId: fromExpenseId,
+      userId: fromUserId,
+      paid: fromPaid,
+      owed: fromOwed,
+    } = from;
     toUsers.forEach((to) => {
-      const { userId: toId, owed: toAmount } = to;
-      if (fromAmount === toAmount) {
-        upsertDebt(
-          debts,
-          {
-            fromId: toId,
-            toId: fromId,
-            amount: fromAmount,
-          },
-          "fromId",
-          "toId"
-        );
+      const {
+        id: toId,
+        expenseId: toExpenseId,
+        userId: toUserId,
+        paid: toPaid,
+        owed: toOwed,
+      } = to;
+      if (
+        fromId !== toId &&
+        fromUserId !== toUserId &&
+        fromExpenseId === toExpenseId
+      ) {
+        if (parseFloat(fromPaid) > 0 && parseFloat(fromOwed) > 0) {
+          upsertDebt(
+            debts,
+            {
+              fromId: toUserId,
+              toId: fromUserId,
+              amount: toOwed,
+            },
+            "fromId",
+            "toId"
+          );
+        } else if (fromPaid === toOwed && toPaid === fromOwed) {
+          upsertDebt(
+            debts,
+            {
+              fromId: toUserId,
+              toId: fromUserId,
+              amount: fromPaid,
+            },
+            "fromId",
+            "toId"
+          );
+        }
       }
     });
   });

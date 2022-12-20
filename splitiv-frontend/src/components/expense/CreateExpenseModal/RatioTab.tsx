@@ -45,7 +45,7 @@ function RatioTab() {
           <Text w="full" whiteSpace="nowrap">
             {field.name}
           </Text>
-          <NumberInput w="100%">
+          <NumberInput w="100%" defaultValue={0} min={0}>
             <NumberInputField
               {...register(`ratio.${index}.ratio`, {
                 validate: () => usersIdToSplit.length > 0,

@@ -20,6 +20,8 @@ import {
   StackDivider,
   useDisclosure,
 } from "@chakra-ui/react";
+import { PLN } from "@dinero.js/currencies";
+import { allocate, toDecimal } from "dinero.js";
 import {
   FormProvider,
   SubmitHandler,
@@ -29,6 +31,7 @@ import {
 
 import MethodTabs from "components/expense/CreateExpenseModal/MethodTabs";
 import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
+import { dineroFromString } from "utils/dinero";
 import { GetUsers } from "utils/trpc";
 
 interface CreateExpenseFormProps {
@@ -55,6 +58,12 @@ interface CreateExpenseFormValues {
     owed: string;
     userId: string;
   }[];
+  ratio: {
+    id: string;
+    paid: string;
+    ratio: number;
+    userId: string;
+  }[];
 }
 
 function CreateExpenseForm({
@@ -71,7 +80,7 @@ function CreateExpenseForm({
       throw new Error("groupId not defined");
     }
 
-    const { name, amount, payer, method, equal, unequal } = values;
+    const { name, amount, payer, method, equal, unequal, ratio } = values;
 
     switch (method) {
       case "equal": {
@@ -104,6 +113,32 @@ function CreateExpenseForm({
               userId: user.id,
             };
           });
+
+        onClose();
+        reset();
+        return createGroupExpense({ groupId, name, amount, users });
+      }
+
+      case "ratio": {
+        const filteredUsers = ratio.filter(
+          (user) => user.ratio > 0 || payer === user.id
+        );
+        const dineroAmount = dineroFromString({
+          amount,
+          currency: PLN,
+          scale: 2,
+        });
+        const userRatios = filteredUsers.map((user) => user.ratio);
+        const allocated = allocate(dineroAmount, userRatios);
+        const users = filteredUsers.map((user, index) => {
+          const isPayer = payer === user.id;
+
+          return {
+            paid: isPayer ? amount : "0.00",
+            owed: toDecimal(allocated[index]) || "0.00",
+            userId: user.id,
+          };
+        });
 
         onClose();
         reset();
@@ -202,12 +237,19 @@ function CreateExpenseModal({ groupId, members }: CreateExpenseModalProps) {
     owed: "",
   }));
 
+  const ratioDefaults = members.map((member) => ({
+    id: member.id,
+    name: member.name,
+    ratio: 0,
+  }));
+
   const methods = useForm<CreateExpenseFormValues>({
     defaultValues: {
       amount: "",
       method: "equal",
       equal: equalDefaults,
       unequal: unequalDefaults,
+      ratio: ratioDefaults,
     },
   });
 

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
 import EqualTab from "components/expense/CreateExpenseModal/EqualTab";
+import RatioTab from "components/expense/CreateExpenseModal/RatioTab";
 import UnequalTab from "components/expense/CreateExpenseModal/UnequalTab";
 
 function MethodTabs() {
@@ -17,6 +18,9 @@ function MethodTabs() {
       }
       case 1: {
         return setValue("method", "unequal");
+      }
+      case 2: {
+        return setValue("method", "ratio");
       }
       default: {
         return setValue("method", "equal");
@@ -34,12 +38,14 @@ function MethodTabs() {
         <TabList>
           <Tab>Równo</Tab>
           <Tab>Nierówno</Tab>
+          <Tab>Współczynnik</Tab>
         </TabList>
         <TabPanels>
           <TabPanel px={0}>{methodWatch === "equal" && <EqualTab />}</TabPanel>
           <TabPanel px={0}>
             {methodWatch === "unequal" && <UnequalTab />}
           </TabPanel>
+          <TabPanel px={0}>{methodWatch === "ratio" && <RatioTab />}</TabPanel>
         </TabPanels>
       </Tabs>
     </Box>

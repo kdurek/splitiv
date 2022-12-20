@@ -10,3 +10,4 @@ export type RouterOutput = inferRouterOutputs<AppRouter>;
 export type GetUsers = RouterOutput["users"]["getUsers"];
 export type GetExpensesByGroup = RouterOutput["groups"]["getExpensesByGroup"];
 export type GetGroupById = RouterOutput["groups"]["getGroupById"];
+export type GetGroupsByMe = RouterOutput["groups"]["getGroupsByMe"];

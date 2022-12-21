@@ -7,7 +7,7 @@
     "start": "node ./dist/index.js",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "lint:fix": "eslint --fix 'src/**/*.{js,ts}'",
-    "prepare": "cd .. && husky install backend/.husky",
+    "prepare": "cd ../.. && husky install packages/backend/.husky",
     "start:development": "nodemon",
     "start:production": "node ./dist/index.js"
   },

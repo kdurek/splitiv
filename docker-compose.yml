@@ -2,7 +2,7 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./frontend
+      context: ./packages/frontend
       target: ${NODE_ENV}
       args:
         - "NODE_ENV=${NODE_ENV}"
@@ -20,9 +20,9 @@ services:
       - '${VITE_PORT_FORWARD}:${VITE_PORT}'
     restart: unless-stopped
     volumes:
-      - "./frontend:/usr/src/frontend/app:delegated"
-      - "./frontend/package.json:/usr/src/frontend/package.json"
-      - "./frontend/yarn.lock:/usr/src/frontend/yarn.lock"
+      - "./packages/frontend:/usr/src/frontend/app:delegated"
+      - "./packages/frontend/package.json:/usr/src/frontend/package.json"
+      - "./packages/frontend/yarn.lock:/usr/src/frontend/yarn.lock"
       - "/usr/src/frontend/app/node_modules"
     depends_on:
       - backend
@@ -35,7 +35,7 @@ services:
   backend:
     container_name: backend
     build:
-      context: ./backend
+      context: ./packages/backend
       target: ${NODE_ENV}
       args:
         - "NODE_ENV=${NODE_ENV}"
@@ -45,9 +45,9 @@ services:
       - '${SERVER_PORT_FORWARD}:${SERVER_PORT}'
     restart: unless-stopped
     volumes:
-      - "./backend:/usr/src/backend/app:delegated"
-      - "./backend/package.json:/usr/src/backend/package.json"
-      - "./backend/yarn.lock:/usr/src/backend/yarn.lock"
+      - "./packages/backend:/usr/src/backend/app:delegated"
+      - "./packages/backend/package.json:/usr/src/backend/package.json"
+      - "./packages/backend/yarn.lock:/usr/src/backend/yarn.lock"
       - "/usr/src/backend/app/node_modules"
     depends_on:
       - postgres

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd frontend
-npx --no -- commitlint --edit ${1}
+cd packages/backend
+npx lint-staged

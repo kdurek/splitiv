@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd splitiv-fastify
-npx lint-staged
+cd backend
+npx --no -- commitlint --edit ${1}

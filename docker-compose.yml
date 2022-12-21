@@ -2,7 +2,7 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./splitiv-frontend
+      context: ./frontend
       target: ${NODE_ENV}
       args:
         - "NODE_ENV=${NODE_ENV}"
@@ -20,9 +20,9 @@ services:
       - '${VITE_PORT_FORWARD}:${VITE_PORT}'
     restart: unless-stopped
     volumes:
-      - "./splitiv-frontend:/usr/src/frontend/app:delegated"
-      - "./splitiv-frontend/package.json:/usr/src/frontend/package.json"
-      - "./splitiv-frontend/yarn.lock:/usr/src/frontend/yarn.lock"
+      - "./frontend:/usr/src/frontend/app:delegated"
+      - "./frontend/package.json:/usr/src/frontend/package.json"
+      - "./frontend/yarn.lock:/usr/src/frontend/yarn.lock"
       - "/usr/src/frontend/app/node_modules"
     depends_on:
       - backend
@@ -35,7 +35,7 @@ services:
   backend:
     container_name: backend
     build:
-      context: ./splitiv-fastify
+      context: ./backend
       target: ${NODE_ENV}
       args:
         - "NODE_ENV=${NODE_ENV}"
@@ -45,9 +45,9 @@ services:
       - '${SERVER_PORT_FORWARD}:${SERVER_PORT}'
     restart: unless-stopped
     volumes:
-      - "./splitiv-fastify:/usr/src/backend/app:delegated"
-      - "./splitiv-fastify/package.json:/usr/src/backend/package.json"
-      - "./splitiv-fastify/yarn.lock:/usr/src/backend/yarn.lock"
+      - "./backend:/usr/src/backend/app:delegated"
+      - "./backend/package.json:/usr/src/backend/package.json"
+      - "./backend/yarn.lock:/usr/src/backend/yarn.lock"
       - "/usr/src/backend/app/node_modules"
     depends_on:
       - postgres

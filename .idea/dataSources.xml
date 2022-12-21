@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/splitiv</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="splitiv@80.211.249.104" uuid="31b4edc0-be09-41a6-a5bc-84c66fe521dd">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://80.211.249.104:5432/splitiv</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

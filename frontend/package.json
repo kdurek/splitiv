@@ -1,5 +1,5 @@
 {
-  "name": "splitiv-frontend",
+  "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "prepare": "cd .. && husky install splitiv-frontend/.husky",
+    "prepare": "cd .. && husky install frontend/.husky",
     "start:development": "vite --host 0.0.0.0",
     "start:production": "vite --host 0.0.0.0"
   },

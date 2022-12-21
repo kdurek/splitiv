@@ -1,5 +1,5 @@
 {
-  "name": "splitiv-fastify",
+  "name": "backend",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -7,7 +7,7 @@
     "start": "node ./dist/index.js",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "lint:fix": "eslint --fix 'src/**/*.{js,ts}'",
-    "prepare": "cd .. && husky install splitiv-fastify/.husky",
+    "prepare": "cd .. && husky install backend/.husky",
     "start:development": "nodemon",
     "start:production": "node ./dist/index.js"
   },

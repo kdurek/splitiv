@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "@backend/*": ["../../splitiv-fastify/*"]
+      "@backend/*": ["../../backend/*"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,

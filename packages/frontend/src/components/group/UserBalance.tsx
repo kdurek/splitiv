@@ -1,4 +1,15 @@
-import { Avatar, Box, HStack, Stack, Text } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Avatar,
+  Box,
+  HStack,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 
 import { Debt } from "types";
 import { GetGroupById, GetUsers } from "utils/trpc";
@@ -45,29 +56,29 @@ function UserBalance({ group }: { group: GetGroupById }) {
   if (!group?.members) return null;
 
   return (
-    <Stack spacing={4}>
+    <Accordion allowToggle>
       {group.members.map((member) => (
-        <Stack
-          key={member.id}
-          justifyContent="space-between"
-          spacing={4}
-          direction={["column", "row"]}
-        >
-          <HStack>
-            <Avatar src={member.picture} />
-            <Box ml="3">
-              <Text fontWeight="bold">{member.name}</Text>
-              <Text fontSize="sm">{member.balance} zł</Text>
-            </Box>
-          </HStack>
-          <UserDebts
-            member={member}
-            members={group.members}
-            debts={group.debts}
-          />
-        </Stack>
+        <AccordionItem key={member.id} border="none">
+          <AccordionButton px={2}>
+            <HStack textAlign="start">
+              <Avatar src={member.picture} />
+              <Box>
+                <Text fontWeight="bold">{member.name}</Text>
+                <Text fontSize="sm">{member.balance} zł</Text>
+              </Box>
+            </HStack>
+            <AccordionIcon ml="auto" />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            <UserDebts
+              member={member}
+              members={group.members}
+              debts={group.debts}
+            />
+          </AccordionPanel>
+        </AccordionItem>
       ))}
-    </Stack>
+    </Accordion>
   );
 }
 

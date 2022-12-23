@@ -1,44 +1,25 @@
 import {
   Box,
-  Button,
   FormControl,
   FormLabel,
   Input,
   InputGroup,
   InputLeftAddon,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   NumberInput,
   NumberInputField,
   Select,
   Stack,
   StackDivider,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { PLN } from "@dinero.js/currencies";
 import { allocate, toDecimal } from "dinero.js";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 import MethodTabs from "components/expense/CreateExpenseModal/MethodTabs";
+import FormModal from "components/FormModal";
 import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
 import { dineroFromString } from "utils/dinero";
-import { GetUsers } from "utils/trpc";
-
-interface CreateExpenseFormProps {
-  groupId: string | undefined;
-  members: GetUsers;
-  onClose: () => void;
-}
+import { GetGroupById } from "utils/trpc";
 
 interface CreateExpenseFormValues {
   name: string;
@@ -66,17 +47,44 @@ interface CreateExpenseFormValues {
   }[];
 }
 
-function CreateExpenseForm({
-  groupId,
-  members,
-  onClose,
-}: CreateExpenseFormProps) {
-  const { register, reset, handleSubmit } =
-    useFormContext<CreateExpenseFormValues>();
+interface CreateExpenseModalProps {
+  group: GetGroupById;
+}
+
+function CreateExpenseModal({ group }: CreateExpenseModalProps) {
+  const equalDefaults = group?.members.map((member) => ({
+    id: member.id,
+    name: member.name,
+    check: false,
+  }));
+
+  const unequalDefaults = group?.members.map((member) => ({
+    id: member.id,
+    name: member.name,
+    owed: "",
+  }));
+
+  const ratioDefaults = group?.members.map((member) => ({
+    id: member.id,
+    name: member.name,
+    ratio: 0,
+  }));
+
+  const methods = useForm<CreateExpenseFormValues>({
+    defaultValues: {
+      amount: "",
+      method: "equal",
+      equal: equalDefaults,
+      unequal: unequalDefaults,
+      ratio: ratioDefaults,
+    },
+  });
+
+  const { register } = methods;
   const { mutate: createGroupExpense } = useCreateGroupExpense();
 
   const onSubmit: SubmitHandler<CreateExpenseFormValues> = (values) => {
-    if (!groupId) {
+    if (!group?.id) {
       throw new Error("groupId not defined");
     }
 
@@ -96,9 +104,7 @@ function CreateExpenseForm({
             };
           });
 
-        onClose();
-        reset();
-        return createGroupExpense({ groupId, name, amount, users });
+        return createGroupExpense({ groupId: group.id, name, amount, users });
       }
 
       case "unequal": {
@@ -114,9 +120,7 @@ function CreateExpenseForm({
             };
           });
 
-        onClose();
-        reset();
-        return createGroupExpense({ groupId, name, amount, users });
+        return createGroupExpense({ groupId: group.id, name, amount, users });
       }
 
       case "ratio": {
@@ -140,22 +144,24 @@ function CreateExpenseForm({
           };
         });
 
-        onClose();
-        reset();
-        return createGroupExpense({ groupId, name, amount, users });
+        return createGroupExpense({ groupId: group.id, name, amount, users });
       }
 
       default: {
-        onClose();
-        reset();
+        return null;
       }
     }
-
-    return null;
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="create-expense">
+    <FormModal<CreateExpenseFormValues>
+      modalButtonText="Dodaj wydatek"
+      headerText="Dodawanie wydatku"
+      cancelButtonText="Anuluj"
+      submitButtonText="Dodaj"
+      methods={methods}
+      onSubmit={onSubmit}
+    >
       <FormControl>
         <Stack
           divider={<StackDivider />}
@@ -200,7 +206,7 @@ function CreateExpenseForm({
                   required: "Pole jest wymagane",
                 })}
               >
-                {members.map((user) => (
+                {group?.members.map((user) => (
                   <option key={user.id} value={user.id}>
                     {user.name}
                   </option>
@@ -213,79 +219,7 @@ function CreateExpenseForm({
           </Box>
         </Stack>
       </FormControl>
-    </form>
-  );
-}
-
-interface CreateExpenseModalProps {
-  groupId: string | undefined;
-  members: GetUsers;
-}
-
-function CreateExpenseModal({ groupId, members }: CreateExpenseModalProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const equalDefaults = members.map((member) => ({
-    id: member.id,
-    name: member.name,
-    check: false,
-  }));
-
-  const unequalDefaults = members.map((member) => ({
-    id: member.id,
-    name: member.name,
-    owed: "",
-  }));
-
-  const ratioDefaults = members.map((member) => ({
-    id: member.id,
-    name: member.name,
-    ratio: 0,
-  }));
-
-  const methods = useForm<CreateExpenseFormValues>({
-    defaultValues: {
-      amount: "",
-      method: "equal",
-      equal: equalDefaults,
-      unequal: unequalDefaults,
-      ratio: ratioDefaults,
-    },
-  });
-
-  return (
-    <>
-      <Button onClick={onOpen}>Dodaj wydatek</Button>
-
-      <Modal isOpen={isOpen} onClose={onClose} size={["full", "2xl"]}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Stwórz wydatek</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormProvider {...methods}>
-              <CreateExpenseForm
-                groupId={groupId}
-                members={members}
-                onClose={onClose}
-              />
-            </FormProvider>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Anuluj</Button>
-            <Button
-              type="submit"
-              form="create-expense"
-              isLoading={methods.formState.isSubmitting}
-              colorScheme="blue"
-              ml={4}
-            >
-              Stwórz
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+    </FormModal>
   );
 }
 

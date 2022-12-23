@@ -39,12 +39,8 @@ function Group() {
               />
             </HStack>
             <UserBalance group={group} />
-            <CreateExpenseModal groupId={groupId} members={group.members} />
-            <CreatePaymentModal
-              groupId={groupId}
-              members={group.members}
-              debts={group.debts}
-            />
+            <CreateExpenseModal group={group} />
+            <CreatePaymentModal group={group} />
           </Stack>
         )}
       </Skeleton>

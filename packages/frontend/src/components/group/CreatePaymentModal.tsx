@@ -1,42 +1,21 @@
 import {
   Box,
-  Button,
   FormControl,
   FormLabel,
   Input,
   InputGroup,
   InputLeftAddon,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   NumberInput,
   NumberInputField,
   Select,
   Stack,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 
+import FormModal from "components/FormModal";
 import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
-import { Debt } from "types";
-import { GetUsers } from "utils/trpc";
-
-interface CreatePaymentFormProps {
-  groupId: string | undefined;
-  members: GetUsers;
-  debts: Debt[];
-  onClose: () => void;
-}
+import { GetGroupById } from "utils/trpc";
 
 interface CreatePaymentFormValues {
   name: string;
@@ -45,28 +24,30 @@ interface CreatePaymentFormValues {
   ower: string;
 }
 
-function CreatePaymentForm({
-  groupId,
-  members,
-  debts,
-  onClose,
-}: CreatePaymentFormProps) {
+interface CreatePaymentModalProps {
+  group: GetGroupById;
+}
+
+function CreatePaymentModal({ group }: CreatePaymentModalProps) {
+  const methods = useForm<CreatePaymentFormValues>({
+    defaultValues: { name: "Płatność" },
+  });
+
   const { mutate: createGroupExpense } = useCreateGroupExpense();
 
-  const { register, reset, getValues, setValue, handleSubmit } =
-    useFormContext<CreatePaymentFormValues>();
+  const { register, getValues, setValue } = methods;
 
   useEffect(() => {
-    const firstDebtFound = debts?.[0];
+    const firstDebtFound = group?.debts?.[0];
     if (firstDebtFound) {
       setValue("ower", firstDebtFound.fromId);
       setValue("payer", firstDebtFound.toId);
       setValue("amount", firstDebtFound.amount);
     }
-  }, [debts, setValue]);
+  }, [group?.debts, setValue]);
 
   const onSubmit: SubmitHandler<CreatePaymentFormValues> = (values) => {
-    if (!groupId) {
+    if (!group?.id) {
       throw new Error("groupId not defined");
     }
 
@@ -85,13 +66,18 @@ function CreatePaymentForm({
       },
     ];
 
-    onClose();
-    reset();
-    return createGroupExpense({ groupId, name, amount, type, users });
+    createGroupExpense({ groupId: group.id, name, amount, type, users });
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="create-payment">
+    <FormModal<CreatePaymentFormValues>
+      modalButtonText="Dodaj płatność"
+      headerText="Dodawanie płatności"
+      cancelButtonText="Anuluj"
+      submitButtonText="Dodaj"
+      methods={methods}
+      onSubmit={onSubmit}
+    >
       <FormControl>
         <Stack>
           <Box>
@@ -132,7 +118,7 @@ function CreatePaymentForm({
                 validate: (v) => getValues("payer") !== v,
               })}
             >
-              {members.map((user) => (
+              {group?.members.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name}
                 </option>
@@ -147,7 +133,7 @@ function CreatePaymentForm({
                 validate: (v) => getValues("ower") !== v,
               })}
             >
-              {members.map((user) => (
+              {group?.members.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name}
                 </option>
@@ -156,62 +142,7 @@ function CreatePaymentForm({
           </Box>
         </Stack>
       </FormControl>
-    </form>
-  );
-}
-
-interface CreatePaymentModalProps {
-  groupId: string | undefined;
-  members: GetUsers;
-  debts: Debt[];
-}
-
-function CreatePaymentModal({
-  groupId,
-  members,
-  debts,
-}: CreatePaymentModalProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const methods = useForm<CreatePaymentFormValues>({
-    defaultValues: { name: "Płatność" },
-  });
-
-  if (!groupId || !members || !debts) return null;
-
-  return (
-    <>
-      <Button onClick={onOpen}>Dodaj płatność</Button>
-
-      <Modal isOpen={isOpen} onClose={onClose} size={["full", "2xl"]}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Stwórz płatność</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormProvider {...methods}>
-              <CreatePaymentForm
-                groupId={groupId}
-                members={members}
-                debts={debts}
-                onClose={onClose}
-              />
-            </FormProvider>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Anuluj</Button>
-            <Button
-              type="submit"
-              form="create-payment"
-              isLoading={methods.formState.isSubmitting}
-              colorScheme="blue"
-              ml={4}
-            >
-              Stwórz
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+    </FormModal>
   );
 }
 

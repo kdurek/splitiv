@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { IconReportMoney } from "@tabler/icons";
 
+import UpdateExpenseModal from "components/group/UpdateExpenseModal";
 import { GetExpensesByGroup } from "utils/trpc";
 
 interface ExpenseCardProps {
@@ -34,18 +35,21 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
         </Text>
       </AccordionButton>
       <AccordionPanel pb={4}>
-        <Stack>
-          {payers.map((user) => (
-            <Text
-              key={user.id}
-            >{`${user.user.givenName} zapłacił/a ${user.paid} zł`}</Text>
-          ))}
-          {owers.map((user) => (
-            <Text
-              key={user.id}
-              pl={4}
-            >{`${user.user.givenName} pożyczył/a ${user.owed} zł`}</Text>
-          ))}
+        <Stack gap={2}>
+          <Stack>
+            {payers.map((user) => (
+              <Text
+                key={user.id}
+              >{`${user.user.givenName} zapłacił/a ${user.paid} zł`}</Text>
+            ))}
+            {owers.map((user) => (
+              <Text
+                key={user.id}
+                pl={4}
+              >{`${user.user.givenName} pożyczył/a ${user.owed} zł`}</Text>
+            ))}
+          </Stack>
+          <UpdateExpenseModal expense={expense} />
         </Stack>
       </AccordionPanel>
     </AccordionItem>

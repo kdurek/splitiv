@@ -168,6 +168,24 @@ export const groupsRouter = router({
       });
     }),
 
+  updateExpense: protectedProcedure
+    .input(
+      z.object({
+        expenseId: z.string(),
+        name: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.expense.update({
+        where: {
+          id: input.expenseId,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+    }),
+
   deleteExpense: protectedProcedure
     .input(z.object({ expenseId: z.string() }))
     .mutation(async ({ input, ctx }) => {

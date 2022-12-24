@@ -5,7 +5,7 @@ function useGroupExpenses(groupId: string | undefined) {
     throw new Error("groupId not defined");
   }
 
-  return trpc.groups.getExpensesByGroup.useQuery(
+  return trpc.expenses.getExpensesByGroup.useQuery(
     { groupId },
     { enabled: Boolean(groupId) }
   );

@@ -28,7 +28,7 @@ function PaymentCard({ expense, members }: PaymentCardProps) {
         <Box flex="1" textAlign="left">
           <HStack spacing={2}>
             <Icon as={IconCash} boxSize={8} />
-            <Text fontSize="md" fontWeight="light" noOfLines={1}>
+            <Text fontSize="md" fontWeight="light">
               {`${paymentToUser} zapłacił/a ${paymentFromUser}`}
             </Text>
           </HStack>

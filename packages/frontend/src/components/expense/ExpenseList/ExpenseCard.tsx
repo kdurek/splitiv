@@ -26,9 +26,7 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
         <Box flex="1" textAlign="left">
           <HStack spacing={2}>
             <Icon as={IconReportMoney} boxSize={8} />
-            <Text fontWeight="bold" noOfLines={1}>
-              {expense.name}
-            </Text>
+            <Text fontWeight="bold">{expense.name}</Text>
           </HStack>
         </Box>
         <Text ml={2} fontWeight="bold">

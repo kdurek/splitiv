@@ -13,15 +13,16 @@ import Layout from "components/Layout/Layout";
 const authContext = createContext<{ token?: string }>({});
 
 const useProvideAuth = () => {
-  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } =
-    useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
   const [token, setToken] = useState<string>();
 
   useEffect(() => {
-    getAccessTokenSilently().then((accessToken) => {
-      setToken(accessToken);
-    });
-  }, [getAccessTokenSilently, isAuthenticated, loginWithRedirect]);
+    if (isAuthenticated) {
+      getAccessTokenSilently().then((accessToken) => {
+        setToken(accessToken);
+      });
+    }
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   return { token };
 };

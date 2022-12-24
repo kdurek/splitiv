@@ -1,7 +1,7 @@
 import { trpc } from "utils/trpc";
 
 function useUsers() {
-  return trpc.users.getUsers.useQuery();
+  return trpc.user.getUsers.useQuery();
 }
 
 export { useUsers };

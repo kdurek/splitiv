@@ -3,7 +3,7 @@ import { z } from "zod";
 import { generateDebts } from "../../utils/generateDebts";
 import { protectedProcedure, router } from "../trpc";
 
-export const expensesRouter = router({
+export const expenseRouter = router({
   getExpensesByGroup: protectedProcedure
     .input(z.object({ groupId: z.string() }))
     .query(async ({ input, ctx }) => {

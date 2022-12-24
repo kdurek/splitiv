@@ -1,12 +1,12 @@
-import { expensesRouter } from "./routers/expenses";
-import { groupsRouter } from "./routers/groups";
-import { usersRouter } from "./routers/users";
+import { expenseRouter } from "./routers/expense";
+import { groupRouter } from "./routers/group";
+import { userRouter } from "./routers/user";
 import { router } from "./trpc";
 
 export const appRouter = router({
-  expenses: expensesRouter,
-  groups: groupsRouter,
-  users: usersRouter,
+  expense: expenseRouter,
+  group: groupRouter,
+  user: userRouter,
 });
 
 export type AppRouter = typeof appRouter;

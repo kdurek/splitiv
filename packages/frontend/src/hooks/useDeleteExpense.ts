@@ -3,10 +3,10 @@ import { trpc } from "utils/trpc";
 function useDeleteExpense() {
   const utils = trpc.useContext();
 
-  return trpc.expenses.deleteExpense.useMutation({
+  return trpc.expense.deleteExpense.useMutation({
     onSuccess(input) {
-      utils.groups.getGroupById.invalidate({ groupId: input.groupId });
-      utils.expenses.getExpensesByGroup.invalidate({
+      utils.group.getGroupById.invalidate({ groupId: input.groupId });
+      utils.expense.getExpensesByGroup.invalidate({
         groupId: input.groupId,
       });
     },

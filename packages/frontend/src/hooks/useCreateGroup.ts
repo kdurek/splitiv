@@ -3,9 +3,9 @@ import { trpc } from "utils/trpc";
 function useCreateGroup() {
   const utils = trpc.useContext();
 
-  return trpc.groups.createGroup.useMutation({
+  return trpc.group.createGroup.useMutation({
     onSuccess() {
-      utils.groups.getGroupsByMe.invalidate();
+      utils.group.getGroupsByMe.invalidate();
     },
   });
 }

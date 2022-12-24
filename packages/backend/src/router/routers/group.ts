@@ -5,7 +5,7 @@ import { generateBalances } from "../../utils/generateBalances";
 import { generateDebts } from "../../utils/generateDebts";
 import { protectedProcedure, router } from "../trpc";
 
-export const groupsRouter = router({
+export const groupRouter = router({
   createGroup: protectedProcedure
     .input(z.object({ name: z.string() }))
     .mutation(({ input, ctx }) => {

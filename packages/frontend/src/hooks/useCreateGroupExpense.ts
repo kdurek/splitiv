@@ -3,10 +3,10 @@ import { trpc } from "utils/trpc";
 function useCreateGroupExpense() {
   const utils = trpc.useContext();
 
-  return trpc.expenses.createExpense.useMutation({
+  return trpc.expense.createExpense.useMutation({
     onSuccess(input) {
-      utils.groups.getGroupById.invalidate({ groupId: input.groupId });
-      utils.expenses.getExpensesByGroup.invalidate({
+      utils.group.getGroupById.invalidate({ groupId: input.groupId });
+      utils.expense.getExpensesByGroup.invalidate({
         groupId: input.groupId,
       });
     },

@@ -5,7 +5,7 @@ function useGroup(groupId: string | undefined) {
     throw new Error("groupId not defined");
   }
 
-  return trpc.groups.getGroupById.useQuery(
+  return trpc.group.getGroupById.useQuery(
     { groupId },
     {
       enabled: Boolean(groupId),

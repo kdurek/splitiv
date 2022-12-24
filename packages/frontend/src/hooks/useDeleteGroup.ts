@@ -3,9 +3,9 @@ import { trpc } from "utils/trpc";
 function useDeleteGroup() {
   const utils = trpc.useContext();
 
-  return trpc.groups.deleteGroupById.useMutation({
+  return trpc.group.deleteGroupById.useMutation({
     onSuccess() {
-      utils.groups.getGroupsByMe.invalidate();
+      utils.group.getGroupsByMe.invalidate();
     },
   });
 }

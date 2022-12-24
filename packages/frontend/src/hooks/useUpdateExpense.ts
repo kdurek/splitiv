@@ -3,9 +3,9 @@ import { trpc } from "utils/trpc";
 function useUpdateGroupExpense() {
   const utils = trpc.useContext();
 
-  return trpc.expenses.updateExpense.useMutation({
+  return trpc.expense.updateExpense.useMutation({
     onSuccess() {
-      utils.expenses.getExpensesByGroup.invalidate();
+      utils.expense.getExpensesByGroup.invalidate();
     },
   });
 }

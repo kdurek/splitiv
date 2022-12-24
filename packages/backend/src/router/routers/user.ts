@@ -1,6 +1,6 @@
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
-export const usersRouter = router({
+export const userRouter = router({
   getCurrentUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
       where: { sub: ctx.user.sub },

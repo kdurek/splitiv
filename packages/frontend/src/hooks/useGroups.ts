@@ -1,7 +1,7 @@
 import { trpc } from "utils/trpc";
 
 function useGroups() {
-  return trpc.groups.getGroupsByMe.useQuery();
+  return trpc.group.getGroupsByMe.useQuery();
 }
 
 export { useGroups };

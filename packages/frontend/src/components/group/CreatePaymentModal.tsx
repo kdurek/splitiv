@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import FormModal from "components/FormModal";
-import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
+import { useCreateExpense } from "hooks/useCreateExpense";
 import { GetGroupById } from "utils/trpc";
 
 interface CreatePaymentFormValues {
@@ -33,7 +33,7 @@ function CreatePaymentModal({ group }: CreatePaymentModalProps) {
     defaultValues: { name: "Płatność" },
   });
 
-  const { mutate: createGroupExpense } = useCreateGroupExpense();
+  const { mutate: createExpense } = useCreateExpense();
 
   const { register, getValues, setValue } = methods;
 
@@ -66,7 +66,7 @@ function CreatePaymentModal({ group }: CreatePaymentModalProps) {
       },
     ];
 
-    createGroupExpense({ groupId: group.id, name, amount, type, users });
+    createExpense({ groupId: group.id, name, amount, type, users });
   };
 
   return (

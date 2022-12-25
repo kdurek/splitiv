@@ -1,6 +1,6 @@
 import { trpc } from "utils/trpc";
 
-function useGroupExpenses(groupId: string | undefined) {
+function useExpenses(groupId: string | undefined) {
   if (!groupId) {
     throw new Error("groupId not defined");
   }
@@ -11,4 +11,4 @@ function useGroupExpenses(groupId: string | undefined) {
   );
 }
 
-export { useGroupExpenses };
+export { useExpenses };

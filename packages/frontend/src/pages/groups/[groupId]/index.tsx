@@ -6,15 +6,14 @@ import CreateExpenseModal from "components/expense/CreateExpenseModal/CreateExpe
 import ExpenseList from "components/expense/ExpenseList/ExpenseList";
 import CreatePaymentModal from "components/group/CreatePaymentModal";
 import UserBalance from "components/group/UserBalance";
+import { useExpenses } from "hooks/useExpenses";
 import { useGroup } from "hooks/useGroup";
-import { useGroupExpenses } from "hooks/useGroupExpenses";
 
 function Group() {
   const { groupId } = useParams();
   const navigate = useNavigate();
   const { data: group, isSuccess: isSuccessGroup } = useGroup(groupId);
-  const { data: expenses, isSuccess: isSuccessGroupExpenses } =
-    useGroupExpenses(groupId);
+  const { data: expenses, isSuccess: isSuccessExpenses } = useExpenses(groupId);
 
   return (
     <Stack spacing={4}>
@@ -44,7 +43,7 @@ function Group() {
           </Stack>
         )}
       </Skeleton>
-      <Skeleton isLoaded={isSuccessGroup && isSuccessGroupExpenses}>
+      <Skeleton isLoaded={isSuccessGroup && isSuccessExpenses}>
         {group && expenses && (
           <ExpenseList
             groupId={groupId}

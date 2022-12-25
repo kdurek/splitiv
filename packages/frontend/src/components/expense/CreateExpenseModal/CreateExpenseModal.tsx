@@ -17,7 +17,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import MethodTabs from "components/expense/CreateExpenseModal/MethodTabs";
 import FormModal from "components/FormModal";
-import { useCreateGroupExpense } from "hooks/useCreateGroupExpense";
+import { useCreateExpense } from "hooks/useCreateExpense";
 import { dineroFromString } from "utils/dinero";
 import { GetGroupById } from "utils/trpc";
 
@@ -81,7 +81,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
   });
 
   const { register } = methods;
-  const { mutate: createGroupExpense } = useCreateGroupExpense();
+  const { mutate: createExpense } = useCreateExpense();
 
   const onSubmit: SubmitHandler<CreateExpenseFormValues> = (values) => {
     if (!group?.id) {
@@ -104,7 +104,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
             };
           });
 
-        return createGroupExpense({ groupId: group.id, name, amount, users });
+        return createExpense({ groupId: group.id, name, amount, users });
       }
 
       case "unequal": {
@@ -120,7 +120,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
             };
           });
 
-        return createGroupExpense({ groupId: group.id, name, amount, users });
+        return createExpense({ groupId: group.id, name, amount, users });
       }
 
       case "ratio": {
@@ -144,7 +144,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
           };
         });
 
-        return createGroupExpense({ groupId: group.id, name, amount, users });
+        return createExpense({ groupId: group.id, name, amount, users });
       }
 
       default: {

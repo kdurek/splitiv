@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import FormModal from "components/FormModal";
 import { GetExpensesByGroup } from "utils/trpc";
 
-import { useUpdateGroupExpense } from "../../hooks/useUpdateExpense";
+import { useUpdateExpense } from "../../hooks/useUpdateExpense";
 
 interface UpdateExpenseFormValues {
   name: string;
@@ -20,7 +20,7 @@ function UpdateExpenseModal({ expense }: UpdateExpenseModalProps) {
     defaultValues: { name: "Płatność" },
   });
 
-  const { mutate: updateGroupExpense } = useUpdateGroupExpense();
+  const { mutate: updateExpense } = useUpdateExpense();
 
   const { register, setValue } = methods;
 
@@ -35,7 +35,7 @@ function UpdateExpenseModal({ expense }: UpdateExpenseModalProps) {
 
     const { name } = values;
 
-    updateGroupExpense({ expenseId: expense.id, name });
+    updateExpense({ expenseId: expense.id, name });
   };
 
   return (

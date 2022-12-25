@@ -1,6 +1,6 @@
 import { trpc } from "utils/trpc";
 
-function useCreateGroupExpense() {
+function useCreateExpense() {
   const utils = trpc.useContext();
 
   return trpc.expense.createExpense.useMutation({
@@ -13,4 +13,4 @@ function useCreateGroupExpense() {
   });
 }
 
-export { useCreateGroupExpense };
+export { useCreateExpense };

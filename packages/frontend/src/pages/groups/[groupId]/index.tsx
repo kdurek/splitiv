@@ -43,14 +43,8 @@ function Group() {
           </Stack>
         )}
       </Skeleton>
-      <Skeleton isLoaded={isSuccessGroup && isSuccessExpenses}>
-        {group && expenses && (
-          <ExpenseList
-            groupId={groupId}
-            expenses={expenses}
-            members={group.members}
-          />
-        )}
+      <Skeleton isLoaded={isSuccessExpenses}>
+        {expenses && <ExpenseList expenses={expenses} />}
       </Skeleton>
     </Stack>
   );

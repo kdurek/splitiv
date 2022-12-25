@@ -8,17 +8,16 @@ import {
 } from "@chakra-ui/react";
 import { IconCash } from "@tabler/icons";
 
-import { GetExpensesByGroup, GetUsers } from "utils/trpc";
+import { GetExpensesByGroup } from "utils/trpc";
 
 interface PaymentCardProps {
   expense: GetExpensesByGroup[number];
-  members: GetUsers;
 }
 
-function PaymentCard({ expense, members }: PaymentCardProps) {
+function PaymentCard({ expense }: PaymentCardProps) {
   const { amount, fromId, toId } = expense.repayments[0];
   const getUserNickname = (userId: string) =>
-    members.find((user) => user.id === userId)?.givenName;
+    expense.users.find((user) => user.userId === userId)?.user.givenName;
   const paymentFromUser = getUserNickname(fromId);
   const paymentToUser = getUserNickname(toId);
 

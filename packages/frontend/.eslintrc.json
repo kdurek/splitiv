@@ -34,6 +34,7 @@
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
+    "no-restricted-exports": "off",
     "import/prefer-default-export": "off",
     //    "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/no-explicit-any": "error",

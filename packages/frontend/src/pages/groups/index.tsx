@@ -1,7 +1,7 @@
 import { HStack, Heading, Skeleton, Stack } from "@chakra-ui/react";
 
 import CreateGroupModal from "components/group/CreateGroupModal";
-import GroupList from "components/group/GroupList/GroupList";
+import GroupList from "components/group/GroupList";
 import { useGroups } from "hooks/useGroups";
 
 function Groups() {

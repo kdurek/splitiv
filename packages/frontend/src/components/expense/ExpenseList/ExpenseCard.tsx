@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { IconReportMoney } from "@tabler/icons";
 
-import UpdateExpenseModal from "components/group/UpdateExpenseModal";
+import UpdateExpenseModal from "components/expense/UpdateExpenseModal";
 import { GetExpensesByGroup } from "utils/trpc";
 
 interface ExpenseCardProps {

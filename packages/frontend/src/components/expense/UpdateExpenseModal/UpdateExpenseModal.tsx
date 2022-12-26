@@ -3,9 +3,8 @@ import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import FormModal from "components/FormModal";
+import { useUpdateExpense } from "hooks/useUpdateExpense";
 import { GetExpensesByGroup } from "utils/trpc";
-
-import { useUpdateExpense } from "../../hooks/useUpdateExpense";
 
 interface UpdateExpenseFormValues {
   name: string;

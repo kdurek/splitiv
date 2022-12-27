@@ -4,6 +4,7 @@ import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 
+import { ActiveGroupProvider } from "providers/ActiveGroupProvider";
 import { AuthProvider } from "providers/AuthProvider";
 import { QueryProvider } from "providers/QueryProvider";
 
@@ -24,7 +25,9 @@ function App() {
     >
       <ChakraProvider>
         <AuthProvider>
-          <QueryProvider>{useRoutes(routes)}</QueryProvider>
+          <QueryProvider>
+            <ActiveGroupProvider>{useRoutes(routes)}</ActiveGroupProvider>
+          </QueryProvider>
         </AuthProvider>
       </ChakraProvider>
     </Auth0Provider>

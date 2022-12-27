@@ -24,7 +24,7 @@ function GroupListItem({ group }: GroupListProps) {
       <Card>
         <CardBody>
           <Text fontSize="xl">
-            <LinkOverlay as={RouterLink} to={`/groups/${group.id}`}>
+            <LinkOverlay as={RouterLink} to={`/grupy/${group.id}/ustawienia`}>
               {group.name}
             </LinkOverlay>
           </Text>

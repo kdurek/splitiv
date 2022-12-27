@@ -11,7 +11,9 @@ function Index() {
       {user && (
         <VStack>
           <Heading>Witaj {user.name}</Heading>
-          <Button onClick={() => navigate("/groups")}>Przeglądaj grupy</Button>
+          <Button onClick={() => navigate("/wydatki")}>
+            Przeglądaj wydatki
+          </Button>
         </VStack>
       )}
     </Skeleton>

@@ -12,8 +12,12 @@ import { Link as RouterLink } from "react-router-dom";
 
 const NAV_ITEMS = [
   {
-    label: "Grupy",
-    href: "/groups",
+    label: "Wydatki",
+    href: "/wydatki",
+  },
+  {
+    label: "Ustawienia grupy",
+    href: "/ustawienia-grupy",
   },
 ];
 

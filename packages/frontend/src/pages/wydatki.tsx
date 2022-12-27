@@ -1,6 +1,4 @@
-import { HStack, Heading, IconButton, Skeleton, Stack } from "@chakra-ui/react";
-import { IconSettings } from "@tabler/icons";
-import { useNavigate } from "react-router";
+import { Divider, Heading, Skeleton, Stack } from "@chakra-ui/react";
 
 import CreateExpenseModal from "components/expense/CreateExpenseModal";
 import CreatePaymentModal from "components/expense/CreatePaymentModal";
@@ -15,21 +13,12 @@ function Expenses() {
   const { activeGroupId: groupId } = useActiveGroup();
   const { data: group, isSuccess: isSuccessGroup } = useGroup(groupId);
   const { data: expenses, isSuccess: isSuccessExpenses } = useExpenses(groupId);
-  const navigate = useNavigate();
 
   return (
     <Stack spacing={4}>
       <Heading>Wydatki</Heading>
-      <HStack justify="space-between">
-        <GroupSelect />
-        <IconButton
-          variant="outline"
-          size="lg"
-          aria-label="Group settings"
-          icon={<IconSettings />}
-          onClick={() => navigate("/ustawienia-grupy")}
-        />
-      </HStack>
+      <GroupSelect />
+      <Divider />
       <Skeleton isLoaded={isSuccessGroup}>
         {group && (
           <Stack spacing={4}>

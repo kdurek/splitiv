@@ -1,4 +1,5 @@
 import {
+  Divider,
   Heading,
   ListItem,
   Skeleton,
@@ -21,6 +22,7 @@ function GroupSettings() {
     <Stack spacing={4}>
       <Heading>Ustawienia grupy</Heading>
       <GroupSelect />
+      <Divider />
       <Skeleton isLoaded={isSuccessGroup && isSuccessUsers}>
         {group && users && (
           <Stack spacing={2}>

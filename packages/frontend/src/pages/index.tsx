@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Button, Heading, Skeleton, VStack } from "@chakra-ui/react";
+import { Button, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
 
 function Index() {
@@ -9,12 +9,15 @@ function Index() {
   return (
     <Skeleton isLoaded={isAuthenticated}>
       {user && (
-        <VStack>
+        <Stack>
           <Heading>Witaj {user.name}</Heading>
           <Button onClick={() => navigate("/wydatki")}>
             Przeglądaj wydatki
           </Button>
-        </VStack>
+          <Button onClick={() => navigate("/zadania")}>
+            Przeglądaj zadania
+          </Button>
+        </Stack>
       )}
     </Skeleton>
   );

@@ -16,7 +16,6 @@ function GroupSelect() {
       onChange={handleSetActiveGroupId}
       value={activeGroupId}
       disabled={isLoadingGroups}
-      size="lg"
       variant="outline"
     >
       {groups?.map((group) => (

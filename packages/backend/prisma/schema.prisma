@@ -30,6 +30,7 @@ model Group {
   adminId   String
   members   UserGroups[]
   expenses  Expense[]
+  tasks     Task[]
 }
 
 model UserGroups {
@@ -62,5 +63,14 @@ model Expense {
   amount    String
   users     ExpenseUsers[]
   group     Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId   String
 }

@@ -16,6 +16,10 @@ const NAV_ITEMS = [
     href: "/wydatki",
   },
   {
+    label: "Zadania",
+    href: "/zadania",
+  },
+  {
     label: "Ustawienia grupy",
     href: "/ustawienia-grupy",
   },

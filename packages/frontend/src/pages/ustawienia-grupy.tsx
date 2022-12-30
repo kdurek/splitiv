@@ -1,11 +1,4 @@
-import {
-  Divider,
-  Heading,
-  ListItem,
-  Skeleton,
-  Stack,
-  UnorderedList,
-} from "@chakra-ui/react";
+import { List, Stack, Title } from "@mantine/core";
 
 import AddUserToGroupModal from "components/group/AddUserToGroupModal";
 import GroupSelect from "components/GroupSelect/GroupSelect";
@@ -15,33 +8,28 @@ import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 function GroupSettings() {
   const { activeGroupId: groupId } = useActiveGroup();
-  const { data: group, isSuccess: isSuccessGroup } = useGroup(groupId);
-  const { data: users, isSuccess: isSuccessUsers } = useUsers();
+  const { data: group } = useGroup(groupId);
+  const { data: users } = useUsers();
 
   return (
-    <Stack spacing={4}>
-      <Heading>Ustawienia grupy</Heading>
+    <Stack>
+      <Title order={1}>Ustawienia grupy</Title>
       <GroupSelect />
-      <Divider />
-      <Skeleton isLoaded={isSuccessGroup && isSuccessUsers}>
-        {group && users && (
-          <Stack spacing={2}>
-            <Heading as="h3" size="lg">
-              Członkowie
-            </Heading>
-            <UnorderedList stylePosition="inside">
-              {group.members.map((user) => (
-                <ListItem key={user.id}>{user.name}</ListItem>
-              ))}
-            </UnorderedList>
-            <AddUserToGroupModal
-              groupId={groupId}
-              members={group.members}
-              users={users}
-            />
-          </Stack>
-        )}
-      </Skeleton>
+      {group && users && (
+        <Stack>
+          <Title order={2}>Członkowie</Title>
+          <List>
+            {group.members.map((user) => (
+              <List.Item key={user.id}>{user.name}</List.Item>
+            ))}
+          </List>
+          <AddUserToGroupModal
+            groupId={groupId}
+            members={group.members}
+            users={users}
+          />
+        </Stack>
+      )}
     </Stack>
   );
 }

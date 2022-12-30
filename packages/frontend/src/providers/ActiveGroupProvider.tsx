@@ -1,18 +1,18 @@
+import { useLocalStorage } from "@mantine/hooks";
 import { ReactNode, createContext, useContext } from "react";
 
 import GroupSelectModal from "components/GroupSelect/GroupSelectModal";
-import { useLocalStorage } from "hooks/useLocalStorage";
 
 export const activeGroupContext = createContext<{
   activeGroupId: string;
   setActiveGroupId: (value: string | ((val: string) => string)) => void;
-}>({ activeGroupId: "", setActiveGroupId: () => {} });
+}>({ activeGroupId: "", setActiveGroupId: () => null });
 
 const useProvideActiveGroup = () => {
-  const [activeGroupId, setActiveGroupId] = useLocalStorage<string>(
-    "activeGroupId",
-    ""
-  );
+  const [activeGroupId, setActiveGroupId] = useLocalStorage<string>({
+    key: "activeGroupId",
+    defaultValue: "",
+  });
 
   return { activeGroupId, setActiveGroupId };
 };

@@ -1,7 +1,7 @@
-import { Box, FormControl, FormLabel, Select, Stack } from "@chakra-ui/react";
+import { Button, Group, Modal, NativeSelect, Paper } from "@mantine/core";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import FormModal from "components/FormModal";
 import { useAddUserToGroup } from "hooks/useAddUserToGroup";
 import { GetUsers } from "utils/trpc";
 
@@ -11,7 +11,7 @@ interface AddUserToGroupFormValues {
 }
 
 interface AddUserToGroupModalProps {
-  groupId: string | undefined;
+  groupId: string;
   members: GetUsers;
   users: GetUsers;
 }
@@ -21,52 +21,51 @@ function AddUserToGroupModal({
   members,
   users,
 }: AddUserToGroupModalProps) {
+  const [opened, setOpened] = useState(false);
   const { mutate: addUserToGroup } = useAddUserToGroup();
-  const methods = useForm<AddUserToGroupFormValues>({
+  const { handleSubmit, register, reset } = useForm<AddUserToGroupFormValues>({
     defaultValues: { name: "Płatność" },
   });
-  const { register } = methods;
 
   const onSubmit: SubmitHandler<AddUserToGroupFormValues> = (values) => {
-    if (!groupId) {
-      throw new Error("groupId not defined");
-    }
-
-    return addUserToGroup({ userId: values.user, groupId });
+    addUserToGroup({ userId: values.user, groupId });
+    reset();
+    setOpened(false);
   };
 
   const groupUsers = members.map((user) => user.id);
-  const usersNotInGroup = users.filter((user) => !groupUsers.includes(user.id));
+  const usersNotInGroup = users
+    .filter((user) => !groupUsers.includes(user.id))
+    .map((user) => ({ value: user.id, label: user.name }));
 
   return (
-    <FormModal<AddUserToGroupFormValues>
-      modalButtonText="Dodaj użytkownika"
-      headerText="Dodawanie użytkownika"
-      cancelButtonText="Anuluj"
-      submitButtonText="Dodaj"
-      methods={methods}
-      onSubmit={onSubmit}
-    >
-      <FormControl>
-        <Stack>
-          <Box>
-            <FormLabel htmlFor="user">Użytkownik</FormLabel>
-            <Select
-              {...register("user", {
-                required: "Pole jest wymagane",
-              })}
-              placeholder="Wybierz użytkownika"
-            >
-              {usersNotInGroup?.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Select>
-          </Box>
-        </Stack>
-      </FormControl>
-    </FormModal>
+    <>
+      <Button variant="default" onClick={() => setOpened(true)}>
+        Dodaj użytkownika
+      </Button>
+
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Dodawanie użytkownika"
+      >
+        <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
+          <NativeSelect
+            {...register("user", {
+              required: "Pole jest wymagane",
+            })}
+            data={usersNotInGroup}
+            label="Wybierz użytkownika"
+            withAsterisk
+          />
+          <Group mt={24} position="right">
+            <Button variant="default" type="submit">
+              Dodaj
+            </Button>
+          </Group>
+        </Paper>
+      </Modal>
+    </>
   );
 }
 

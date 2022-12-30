@@ -1,25 +1,22 @@
 import {
-  Box,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputLeftAddon,
+  Button,
+  Group,
+  Modal,
+  NativeSelect,
   NumberInput,
-  NumberInputField,
-  Select,
-  Stack,
-} from "@chakra-ui/react";
-import { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+  Paper,
+  TextInput,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
-import FormModal from "components/FormModal";
 import { useCreateExpense } from "hooks/useCreateExpense";
+import { useActiveGroup } from "providers/ActiveGroupProvider";
 import { GetGroupById } from "utils/trpc";
 
 interface CreatePaymentFormValues {
   name: string;
-  amount: string;
+  amount: number;
   payer: string;
   ower: string;
 }
@@ -29,29 +26,27 @@ interface CreatePaymentModalProps {
 }
 
 function CreatePaymentModal({ group }: CreatePaymentModalProps) {
-  const methods = useForm<CreatePaymentFormValues>({
-    defaultValues: { name: "Płatność" },
-  });
+  const { activeGroupId } = useActiveGroup();
+  const [opened, setOpened] = useState(false);
+  const { control, handleSubmit, register, reset, getValues, setValue } =
+    useForm<CreatePaymentFormValues>({
+      defaultValues: { name: "Płatność" },
+    });
 
   const { mutate: createExpense } = useCreateExpense();
-
-  const { register, getValues, setValue } = methods;
 
   useEffect(() => {
     const firstDebtFound = group?.debts?.[0];
     if (firstDebtFound) {
       setValue("ower", firstDebtFound.fromId);
       setValue("payer", firstDebtFound.toId);
-      setValue("amount", firstDebtFound.amount);
+      setValue("amount", parseFloat(firstDebtFound.amount));
     }
   }, [group?.debts, setValue]);
 
   const onSubmit: SubmitHandler<CreatePaymentFormValues> = (values) => {
-    if (!group?.id) {
-      throw new Error("groupId not defined");
-    }
-
-    const { name, amount, payer, ower } = values;
+    const { name, payer, ower } = values;
+    const amount = values.amount.toFixed(2);
     const type = "payment";
     const users = [
       {
@@ -66,23 +61,25 @@ function CreatePaymentModal({ group }: CreatePaymentModalProps) {
       },
     ];
 
-    createExpense({ groupId: group.id, name, amount, type, users });
+    createExpense({ groupId: activeGroupId, name, amount, type, users });
+    reset();
+    setOpened(false);
   };
 
   return (
-    <FormModal<CreatePaymentFormValues>
-      modalButtonText="Dodaj płatność"
-      headerText="Dodawanie płatności"
-      cancelButtonText="Anuluj"
-      submitButtonText="Dodaj"
-      methods={methods}
-      onSubmit={onSubmit}
-    >
-      <FormControl>
-        <Stack>
-          <Box>
-            <FormLabel htmlFor="name">Nazwa</FormLabel>
-            <Input
+    <>
+      <Button variant="default" onClick={() => setOpened(true)}>
+        Dodaj płatność
+      </Button>
+
+      {group && (
+        <Modal
+          opened={opened}
+          onClose={() => setOpened(false)}
+          title="Dodawanie płatności"
+        >
+          <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
+            <TextInput
               {...register("name", {
                 required: "Pole jest wymagane",
                 minLength: {
@@ -90,59 +87,59 @@ function CreatePaymentModal({ group }: CreatePaymentModalProps) {
                   message: "Minimum length should be 3",
                 },
               })}
+              label="Nazwa"
               placeholder="Wprowadź nazwę"
             />
-          </Box>
-          <Box>
-            <FormLabel htmlFor="amount">Kwota</FormLabel>
-            <InputGroup>
-              <InputLeftAddon pointerEvents="none">zł</InputLeftAddon>
-              <NumberInput precision={2} step={0.01} w="100%">
-                <NumberInputField
-                  {...register("amount", {
-                    required: "Pole jest wymagane",
-                    setValueAs: (v: string) =>
-                      v ? parseFloat(v).toFixed(2) : "",
-                  })}
-                  placeholder="0.00"
-                  borderLeftRadius={0}
+            <Controller
+              name="amount"
+              control={control}
+              rules={{
+                required: "Pole jest wymagane",
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  mt={16}
+                  decimalSeparator=","
+                  label="Kwota"
+                  defaultValue={0}
+                  min={0}
+                  precision={2}
+                  step={0.01}
                 />
-              </NumberInput>
-            </InputGroup>
-          </Box>
-          <Box>
-            <FormLabel htmlFor="ower">Od</FormLabel>
-            <Select
+              )}
+            />
+            <NativeSelect
               {...register("ower", {
                 required: "Pole jest wymagane",
                 validate: (v) => getValues("payer") !== v,
               })}
-            >
-              {group?.members.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Select>
-          </Box>
-          <Box>
-            <FormLabel htmlFor="payer">Dla</FormLabel>
-            <Select
+              mt={16}
+              label="Od"
+              data={group.members.map((user) => {
+                return { value: user.id, label: user.name };
+              })}
+            />
+            <NativeSelect
               {...register("payer", {
                 required: "Pole jest wymagane",
                 validate: (v) => getValues("ower") !== v,
               })}
-            >
-              {group?.members.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Select>
-          </Box>
-        </Stack>
-      </FormControl>
-    </FormModal>
+              mt={16}
+              label="Do"
+              data={group.members.map((user) => {
+                return { value: user.id, label: user.name };
+              })}
+            />
+            <Group mt={24} position="right">
+              <Button variant="default" type="submit">
+                Dodaj
+              </Button>
+            </Group>
+          </Paper>
+        </Modal>
+      )}
+    </>
   );
 }
 

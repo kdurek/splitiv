@@ -1,5 +1,10 @@
 import { Auth0Provider } from "@auth0/auth0-react";
-import { ChakraProvider } from "@chakra-ui/react";
+import {
+  ColorScheme,
+  ColorSchemeProvider,
+  MantineProvider,
+} from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
 import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes } from "react-router-dom";
@@ -13,6 +18,15 @@ import { QueryProvider } from "providers/QueryProvider";
 import routes from "~react-pages";
 
 function App() {
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: "mantine-color-scheme",
+    defaultValue: "light",
+    getInitialValueInEffect: true,
+  });
+
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
   return (
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
@@ -23,13 +37,22 @@ function App() {
       useRefreshTokens
       cacheLocation="localstorage"
     >
-      <ChakraProvider>
-        <AuthProvider>
-          <QueryProvider>
-            <ActiveGroupProvider>{useRoutes(routes)}</ActiveGroupProvider>
-          </QueryProvider>
-        </AuthProvider>
-      </ChakraProvider>
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
+      >
+        <MantineProvider
+          theme={{ colorScheme }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          <AuthProvider>
+            <QueryProvider>
+              <ActiveGroupProvider>{useRoutes(routes)}</ActiveGroupProvider>
+            </QueryProvider>
+          </AuthProvider>
+        </MantineProvider>
+      </ColorSchemeProvider>
     </Auth0Provider>
   );
 }

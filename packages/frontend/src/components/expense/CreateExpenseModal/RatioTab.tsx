@@ -1,18 +1,8 @@
-import {
-  FormLabel,
-  HStack,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { Group, NumberInput, Stack, Text } from "@mantine/core";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 interface RatioTabFormValues {
-  amount: string;
+  amount: number;
   ratio: {
     id: string;
     ratio: number;
@@ -24,7 +14,7 @@ interface RatioTabFormValues {
 }
 
 function RatioTab() {
-  const { register, control, watch } = useFormContext<RatioTabFormValues>();
+  const { control, watch } = useFormContext<RatioTabFormValues>();
   const ratioWatch = watch("ratio");
 
   const usersIdToSplit = ratioWatch
@@ -39,24 +29,26 @@ function RatioTab() {
 
   return (
     <Stack>
-      <FormLabel htmlFor="ratio">Podział według współczynnika</FormLabel>
-      {fields.map((field, index) => (
-        <HStack key={field.id}>
-          <Text w="full" whiteSpace="nowrap">
-            {field.name}
-          </Text>
-          <NumberInput w="100%" defaultValue={0} min={0}>
-            <NumberInputField
-              {...register(`ratio.${index}.ratio`, {
-                validate: () => usersIdToSplit.length > 0,
-              })}
-            />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </HStack>
+      <Text>Podział według współczynnika</Text>
+      {fields.map((fieldV, index) => (
+        <Group key={fieldV.id} grow position="apart">
+          <Text>{fieldV.name}</Text>
+          <Controller
+            name={`ratio.${index}.ratio`}
+            control={control}
+            rules={{
+              validate: () => usersIdToSplit.length > 0,
+            }}
+            render={({ field }) => (
+              <NumberInput
+                {...field}
+                decimalSeparator=","
+                defaultValue={0}
+                min={0}
+              />
+            )}
+          />
+        </Group>
       ))}
     </Stack>
   );

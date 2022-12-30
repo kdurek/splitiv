@@ -1,37 +1,26 @@
-import {
-  FormLabel,
-  HStack,
-  Heading,
-  InputGroup,
-  InputLeftAddon,
-  NumberInput,
-  NumberInputField,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { Group, NumberInput, Stack, Text } from "@mantine/core";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 interface UnequalTabFormValues {
-  amount: string;
+  amount: number;
   unequal: {
     id: string;
     paid: string;
-    owed: string;
+    owed: number;
     userId: string;
     name: string;
   }[];
 }
 
 function UnequalTab() {
-  const { register, control, watch } = useFormContext<UnequalTabFormValues>();
+  const { control, watch } = useFormContext<UnequalTabFormValues>();
   const amountWatch = watch("amount");
   const unequalWatch = watch("unequal");
-  const usedAmount = unequalWatch
-    .reduce((prev, curr) => prev + (parseFloat(curr.owed) || 0), 0)
-    .toFixed(2);
-  const remainingAmount = (
-    parseFloat(amountWatch) - parseFloat(usedAmount) || 0
-  ).toFixed(2);
+  const usedAmount = unequalWatch.reduce(
+    (prev, curr) => prev + (curr.owed || 0),
+    0
+  );
+  const remainingAmount = amountWatch - usedAmount || 0;
 
   const { fields } = useFieldArray({
     control,
@@ -41,13 +30,28 @@ function UnequalTab() {
 
   return (
     <Stack>
-      <FormLabel htmlFor="unequal">Podział na dokładne kwoty</FormLabel>
-      {fields.map((field, index) => (
-        <HStack key={field.id}>
-          <Text w="full">{field.name}</Text>
-          <InputGroup>
-            <InputLeftAddon pointerEvents="none">zł</InputLeftAddon>
-            <NumberInput precision={2} step={0.01}>
+      <Text>Podział na dokładne kwoty</Text>
+      {fields.map((fieldV, index) => (
+        <Group key={fieldV.id} grow position="apart">
+          <Text w="full">{fieldV.name}</Text>
+          <Controller
+            name={`unequal.${index}.owed`}
+            control={control}
+            rules={{
+              validate: () => usedAmount === amountWatch,
+            }}
+            render={({ field }) => (
+              <NumberInput
+                {...field}
+                decimalSeparator=","
+                defaultValue={0}
+                min={0}
+                precision={2}
+                step={0.01}
+              />
+            )}
+          />
+          {/* <NumberInput precision={2} step={0.01}>
               <NumberInputField
                 {...register(`unequal.${index}.owed`, {
                   setValueAs: (v: string) =>
@@ -57,13 +61,14 @@ function UnequalTab() {
                 placeholder="0.00"
                 borderLeftRadius={0}
               />
-            </NumberInput>
-          </InputGroup>
-        </HStack>
+            </NumberInput> */}
+        </Group>
       ))}
-      <Stack spacing={0} alignItems="end">
-        <Heading size="md">{`${usedAmount} zł`}</Heading>
-        <Text>{`${remainingAmount} zł do podziału`}</Text>
+      <Stack spacing={4} align="end">
+        <Text size={34} weight="bold">{`${usedAmount.toFixed(2)} zł`}</Text>
+        <Text weight="bold">{`${remainingAmount.toFixed(
+          2
+        )} zł do podziału`}</Text>
       </Stack>
     </Stack>
   );

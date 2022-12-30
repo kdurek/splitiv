@@ -1,9 +1,9 @@
-import { Checkbox, FormLabel, HStack, Stack, Text } from "@chakra-ui/react";
+import { Checkbox, Group, Stack, Text } from "@mantine/core";
 import { useEffect } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 interface EqualTabFormValues {
-  amount: string;
+  amount: number;
   equal: {
     id: string;
     check: boolean;
@@ -44,7 +44,7 @@ const getBalancedSplit = (amount = 0, users: string[] = []) => {
 function EqualTab() {
   const { register, setValue, control, watch } =
     useFormContext<EqualTabFormValues>();
-  const amountWatch = parseFloat(watch("amount"));
+  const amountWatch = watch("amount");
   const equalWatch = watch("equal");
 
   const usersIdToSplit = equalWatch
@@ -62,25 +62,21 @@ function EqualTab() {
     equalWatch?.forEach((field, index) => {
       setValue(`equal.${index}.owed`, usersAmountOwed[field.id]);
     });
-  }, [equalWatch, setValue, usersAmountOwed]);
+  }, [equalWatch, setValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Stack>
-      <FormLabel htmlFor="equal">Podział na równe kwoty</FormLabel>
+      <Text>Podział na równe kwoty</Text>
       {fields.map((field, index) => (
-        <HStack h="40px" key={field.id}>
+        <Group key={field.id} grow position="apart">
           <Checkbox
             {...register(`equal.${index}.check`, {
               validate: () => usersIdToSplit.length > 0,
             })}
-            w="full"
-          >
-            {field.name}
-          </Checkbox>
-          <Text whiteSpace="nowrap">{`${
-            usersAmountOwed[field.id] || "0.00"
-          } zł`}</Text>
-        </HStack>
+            label={field.name}
+          />
+          <Text align="end">{`${usersAmountOwed[field.id] || "0.00"} zł`}</Text>
+        </Group>
       ))}
     </Stack>
   );

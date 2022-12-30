@@ -1,5 +1,4 @@
-import { Select } from "@chakra-ui/react";
-import { ChangeEvent } from "react";
+import { NativeSelect } from "@mantine/core";
 
 import { useGroups } from "hooks/useGroups";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
@@ -8,22 +7,17 @@ function GroupSelect() {
   const { data: groups, isLoading: isLoadingGroups } = useGroups();
   const { activeGroupId, setActiveGroupId } = useActiveGroup();
 
-  const handleSetActiveGroupId = (event: ChangeEvent<HTMLSelectElement>) =>
-    setActiveGroupId(event.target.value);
+  if (!groups) return null;
 
   return (
-    <Select
-      onChange={handleSetActiveGroupId}
+    <NativeSelect
+      onChange={(event) => setActiveGroupId(event.currentTarget.value)}
       value={activeGroupId}
       disabled={isLoadingGroups}
-      variant="outline"
-    >
-      {groups?.map((group) => (
-        <option key={group.id} value={group.id}>
-          {group.name}
-        </option>
-      ))}
-    </Select>
+      data={groups.map((group) => {
+        return { value: group.id, label: group.name };
+      })}
+    />
   );
 }
 

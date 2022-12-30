@@ -1,15 +1,13 @@
 import {
-  Divider,
-  FormControl,
-  FormLabel,
-  HStack,
-  Heading,
-  IconButton,
+  ActionIcon,
+  Box,
+  Flex,
+  Group,
   Input,
-  Skeleton,
   Stack,
   Text,
-} from "@chakra-ui/react";
+  Title,
+} from "@mantine/core";
 import { IconCheck, IconPlus } from "@tabler/icons";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -25,7 +23,7 @@ interface CreateTaskValues {
 
 function Tasks() {
   const { activeGroupId: groupId } = useActiveGroup();
-  const { data: tasks, isSuccess: isSuccessTasks } = useTasksByGroup(groupId);
+  const { data: tasks } = useTasksByGroup(groupId);
   const { mutate: createTask } = useCreateTask();
   const { mutate: deleteTask } = useDeleteTask();
   const { handleSubmit, register, reset } = useForm<CreateTaskValues>();
@@ -37,46 +35,40 @@ function Tasks() {
   };
 
   return (
-    <Stack spacing={4}>
-      <Heading>Zadania</Heading>
+    <Stack>
+      <Title order={1}>Zadania</Title>
       <GroupSelect />
-      <Divider />
-      <HStack
-        as="form"
-        onSubmit={handleSubmit(onSubmit)}
-        justify="space-between"
-      >
-        <FormControl>
-          <FormLabel htmlFor="name">Dodaj zadanie</FormLabel>
-          <Input
-            {...register("name", {
-              required: "Pole jest wymagane",
-            })}
-          />
-        </FormControl>
-        <IconButton
-          type="submit"
-          aria-label="done"
-          icon={<IconPlus />}
-          alignSelf="end"
-        />
-      </HStack>
-      <Skeleton isLoaded={isSuccessTasks}>
-        {tasks && (
-          <Stack mt={4} spacing={4}>
-            {tasks.map((task) => (
-              <HStack key={task.id} justify="space-between">
-                <Text>{task.name}</Text>
-                <IconButton
-                  aria-label="done"
-                  icon={<IconCheck />}
-                  onClick={() => deleteTask({ taskId: task.id })}
-                />
-              </HStack>
-            ))}
-          </Stack>
-        )}
-      </Skeleton>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+        <Group noWrap align="end">
+          <Input.Wrapper w="100%" label="Dodaj zadanie">
+            <Input
+              {...register("name", {
+                required: "Pole jest wymagane",
+              })}
+            />
+          </Input.Wrapper>
+          <ActionIcon type="submit" size={36} variant="default">
+            <IconPlus size={16} />
+          </ActionIcon>
+        </Group>
+      </Box>
+      {tasks && (
+        <Stack>
+          {tasks.map((task) => (
+            <Flex key={task.id} justify="space-between">
+              <Text w="100%">{task.name}</Text>
+              <ActionIcon
+                type="button"
+                onClick={() => deleteTask({ taskId: task.id })}
+                size={36}
+                variant="default"
+              >
+                <IconCheck size={16} />
+              </ActionIcon>
+            </Flex>
+          ))}
+        </Stack>
+      )}
     </Stack>
   );
 }

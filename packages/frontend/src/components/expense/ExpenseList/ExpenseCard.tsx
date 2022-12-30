@@ -1,13 +1,4 @@
-import {
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Accordion, Group, Stack, Text } from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons";
 
 import UpdateExpenseModal from "components/expense/UpdateExpenseModal";
@@ -22,20 +13,15 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
   const owers = expense.users.filter((user) => parseFloat(user.owed) > 0);
 
   return (
-    <AccordionItem>
-      <AccordionButton px={2}>
-        <Box flex="1" textAlign="left">
-          <HStack spacing={2}>
-            <Icon as={IconReportMoney} boxSize={8} />
-            <Text fontWeight="bold">{expense.name}</Text>
-          </HStack>
-        </Box>
-        <Text ml={2} fontWeight="bold">
-          {expense.amount} zł
-        </Text>
-      </AccordionButton>
-      <AccordionPanel pb={4}>
-        <Stack gap={2}>
+    <Accordion.Item value={expense.id}>
+      <Accordion.Control icon={<IconReportMoney />}>
+        <Group position="apart">
+          <Text weight="bold">{expense.name}</Text>
+          <Text weight="bold">{expense.amount} zł</Text>
+        </Group>
+      </Accordion.Control>
+      <Accordion.Panel>
+        <Stack>
           <Stack>
             {payers.map((user) => (
               <Text
@@ -45,14 +31,14 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
             {owers.map((user) => (
               <Text
                 key={user.id}
-                pl={4}
+                pl={16}
               >{`${user.user.givenName} pożyczył/a ${user.owed} zł`}</Text>
             ))}
           </Stack>
           <UpdateExpenseModal expense={expense} />
         </Stack>
-      </AccordionPanel>
-    </AccordionItem>
+      </Accordion.Panel>
+    </Accordion.Item>
   );
 }
 

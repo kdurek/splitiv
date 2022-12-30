@@ -1,25 +1,23 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Button, Heading, Skeleton, Stack } from "@chakra-ui/react";
+import { Button, Stack, Title } from "@mantine/core";
 import { useNavigate } from "react-router";
 
 function Index() {
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
   const navigate = useNavigate();
 
+  if (!user) return null;
+
   return (
-    <Skeleton isLoaded={isAuthenticated}>
-      {user && (
-        <Stack>
-          <Heading>Witaj {user.name}</Heading>
-          <Button onClick={() => navigate("/wydatki")}>
-            Przeglądaj wydatki
-          </Button>
-          <Button onClick={() => navigate("/zadania")}>
-            Przeglądaj zadania
-          </Button>
-        </Stack>
-      )}
-    </Skeleton>
+    <Stack>
+      <Title align="center">Witaj {user.name}</Title>
+      <Button variant="default" onClick={() => navigate("/wydatki")}>
+        Przeglądaj wydatki
+      </Button>
+      <Button variant="default" onClick={() => navigate("/zadania")}>
+        Przeglądaj zadania
+      </Button>
+    </Stack>
   );
 }
 

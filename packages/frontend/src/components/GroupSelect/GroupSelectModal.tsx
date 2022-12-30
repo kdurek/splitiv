@@ -1,14 +1,5 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Select,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, Group, Modal, NativeSelect, Paper } from "@mantine/core";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import CreateGroupModal from "components/group/CreateGroupModal";
@@ -24,52 +15,55 @@ interface GroupSelectModalProps {
 }
 
 function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
-  const { data: groups, isLoading: isLoadingGroups } = useGroups();
-  const { isOpen, onClose } = useDisclosure({ defaultIsOpen });
+  const [opened, setOpened] = useState(defaultIsOpen);
+  const { data: groups } = useGroups();
   const {
     handleSubmit,
     register,
+    reset,
     formState: { isSubmitting },
   } = useForm<GroupSelectModalValues>();
 
   const handleOnSubmit: SubmitHandler<GroupSelectModalValues> = (values) => {
     onSubmit(values);
-    onClose();
+    reset();
+    setOpened(false);
   };
+
+  if (!groups) return null;
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      closeOnOverlayClick={false}
-      size={["full", "2xl"]}
+      opened={opened}
+      onClose={() => setOpened(false)}
+      title="Wybierz aktywną grupę"
+      closeOnEscape={false}
+      withCloseButton={false}
+      closeOnClickOutside={false}
     >
-      <form onSubmit={handleSubmit(handleOnSubmit)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Wybierz aktywną grupę</ModalHeader>
-          <ModalBody>
-            <Select
-              {...register("group", {
-                required: "Pole jest wymagane",
-              })}
-              disabled={isLoadingGroups}
-            >
-              {groups?.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.name}
-                </option>
-              ))}
-            </Select>
-          </ModalBody>
-          <ModalFooter justifyContent="space-between">
-            <CreateGroupModal />
-            <Button type="submit" isLoading={isSubmitting} colorScheme="blue">
-              Wybierz
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </form>
+      <Paper
+        component="form"
+        id="group-select-modal"
+        onSubmit={handleSubmit(handleOnSubmit)}
+      >
+        <NativeSelect
+          {...register("group", {
+            required: "Pole jest wymagane",
+          })}
+          mt={16}
+          data={groups.map((group) => {
+            return { value: group.id, label: group.name };
+          })}
+          label="Wybierz grupę"
+          withAsterisk
+        />
+      </Paper>
+      <Group mt={24} position="apart">
+        <CreateGroupModal />
+        <Button type="submit" form="group-select-modal" loading={isSubmitting}>
+          Wybierz
+        </Button>
+      </Group>
     </Modal>
   );
 }

@@ -1,54 +1,44 @@
-import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Tabs } from "@mantine/core";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-import EqualTab from "components/expense/CreateExpenseModal/EqualTab";
-import RatioTab from "components/expense/CreateExpenseModal/RatioTab";
-import UnequalTab from "components/expense/CreateExpenseModal/UnequalTab";
+import EqualTab from "./EqualTab";
+import RatioTab from "./RatioTab";
+import UnequalTab from "./UnequalTab";
 
 function MethodTabs() {
   const { watch, setValue } = useFormContext();
 
   const methodWatch = watch("method");
 
-  const handleTabSwitch = (index: number) => {
-    switch (index) {
-      case 0: {
-        return setValue("method", "equal");
-      }
-      case 1: {
-        return setValue("method", "unequal");
-      }
-      case 2: {
-        return setValue("method", "ratio");
-      }
-      default: {
-        return setValue("method", "equal");
-      }
-    }
-  };
-
   useEffect(() => {
     setValue("method", "equal");
   }, [setValue]);
 
   return (
-    <Box w="full">
-      <Tabs defaultIndex={0} onChange={handleTabSwitch}>
-        <TabList>
-          <Tab>Równo</Tab>
-          <Tab>Nierówno</Tab>
-          <Tab>Współczynnik</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel px={0}>{methodWatch === "equal" && <EqualTab />}</TabPanel>
-          <TabPanel px={0}>
-            {methodWatch === "unequal" && <UnequalTab />}
-          </TabPanel>
-          <TabPanel px={0}>{methodWatch === "ratio" && <RatioTab />}</TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Box>
+    <Tabs
+      mt={16}
+      defaultValue="equal"
+      onTabChange={(value) => setValue("method", value)}
+    >
+      <Tabs.List>
+        <Tabs.Tab value="equal">Równo</Tabs.Tab>
+        <Tabs.Tab value="unequal">Nierówno</Tabs.Tab>
+        <Tabs.Tab value="ratio">Współczynnik</Tabs.Tab>
+      </Tabs.List>
+
+      <Tabs.Panel value="equal" mt="md">
+        {methodWatch === "equal" && <EqualTab />}
+      </Tabs.Panel>
+
+      <Tabs.Panel value="unequal" mt="md">
+        {methodWatch === "unequal" && <UnequalTab />}
+      </Tabs.Panel>
+
+      <Tabs.Panel value="ratio" mt="md">
+        {methodWatch === "ratio" && <RatioTab />}
+      </Tabs.Panel>
+    </Tabs>
   );
 }
 

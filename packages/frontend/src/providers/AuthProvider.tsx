@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Button, Center } from "@chakra-ui/react";
+import { Button, Center, Stack, Title } from "@mantine/core";
 import {
   ReactNode,
   createContext,
@@ -36,19 +36,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
   const handleLogin = () => loginWithRedirect({ connection: "google-oauth2" });
 
-  if (isLoading) return null;
-
-  if (isAuthenticated && auth.token)
+  if (!isLoading && !isAuthenticated) {
     return (
-      <authContext.Provider value={auth}>
-        <Layout>{children}</Layout>
-      </authContext.Provider>
+      <Layout>
+        <Center component={Stack} w="100%" h="100%">
+          <Title maw={400} align="center">
+            Musisz się zalogować aby przejść dalej
+          </Title>
+          <Button variant="default" onClick={handleLogin}>
+            Zaloguj
+          </Button>
+        </Center>
+      </Layout>
     );
+  }
+
+  if ((isLoading && !isAuthenticated) || !auth?.token) return null;
 
   return (
-    <Center h="100vh">
-      <Button onClick={handleLogin}>Zaloguj</Button>
-    </Center>
+    <authContext.Provider value={auth}>
+      <Layout>{children}</Layout>
+    </authContext.Provider>
   );
 }
 

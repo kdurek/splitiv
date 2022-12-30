@@ -1,18 +1,9 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Avatar,
-  Box,
-  HStack,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Accordion, Avatar, Box, Group, Text } from "@mantine/core";
 
+import { useGroup } from "hooks/useGroup";
+import { useActiveGroup } from "providers/ActiveGroupProvider";
 import { Debt } from "types";
-import { GetGroupById, GetUsers } from "utils/trpc";
+import { GetUsers } from "utils/trpc";
 
 interface UserDebtsProps {
   member: GetUsers[number];
@@ -30,53 +21,49 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
 
   return (
     <Box>
-      {userDebts.length > 0 && (
-        <Stack spacing={0}>
-          {userDebts.map((debt) => (
-            <Text key={debt.fromId + debt.toId} color="red.400">
-              {`${debt.amount} zł dla ${getUserNickname(debt.toId)}`}
-            </Text>
-          ))}
-        </Stack>
-      )}
-      {userGets.length > 0 && (
-        <Stack spacing={0}>
-          {userGets.map((debt) => (
-            <Text key={debt.fromId + debt.toId} color="green.400">
-              {`${debt.amount} zł od ${getUserNickname(debt.fromId)}`}
-            </Text>
-          ))}
-        </Stack>
-      )}
+      {userDebts.length > 0 &&
+        userDebts.map((debt) => (
+          <Text key={debt.fromId + debt.toId} color="red">
+            {`${debt.amount} zł dla ${getUserNickname(debt.toId)}`}
+          </Text>
+        ))}
+      {userGets.length > 0 &&
+        userGets.map((debt) => (
+          <Text key={debt.fromId + debt.toId} color="green">
+            {`${debt.amount} zł od ${getUserNickname(debt.fromId)}`}
+          </Text>
+        ))}
     </Box>
   );
 }
 
-function UserBalance({ group }: { group: GetGroupById }) {
-  if (!group?.members) return null;
+function UserBalance() {
+  const { activeGroupId: groupId } = useActiveGroup();
+  const { data: group } = useGroup(groupId);
+
+  if (!group) return null;
 
   return (
-    <Accordion allowToggle>
+    <Accordion variant="separated">
       {group.members.map((member) => (
-        <AccordionItem key={member.id} border="none">
-          <AccordionButton px={2}>
-            <HStack textAlign="start">
+        <Accordion.Item key={member.id} value={member.id}>
+          <Accordion.Control>
+            <Group>
               <Avatar src={member.picture} />
               <Box>
-                <Text fontWeight="bold">{member.name}</Text>
-                <Text fontSize="sm">{member.balance} zł</Text>
+                <Text weight="bold">{member.name}</Text>
+                <Text size="sm">{member.balance} zł</Text>
               </Box>
-            </HStack>
-            <AccordionIcon ml="auto" />
-          </AccordionButton>
-          <AccordionPanel pb={4}>
+            </Group>
+          </Accordion.Control>
+          <Accordion.Panel>
             <UserDebts
               member={member}
               members={group.members}
               debts={group.debts}
             />
-          </AccordionPanel>
-        </AccordionItem>
+          </Accordion.Panel>
+        </Accordion.Item>
       ))}
     </Accordion>
   );

@@ -1,7 +1,7 @@
-import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { Button, Group, Modal, Paper, TextInput } from "@mantine/core";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import FormModal from "components/FormModal";
 import { useCreateGroup } from "hooks/useCreateGroup";
 
 interface CreateGroupFormValues {
@@ -9,34 +9,45 @@ interface CreateGroupFormValues {
 }
 
 function CreateGroupModal() {
-  const methods = useForm<CreateGroupFormValues>();
+  const [opened, setOpened] = useState(false);
+  const { handleSubmit, register, reset } = useForm<CreateGroupFormValues>();
   const { mutate: createGroup } = useCreateGroup();
 
   const onSubmit = (values: CreateGroupFormValues) => {
     const { name } = values;
     createGroup({ name });
+    reset();
+    setOpened(false);
   };
 
   return (
-    <FormModal<CreateGroupFormValues>
-      modalButtonText="Stwórz grupę"
-      headerText="Dodawanie grupy"
-      cancelButtonText="Anuluj"
-      submitButtonText="Stwórz"
-      methods={methods}
-      onSubmit={onSubmit}
-    >
-      <FormControl>
-        <FormLabel htmlFor="name">Nazwa</FormLabel>
-        <Input
-          {...methods.register("name", {
-            required: "Pole jest wymagane",
-            minLength: { value: 3, message: "Minimum length should be 3" },
-          })}
-          id="name"
-        />
-      </FormControl>
-    </FormModal>
+    <>
+      <Button variant="default" onClick={() => setOpened(true)}>
+        Stwórz grupę
+      </Button>
+
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Tworzenie grupy"
+      >
+        <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
+          <TextInput
+            {...register("name", {
+              required: "Pole jest wymagane",
+              minLength: { value: 3, message: "Minimum length should be 3" },
+            })}
+            label="Nazwa grupy"
+            withAsterisk
+          />
+          <Group mt={24} position="right">
+            <Button variant="default" type="submit">
+              Stwórz
+            </Button>
+          </Group>
+        </Paper>
+      </Modal>
+    </>
   );
 }
 

@@ -1,18 +1,10 @@
-import { Link } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Text } from "@mantine/core";
+import { Link } from "react-router-dom";
 
-export default function Logo() {
+export function Logo() {
   return (
-    <Link
-      as={RouterLink}
-      to="/"
-      fontSize="2xl"
-      fontWeight={600}
-      _hover={{
-        textDecoration: "none",
-      }}
-    >
+    <Text component={Link} size="lg" weight="bolder" to="/" color="gray.6">
       Splitiv
-    </Link>
+    </Text>
   );
 }

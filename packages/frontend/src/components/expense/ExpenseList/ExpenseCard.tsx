@@ -1,4 +1,4 @@
-import { Accordion, Group, Stack, Text } from "@mantine/core";
+import { Accordion, Group, List, Stack, Text } from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons";
 
 import UpdateExpenseModal from "components/expense/UpdateExpenseModal";
@@ -22,19 +22,21 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
-          <Stack>
+          <List>
             {payers.map((user) => (
-              <Text
+              <List.Item
                 key={user.id}
-              >{`${user.user.givenName} zapłacił/a ${user.paid} zł`}</Text>
+              >{`${user.user.givenName} zapłacił/a ${user.paid} zł`}</List.Item>
             ))}
+          </List>
+          <List withPadding>
             {owers.map((user) => (
-              <Text
+              <List.Item
                 key={user.id}
                 pl={16}
-              >{`${user.user.givenName} pożyczył/a ${user.owed} zł`}</Text>
+              >{`${user.user.givenName} pożyczył/a ${user.owed} zł`}</List.Item>
             ))}
-          </Stack>
+          </List>
           <UpdateExpenseModal expense={expense} />
         </Stack>
       </Accordion.Panel>

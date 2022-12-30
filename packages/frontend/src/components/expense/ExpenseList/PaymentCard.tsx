@@ -1,4 +1,4 @@
-import { Accordion, Group, Stack, Text } from "@mantine/core";
+import { Accordion, Group, List, Stack, Text } from "@mantine/core";
 import { IconCash } from "@tabler/icons";
 
 import { GetExpensesByGroup } from "utils/trpc";
@@ -26,7 +26,9 @@ function PaymentCard({ expense }: PaymentCardProps) {
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
-          <Text>{`${paymentToUser} zapłacił/a ${paymentFromUser}`}</Text>
+          <List>
+            <List.Item>{`${paymentToUser} zapłacił/a ${paymentFromUser}`}</List.Item>
+          </List>
           <UpdateExpenseModal expense={expense} />
         </Stack>
       </Accordion.Panel>

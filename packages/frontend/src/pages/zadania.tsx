@@ -3,9 +3,9 @@ import {
   Box,
   Flex,
   Group,
-  Input,
   Stack,
   Text,
+  TextInput,
   Title,
 } from "@mantine/core";
 import { IconCheck, IconPlus } from "@tabler/icons";
@@ -40,13 +40,13 @@ function Tasks() {
       <GroupSelect />
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
         <Group noWrap align="end">
-          <Input.Wrapper w="100%" label="Dodaj zadanie">
-            <Input
-              {...register("name", {
-                required: "Pole jest wymagane",
-              })}
-            />
-          </Input.Wrapper>
+          <TextInput
+            {...register("name", {
+              required: "Pole jest wymagane",
+            })}
+            label="Dodaj zadanie"
+            w="100%"
+          />
           <ActionIcon type="submit" size={36} variant="default">
             <IconPlus size={16} />
           </ActionIcon>

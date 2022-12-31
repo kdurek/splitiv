@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, Stack, Text } from "@mantine/core";
+import { ActionIcon, Group, Stack, Text } from "@mantine/core";
 import { IconCheck } from "@tabler/icons";
 
 import { useDeleteTask } from "hooks/useDeleteTask";
@@ -15,17 +15,17 @@ function TaskList() {
   return (
     <Stack>
       {tasks.map((task) => (
-        <Flex key={task.id} justify="space-between">
-          <Text w="100%">{task.name}</Text>
+        <Group key={task.id} position="apart">
+          <Text>{task.name}</Text>
           <ActionIcon
             type="button"
-            onClick={() => deleteTask({ taskId: task.id })}
+            onClick={() => deleteTask({ taskId: task.id, groupId })}
             size={36}
             variant="default"
           >
             <IconCheck size={16} />
           </ActionIcon>
-        </Flex>
+        </Group>
       ))}
     </Stack>
   );

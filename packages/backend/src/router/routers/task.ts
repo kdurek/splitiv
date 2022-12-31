@@ -31,7 +31,7 @@ export const taskRouter = router({
     }),
 
   deleteTask: protectedProcedure
-    .input(z.object({ taskId: z.string() }))
+    .input(z.object({ groupId: z.string(), taskId: z.string() }))
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.task.delete({
         where: {

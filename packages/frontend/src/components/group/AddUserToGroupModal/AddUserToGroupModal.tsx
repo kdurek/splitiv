@@ -1,5 +1,5 @@
 import { Button, Group, Modal, NativeSelect, Paper } from "@mantine/core";
-import { useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { useAddUserToGroup } from "hooks/useAddUserToGroup";
@@ -21,7 +21,7 @@ function AddUserToGroupModal({
   members,
   users,
 }: AddUserToGroupModalProps) {
-  const [opened, setOpened] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const { mutate: addUserToGroup } = useAddUserToGroup();
   const { handleSubmit, register, reset } = useForm<AddUserToGroupFormValues>({
     defaultValues: { name: "Płatność" },
@@ -30,7 +30,7 @@ function AddUserToGroupModal({
   const onSubmit: SubmitHandler<AddUserToGroupFormValues> = (values) => {
     addUserToGroup({ userId: values.user, groupId });
     reset();
-    setOpened(false);
+    close();
   };
 
   const groupUsers = members.map((user) => user.id);
@@ -40,15 +40,11 @@ function AddUserToGroupModal({
 
   return (
     <>
-      <Button variant="default" onClick={() => setOpened(true)}>
+      <Button variant="default" onClick={open}>
         Dodaj użytkownika
       </Button>
 
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title="Dodawanie użytkownika"
-      >
+      <Modal opened={opened} onClose={close} title="Dodawanie użytkownika">
         <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
           <NativeSelect
             {...register("user", {

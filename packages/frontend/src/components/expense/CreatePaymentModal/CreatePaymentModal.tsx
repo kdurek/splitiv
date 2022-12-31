@@ -7,7 +7,8 @@ import {
   Paper,
   TextInput,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { useCreateExpense } from "hooks/useCreateExpense";
@@ -26,8 +27,8 @@ interface CreatePaymentModalProps {
 }
 
 function CreatePaymentModal({ group }: CreatePaymentModalProps) {
+  const [opened, { open, close }] = useDisclosure(false);
   const { activeGroupId } = useActiveGroup();
-  const [opened, setOpened] = useState(false);
   const { control, handleSubmit, register, reset, getValues, setValue } =
     useForm<CreatePaymentFormValues>({
       defaultValues: { name: "Płatność" },
@@ -63,21 +64,17 @@ function CreatePaymentModal({ group }: CreatePaymentModalProps) {
 
     createExpense({ groupId: activeGroupId, name, amount, type, users });
     reset();
-    setOpened(false);
+    close();
   };
 
   return (
     <>
-      <Button variant="default" onClick={() => setOpened(true)}>
+      <Button variant="default" onClick={open}>
         Dodaj płatność
       </Button>
 
       {group && (
-        <Modal
-          opened={opened}
-          onClose={() => setOpened(false)}
-          title="Dodawanie płatności"
-        >
+        <Modal opened={opened} onClose={close} title="Dodawanie płatności">
           <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
             <TextInput
               {...register("name", {

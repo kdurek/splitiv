@@ -17,7 +17,7 @@ import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface MainLinkProps {
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  close: () => void;
   icon: ReactNode;
   color: string;
   label: string;
@@ -45,13 +45,13 @@ const data = [
   },
 ];
 
-function MainLink({ setOpened, icon, color, label, href }: MainLinkProps) {
+function MainLink({ close, icon, color, label, href }: MainLinkProps) {
   const theme = useMantineTheme();
   const navigate = useNavigate();
 
   const handleNavigate = () => {
     navigate(href);
-    setOpened(false);
+    close();
   };
 
   return (
@@ -88,12 +88,12 @@ function MainLink({ setOpened, icon, color, label, href }: MainLinkProps) {
 }
 
 interface MainLinksProps {
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  close: () => void;
 }
 
-export function MainLinks({ setOpened }: MainLinksProps) {
+export function MainLinks({ close }: MainLinksProps) {
   const links = data.map((link) => (
-    <MainLink setOpened={setOpened} {...link} key={link.label} />
+    <MainLink close={close} {...link} key={link.label} />
   ));
   const { logout } = useAuth0();
 

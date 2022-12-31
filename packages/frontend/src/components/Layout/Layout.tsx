@@ -9,8 +9,9 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconMoon, IconSun } from "@tabler/icons";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
 import { Logo } from "./Logo";
 import { MainLinks } from "./MainLinks";
@@ -20,8 +21,8 @@ interface LayoutProps {
 }
 
 function Layout({ children }: LayoutProps) {
+  const [opened, { close, toggle }] = useDisclosure(false);
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   return (
@@ -40,7 +41,7 @@ function Layout({ children }: LayoutProps) {
             <MediaQuery largerThan="sm" styles={{ display: "none" }}>
               <Burger
                 opened={opened}
-                onClick={() => setOpened((o) => !o)}
+                onClick={toggle}
                 size="sm"
                 color={theme.colors.gray[6]}
                 mr="xl"
@@ -63,7 +64,7 @@ function Layout({ children }: LayoutProps) {
           width={{ sm: 300 }}
         >
           <Navbar.Section grow mt="xs">
-            <MainLinks setOpened={setOpened} />
+            <MainLinks close={close} />
           </Navbar.Section>
         </Navbar>
       }

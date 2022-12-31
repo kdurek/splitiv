@@ -1,5 +1,5 @@
 import { Button, Group, Modal, NativeSelect, Paper } from "@mantine/core";
-import { useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import CreateGroupModal from "components/group/CreateGroupModal";
@@ -15,7 +15,7 @@ interface GroupSelectModalProps {
 }
 
 function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
-  const [opened, setOpened] = useState(defaultIsOpen);
+  const [opened, { close }] = useDisclosure(defaultIsOpen);
   const { data: groups } = useGroups();
   const {
     handleSubmit,
@@ -27,7 +27,7 @@ function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
   const handleOnSubmit: SubmitHandler<GroupSelectModalValues> = (values) => {
     onSubmit(values);
     reset();
-    setOpened(false);
+    close();
   };
 
   if (!groups) return null;
@@ -35,7 +35,7 @@ function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
   return (
     <Modal
       opened={opened}
-      onClose={() => setOpened(false)}
+      onClose={close}
       title="Wybierz aktywną grupę"
       closeOnEscape={false}
       withCloseButton={false}

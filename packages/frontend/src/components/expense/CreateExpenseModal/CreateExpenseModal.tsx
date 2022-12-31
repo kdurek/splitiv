@@ -8,8 +8,8 @@ import {
   Paper,
   TextInput,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { allocate, toDecimal } from "dinero.js";
-import { useState } from "react";
 import {
   Controller,
   FormProvider,
@@ -55,8 +55,8 @@ interface CreateExpenseModalProps {
 }
 
 function CreateExpenseModal({ group }: CreateExpenseModalProps) {
+  const [opened, { open, close }] = useDisclosure(false);
   const { activeGroupId } = useActiveGroup();
-  const [opened, setOpened] = useState(false);
 
   const equalDefaults = group?.members.map((member) => ({
     id: member.id,
@@ -110,7 +110,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
 
         createExpense({ groupId: activeGroupId, name, amount, users });
         reset();
-        return setOpened(false);
+        return close();
       }
 
       case "unequal": {
@@ -128,7 +128,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
 
         createExpense({ groupId: activeGroupId, name, amount, users });
         reset();
-        return setOpened(false);
+        return close();
       }
 
       case "ratio": {
@@ -154,7 +154,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
 
         createExpense({ groupId: activeGroupId, name, amount, users });
         reset();
-        return setOpened(false);
+        return close();
       }
 
       default: {
@@ -165,16 +165,12 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
 
   return (
     <>
-      <Button variant="default" onClick={() => setOpened(true)}>
+      <Button variant="default" onClick={open}>
         Dodaj wydatek
       </Button>
 
       {group && (
-        <Modal
-          opened={opened}
-          onClose={() => setOpened(false)}
-          title="Dodawanie wydatku"
-        >
+        <Modal opened={opened} onClose={close} title="Dodawanie wydatku">
           <FormProvider {...methods}>
             <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
               <TextInput

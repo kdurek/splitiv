@@ -1,5 +1,5 @@
 import { Button, Group, Modal, Paper, TextInput } from "@mantine/core";
-import { useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 
 import { useCreateGroup } from "hooks/useCreateGroup";
@@ -9,7 +9,7 @@ interface CreateGroupFormValues {
 }
 
 function CreateGroupModal() {
-  const [opened, setOpened] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const { handleSubmit, register, reset } = useForm<CreateGroupFormValues>();
   const { mutate: createGroup } = useCreateGroup();
 
@@ -17,20 +17,16 @@ function CreateGroupModal() {
     const { name } = values;
     createGroup({ name });
     reset();
-    setOpened(false);
+    close();
   };
 
   return (
     <>
-      <Button variant="default" onClick={() => setOpened(true)}>
+      <Button variant="default" onClick={open}>
         Stwórz grupę
       </Button>
 
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title="Tworzenie grupy"
-      >
+      <Modal opened={opened} onClose={close} title="Tworzenie grupy">
         <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             {...register("name", {

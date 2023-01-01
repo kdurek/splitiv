@@ -23,11 +23,7 @@ function GroupSettings() {
               <List.Item key={user.id}>{user.name}</List.Item>
             ))}
           </List>
-          <AddUserToGroupModal
-            groupId={groupId}
-            members={group.members}
-            users={users}
-          />
+          <AddUserToGroupModal groupId={groupId} />
         </Stack>
       )}
     </Stack>

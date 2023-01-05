@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Button, Center, Stack, Title } from "@mantine/core";
+import { IconLogin } from "@tabler/icons";
 import {
   ReactNode,
   createContext,
@@ -7,8 +8,6 @@ import {
   useEffect,
   useState,
 } from "react";
-
-import Layout from "components/Layout/Layout";
 
 const authContext = createContext<{ token?: string }>({});
 
@@ -34,30 +33,27 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const auth = useProvideAuth();
   const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
-  const handleLogin = () => loginWithRedirect({ connection: "google-oauth2" });
 
   if (!isLoading && !isAuthenticated) {
     return (
-      <Layout>
-        <Center component={Stack} w="100%" h="100%">
-          <Title maw={400} align="center">
-            Musisz się zalogować aby przejść dalej
-          </Title>
-          <Button variant="default" onClick={handleLogin}>
-            Zaloguj
-          </Button>
-        </Center>
-      </Layout>
+      <Center component={Stack} w="100%" h="100%">
+        <Title maw={400} align="center">
+          Musisz się zalogować aby przejść dalej
+        </Title>
+        <Button
+          variant="default"
+          leftIcon={<IconLogin />}
+          onClick={() => loginWithRedirect({ connection: "google-oauth2" })}
+        >
+          Zaloguj
+        </Button>
+      </Center>
     );
   }
 
   if ((isLoading && !isAuthenticated) || !auth?.token) return null;
 
-  return (
-    <authContext.Provider value={auth}>
-      <Layout>{children}</Layout>
-    </authContext.Provider>
-  );
+  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 }
 
 export const useAuth = () => {

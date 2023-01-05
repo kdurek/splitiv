@@ -10,6 +10,7 @@ import {
 import {
   IconCash,
   IconListCheck,
+  IconLogin,
   IconLogout,
   IconSettings,
 } from "@tabler/icons";
@@ -95,20 +96,32 @@ export function MainLinks({ close }: MainLinksProps) {
   const links = data.map((link) => (
     <MainLink close={close} {...link} key={link.label} />
   ));
-  const { logout } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0();
 
   return (
     <div>
       {links}
-      <Button
-        mt={10}
-        variant="default"
-        w="100%"
-        leftIcon={<IconLogout />}
-        onClick={() => logout()}
-      >
-        Wyloguj
-      </Button>
+      {isAuthenticated && !isLoading ? (
+        <Button
+          mt={10}
+          variant="default"
+          w="100%"
+          leftIcon={<IconLogout />}
+          onClick={() => logout()}
+        >
+          Wyloguj
+        </Button>
+      ) : (
+        <Button
+          mt={10}
+          variant="default"
+          w="100%"
+          leftIcon={<IconLogin />}
+          onClick={() => loginWithRedirect({ connection: "google-oauth2" })}
+        >
+          Zaloguj
+        </Button>
+      )}
     </div>
   );
 }

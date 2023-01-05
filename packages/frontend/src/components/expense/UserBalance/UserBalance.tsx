@@ -44,7 +44,7 @@ function UserBalance() {
   if (!group) return null;
 
   return (
-    <Accordion variant="separated">
+    <Accordion variant="contained">
       {group.members.map((member) => (
         <Accordion.Item key={member.id} value={member.id}>
           <Accordion.Control>

@@ -13,7 +13,7 @@ function ExpenseList() {
   if (!expenses) return null;
 
   return (
-    <Accordion variant="separated">
+    <Accordion variant="contained">
       {expenses.map((expense) => {
         if (expense.type === "expense")
           return <ExpenseCard key={expense.id} expense={expense} />;

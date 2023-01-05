@@ -27,14 +27,6 @@ function Layout({ children }: LayoutProps) {
 
   return (
     <AppShell
-      styles={{
-        main: {
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
-        },
-      }}
       header={
         <Header height={{ base: 50, sm: 70 }} p="md">
           <Flex justify="space-between" align="center" h="100%">

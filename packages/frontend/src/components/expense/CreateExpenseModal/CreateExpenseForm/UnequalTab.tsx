@@ -51,22 +51,11 @@ function UnequalTab() {
               />
             )}
           />
-          {/* <NumberInput precision={2} step={0.01}>
-              <NumberInputField
-                {...register(`unequal.${index}.owed`, {
-                  setValueAs: (v: string) =>
-                    v ? parseFloat(v).toFixed(2) : "",
-                  validate: () => usedAmount === amountWatch,
-                })}
-                placeholder="0.00"
-                borderLeftRadius={0}
-              />
-            </NumberInput> */}
         </Group>
       ))}
       <Stack spacing={4} align="end">
-        <Text size={34} weight="bold">{`${usedAmount.toFixed(2)} zł`}</Text>
-        <Text weight="bold">{`${remainingAmount.toFixed(
+        <Text size={26} weight={700}>{`${usedAmount.toFixed(2)} zł`}</Text>
+        <Text weight={700}>{`${remainingAmount.toFixed(
           2
         )} zł do podziału`}</Text>
       </Stack>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export function Logo() {
   return (
-    <Text component={Link} size="lg" weight="bolder" to="/" color="gray.6">
+    <Text component={Link} size="lg" weight={700} to="/" color="gray.6">
       Splitiv
     </Text>
   );

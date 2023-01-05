@@ -16,8 +16,8 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
     <Accordion.Item value={expense.id}>
       <Accordion.Control icon={<IconReportMoney />}>
         <Group position="apart">
-          <Text weight="bold">{expense.name}</Text>
-          <Text weight="bold">{expense.amount} zł</Text>
+          <Text weight={700}>{expense.name}</Text>
+          <Text weight={700}>{expense.amount} zł</Text>
         </Group>
       </Accordion.Control>
       <Accordion.Panel>

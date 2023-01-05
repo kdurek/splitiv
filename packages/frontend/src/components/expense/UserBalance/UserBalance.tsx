@@ -23,13 +23,13 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
     <Box>
       {userDebts.length > 0 &&
         userDebts.map((debt) => (
-          <Text key={debt.fromId + debt.toId} color="red">
+          <Text key={debt.fromId + debt.toId} weight={500} color="red">
             {`${debt.amount} zł dla ${getUserNickname(debt.toId)}`}
           </Text>
         ))}
       {userGets.length > 0 &&
         userGets.map((debt) => (
-          <Text key={debt.fromId + debt.toId} color="green">
+          <Text key={debt.fromId + debt.toId} weight={500} color="green">
             {`${debt.amount} zł od ${getUserNickname(debt.fromId)}`}
           </Text>
         ))}
@@ -51,8 +51,10 @@ function UserBalance() {
             <Group>
               <Avatar src={member.picture} />
               <Box>
-                <Text weight="bold">{member.name}</Text>
-                <Text size="sm">{member.balance} zł</Text>
+                <Text weight={700}>{member.name}</Text>
+                <Text weight={500} size="sm">
+                  {member.balance} zł
+                </Text>
               </Box>
             </Group>
           </Accordion.Control>

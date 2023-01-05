@@ -9,8 +9,10 @@ import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 
+import { CustomFonts } from "components/Layout/CustomFonts";
 import { ActiveGroupProvider } from "providers/ActiveGroupProvider";
 import { AuthProvider } from "providers/AuthProvider";
+import { LayoutProvider } from "providers/LayoutProvider";
 import { QueryProvider } from "providers/QueryProvider";
 
 // @ts-ignore
@@ -42,15 +44,24 @@ function App() {
         toggleColorScheme={toggleColorScheme}
       >
         <MantineProvider
-          theme={{ colorScheme }}
+          theme={{
+            colorScheme,
+            fontFamily: "Poppins, sans-serif",
+            headings: { fontFamily: "Poppins, sans-serif" },
+          }}
           withGlobalStyles
           withNormalizeCSS
         >
-          <AuthProvider>
-            <QueryProvider>
-              <ActiveGroupProvider>{useRoutes(routes)}</ActiveGroupProvider>
-            </QueryProvider>
-          </AuthProvider>
+          <CustomFonts />
+          <LayoutProvider>
+            <AuthProvider>
+              <QueryProvider>
+                <ActiveGroupProvider>
+                  <Suspense>{useRoutes(routes)}</Suspense>
+                </ActiveGroupProvider>
+              </QueryProvider>
+            </AuthProvider>
+          </LayoutProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </Auth0Provider>
@@ -60,9 +71,7 @@ function App() {
 createRoot(document.getElementById("root") as HTMLElement).render(
   <StrictMode>
     <BrowserRouter>
-      <Suspense>
-        <App />
-      </Suspense>
+      <App />
     </BrowserRouter>
   </StrictMode>
 );

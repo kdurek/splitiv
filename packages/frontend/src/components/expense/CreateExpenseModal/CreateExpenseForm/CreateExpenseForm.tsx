@@ -93,19 +93,30 @@ function CreateExpenseForm({ group, afterSubmit }: CreateExpenseFormProps) {
   const onSubmit: SubmitHandler<CreateExpenseFormValues> = (values) => {
     const { name, payer, method, equal, unequal, ratio } = values;
     const amount = values.amount.toFixed(2);
+    const dineroAmount = dineroFromString({
+      amount,
+      currency: PLN,
+      scale: 2,
+    });
 
     if (method === "equal") {
-      const users = equal
-        .filter((user) => user.check || payer === user.id)
-        .map((user) => {
-          const isPayer = payer === user.id;
+      const filteredUsers = equal.filter(
+        (user) => user.check || payer === user.id
+      );
+      const usersToAllocate = filteredUsers.map((user) => user.check).length;
+      const allocated = allocate(
+        dineroAmount,
+        new Array(usersToAllocate).fill(1)
+      );
+      const users = filteredUsers.map((user, index) => {
+        const isPayer = payer === user.id;
 
-          return {
-            paid: isPayer ? amount : "0.00",
-            owed: user.owed || "0.00",
-            userId: user.id,
-          };
-        });
+        return {
+          paid: isPayer ? amount : "0.00",
+          owed: toDecimal(allocated[index]) || "0.00",
+          userId: user.id,
+        };
+      });
 
       createExpense({ groupId: group.id, name, amount, users });
     }
@@ -130,11 +141,6 @@ function CreateExpenseForm({ group, afterSubmit }: CreateExpenseFormProps) {
       const filteredUsers = ratio.filter(
         (user) => user.ratio > 0 || payer === user.id
       );
-      const dineroAmount = dineroFromString({
-        amount,
-        currency: PLN,
-        scale: 2,
-      });
       const userRatios = filteredUsers.map((user) => user.ratio);
       const allocated = allocate(dineroAmount, userRatios);
       const users = filteredUsers.map((user, index) => {

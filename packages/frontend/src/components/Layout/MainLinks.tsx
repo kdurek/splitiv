@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import {
   IconCash,
+  IconChefHat,
   IconListCheck,
   IconLogin,
   IconLogout,
@@ -26,6 +27,12 @@ interface MainLinkProps {
 }
 
 const data = [
+  {
+    icon: <IconChefHat size={16} />,
+    color: "yellow",
+    label: "Przepisy",
+    href: "/przepisy",
+  },
   {
     icon: <IconCash size={16} />,
     color: "teal",

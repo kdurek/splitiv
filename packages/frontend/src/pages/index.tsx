@@ -11,6 +11,9 @@ function Index() {
   return (
     <Stack>
       <Title align="center">Witaj {user.name}</Title>
+      <Button variant="default" onClick={() => navigate("/przepisy")}>
+        Przeglądaj przepisy
+      </Button>
       <Button variant="default" onClick={() => navigate("/wydatki")}>
         Przeglądaj wydatki
       </Button>

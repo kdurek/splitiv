@@ -25,6 +25,7 @@
     "fastify": "^4.10.2",
     "fastify-plugin": "^4.3.0",
     "get-jwks": "^8.0.3",
+    "slugify": "^1.6.5",
     "superjson": "^1.12.1",
     "zod": "^3.20.2"
   },

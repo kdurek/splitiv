@@ -1,5 +1,6 @@
 import { expenseRouter } from "./routers/expense";
 import { groupRouter } from "./routers/group";
+import { recipeRouter } from "./routers/recipe";
 import { taskRouter } from "./routers/task";
 import { userRouter } from "./routers/user";
 import { router } from "./trpc";
@@ -7,6 +8,7 @@ import { router } from "./trpc";
 export const appRouter = router({
   expense: expenseRouter,
   group: groupRouter,
+  recipe: recipeRouter,
   task: taskRouter,
   user: userRouter,
 });

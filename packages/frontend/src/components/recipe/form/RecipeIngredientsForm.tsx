@@ -73,7 +73,9 @@ function RecipeIngredientsForm() {
           </Group>
         </Stack>
       ))}
-      <AddButton onClick={() => append({ name: "", amount: 1, unit: "g" })} />
+      <AddButton
+        onClick={() => append({ name: "", amount: 1, unit: "gram" })}
+      />
     </Stack>
   );
 }

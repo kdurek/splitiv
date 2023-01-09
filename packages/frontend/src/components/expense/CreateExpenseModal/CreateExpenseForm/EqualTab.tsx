@@ -34,7 +34,7 @@ function EqualTab() {
         <Group key={field.id} grow>
           <Checkbox
             {...register(`equal.${index}.check`, {
-              validate: () => usersIdToSplit.length > 1,
+              validate: () => usersIdToSplit.length > 0,
             })}
             label={field.name}
           />

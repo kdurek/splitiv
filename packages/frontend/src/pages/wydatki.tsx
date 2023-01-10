@@ -1,6 +1,7 @@
 import { Stack, Title } from "@mantine/core";
 
 import CreateExpenseModal from "components/expense/CreateExpenseModal";
+import CreateLoanModal from "components/expense/CreateLoanModal";
 import CreatePaymentModal from "components/expense/CreatePaymentModal";
 import ExpenseList from "components/expense/ExpenseList";
 import UserBalance from "components/expense/UserBalance";
@@ -16,6 +17,7 @@ function Expenses() {
       <GroupSelect />
       <UserBalance />
       <CreateExpenseModal groupId={groupId} />
+      <CreateLoanModal groupId={groupId} />
       <CreatePaymentModal groupId={groupId} />
       <ExpenseList />
     </Stack>

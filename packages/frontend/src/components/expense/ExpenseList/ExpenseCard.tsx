@@ -1,4 +1,4 @@
-import { Accordion, Group, List, Stack, Text } from "@mantine/core";
+import { Accordion, Divider, Group, List, Stack, Text } from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons";
 
 import UpdateExpenseModal from "components/expense/UpdateExpenseModal";
@@ -14,14 +14,20 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
 
   return (
     <Accordion.Item value={expense.id}>
-      <Accordion.Control icon={<IconReportMoney />}>
-        <Group position="apart">
-          <Text weight={700}>{expense.name}</Text>
+      <Accordion.Control
+        sx={{ alignItems: "start" }}
+        icon={<IconReportMoney />}
+      >
+        <Group align="start">
+          <Text sx={{ flex: 1 }} weight={700}>
+            {expense.name}
+          </Text>
           <Text weight={700}>{expense.amount} zł</Text>
         </Group>
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
+          <Divider />
           <List>
             {payers.map((user) => (
               <List.Item

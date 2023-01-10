@@ -1,4 +1,4 @@
-import { Accordion, Group, List, Stack, Text } from "@mantine/core";
+import { Accordion, Divider, Group, List, Stack, Text } from "@mantine/core";
 import { IconCash } from "@tabler/icons";
 
 import { GetExpensesByGroup } from "utils/trpc";
@@ -18,14 +18,15 @@ function PaymentCard({ expense }: PaymentCardProps) {
 
   return (
     <Accordion.Item value={expense.id}>
-      <Accordion.Control icon={<IconCash />}>
-        <Group position="apart">
-          <Text>{expense.name}</Text>
+      <Accordion.Control sx={{ alignItems: "start" }} icon={<IconCash />}>
+        <Group align="start">
+          <Text sx={{ flex: 1 }}>{expense.name}</Text>
           <Text>{expense.amount} zł</Text>
         </Group>
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
+          <Divider />
           <List>
             <List.Item>{`${paymentToUser} zapłacił/a ${paymentFromUser}`}</List.Item>
           </List>

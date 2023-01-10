@@ -1,7 +1,7 @@
 include .env
 
 deploy:
-	docker system prune && docker compose down && git pull && docker compose build --no-cache && docker compose up -d
+	docker compose up -d && docker system prune -a && docker compose down && git pull && docker compose build --no-cache && docker compose up -d
 postgres-backup:
 	docker exec --tty --interactive pgbackups /bin/sh -c "./backup.sh"
 postgres-backup-fix:

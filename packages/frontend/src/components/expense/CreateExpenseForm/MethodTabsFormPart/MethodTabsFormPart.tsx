@@ -1,19 +1,12 @@
 import { Tabs } from "@mantine/core";
-import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
 import EqualTab from "./EqualTab";
 import RatioTab from "./RatioTab";
 import UnequalTab from "./UnequalTab";
 
-function MethodTabs() {
-  const { watch, setValue } = useFormContext();
-
-  const methodWatch = watch("method");
-
-  useEffect(() => {
-    setValue("method", "equal");
-  }, [setValue]);
+function MethodTabsFormPart() {
+  const { setValue } = useFormContext();
 
   return (
     <Tabs
@@ -28,18 +21,18 @@ function MethodTabs() {
       </Tabs.List>
 
       <Tabs.Panel value="equal" mt="md">
-        {methodWatch === "equal" && <EqualTab />}
+        <EqualTab />
       </Tabs.Panel>
 
       <Tabs.Panel value="unequal" mt="md">
-        {methodWatch === "unequal" && <UnequalTab />}
+        <UnequalTab />
       </Tabs.Panel>
 
       <Tabs.Panel value="ratio" mt="md">
-        {methodWatch === "ratio" && <RatioTab />}
+        <RatioTab />
       </Tabs.Panel>
     </Tabs>
   );
 }
 
-export default MethodTabs;
+export default MethodTabsFormPart;

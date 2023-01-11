@@ -1,51 +1,16 @@
 import { PLN } from "@dinero.js/currencies";
-import {
-  Button,
-  Group,
-  NativeSelect,
-  NumberInput,
-  Paper,
-  TextInput,
-} from "@mantine/core";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Group, Paper } from "@mantine/core";
 import { allocate, toDecimal } from "dinero.js";
-import {
-  Controller,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import { useCreateExpense } from "hooks/useCreateExpense";
 import { dineroFromString } from "utils/dinero";
 import { GetGroupById } from "utils/trpc";
 
-import MethodTabs from "./MethodTabs";
-
-interface CreateExpenseFormValues {
-  name: string;
-  amount: number;
-  payer: string;
-  method: string;
-  equal: {
-    id: string;
-    check: boolean;
-    paid: string;
-    owed: string;
-    userId: string;
-  }[];
-  unequal: {
-    id: string;
-    paid: string;
-    owed: number;
-    userId: string;
-  }[];
-  ratio: {
-    id: string;
-    paid: string;
-    ratio: number;
-    userId: string;
-  }[];
-}
+import ExpenseDetailsFormPart from "./ExpenseDetailsFormPart";
+import { ExpenseFormSchema, ExpenseFormValues } from "./ExpenseFormSchema";
+import MethodTabsFormPart from "./MethodTabsFormPart";
 
 interface CreateExpenseFormProps {
   group: GetGroupById;
@@ -76,7 +41,7 @@ function CreateExpenseForm({ group, afterSubmit }: CreateExpenseFormProps) {
     ratio: 0,
   }));
 
-  const methods = useForm<CreateExpenseFormValues>({
+  const methods = useForm<ExpenseFormValues>({
     defaultValues: {
       amount: 0,
       method: "equal",
@@ -84,13 +49,14 @@ function CreateExpenseForm({ group, afterSubmit }: CreateExpenseFormProps) {
       unequal: unequalDefaults,
       ratio: ratioDefaults,
     },
+    resolver: zodResolver(ExpenseFormSchema),
   });
 
-  const { control, handleSubmit, register, reset } = methods;
+  const { handleSubmit, reset } = methods;
 
   if (!group) return null;
 
-  const onSubmit: SubmitHandler<CreateExpenseFormValues> = (values) => {
+  const onSubmit: SubmitHandler<ExpenseFormValues> = (values) => {
     const { name, payer, method, equal, unequal, ratio } = values;
     const amount = values.amount.toFixed(2);
     const dineroAmount = dineroFromString({
@@ -165,47 +131,8 @@ function CreateExpenseForm({ group, afterSubmit }: CreateExpenseFormProps) {
   return (
     <FormProvider {...methods}>
       <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
-        <TextInput
-          {...register("name", {
-            required: "Pole jest wymagane",
-            minLength: {
-              value: 3,
-              message: "Minimum length should be 3",
-            },
-          })}
-          label="Nazwa"
-          placeholder="Wprowadź nazwę"
-        />
-        <Controller
-          name="amount"
-          control={control}
-          rules={{
-            required: "Pole jest wymagane",
-          }}
-          render={({ field }) => (
-            <NumberInput
-              {...field}
-              mt={16}
-              decimalSeparator=","
-              label="Kwota"
-              defaultValue={0}
-              min={0}
-              precision={2}
-              step={0.01}
-            />
-          )}
-        />
-        <NativeSelect
-          {...register("payer", {
-            required: "Pole jest wymagane",
-          })}
-          mt={16}
-          label="Zapłacone przez"
-          data={group.members.map((user) => {
-            return { value: user.id, label: user.name };
-          })}
-        />
-        <MethodTabs />
+        <ExpenseDetailsFormPart group={group} />
+        <MethodTabsFormPart />
         <Group mt={24} position="right">
           <Button variant="default" type="submit">
             Dodaj

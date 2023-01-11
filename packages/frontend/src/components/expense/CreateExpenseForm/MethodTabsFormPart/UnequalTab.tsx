@@ -1,19 +1,14 @@
-import { Group, NumberInput, Stack, Text } from "@mantine/core";
+import { Box, Group, NumberInput, Stack, Text } from "@mantine/core";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
-interface UnequalTabFormValues {
-  amount: number;
-  unequal: {
-    id: string;
-    paid: string;
-    owed: number;
-    userId: string;
-    name: string;
-  }[];
-}
+import { ExpenseFormValues } from "../ExpenseFormSchema";
 
 function UnequalTab() {
-  const { control, watch } = useFormContext<UnequalTabFormValues>();
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext<ExpenseFormValues>();
   const amountWatch = watch("amount");
   const unequalWatch = watch("unequal");
   const usedAmount = unequalWatch.reduce(
@@ -30,16 +25,20 @@ function UnequalTab() {
 
   return (
     <Stack>
-      <Text>Podział na dokładne kwoty</Text>
+      <Box>
+        <Text>Podział na dokładne kwoty</Text>
+        {errors.unequal && (
+          <Text size="xs" color="red">
+            {errors.unequal?.message}
+          </Text>
+        )}
+      </Box>
       {fields.map((fieldV, index) => (
         <Group key={fieldV.id} grow position="apart">
           <Text w="full">{fieldV.name}</Text>
           <Controller
             name={`unequal.${index}.owed`}
             control={control}
-            rules={{
-              validate: () => usedAmount === amountWatch,
-            }}
             render={({ field }) => (
               <NumberInput
                 {...field}

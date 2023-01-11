@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 import { useGroup } from "hooks/useGroup";
 
-import CreateExpenseForm from "./CreateExpenseForm";
+import CreateExpenseForm from "../CreateExpenseForm";
 
 interface CreateExpenseModalProps {
   groupId: string;

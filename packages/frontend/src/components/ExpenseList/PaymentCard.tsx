@@ -1,9 +1,8 @@
 import { Accordion, Divider, Group, List, Stack, Text } from "@mantine/core";
 import { IconCash } from "@tabler/icons";
 
+import UpdateExpenseModal from "components/UpdateExpenseModal";
 import { GetExpensesByGroup, GetGroupById } from "utils/trpc";
-
-import UpdateExpenseModal from "../UpdateExpenseModal";
 
 interface PaymentCardProps {
   group: GetGroupById;

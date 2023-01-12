@@ -4,12 +4,11 @@ import { useDisclosure } from "@mantine/hooks";
 import { allocate, toDecimal } from "dinero.js";
 import { SubmitHandler } from "react-hook-form";
 
+import ExpenseForm from "components/ExpenseForm";
+import { ExpenseFormValues } from "components/ExpenseForm/ExpenseFormSchema";
 import { useCreateExpense } from "hooks/useCreateExpense";
 import { dineroFromString } from "utils/dinero";
 import { GetGroupById } from "utils/trpc";
-
-import ExpenseForm from "../ExpenseForm";
-import { ExpenseFormValues } from "../ExpenseForm/ExpenseFormSchema";
 
 interface CreateExpenseModalProps {
   group: GetGroupById;

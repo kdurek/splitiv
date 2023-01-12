@@ -1,10 +1,9 @@
 import { UseFormReturn } from "react-hook-form";
 import { useNavigate } from "react-router";
 
+import RecipeForm from "components/RecipeForm";
+import { RecipeFormValues } from "components/RecipeForm/RecipeFormSchema";
 import { useCreateRecipe } from "hooks/useCreateRecipe";
-
-import RecipeForm from "../RecipeForm";
-import { RecipeFormValues } from "../RecipeForm/RecipeFormSchema";
 
 function CreateRecipeForm() {
   const navigate = useNavigate();

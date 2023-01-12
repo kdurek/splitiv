@@ -1,11 +1,11 @@
 import { Stack, Title } from "@mantine/core";
 
-import CreateExpenseModal from "components/expense/CreateExpenseModal";
-import CreateLoanModal from "components/expense/CreateLoanModal";
-import CreatePaymentModal from "components/expense/CreatePaymentModal";
-import ExpenseList from "components/expense/ExpenseList";
-import UserBalance from "components/expense/UserBalance";
+import CreateExpenseModal from "components/CreateExpenseModal";
+import CreateLoanModal from "components/CreateLoanModal";
+import CreatePaymentModal from "components/CreatePaymentModal";
+import ExpenseList from "components/ExpenseList";
 import GroupSelect from "components/GroupSelect/GroupSelect";
+import UserBalance from "components/UserBalance";
 import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 

@@ -1,17 +1,16 @@
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { useGroup } from "hooks/useGroup";
+import { GetGroupById } from "utils/trpc";
 
 import CreateLoanForm from "./CreateLoanForm";
 
 interface CreatePaymentModalProps {
-  groupId: string;
+  group: GetGroupById;
 }
 
-function CreateLoanModal({ groupId }: CreatePaymentModalProps) {
+function CreateLoanModal({ group }: CreatePaymentModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
-  const { data: group } = useGroup(groupId);
 
   return (
     <>
@@ -19,11 +18,9 @@ function CreateLoanModal({ groupId }: CreatePaymentModalProps) {
         Dodaj pożyczkę
       </Button>
 
-      {group && (
-        <Modal opened={opened} onClose={close} title="Dodawanie pożyczki">
-          <CreateLoanForm group={group} afterSubmit={close} />
-        </Modal>
-      )}
+      <Modal opened={opened} onClose={close} title="Dodawanie pożyczki">
+        <CreateLoanForm group={group} afterSubmit={close} />
+      </Modal>
     </>
   );
 }

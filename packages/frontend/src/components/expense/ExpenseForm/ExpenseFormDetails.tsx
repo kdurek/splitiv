@@ -5,11 +5,11 @@ import { GetGroupById } from "utils/trpc";
 
 import { ExpenseFormValues } from "./ExpenseFormSchema";
 
-interface ExpenseDetailsFormPartProps {
+interface ExpenseFormDetailsProps {
   group: GetGroupById;
 }
 
-function ExpenseDetailsFormPart({ group }: ExpenseDetailsFormPartProps) {
+function ExpenseFormDetails({ group }: ExpenseFormDetailsProps) {
   const methods = useFormContext<ExpenseFormValues>();
 
   const {
@@ -36,7 +36,6 @@ function ExpenseDetailsFormPart({ group }: ExpenseDetailsFormPartProps) {
             {...field}
             decimalSeparator=","
             label="Kwota"
-            defaultValue={0}
             min={0}
             precision={2}
             step={0.01}
@@ -47,6 +46,7 @@ function ExpenseDetailsFormPart({ group }: ExpenseDetailsFormPartProps) {
       <NativeSelect
         {...register("payer")}
         label="Zapłacone przez"
+        error={errors.payer?.message}
         data={group.members.map((user) => {
           return { value: user.id, label: user.name };
         })}
@@ -55,4 +55,4 @@ function ExpenseDetailsFormPart({ group }: ExpenseDetailsFormPartProps) {
   );
 }
 
-export default ExpenseDetailsFormPart;
+export default ExpenseFormDetails;

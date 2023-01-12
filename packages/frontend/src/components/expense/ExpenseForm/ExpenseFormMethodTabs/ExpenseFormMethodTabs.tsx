@@ -5,7 +5,7 @@ import EqualTab from "./EqualTab";
 import RatioTab from "./RatioTab";
 import UnequalTab from "./UnequalTab";
 
-function MethodTabsFormPart() {
+function ExpenseFormMethodTabs() {
   const { setValue } = useFormContext();
 
   return (
@@ -35,4 +35,4 @@ function MethodTabsFormPart() {
   );
 }
 
-export default MethodTabsFormPart;
+export default ExpenseFormMethodTabs;

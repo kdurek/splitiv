@@ -3,17 +3,14 @@ import { z } from "zod";
 export const ExpenseFormSchema = z
   .object({
     name: z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
-    amount: z.number().gt(0, { message: "Minimalna wartość to 0.01" }),
-    payer: z.string(),
+    amount: z.number().gt(0, { message: "Kwota musi być większa niż 0" }),
+    payer: z.string().uuid("Musisz wybrać osobę płacącą"),
     method: z.string(),
     equal: z.array(
       z.object({
         id: z.string(),
         name: z.string(),
         check: z.boolean(),
-        paid: z.string(),
-        owed: z.string(),
-        userId: z.string(),
       })
     ),
     unequal: z.array(

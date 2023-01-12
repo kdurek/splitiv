@@ -1,6 +1,6 @@
 import { List, Stack, Title } from "@mantine/core";
 
-import AddUserToGroupModal from "components/group/AddUserToGroupModal";
+import AddUserToGroupModal from "components/AddUserToGroupModal";
 import GroupSelect from "components/GroupSelect/GroupSelect";
 import { useGroup } from "hooks/useGroup";
 import { useUsers } from "hooks/useUsers";

@@ -2,7 +2,7 @@ import { Button, Group, Modal, NativeSelect, Paper } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import CreateGroupModal from "components/group/CreateGroupModal";
+import CreateGroupModal from "components/CreateGroupModal";
 import { useGroups } from "hooks/useGroups";
 
 interface GroupSelectModalValues {

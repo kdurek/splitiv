@@ -1,7 +1,7 @@
 import { useLocalStorage } from "@mantine/hooks";
 import { ReactNode, createContext, useContext } from "react";
 
-import GroupSelectModal from "components/GroupSelect/GroupSelectModal";
+import GroupSelectModal from "components/GroupSelectModal";
 
 export const activeGroupContext = createContext<{
   activeGroupId: string;

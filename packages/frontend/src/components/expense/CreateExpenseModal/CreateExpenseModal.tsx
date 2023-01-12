@@ -8,7 +8,7 @@ import { useCreateExpense } from "hooks/useCreateExpense";
 import { dineroFromString } from "utils/dinero";
 import { GetGroupById } from "utils/trpc";
 
-import CreateExpenseForm from "../ExpenseForm";
+import ExpenseForm from "../ExpenseForm";
 import { ExpenseFormValues } from "../ExpenseForm/ExpenseFormSchema";
 
 interface CreateExpenseModalProps {
@@ -124,7 +124,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
 
       {group && (
         <Modal opened={opened} onClose={close} title="Dodawanie wydatku">
-          <CreateExpenseForm
+          <ExpenseForm
             group={group}
             defaultValues={defaultValues}
             onSubmit={onSubmit}

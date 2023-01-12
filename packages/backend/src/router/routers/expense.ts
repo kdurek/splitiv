@@ -57,7 +57,7 @@ export const expenseRouter = router({
           name: input.name,
           amount: input.amount,
           users: {
-            create: input.users,
+            createMany: { data: input.users },
           },
           type: input.type ?? "expense",
         },
@@ -70,8 +70,17 @@ export const expenseRouter = router({
   updateExpense: protectedProcedure
     .input(
       z.object({
+        groupId: z.string(),
         expenseId: z.string(),
         name: z.string(),
+        amount: z.string(),
+        users: z.array(
+          z.object({
+            paid: z.string(),
+            owed: z.string(),
+            userId: z.string(),
+          })
+        ),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -81,6 +90,15 @@ export const expenseRouter = router({
         },
         data: {
           name: input.name,
+          amount: input.amount,
+          users: {
+            deleteMany: {
+              expenseId: input.expenseId,
+            },
+            createMany: {
+              data: input.users,
+            },
+          },
         },
       });
     }),

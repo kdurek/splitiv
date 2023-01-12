@@ -2,13 +2,14 @@ import { Accordion, Divider, Group, List, Stack, Text } from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons";
 
 import UpdateExpenseModal from "components/expense/UpdateExpenseModal";
-import { GetExpensesByGroup } from "utils/trpc";
+import { GetExpensesByGroup, GetGroupById } from "utils/trpc";
 
 interface ExpenseCardProps {
+  group: GetGroupById;
   expense: GetExpensesByGroup[number];
 }
 
-function ExpenseCard({ expense }: ExpenseCardProps) {
+function ExpenseCard({ group, expense }: ExpenseCardProps) {
   const payers = expense.users.filter((user) => parseFloat(user.paid) > 0);
   const owers = expense.users.filter((user) => parseFloat(user.owed) > 0);
 
@@ -43,7 +44,7 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
               >{`${user.user.givenName} pożyczył/a ${user.owed} zł`}</List.Item>
             ))}
           </List>
-          <UpdateExpenseModal expense={expense} />
+          <UpdateExpenseModal group={group} expense={expense} />
         </Stack>
       </Accordion.Panel>
     </Accordion.Item>

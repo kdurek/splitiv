@@ -1,15 +1,16 @@
 import { Accordion, Divider, Group, List, Stack, Text } from "@mantine/core";
 import { IconCash } from "@tabler/icons";
 
-import { GetExpensesByGroup } from "utils/trpc";
+import { GetExpensesByGroup, GetGroupById } from "utils/trpc";
 
 import UpdateExpenseModal from "../UpdateExpenseModal";
 
 interface PaymentCardProps {
+  group: GetGroupById;
   expense: GetExpensesByGroup[number];
 }
 
-function PaymentCard({ expense }: PaymentCardProps) {
+function PaymentCard({ group, expense }: PaymentCardProps) {
   const { fromId, toId } = expense.repayments[0];
   const getUserNickname = (userId: string) =>
     expense.users.find((user) => user.userId === userId)?.user.givenName;
@@ -30,7 +31,7 @@ function PaymentCard({ expense }: PaymentCardProps) {
           <List>
             <List.Item>{`${paymentToUser} zapłacił/a ${paymentFromUser}`}</List.Item>
           </List>
-          <UpdateExpenseModal expense={expense} />
+          <UpdateExpenseModal group={group} expense={expense} />
         </Stack>
       </Accordion.Panel>
     </Accordion.Item>

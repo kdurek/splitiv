@@ -11,11 +11,11 @@ import {
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import UpdateRecipeForm from "components/recipe/form/UpdateRecipeForm";
-import { correctUnit } from "components/recipe/unitsMap";
+import UpdateRecipeForm from "components/UpdateRecipeForm/UpdateRecipeForm";
 import { useCurrentUser } from "hooks/useCurrentUser";
 import { useDeleteRecipeBySlug } from "hooks/useDeleteRecipeBySlug";
 import { useRecipeBySlug } from "hooks/useRecipeBySlug";
+import { correctUnit } from "lib/unitsMap";
 
 function Recipe() {
   const [editMode, setEditMode] = useState(false);

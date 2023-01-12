@@ -5,7 +5,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import AddButton from "./AddButton";
 import { RecipeFormValues } from "./RecipeFormSchema";
 
-function RecipeStepsForm() {
+function RecipeSteps() {
   const {
     control,
     register,
@@ -50,4 +50,4 @@ function RecipeStepsForm() {
   );
 }
 
-export default RecipeStepsForm;
+export default RecipeSteps;

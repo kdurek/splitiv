@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 
 import { RecipeFormValues } from "./RecipeFormSchema";
 
-function RecipeDetailsForm() {
+function RecipeDetails() {
   const {
     register,
     formState: { errors },
@@ -20,4 +20,4 @@ function RecipeDetailsForm() {
   );
 }
 
-export default RecipeDetailsForm;
+export default RecipeDetails;

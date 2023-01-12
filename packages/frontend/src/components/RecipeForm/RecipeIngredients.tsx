@@ -10,12 +10,12 @@ import {
 import { IconTrash } from "@tabler/icons";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
-import { unitsList } from "../unitsMap";
+import { unitsList } from "lib/unitsMap";
 
 import AddButton from "./AddButton";
 import { RecipeFormValues } from "./RecipeFormSchema";
 
-function RecipeIngredientsForm() {
+function RecipeIngredients() {
   const {
     control,
     register,
@@ -80,4 +80,4 @@ function RecipeIngredientsForm() {
   );
 }
 
-export default RecipeIngredientsForm;
+export default RecipeIngredients;

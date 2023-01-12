@@ -4,7 +4,7 @@ import CreateExpenseModal from "components/CreateExpenseModal";
 import CreateLoanModal from "components/CreateLoanModal";
 import CreatePaymentModal from "components/CreatePaymentModal";
 import ExpenseList from "components/ExpenseList";
-import GroupSelect from "components/GroupSelect/GroupSelect";
+import GroupSelect from "components/GroupSelect";
 import UserBalance from "components/UserBalance";
 import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";

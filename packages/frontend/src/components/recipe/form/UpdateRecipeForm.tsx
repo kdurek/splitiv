@@ -48,8 +48,8 @@ function UpdateRecipeForm({ recipe, afterSubmit }: UpdateRecipeFormProps) {
   };
 
   return (
-    <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
-      <FormProvider {...methods}>
+    <FormProvider {...methods}>
+      <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
         <Stack>
           <Title order={1}>Edycja przepisu</Title>
           <RecipeDetailsForm />
@@ -57,8 +57,8 @@ function UpdateRecipeForm({ recipe, afterSubmit }: UpdateRecipeFormProps) {
           <RecipeStepsForm />
           <Button type="submit">Zapisz</Button>
         </Stack>
-      </FormProvider>
-    </Paper>
+      </Paper>
+    </FormProvider>
   );
 }
 

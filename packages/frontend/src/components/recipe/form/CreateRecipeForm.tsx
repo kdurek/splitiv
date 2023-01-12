@@ -40,8 +40,8 @@ function CreateRecipeForm() {
   };
 
   return (
-    <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
-      <FormProvider {...methods}>
+    <FormProvider {...methods}>
+      <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
         <Stack>
           <Title order={1}>Tworzenie przepisu</Title>
           <RecipeDetailsForm />
@@ -49,8 +49,8 @@ function CreateRecipeForm() {
           <RecipeStepsForm />
           <Button type="submit">Dodaj</Button>
         </Stack>
-      </FormProvider>
-    </Paper>
+      </Paper>
+    </FormProvider>
   );
 }
 

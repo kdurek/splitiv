@@ -1,6 +1,6 @@
 import { ActionIcon, Box, Group, TextInput } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { useCreateTask } from "hooks/useCreateTask";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
@@ -14,7 +14,7 @@ function CreateTaskForm() {
   const { mutate: createTask } = useCreateTask();
   const { handleSubmit, register, reset } = useForm<CreateTaskValues>();
 
-  const onSubmit: SubmitHandler<CreateTaskValues> = (values) => {
+  const onSubmit = (values: CreateTaskValues) => {
     const { name } = values;
     createTask({ groupId, name });
     reset();

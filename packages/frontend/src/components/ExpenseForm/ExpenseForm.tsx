@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Group, Paper } from "@mantine/core";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form";
 
 import { GetGroupById } from "utils/trpc";
 
@@ -11,8 +11,11 @@ import { ExpenseFormSchema, ExpenseFormValues } from "./ExpenseFormSchema";
 interface ExpenseFormProps {
   group: GetGroupById;
   defaultValues: ExpenseFormValues;
-  onSubmit: SubmitHandler<ExpenseFormValues>;
-  afterSubmit: () => void;
+  onSubmit: (
+    values: ExpenseFormValues,
+    methods: UseFormReturn<ExpenseFormValues>
+  ) => void;
+  afterSubmit?: () => void;
   submitButtonText: string;
 }
 
@@ -30,10 +33,12 @@ function ExpenseForm({
 
   const { handleSubmit, reset } = methods;
 
-  const handleOnSubmit: SubmitHandler<ExpenseFormValues> = (values) => {
-    onSubmit(values);
+  const handleOnSubmit = (values: ExpenseFormValues) => {
+    onSubmit(values, methods);
     reset();
-    afterSubmit();
+    if (afterSubmit) {
+      afterSubmit();
+    }
   };
 
   if (!group) return null;

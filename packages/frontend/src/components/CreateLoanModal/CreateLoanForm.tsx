@@ -6,7 +6,7 @@ import {
   Paper,
   TextInput,
 } from "@mantine/core";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { useCreateExpense } from "hooks/useCreateExpense";
 import { GetGroupById } from "utils/trpc";
@@ -31,7 +31,7 @@ function CreateLoanForm({ group, afterSubmit }: CreateLoanFormProps) {
 
   if (!group) return null;
 
-  const onSubmit: SubmitHandler<CreateLoanFormValues> = (values) => {
+  const onSubmit = (values: CreateLoanFormValues) => {
     const { name, payer, ower } = values;
     const amount = values.amount.toFixed(2);
     const users = [

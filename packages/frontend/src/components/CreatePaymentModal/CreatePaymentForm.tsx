@@ -7,7 +7,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useEffect } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { useCreateExpense } from "hooks/useCreateExpense";
 import { GetGroupById } from "utils/trpc";
@@ -43,7 +43,7 @@ function CreatePaymentForm({ group, afterSubmit }: CreatePaymentFormProps) {
 
   if (!group) return null;
 
-  const onSubmit: SubmitHandler<CreatePaymentFormValues> = (values) => {
+  const onSubmit = (values: CreatePaymentFormValues) => {
     const { name, payer, ower } = values;
     const amount = values.amount.toFixed(2);
     const type = "payment";

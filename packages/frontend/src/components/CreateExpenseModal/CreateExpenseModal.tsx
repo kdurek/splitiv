@@ -2,7 +2,6 @@ import { PLN } from "@dinero.js/currencies";
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { allocate, toDecimal } from "dinero.js";
-import { SubmitHandler } from "react-hook-form";
 
 import ExpenseForm from "components/ExpenseForm";
 import { ExpenseFormValues } from "components/ExpenseForm/ExpenseFormSchema";
@@ -48,7 +47,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
     ratio: ratioDefaults,
   };
 
-  const onSubmit: SubmitHandler<ExpenseFormValues> = (values) => {
+  const onSubmit = (values: ExpenseFormValues) => {
     const { name, payer, method, equal, unequal, ratio } = values;
     const amount = values.amount.toFixed(2);
     const dineroAmount = dineroFromString({

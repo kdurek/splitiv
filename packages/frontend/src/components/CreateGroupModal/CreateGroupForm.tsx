@@ -8,7 +8,7 @@ interface CreateGroupFormValues {
 }
 
 interface CreateGroupFormProps {
-  afterSubmit: () => void;
+  afterSubmit?: () => void;
 }
 
 function CreateGroupForm({ afterSubmit }: CreateGroupFormProps) {

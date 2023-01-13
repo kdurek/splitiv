@@ -1,5 +1,5 @@
 import { Button, Group, NativeSelect, Paper } from "@mantine/core";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { useAddUserToGroup } from "hooks/useAddUserToGroup";
 import { useUsers } from "hooks/useUsers";
@@ -25,7 +25,7 @@ function AddUserToGroupForm({ group, afterSubmit }: AddUserToGroupFormProps) {
 
   if (!group || !users) return null;
 
-  const onSubmit: SubmitHandler<AddUserToGroupFormValues> = (values) => {
+  const onSubmit = (values: AddUserToGroupFormValues) => {
     addUserToGroup({ userId: values.user, groupId: group.id });
     reset();
     if (afterSubmit) {

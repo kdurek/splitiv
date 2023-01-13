@@ -1,6 +1,6 @@
 import { Button, Group, Modal, NativeSelect, Paper } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import CreateGroupModal from "components/CreateGroupModal";
 import { useGroups } from "hooks/useGroups";
@@ -11,7 +11,7 @@ interface GroupSelectModalValues {
 
 interface GroupSelectModalProps {
   defaultIsOpen: boolean;
-  onSubmit: (T: GroupSelectModalValues) => void;
+  onSubmit: (values: GroupSelectModalValues) => void;
 }
 
 function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
@@ -24,7 +24,7 @@ function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
     formState: { isSubmitting },
   } = useForm<GroupSelectModalValues>();
 
-  const handleOnSubmit: SubmitHandler<GroupSelectModalValues> = (values) => {
+  const handleOnSubmit = (values: GroupSelectModalValues) => {
     onSubmit(values);
     reset();
     close();

@@ -1,2 +1,77 @@
+services:
+  frontend:
+    container_name: frontend
+    image: splitiv-frontend
+    expose:
+      - "37533"
+    ports:
+      - '37533:37533'
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - postgres
+    networks:
+      - main
+    env_file:
+      - ".env"
+
+  backend:
+    container_name: backend
+    image: splitiv-backend
+    expose:
+      - "37534"
+    ports:
+      - '37534:37534'
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    networks:
+      - main
+    env_file:
+      - ".env"
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - postgres
+    ports:
+      - '5050:80'
+    restart: unless-stopped
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    networks:
+      - main
+
+  pgbackups:
+    container_name: pgbackups
+    image: prodrigestivill/postgres-backup-local
+    user: postgres:postgres
+    environment:
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
+      - SCHEDULE=@daily
+      - BACKUP_KEEP_DAYS=7
+      - BACKUP_KEEP_WEEKS=4
+      - BACKUP_KEEP_MONTHS=6
+      - HEALTHCHECK_PORT=8080
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    volumes:
+      - ./pgbackups:/backups
+    networks:
+      - main
+
 volumes:
-  postgres:
+  pgadmin:
+
+networks:
+  main:
+    driver: bridge

@@ -1,0 +1,32 @@
+{
+  "name": "splitiv",
+  "private": true,
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@7.22.0",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "postinstall": "simple-git-hooks",
+    "lint": "eslint --cache .",
+    "lint:fix": "eslint --fix --cache .",
+    "dev": "docker-compose up -d && nx run-many -p backend,frontend -t dev --verbose --output-style=stream",
+    "test": "nx affected -t test",
+    "build": "nx affected -t build"
+  },
+  "devDependencies": {
+    "lint-staged": "^13.1.0",
+    "nx": "15.5.1",
+    "rimraf": "^4.0.5",
+    "simple-git-hooks": "^2.8.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged --concurrent false"
+  },
+  "lint-staged": {
+    "packages/*/src/**/*.{ts,tsx}": [
+      "eslint --cache --fix"
+    ]
+  }
+}

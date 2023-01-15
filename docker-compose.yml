@@ -1,61 +1,4 @@
 services:
-  frontend:
-    container_name: frontend
-    build:
-      context: ./packages/frontend
-      target: ${NODE_ENV}
-      args:
-        - "NODE_ENV=${NODE_ENV}"
-        - "VITE_HOST=${VITE_HOST}"
-        - "VITE_PORT=${VITE_PORT}"
-        - "VITE_API_URL=${VITE_API_URL}"
-        - "VITE_AUTH0_DOMAIN=${VITE_AUTH0_DOMAIN}"
-        - "VITE_AUTH0_CLIENT_ID=${VITE_AUTH0_CLIENT_ID}"
-        - "VITE_AUTH0_REDIRECT_URI=${VITE_AUTH0_REDIRECT_URI}"
-        - "VITE_AUTH0_AUDIENCE=${VITE_AUTH0_AUDIENCE}"
-        - "VITE_AUTH0_SCOPE=${VITE_AUTH0_SCOPE}"
-    expose:
-      - "${VITE_PORT}"
-    ports:
-      - '${VITE_PORT_FORWARD}:${VITE_PORT}'
-    restart: unless-stopped
-    volumes:
-      - "./packages/frontend:/usr/src/frontend/app:delegated"
-      - "./packages/frontend/package.json:/usr/src/frontend/package.json"
-      - "./packages/frontend/yarn.lock:/usr/src/frontend/yarn.lock"
-      - "/usr/src/frontend/app/node_modules"
-    depends_on:
-      - backend
-      - postgres
-    networks:
-      - main
-    env_file:
-      - ".env"
-
-  backend:
-    container_name: backend
-    build:
-      context: ./packages/backend
-      target: ${NODE_ENV}
-      args:
-        - "NODE_ENV=${NODE_ENV}"
-    expose:
-      - "${SERVER_PORT}"
-    ports:
-      - '${SERVER_PORT_FORWARD}:${SERVER_PORT}'
-    restart: unless-stopped
-    volumes:
-      - "./packages/backend:/usr/src/backend/app:delegated"
-      - "./packages/backend/package.json:/usr/src/backend/package.json"
-      - "./packages/backend/yarn.lock:/usr/src/backend/yarn.lock"
-      - "/usr/src/backend/app/node_modules"
-    depends_on:
-      - postgres
-    networks:
-      - main
-    env_file:
-      - ".env"
-
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -72,48 +15,8 @@ services:
     networks:
       - main
 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    depends_on:
-      - postgres
-    ports:
-      - '5050:80'
-    restart: unless-stopped
-    volumes:
-      - pgadmin:/var/lib/pgadmin
-    networks:
-      - main
-
-  pgbackups:
-    container_name: pgbackups
-    image: prodrigestivill/postgres-backup-local
-    user: postgres:postgres
-    environment:
-      - POSTGRES_HOST=${DB_HOST}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
-      - SCHEDULE=@daily
-      - BACKUP_KEEP_DAYS=7
-      - BACKUP_KEEP_WEEKS=4
-      - BACKUP_KEEP_MONTHS=6
-      - HEALTHCHECK_PORT=8080
-    depends_on:
-      - postgres
-    restart: unless-stopped
-    volumes:
-      - ./pgbackups:/backups
-    networks:
-      - main
-
 volumes:
   postgres:
-  pgadmin:
 
 networks:
   main:

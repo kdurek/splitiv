@@ -2,11 +2,17 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "@backend/*": ["../../backend/*"]
+      "@backend/*": [
+        "../../backend/*"
+      ]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -19,8 +25,17 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["vite/client", "vitest/globals"]
+    "types": [
+      "vite/client",
+      "vitest/globals"
+    ]
   },
-  "include": ["src", "vite.config.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src",
+    ".eslintrc.cjs",
+    "vite.config.ts",
+  ],
+  "exclude": [
+    "node_modules"
+  ],
 }

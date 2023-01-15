@@ -15,7 +15,7 @@
     "build": {
       "dependsOn": [
         "^build",
-        "lint"
+        "^lint"
       ],
       "outputs": [
         "{projectRoot}/dist"

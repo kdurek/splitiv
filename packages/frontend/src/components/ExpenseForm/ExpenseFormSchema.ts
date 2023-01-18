@@ -6,6 +6,9 @@ export const ExpenseFormSchema = z
     amount: z.number().gt(0, { message: "Kwota musi być większa niż 0" }),
     payer: z.string().uuid("Musisz wybrać osobę płacącą"),
     method: z.string(),
+    single: z.object({
+      ower: z.string(),
+    }),
     equal: z.array(
       z.object({
         id: z.string(),
@@ -28,6 +31,29 @@ export const ExpenseFormSchema = z
       })
     ),
   })
+  .refine(
+    (values) => {
+      if (values.method !== "single") return true;
+
+      return values.single.ower !== "";
+    },
+    {
+      message: "Musisz wybrać osobę pożyczającą",
+      path: ["single", "ower"],
+    }
+  )
+  .refine(
+    (values) => {
+      if (values.method !== "single") return true;
+      if (values.method === "single" && values.payer === "") return true;
+
+      return values.single.ower !== values.payer;
+    },
+    {
+      message: "Osoba płacąca nie może być osobą pożyczającą",
+      path: ["single"],
+    }
+  )
   .refine(
     (values) => {
       if (values.method !== "equal") return true;

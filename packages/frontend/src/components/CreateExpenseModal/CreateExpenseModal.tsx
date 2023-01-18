@@ -19,6 +19,10 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
 
   if (!group) return null;
 
+  const singleDefaults = {
+    ower: "",
+  };
+
   const equalDefaults = group.members.map((member) => ({
     id: member.id,
     name: member.name,
@@ -40,21 +44,39 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
   const defaultValues = {
     name: "",
     amount: 0,
-    method: "equal",
+    method: "single",
     payer: "",
+    single: singleDefaults,
     equal: equalDefaults,
     unequal: unequalDefaults,
     ratio: ratioDefaults,
   };
 
   const onSubmit = (values: ExpenseFormValues) => {
-    const { name, payer, method, equal, unequal, ratio } = values;
+    const { name, payer, method, single, equal, unequal, ratio } = values;
     const amount = values.amount.toFixed(2);
     const dineroAmount = dineroFromString({
       amount,
       currency: PLN,
       scale: 2,
     });
+
+    if (method === "single") {
+      const users = [
+        {
+          paid: amount,
+          owed: "0.00",
+          userId: payer,
+        },
+        {
+          paid: "0.00",
+          owed: amount,
+          userId: single.ower,
+        },
+      ];
+
+      createExpense({ groupId: group.id, name, amount, users });
+    }
 
     if (method === "equal") {
       const filteredUsers = equal.filter(

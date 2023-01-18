@@ -47,7 +47,7 @@ function ExpenseForm({
     <FormProvider {...methods}>
       <Paper component="form" onSubmit={handleSubmit(handleOnSubmit)}>
         <ExpenseFormDetails group={group} />
-        <ExpenseFormMethodTabs />
+        <ExpenseFormMethodTabs group={group} />
         <Group mt={24} position="right">
           <Button variant="default" type="submit">
             {submitButtonText}

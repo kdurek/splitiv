@@ -22,6 +22,10 @@ function UpdateExpenseModal({ group, expense }: UpdateExpenseModalProps) {
 
   const expensePayer = expense.users.find((user) => parseFloat(user.paid) > 0);
 
+  const singleDefaults = {
+    ower: "",
+  };
+
   const equalDefaults = group.members.map((member) => ({
     id: member.id,
     name: member.name,
@@ -45,21 +49,45 @@ function UpdateExpenseModal({ group, expense }: UpdateExpenseModalProps) {
   const defaultValues = {
     name: expense.name,
     amount: parseFloat(expense.amount),
-    method: "equal",
+    method: "single",
     payer: expensePayer.userId,
+    single: singleDefaults,
     equal: equalDefaults,
     unequal: unequalDefaults,
     ratio: ratioDefaults,
   };
 
   const onSubmit = (values: ExpenseFormValues) => {
-    const { name, payer, method, equal, unequal, ratio } = values;
+    const { name, payer, method, single, equal, unequal, ratio } = values;
     const amount = values.amount.toFixed(2);
     const dineroAmount = dineroFromString({
       amount,
       currency: PLN,
       scale: 2,
     });
+
+    if (method === "single") {
+      const users = [
+        {
+          paid: amount,
+          owed: "0.00",
+          userId: payer,
+        },
+        {
+          paid: "0.00",
+          owed: amount,
+          userId: single.ower,
+        },
+      ];
+
+      updateExpense({
+        groupId: group.id,
+        expenseId: expense.id,
+        name,
+        amount,
+        users,
+      });
+    }
 
     if (method === "equal") {
       const filteredUsers = equal.filter(

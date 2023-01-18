@@ -54,13 +54,13 @@ function App() {
         >
           <CustomFonts />
           <LayoutProvider>
-            <AuthProvider>
-              <QueryProvider>
+            <QueryProvider>
+              <AuthProvider>
                 <ActiveGroupProvider>
                   <Suspense>{useRoutes(routes)}</Suspense>
                 </ActiveGroupProvider>
-              </QueryProvider>
-            </AuthProvider>
+              </AuthProvider>
+            </QueryProvider>
           </LayoutProvider>
         </MantineProvider>
       </ColorSchemeProvider>

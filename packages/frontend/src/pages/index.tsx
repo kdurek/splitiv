@@ -1,27 +1,17 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { Button, Stack, Title } from "@mantine/core";
-import { useNavigate } from "react-router";
+import { Stack, Title } from "@mantine/core";
 
-function Index() {
-  const { user } = useAuth0();
-  const navigate = useNavigate();
+import { MainLinks } from "components/Layout/MainLinks";
+import { useAuth } from "providers/AuthProvider";
 
-  if (!user) return null;
+function HomePage() {
+  const { user } = useAuth();
 
   return (
     <Stack>
-      <Title align="center">Witaj {user.name}</Title>
-      <Button variant="default" onClick={() => navigate("/przepisy")}>
-        Przeglądaj przepisy
-      </Button>
-      <Button variant="default" onClick={() => navigate("/wydatki")}>
-        Przeglądaj wydatki
-      </Button>
-      <Button variant="default" onClick={() => navigate("/zadania")}>
-        Przeglądaj zadania
-      </Button>
+      <Title align="center">{`Witaj ${user?.name || ""}`}</Title>
+      <MainLinks />
     </Stack>
   );
 }
 
-export default Index;
+export default HomePage;

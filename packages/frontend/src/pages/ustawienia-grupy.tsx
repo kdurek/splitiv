@@ -1,33 +1,19 @@
-import { List, Stack, Title } from "@mantine/core";
+import { Stack, Title } from "@mantine/core";
 
-import AddUserToGroupModal from "components/AddUserToGroupModal";
 import GroupSelect from "components/GroupSelect";
-import { useGroup } from "hooks/useGroup";
-import { useUsers } from "hooks/useUsers";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import GroupSettingsMembers from "components/GroupSettingsMembers";
+import ProtectedRoute from "ProtectedRoute";
 
-function GroupSettings() {
-  const { activeGroupId: groupId } = useActiveGroup();
-  const { data: group } = useGroup(groupId);
-  const { data: users } = useUsers();
-
+function GroupSettingsPage() {
   return (
-    <Stack>
-      <Title order={1}>Ustawienia grupy</Title>
-      <GroupSelect />
-      {group && users && (
-        <Stack>
-          <Title order={2}>Członkowie</Title>
-          <List>
-            {group.members.map((user) => (
-              <List.Item key={user.id}>{user.name}</List.Item>
-            ))}
-          </List>
-          <AddUserToGroupModal groupId={groupId} />
-        </Stack>
-      )}
-    </Stack>
+    <ProtectedRoute>
+      <Stack>
+        <Title order={1}>Ustawienia grupy</Title>
+        <GroupSelect />
+        <GroupSettingsMembers />
+      </Stack>
+    </ProtectedRoute>
   );
 }
 
-export default GroupSettings;
+export default GroupSettingsPage;

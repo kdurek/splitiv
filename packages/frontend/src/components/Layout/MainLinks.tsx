@@ -19,7 +19,7 @@ import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface MainLinkProps {
-  close: () => void;
+  close?: () => void;
   icon: ReactNode;
   color: string;
   label: string;
@@ -59,7 +59,9 @@ function MainLink({ close, icon, color, label, href }: MainLinkProps) {
 
   const handleNavigate = () => {
     navigate(href);
-    close();
+    if (close) {
+      close();
+    }
   };
 
   return (
@@ -96,7 +98,7 @@ function MainLink({ close, icon, color, label, href }: MainLinkProps) {
 }
 
 interface MainLinksProps {
-  close: () => void;
+  close?: () => void;
 }
 
 export function MainLinks({ close }: MainLinksProps) {

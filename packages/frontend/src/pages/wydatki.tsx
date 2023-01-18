@@ -1,31 +1,23 @@
 import { Stack, Title } from "@mantine/core";
 
-import CreateExpenseModal from "components/CreateExpenseModal";
-import CreateLoanModal from "components/CreateLoanModal";
-import CreatePaymentModal from "components/CreatePaymentModal";
+import ExpenseCreateButtons from "components/ExpenseCreateButtons";
 import ExpenseList from "components/ExpenseList";
 import GroupSelect from "components/GroupSelect";
 import UserBalance from "components/UserBalance";
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import ProtectedRoute from "ProtectedRoute";
 
-function Expenses() {
-  const { activeGroupId: groupId } = useActiveGroup();
-  const { data: group } = useGroup(groupId);
-
-  if (!group) return null;
-
+function ExpensesPage() {
   return (
-    <Stack>
-      <Title order={1}>Wydatki</Title>
-      <GroupSelect />
-      <UserBalance />
-      <CreateExpenseModal group={group} />
-      <CreateLoanModal group={group} />
-      <CreatePaymentModal group={group} />
-      <ExpenseList />
-    </Stack>
+    <ProtectedRoute>
+      <Stack>
+        <Title order={1}>Wydatki</Title>
+        <GroupSelect />
+        <UserBalance />
+        <ExpenseCreateButtons />
+        <ExpenseList />
+      </Stack>
+    </ProtectedRoute>
   );
 }
 
-export default Expenses;
+export default ExpensesPage;

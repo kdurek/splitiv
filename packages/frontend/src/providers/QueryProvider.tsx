@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { httpBatchLink } from "@trpc/client";
@@ -6,14 +7,12 @@ import superjson from "superjson";
 
 import { trpc } from "utils/trpc";
 
-import { useAuth } from "./AuthProvider";
-
 interface QueryProviderProps {
   children: ReactNode;
 }
 
 export function QueryProvider({ children }: QueryProviderProps) {
-  const { token } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
 
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -22,10 +21,16 @@ export function QueryProvider({ children }: QueryProviderProps) {
       links: [
         httpBatchLink({
           url: `${import.meta.env.VITE_API_URL}/trpc`,
-          headers() {
-            return {
-              authorization: token && `Bearer ${token}`,
-            };
+          async headers() {
+            try {
+              const accessToken = await getAccessTokenSilently();
+
+              return {
+                authorization: accessToken ? `Bearer ${accessToken}` : "",
+              };
+            } catch (error) {
+              return {};
+            }
           },
         }),
       ],

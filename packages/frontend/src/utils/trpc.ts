@@ -7,7 +7,7 @@ export const trpc = createTRPCReact<AppRouter>();
 
 export type RouterOutput = inferRouterOutputs<AppRouter>;
 
+export type GetUser = RouterOutput["user"]["getUser"];
 export type GetUsers = RouterOutput["user"]["getUsers"];
 export type GetExpensesByGroup = RouterOutput["expense"]["getExpensesByGroup"];
 export type GetGroupById = RouterOutput["group"]["getGroupById"];
-export type GetGroupsByMe = RouterOutput["group"]["getGroupsByMe"];

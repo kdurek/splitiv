@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { useLocalStorage } from "@mantine/hooks";
 import { ReactNode, createContext, useContext } from "react";
 
@@ -11,7 +12,6 @@ export const activeGroupContext = createContext<{
 const useProvideActiveGroup = () => {
   const [activeGroupId, setActiveGroupId] = useLocalStorage<string>({
     key: "activeGroupId",
-    defaultValue: "",
   });
 
   return { activeGroupId, setActiveGroupId };
@@ -24,8 +24,9 @@ interface ActiveGroupProviderProps {
 export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
   const group = useProvideActiveGroup();
   const { activeGroupId, setActiveGroupId } = group;
+  const { isAuthenticated } = useAuth0();
 
-  if (!activeGroupId) {
+  if (isAuthenticated && !activeGroupId) {
     return (
       <GroupSelectModal
         defaultIsOpen

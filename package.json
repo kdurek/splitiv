@@ -12,8 +12,8 @@
     "lint": "eslint --cache .",
     "lint:fix": "eslint --fix --cache .",
     "dev": "docker-compose up -d && nx run-many -p backend,frontend -t dev --verbose --output-style=stream",
-    "test": "nx affected -t test",
-    "build": "nx affected -t build"
+    "test": "nx run-many -p backend,frontend -t test --verbose --output-style=stream",
+    "build": "nx run-many -p backend,frontend -t build --verbose --output-style=stream"
   },
   "devDependencies": {
     "lint-staged": "^13.1.0",

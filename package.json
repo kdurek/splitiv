@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "lint-staged": "^13.1.0",
-    "nx": "15.5.1",
-    "rimraf": "^4.0.5",
+    "nx": "15.6.3",
+    "rimraf": "^4.1.2",
     "simple-git-hooks": "^2.8.1"
   },
   "simple-git-hooks": {

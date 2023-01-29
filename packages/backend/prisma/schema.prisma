@@ -18,24 +18,24 @@ model User {
   name       String
   nickname   String
   picture    String
-  groups     UserGroups[]
+  groups     UserGroup[]
   expenses   Expense[]
   debts      ExpenseDebt[]
   recipes    Recipe[]
 }
 
 model Group {
-  id        String       @id @default(uuid())
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  id        String      @id @default(uuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   name      String
   adminId   String
-  members   UserGroups[]
+  members   UserGroup[]
   expenses  Expense[]
   tasks     Task[]
 }
 
-model UserGroups {
+model UserGroup {
   user    User   @relation(fields: [userId], references: [id])
   userId  String
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)

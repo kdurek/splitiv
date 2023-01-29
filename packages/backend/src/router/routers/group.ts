@@ -97,7 +97,7 @@ export const groupRouter = router({
   addUserToGroup: protectedProcedure
     .input(z.object({ groupId: z.string(), userId: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.userGroups.create({
+      return ctx.prisma.userGroup.create({
         data: {
           groupId: input.groupId,
           userId: input.userId,
@@ -108,7 +108,7 @@ export const groupRouter = router({
   deleteUserFromGroup: protectedProcedure
     .input(z.object({ groupId: z.string(), userId: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.userGroups.delete({
+      return ctx.prisma.userGroup.delete({
         where: {
           userId_groupId: {
             groupId: input.groupId,

@@ -1,4 +1,3 @@
-import { toUnit } from "dinero.js";
 import { z } from "zod";
 
 import { generateBalances } from "../../utils/generateBalances";
@@ -44,23 +43,37 @@ export const groupRouter = router({
 
       if (!group) return null;
 
-      const expenseUsers = await ctx.prisma.expenseUsers.findMany({
+      const expenses = await ctx.prisma.expense.findMany({
         where: {
-          expense: {
-            groupId: input.groupId,
+          groupId: input.groupId,
+          debts: {
+            some: {
+              settled: {
+                equals: false,
+              },
+            },
+          },
+        },
+        include: {
+          debts: {
+            where: {
+              settled: {
+                equals: false,
+              },
+            },
           },
         },
       });
 
-      const membersWithBalances = group.members.map((member) => {
-        const generatedBalances = generateBalances(expenseUsers);
+      const generatedBalances = generateBalances(expenses);
 
+      const membersWithBalances = group.members.map((member) => {
         const findBalance = (userId: string) => {
           const foundBalance = generatedBalances.find(
             (balance) => balance.userId === userId
           );
           if (!foundBalance) return "0.00";
-          return toUnit(foundBalance.amount).toFixed(2);
+          return foundBalance.amount;
         };
 
         const balance = findBalance(member.user.id);
@@ -68,7 +81,7 @@ export const groupRouter = router({
         return { ...member.user, balance };
       });
 
-      const debts = generateDebts(expenseUsers);
+      const debts = generateDebts(expenses);
 
       return { ...group, members: membersWithBalances, debts };
     }),

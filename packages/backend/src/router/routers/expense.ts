@@ -1,32 +1,28 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { generateDebts } from "../../utils/generateDebts";
 import { protectedProcedure, router } from "../trpc";
 
 export const expenseRouter = router({
   getExpensesByGroup: protectedProcedure
     .input(z.object({ groupId: z.string() }))
     .query(async ({ input, ctx }) => {
-      const expenses = await ctx.prisma.expense.findMany({
+      return ctx.prisma.expense.findMany({
         where: {
           groupId: input.groupId,
         },
         include: {
-          users: {
+          payer: true,
+          debts: {
+            orderBy: {
+              debtorId: "desc",
+            },
             include: {
-              user: true,
+              debtor: true,
             },
           },
         },
         orderBy: { createdAt: "desc" },
-      });
-
-      return expenses.map((expense) => {
-        const repayments = generateDebts(expense.users);
-        return {
-          ...expense,
-          repayments,
-        };
       });
     }),
 
@@ -35,15 +31,15 @@ export const expenseRouter = router({
       z.object({
         groupId: z.string(),
         name: z.string(),
+        payerId: z.string(),
         amount: z.string(),
-        users: z.array(
+        debts: z.array(
           z.object({
-            paid: z.string(),
-            owed: z.string(),
-            userId: z.string(),
+            amount: z.string(),
+            debtorId: z.string(),
+            settled: z.boolean().default(false),
           })
         ),
-        type: z.string().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -56,13 +52,17 @@ export const expenseRouter = router({
           },
           name: input.name,
           amount: input.amount,
-          users: {
-            createMany: { data: input.users },
+          payer: {
+            connect: {
+              id: input.payerId,
+            },
           },
-          type: input.type ?? "expense",
+          debts: {
+            createMany: { data: input.debts },
+          },
         },
         include: {
-          users: true,
+          debts: true,
         },
       });
     }),
@@ -70,15 +70,16 @@ export const expenseRouter = router({
   updateExpense: protectedProcedure
     .input(
       z.object({
-        groupId: z.string(),
         expenseId: z.string(),
+        groupId: z.string(),
         name: z.string(),
+        payerId: z.string(),
         amount: z.string(),
-        users: z.array(
+        debts: z.array(
           z.object({
-            paid: z.string(),
-            owed: z.string(),
-            userId: z.string(),
+            amount: z.string(),
+            debtorId: z.string(),
+            settled: z.boolean().default(false),
           })
         ),
       })
@@ -91,14 +92,54 @@ export const expenseRouter = router({
         data: {
           name: input.name,
           amount: input.amount,
-          users: {
+          debts: {
             deleteMany: {
               expenseId: input.expenseId,
             },
             createMany: {
-              data: input.users,
+              data: input.debts,
             },
           },
+        },
+      });
+    }),
+
+  updateExpenseDebt: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.string(),
+        expenseDebtId: z.string(),
+        settled: z.boolean(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const expenseDebt = await ctx.prisma.expenseDebt.findUnique({
+        where: {
+          id: input.expenseDebtId,
+        },
+        select: {
+          debtorId: true,
+          expense: {
+            select: {
+              payerId: true,
+            },
+          },
+        },
+      });
+
+      if (expenseDebt?.expense.payerId === expenseDebt?.debtorId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Nie można oznaczyć osoby płacącej",
+        });
+      }
+
+      return ctx.prisma.expenseDebt.update({
+        where: {
+          id: input.expenseDebtId,
+        },
+        data: {
+          settled: input.settled,
         },
       });
     }),

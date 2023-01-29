@@ -20,7 +20,7 @@ export const ExpenseFormSchema = z
       z.object({
         id: z.string(),
         name: z.string(),
-        owed: z.number(),
+        amount: z.number(),
       })
     ),
     ratio: z.array(
@@ -69,7 +69,7 @@ export const ExpenseFormSchema = z
     (values) => {
       if (values.method !== "unequal") return true;
 
-      return values.unequal.filter((value) => value.owed > 0).length > 1;
+      return values.unequal.filter((value) => value.amount > 0).length > 1;
     },
     {
       message: "Co najmniej 2 osoby muszą uczestniczyć w wydatku",
@@ -81,7 +81,7 @@ export const ExpenseFormSchema = z
       if (values.method !== "unequal") return true;
 
       const usedAmount = values.unequal.reduce(
-        (prev, curr) => prev + (curr.owed || 0),
+        (prev, curr) => prev + (curr.amount || 0),
         0
       );
       return values.amount === usedAmount;

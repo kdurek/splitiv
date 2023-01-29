@@ -20,8 +20,6 @@ function UpdateExpenseModal({ group, expense }: UpdateExpenseModalProps) {
 
   if (!group) return null;
 
-  const expensePayer = expense.users.find((user) => parseFloat(user.paid) > 0);
-
   const singleDefaults = {
     ower: "",
   };
@@ -35,7 +33,7 @@ function UpdateExpenseModal({ group, expense }: UpdateExpenseModalProps) {
   const unequalDefaults = group.members.map((member) => ({
     id: member.id,
     name: member.name,
-    owed: 0,
+    amount: 0,
   }));
 
   const ratioDefaults = group.members.map((member) => ({
@@ -44,13 +42,11 @@ function UpdateExpenseModal({ group, expense }: UpdateExpenseModalProps) {
     ratio: 0,
   }));
 
-  if (!expensePayer) return null;
-
   const defaultValues = {
     name: expense.name,
     amount: parseFloat(expense.amount),
     method: "single",
-    payer: expensePayer.userId,
+    payer: expense.payerId,
     single: singleDefaults,
     equal: equalDefaults,
     unequal: unequalDefaults,
@@ -67,100 +63,100 @@ function UpdateExpenseModal({ group, expense }: UpdateExpenseModalProps) {
     });
 
     if (method === "single") {
-      const users = [
+      const debts = [
         {
-          paid: amount,
-          owed: "0.00",
-          userId: payer,
-        },
-        {
-          paid: "0.00",
-          owed: amount,
-          userId: single.ower,
+          amount,
+          debtorId: single.ower,
         },
       ];
 
       updateExpense({
-        groupId: group.id,
         expenseId: expense.id,
+        groupId: group.id,
         name,
+        payerId: payer,
         amount,
-        users,
+        debts,
       });
     }
 
     if (method === "equal") {
-      const filteredUsers = equal.filter(
-        (user) => user.check || payer === user.id
+      const filteredDebtors = equal.filter(
+        (debt) => debt.check || payer === debt.id
       );
-      const usersToAllocate = filteredUsers.map((user) => user.check).length;
+      const debtorsToAllocate = filteredDebtors.map(
+        (debt) => debt.check
+      ).length;
       const allocated = allocate(
         dineroAmount,
-        new Array(usersToAllocate).fill(1)
+        new Array(debtorsToAllocate).fill(1)
       );
-      const users = filteredUsers.map((user, index) => {
+      const debts = filteredDebtors.map((user, index) => {
         const isPayer = payer === user.id;
 
         return {
-          paid: isPayer ? amount : "0.00",
-          owed: toDecimal(allocated[index]) || "0.00",
-          userId: user.id,
+          amount: toDecimal(allocated[index]) || "0.00",
+          debtorId: user.id,
+          settled: isPayer,
         };
       });
 
       updateExpense({
-        groupId: group.id,
         expenseId: expense.id,
+        groupId: group.id,
         name,
+        payerId: payer,
         amount,
-        users,
+        debts,
       });
     }
 
     if (method === "unequal") {
-      const users = unequal
-        .filter((user) => user.owed > 0 || payer === user.id)
-        .map((user) => {
-          const isPayer = payer === user.id;
+      const debts = unequal
+        .filter((debt) => debt.amount > 0 || payer === debt.id)
+        .map((debt) => {
+          const isPayer = payer === debt.id;
 
           return {
-            paid: isPayer ? amount : "0.00",
-            owed: user.owed.toFixed(2) || "0.00",
-            userId: user.id,
+            amount: debt.amount.toFixed(2) || "0.00",
+            debtorId: debt.id,
+            settled: isPayer,
           };
         });
 
       updateExpense({
-        groupId: group.id,
         expenseId: expense.id,
+        groupId: group.id,
         name,
+        payerId: payer,
         amount,
-        users,
+        debts,
       });
     }
 
     if (method === "ratio") {
-      const filteredUsers = ratio.filter(
-        (user) => user.ratio > 0 || payer === user.id
+      const filteredDebtors = ratio.filter(
+        (debt) => debt.ratio > 0 || payer === debt.id
       );
-      const userRatios = filteredUsers.map((user) => user.ratio);
+      const userRatios = filteredDebtors.map((debt) => debt.ratio);
       const allocated = allocate(dineroAmount, userRatios);
-      const users = filteredUsers.map((user, index) => {
-        const isPayer = payer === user.id;
+      const debts = filteredDebtors.map((debt, index) => {
+        const isPayer = payer === debt.id;
 
         return {
-          paid: isPayer ? amount : "0.00",
-          owed: toDecimal(allocated[index]) || "0.00",
-          userId: user.id,
+          amount: toDecimal(allocated[index]) || "0.00",
+          debtorId: debt.id,
+          settled: isPayer,
         };
       });
 
       updateExpense({
-        groupId: group.id,
         expenseId: expense.id,
+        groupId: group.id,
         name,
+        payerId: payer,
         amount,
-        users,
+        debts,
       });
     }
   };

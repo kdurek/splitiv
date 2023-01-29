@@ -1,46 +1,53 @@
 import { PLN } from "@dinero.js/currencies";
-import { Dinero, subtract, toUnit } from "dinero.js";
+import { Dinero, multiply, toUnit } from "dinero.js";
 
 import { dineroFromString } from "./dinero";
 import { upsert } from "./upsert";
+
+import type { Expense, ExpenseDebt } from "@prisma/client";
 
 export interface IUserBalances {
   userId: string;
   amount: Dinero<number>;
 }
 
-export interface IExpenseUser {
-  id: string;
-  expenseId: string;
-  paid: string;
-  owed: string;
-  userId: string;
+interface ExpenseWithDebts extends Expense {
+  debts: ExpenseDebt[];
 }
 
-export function generateBalances(users: IExpenseUser[]) {
+export function generateBalances(expenses: ExpenseWithDebts[]) {
   const usersBalanceArray: IUserBalances[] = [];
 
-  users.forEach((user) => {
-    const paidAmount = dineroFromString({
-      amount: user.paid,
-      currency: PLN,
-      scale: 2,
+  expenses.forEach((expense) => {
+    expense.debts.forEach((debt) => {
+      const dineroOwedAmount = dineroFromString({
+        amount: debt.amount,
+        currency: PLN,
+        scale: 2,
+      });
+
+      if (expense.payerId !== debt.debtorId) {
+        upsert(
+          usersBalanceArray,
+          {
+            userId: debt.debtorId,
+            amount: multiply(dineroOwedAmount, -1),
+          },
+          "userId"
+        );
+        upsert(
+          usersBalanceArray,
+          {
+            userId: expense.payerId,
+            amount: dineroOwedAmount,
+          },
+          "userId"
+        );
+      }
     });
-    const owedAmount = dineroFromString({
-      amount: user.owed,
-      currency: PLN,
-      scale: 2,
-    });
-    const netAmount = subtract(paidAmount, owedAmount);
-    upsert(
-      usersBalanceArray,
-      {
-        userId: user.userId,
-        amount: netAmount,
-      },
-      "userId"
-    );
   });
 
-  return usersBalanceArray.sort((a, b) => toUnit(b.amount) - toUnit(a.amount));
+  return usersBalanceArray.map((t) => {
+    return { ...t, amount: toUnit(t.amount).toFixed(2) };
+  });
 }

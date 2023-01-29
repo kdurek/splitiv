@@ -32,7 +32,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
   const unequalDefaults = group.members.map((member) => ({
     id: member.id,
     name: member.name,
-    owed: 0,
+    amount: 0,
   }));
 
   const ratioDefaults = group.members.map((member) => ({
@@ -62,77 +62,97 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
     });
 
     if (method === "single") {
-      const users = [
+      const debts = [
         {
-          paid: amount,
-          owed: "0.00",
-          userId: payer,
-        },
-        {
-          paid: "0.00",
-          owed: amount,
-          userId: single.ower,
+          amount,
+          debtorId: single.ower,
         },
       ];
 
-      createExpense({ groupId: group.id, name, amount, users });
+      createExpense({
+        groupId: group.id,
+        name,
+        payerId: payer,
+        amount,
+        debts,
+      });
     }
 
     if (method === "equal") {
-      const filteredUsers = equal.filter(
-        (user) => user.check || payer === user.id
+      const filteredDebtors = equal.filter(
+        (debt) => debt.check || payer === debt.id
       );
-      const usersToAllocate = filteredUsers.map((user) => user.check).length;
+      const debtorsToAllocate = filteredDebtors.map(
+        (debt) => debt.check
+      ).length;
       const allocated = allocate(
         dineroAmount,
-        new Array(usersToAllocate).fill(1)
+        new Array(debtorsToAllocate).fill(1)
       );
-      const users = filteredUsers.map((user, index) => {
-        const isPayer = payer === user.id;
+      const debts = filteredDebtors.map((debt, index) => {
+        const isPayer = payer === debt.id;
 
         return {
-          paid: isPayer ? amount : "0.00",
-          owed: toDecimal(allocated[index]) || "0.00",
-          userId: user.id,
+          amount: toDecimal(allocated[index]) || "0.00",
+          debtorId: debt.id,
+          settled: isPayer,
         };
       });
 
-      createExpense({ groupId: group.id, name, amount, users });
+      createExpense({
+        groupId: group.id,
+        name,
+        payerId: payer,
+        amount,
+        debts,
+      });
     }
 
     if (method === "unequal") {
-      const users = unequal
-        .filter((user) => user.owed > 0 || payer === user.id)
-        .map((user) => {
-          const isPayer = payer === user.id;
+      const debts = unequal
+        .filter((debt) => debt.amount > 0 || payer === debt.id)
+        .map((debt) => {
+          const isPayer = payer === debt.id;
 
           return {
-            paid: isPayer ? amount : "0.00",
-            owed: user.owed.toFixed(2) || "0.00",
-            userId: user.id,
+            amount: debt.amount.toFixed(2) || "0.00",
+            debtorId: debt.id,
+            settled: isPayer,
           };
         });
 
-      createExpense({ groupId: group.id, name, amount, users });
+      createExpense({
+        groupId: group.id,
+        name,
+        payerId: payer,
+        amount,
+        debts,
+      });
     }
 
     if (method === "ratio") {
-      const filteredUsers = ratio.filter(
-        (user) => user.ratio > 0 || payer === user.id
+      const filteredDebtors = ratio.filter(
+        (debt) => debt.ratio > 0 || payer === debt.id
       );
-      const userRatios = filteredUsers.map((user) => user.ratio);
-      const allocated = allocate(dineroAmount, userRatios);
-      const users = filteredUsers.map((user, index) => {
-        const isPayer = payer === user.id;
+      const debtorRatios = filteredDebtors.map((debt) => debt.ratio);
+      const allocated = allocate(dineroAmount, debtorRatios);
+      const debts = filteredDebtors.map((debt, index) => {
+        const isPayer = payer === debt.id;
 
         return {
-          paid: isPayer ? amount : "0.00",
-          owed: toDecimal(allocated[index]) || "0.00",
-          userId: user.id,
+          amount: toDecimal(allocated[index]) || "0.00",
+          debtorId: debt.id,
+          settled: isPayer,
         };
       });
 
-      createExpense({ groupId: group.id, name, amount, users });
+      createExpense({
+        groupId: group.id,
+        name,
+        payerId: payer,
+        amount,
+        debts,
+      });
     }
   };
 

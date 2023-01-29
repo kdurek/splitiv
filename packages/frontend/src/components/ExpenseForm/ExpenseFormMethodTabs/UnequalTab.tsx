@@ -12,7 +12,7 @@ function UnequalTab() {
   const amountWatch = watch("amount");
   const unequalWatch = watch("unequal");
   const usedAmount = unequalWatch.reduce(
-    (prev, curr) => prev + (curr.owed || 0),
+    (prev, curr) => prev + (curr.amount || 0),
     0
   );
   const remainingAmount = amountWatch - usedAmount || 0;
@@ -37,7 +37,7 @@ function UnequalTab() {
         <Group key={fieldV.id} grow position="apart">
           <Text w="full">{fieldV.name}</Text>
           <Controller
-            name={`unequal.${index}.owed`}
+            name={`unequal.${index}.amount`}
             control={control}
             render={({ field }) => (
               <NumberInput

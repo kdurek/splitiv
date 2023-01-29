@@ -1,9 +1,13 @@
-import type { IExpenseUser } from "./generateBalances";
+import type { Expense, ExpenseDebt } from "@prisma/client";
 
 interface IDebt {
   fromId: string;
   toId: string;
   amount: string;
+}
+
+interface ExpenseWithDebts extends Expense {
+  debts: ExpenseDebt[];
 }
 
 function upsertDebt<T extends { amount: string }>(
@@ -65,56 +69,22 @@ function reduceDebts(debts: IDebt[]) {
   return reducedDebts;
 }
 
-export function generateDebts(users: IExpenseUser[]) {
-  const fromUsers = users.filter((user) => parseFloat(user.paid) > 0);
-  const toUsers = users.filter((user) => parseFloat(user.owed) > 0);
-
+export function generateDebts(expenses: ExpenseWithDebts[]) {
   const debts: IDebt[] = [];
 
-  fromUsers.forEach((from) => {
-    const {
-      id: fromId,
-      expenseId: fromExpenseId,
-      userId: fromUserId,
-      paid: fromPaid,
-      owed: fromOwed,
-    } = from;
-    toUsers.forEach((to) => {
-      const {
-        id: toId,
-        expenseId: toExpenseId,
-        userId: toUserId,
-        paid: toPaid,
-        owed: toOwed,
-      } = to;
-      if (
-        fromId !== toId &&
-        fromUserId !== toUserId &&
-        fromExpenseId === toExpenseId
-      ) {
-        if (parseFloat(fromPaid) > 0 && parseFloat(fromOwed) > 0) {
-          upsertDebt(
-            debts,
-            {
-              fromId: toUserId,
-              toId: fromUserId,
-              amount: toOwed,
-            },
-            "fromId",
-            "toId"
-          );
-        } else if (fromPaid === toOwed && toPaid === fromOwed) {
-          upsertDebt(
-            debts,
-            {
-              fromId: toUserId,
-              toId: fromUserId,
-              amount: fromPaid,
-            },
-            "fromId",
-            "toId"
-          );
-        }
+  expenses.forEach((expense) => {
+    expense.debts.forEach((debt) => {
+      if (debt.debtorId !== expense.payerId) {
+        upsertDebt(
+          debts,
+          {
+            fromId: debt.debtorId,
+            toId: expense.payerId,
+            amount: debt.amount,
+          },
+          "fromId",
+          "toId"
+        );
       }
     });
   });

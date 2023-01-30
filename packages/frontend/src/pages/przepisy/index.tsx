@@ -1,6 +1,6 @@
 import { Button, Divider, Stack, TextInput } from "@mantine/core";
 import { useDebouncedState } from "@mantine/hooks";
-import { IconSearch } from "@tabler/icons";
+import { IconSearch } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
 import RecipeList from "components/RecipeList";

@@ -10,7 +10,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconMoon, IconSun } from "@tabler/icons";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 import { ReactNode } from "react";
 
 import { Logo } from "./Logo";

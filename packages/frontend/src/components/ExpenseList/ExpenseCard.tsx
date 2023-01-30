@@ -11,7 +11,7 @@ import {
   IconCircleCheck,
   IconCircleDotted,
   IconReportMoney,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 
 import UpdateExpenseModal from "components/UpdateExpenseModal";
 import { useUpdateExpenseDebt } from "hooks/useUpdateExpenseDebt";

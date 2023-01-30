@@ -1,5 +1,5 @@
 import { ActionIcon, Box, Group, TextInput } from "@mantine/core";
-import { IconPlus } from "@tabler/icons";
+import { IconPlus } from "@tabler/icons-react";
 import { useForm } from "react-hook-form";
 
 import { useCreateTask } from "hooks/useCreateTask";

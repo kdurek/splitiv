@@ -1,5 +1,5 @@
 import { ActionIcon, Group, Stack, Text } from "@mantine/core";
-import { IconCheck } from "@tabler/icons";
+import { IconCheck } from "@tabler/icons-react";
 
 import { useDeleteTask } from "hooks/useDeleteTask";
 import { useTasksByGroup } from "hooks/useTasksByGroup";

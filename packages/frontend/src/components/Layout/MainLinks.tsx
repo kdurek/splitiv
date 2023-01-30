@@ -14,7 +14,7 @@ import {
   IconLogin,
   IconLogout,
   IconSettings,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 

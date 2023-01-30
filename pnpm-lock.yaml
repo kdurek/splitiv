@@ -94,7 +94,7 @@ importers:
       '@hookform/resolvers': ^2.9.10
       '@mantine/core': ^5.10.2
       '@mantine/hooks': ^5.10.2
-      '@tabler/icons': ^1.119.0
+      '@tabler/icons-react': ^2.1.2
       '@tanstack/react-query': ^4.23.0
       '@tanstack/react-query-devtools': ^4.23.0
       '@testing-library/jest-dom': ^5.16.5
@@ -143,7 +143,7 @@ importers:
       '@hookform/resolvers': 2.9.10_react-hook-form@7.42.1
       '@mantine/core': 5.10.2_bgdfy3qhwgihjpd7hjoiv47mfe
       '@mantine/hooks': 5.10.2_react@18.2.0
-      '@tabler/icons': 1.119.0_biqbaboplfbrettd7655fr4n2y
+      '@tabler/icons-react': 2.1.2_react@18.2.0
       '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
       '@tanstack/react-query-devtools': 4.23.0_74ln4l2hialvxelty6zunzkpjm
       '@trpc/client': 10.9.0_@trpc+server@10.9.0
@@ -1266,19 +1266,18 @@ packages:
     resolution: {integrity: sha512-1P1OROm/rdubP5aFDSZQILU0vrLCJ4fvHt6EoqHEM+2D/G5MK3bIaymUKLit8Js9gbns5UyJnkP/TZROLw4tUA==}
     dev: true
 
-  /@tabler/icons/1.119.0_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-Fk3Qq4w2SXcTjc/n1cuL5bccPkylrOMo7cYpQIf/yw6zP76LQV9dtLcHQUjFiUnaYuswR645CnURIhlafyAh9g==}
+  /@tabler/icons-react/2.1.2_react@18.2.0:
+    resolution: {integrity: sha512-DrJrr7e7+tzsqm3KFw1gg9Pfapz+gNA2bwv78tdlMKVQ5G6bfEtKVugzqqpgLfCJN/CgcM1ZROGrLtdmV/O6gw==}
     peerDependencies:
-      react: ^16.x || 17.x || 18.x
-      react-dom: ^16.x || 17.x || 18.x
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-dom:
-        optional: true
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
+      '@tabler/icons': 2.1.2
+      prop-types: 15.8.1
       react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@tabler/icons/2.1.2:
+    resolution: {integrity: sha512-+CPB+BSqVDP4+/d+cHSaGwG460C3sob7EJkQ+ZS8xV6bRER64OsCP92O7M+uYBhJFDWuf6poCeSETNZNcFa2nA==}
     dev: false
 
   /@tanstack/match-sorter-utils/8.7.6:
@@ -4464,7 +4463,6 @@ packages:
   /object-assign/4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /object-inspect/1.12.3:
     resolution: {integrity: sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==}
@@ -4815,7 +4813,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /proxy-addr/2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}

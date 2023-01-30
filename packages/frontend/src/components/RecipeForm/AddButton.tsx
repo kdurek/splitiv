@@ -1,5 +1,5 @@
 import { Text, UnstyledButton } from "@mantine/core";
-import { IconPlus } from "@tabler/icons";
+import { IconPlus } from "@tabler/icons-react";
 
 interface AddButtonProps {
   onClick: () => void;

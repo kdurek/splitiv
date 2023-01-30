@@ -7,7 +7,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { IconTrash } from "@tabler/icons";
+import { IconTrash } from "@tabler/icons-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import { unitsList } from "lib/unitsMap";

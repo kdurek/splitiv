@@ -33,9 +33,11 @@ function App() {
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-      redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
-      audience={import.meta.env.VITE_AUTH0_AUDIENCE}
-      scope={import.meta.env.VITE_AUTH0_SCOPE}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+        scope: import.meta.env.VITE_AUTH0_SCOPE,
+      }}
       useRefreshTokens
       cacheLocation="localstorage"
     >

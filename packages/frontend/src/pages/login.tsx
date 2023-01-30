@@ -13,7 +13,13 @@ function LoginPage() {
       <Button
         variant="default"
         leftIcon={<IconLogin />}
-        onClick={() => loginWithRedirect({ connection: "google-oauth2" })}
+        onClick={() =>
+          loginWithRedirect({
+            authorizationParams: {
+              connection: "google-oauth2",
+            },
+          })
+        }
       >
         Zaloguj
       </Button>

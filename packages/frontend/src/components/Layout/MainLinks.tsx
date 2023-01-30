@@ -126,7 +126,11 @@ export function MainLinks({ close }: MainLinksProps) {
           variant="default"
           w="100%"
           leftIcon={<IconLogin />}
-          onClick={() => loginWithRedirect({ connection: "google-oauth2" })}
+          onClick={() =>
+            loginWithRedirect({
+              authorizationParams: { connection: "google-oauth2" },
+            })
+          }
         >
           Zaloguj
         </Button>

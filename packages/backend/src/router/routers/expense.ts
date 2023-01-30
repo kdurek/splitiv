@@ -37,7 +37,7 @@ export const expenseRouter = router({
           z.object({
             amount: z.string(),
             debtorId: z.string(),
-            settled: z.boolean().default(false),
+            settled: z.string().default("0.00"),
           })
         ),
       })
@@ -79,7 +79,7 @@ export const expenseRouter = router({
           z.object({
             amount: z.string(),
             debtorId: z.string(),
-            settled: z.boolean().default(false),
+            settled: z.string().default("0.00"),
           })
         ),
       })
@@ -107,17 +107,17 @@ export const expenseRouter = router({
   updateExpenseDebt: protectedProcedure
     .input(
       z.object({
-        groupId: z.string(),
         expenseDebtId: z.string(),
-        settled: z.boolean(),
+        settled: z.string().default("0.00"),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const expenseDebt = await ctx.prisma.expenseDebt.findUnique({
+      const expenseDebt = await ctx.prisma.expenseDebt.findUniqueOrThrow({
         where: {
           id: input.expenseDebtId,
         },
         select: {
+          amount: true,
           debtorId: true,
           expense: {
             select: {
@@ -127,10 +127,17 @@ export const expenseRouter = router({
         },
       });
 
+      if (input.settled > expenseDebt?.amount) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Kwota do oddania nie może być większa niż kwota do zapłaty",
+        });
+      }
+
       if (expenseDebt?.expense.payerId === expenseDebt?.debtorId) {
         throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Nie można oznaczyć osoby płacącej",
+          code: "BAD_REQUEST",
+          message: "Nie można edytować kwoty do oddania osoby płacącej",
         });
       }
 

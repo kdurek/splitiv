@@ -1,13 +1,17 @@
 import { trpc } from "utils/trpc";
 
-function useUpdateExpenseDebt() {
+interface UseUpdateExpenseDebtProps {
+  groupId: string;
+}
+
+function useUpdateExpenseDebt({ groupId }: UseUpdateExpenseDebtProps) {
   const utils = trpc.useContext();
 
   return trpc.expense.updateExpenseDebt.useMutation({
-    onSuccess(_, variables) {
-      utils.group.getGroupById.invalidate({ groupId: variables.groupId });
+    onSuccess() {
+      utils.group.getGroupById.invalidate({ groupId });
       utils.expense.getExpensesByGroup.invalidate({
-        groupId: variables.groupId,
+        groupId,
       });
     },
   });

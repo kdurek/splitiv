@@ -43,29 +43,24 @@ export const groupRouter = router({
 
       if (!group) return null;
 
-      const expenses = await ctx.prisma.expense.findMany({
+      const expenseDebts = await ctx.prisma.expenseDebt.findMany({
         where: {
-          groupId: input.groupId,
-          debts: {
-            some: {
-              settled: {
-                equals: false,
-              },
-            },
+          expense: {
+            groupId: input.groupId,
           },
+          settled: { lt: ctx.prisma.expenseDebt.fields.amount },
         },
         include: {
-          debts: {
-            where: {
-              settled: {
-                equals: false,
-              },
+          expense: {
+            select: {
+              amount: true,
+              payerId: true,
             },
           },
         },
       });
 
-      const generatedBalances = generateBalances(expenses);
+      const generatedBalances = generateBalances(expenseDebts);
 
       const membersWithBalances = group.members.map((member) => {
         const findBalance = (userId: string) => {
@@ -81,9 +76,13 @@ export const groupRouter = router({
         return { ...member.user, balance };
       });
 
-      const debts = generateDebts(expenses);
+      const debts = generateDebts(expenseDebts);
 
-      return { ...group, members: membersWithBalances, debts };
+      return {
+        ...group,
+        members: membersWithBalances,
+        debts,
+      };
     }),
 
   deleteGroupById: protectedProcedure

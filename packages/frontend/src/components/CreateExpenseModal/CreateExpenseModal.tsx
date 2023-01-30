@@ -72,8 +72,8 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
       createExpense({
         groupId: group.id,
         name,
-        payerId: payer,
         amount,
+        payerId: payer,
         debts,
       });
     }
@@ -91,19 +91,20 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
       );
       const debts = filteredDebtors.map((debt, index) => {
         const isPayer = payer === debt.id;
+        const debtAmount = toDecimal(allocated[index]);
 
         return {
-          amount: toDecimal(allocated[index]) || "0.00",
+          settled: isPayer ? debtAmount : "0.00",
+          amount: debtAmount,
           debtorId: debt.id,
-          settled: isPayer,
         };
       });
 
       createExpense({
         groupId: group.id,
         name,
-        payerId: payer,
         amount,
+        payerId: payer,
         debts,
       });
     }
@@ -115,17 +116,17 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
           const isPayer = payer === debt.id;
 
           return {
-            amount: debt.amount.toFixed(2) || "0.00",
+            settled: isPayer ? amount : "0.00",
+            amount: debt.amount.toFixed(2),
             debtorId: debt.id,
-            settled: isPayer,
           };
         });
 
       createExpense({
         groupId: group.id,
         name,
-        payerId: payer,
         amount,
+        payerId: payer,
         debts,
       });
     }
@@ -138,19 +139,20 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
       const allocated = allocate(dineroAmount, debtorRatios);
       const debts = filteredDebtors.map((debt, index) => {
         const isPayer = payer === debt.id;
+        const debtAmount = toDecimal(allocated[index]);
 
         return {
-          amount: toDecimal(allocated[index]) || "0.00",
+          settled: isPayer ? debtAmount : "0.00",
+          amount: debtAmount,
           debtorId: debt.id,
-          settled: isPayer,
         };
       });
 
       createExpense({
         groupId: group.id,
         name,
-        payerId: payer,
         amount,
+        payerId: payer,
         debts,
       });
     }

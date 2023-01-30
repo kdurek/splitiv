@@ -1,21 +1,9 @@
-import {
-  Accordion,
-  Group,
-  List,
-  Stack,
-  Text,
-  ThemeIcon,
-  useMantineColorScheme,
-} from "@mantine/core";
-import {
-  IconCircleCheck,
-  IconCircleDotted,
-  IconReportMoney,
-} from "@tabler/icons-react";
+import { Accordion, Group, List, Stack, Text } from "@mantine/core";
+import { IconReportMoney } from "@tabler/icons-react";
 
-import UpdateExpenseModal from "components/UpdateExpenseModal";
-import { useUpdateExpenseDebt } from "hooks/useUpdateExpenseDebt";
 import { GetExpensesByGroup, GetGroupById } from "utils/trpc";
+
+import ExpenseCardPayment from "./ExpenseCardPayment";
 
 interface ExpenseCardProps {
   group: GetGroupById;
@@ -23,8 +11,6 @@ interface ExpenseCardProps {
 }
 
 function ExpenseCard({ group, expense }: ExpenseCardProps) {
-  const { mutate: updateExpenseDebt } = useUpdateExpenseDebt();
-  const { colorScheme } = useMantineColorScheme();
   const payer = expense.debts.find((debt) => expense.payerId === debt.debtorId);
   const debts = expense.debts.filter(
     (debt) => expense.payerId !== debt.debtorId
@@ -47,40 +33,18 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
-          <Text>{`${expense.payer.givenName} zapłacił/a ${expense.amount} zł ${
-            payer ? `i pożyczył/a ${payer.amount} zł` : ""
+          <Text>{`${expense.payer.givenName} - zapłacone ${expense.amount} zł ${
+            payer ? `i oddane ${payer.amount} zł` : ""
           }`}</Text>
           <List center spacing={16}>
             {debts.map((debt) => (
-              <List.Item
+              <ExpenseCardPayment
                 key={debt.id}
-                icon={
-                  <ThemeIcon
-                    color={debt.settled ? "teal" : "blue"}
-                    variant={colorScheme === "light" ? "light" : "filled"}
-                    size={24}
-                    radius="xl"
-                    onClick={() => {
-                      updateExpenseDebt({
-                        groupId: group.id,
-                        expenseDebtId: debt.id,
-                        settled: !debt.settled,
-                      });
-                    }}
-                  >
-                    {debt.settled ? (
-                      <IconCircleCheck size={16} />
-                    ) : (
-                      <IconCircleDotted size={16} />
-                    )}
-                  </ThemeIcon>
-                }
-              >
-                {`${debt.debtor.givenName} pożyczył/a ${debt.amount} zł`}
-              </List.Item>
+                debt={debt}
+                groupId={group.id}
+              />
             ))}
           </List>
-          <UpdateExpenseModal group={group} expense={expense} />
         </Stack>
       </Accordion.Panel>
     </Accordion.Item>

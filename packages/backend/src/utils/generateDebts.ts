@@ -1,4 +1,9 @@
-import type { Expense, ExpenseDebt } from "@prisma/client";
+import { PLN } from "@dinero.js/currencies";
+import { subtract, toUnit } from "dinero.js";
+
+import { dineroFromString } from "./dinero";
+
+import type { ExpenseDebt } from "@prisma/client";
 
 interface IDebt {
   fromId: string;
@@ -6,8 +11,10 @@ interface IDebt {
   amount: string;
 }
 
-interface ExpenseWithDebts extends Expense {
-  debts: ExpenseDebt[];
+interface DebtWithExpense extends ExpenseDebt {
+  expense: {
+    payerId: string;
+  };
 }
 
 function upsertDebt<T extends { amount: string }>(
@@ -69,25 +76,35 @@ function reduceDebts(debts: IDebt[]) {
   return reducedDebts;
 }
 
-export function generateDebts(expenses: ExpenseWithDebts[]) {
-  const debts: IDebt[] = [];
+export function generateDebts(debts: DebtWithExpense[]) {
+  const debtsArray: IDebt[] = [];
 
-  expenses.forEach((expense) => {
-    expense.debts.forEach((debt) => {
-      if (debt.debtorId !== expense.payerId) {
-        upsertDebt(
-          debts,
-          {
-            fromId: debt.debtorId,
-            toId: expense.payerId,
-            amount: debt.amount,
-          },
-          "fromId",
-          "toId"
-        );
-      }
-    });
+  debts.forEach((debt) => {
+    if (debt.debtorId !== debt.expense.payerId) {
+      const dineroDebtAmount = dineroFromString({
+        amount: debt.amount,
+        currency: PLN,
+        scale: 2,
+      });
+      const dineroSettledAmount = dineroFromString({
+        amount: debt.settled,
+        currency: PLN,
+        scale: 2,
+      });
+      const netDineroAmount = subtract(dineroDebtAmount, dineroSettledAmount);
+
+      upsertDebt(
+        debtsArray,
+        {
+          fromId: debt.debtorId,
+          toId: debt.expense.payerId,
+          amount: toUnit(netDineroAmount).toFixed(2),
+        },
+        "fromId",
+        "toId"
+      );
+    }
   });
 
-  return reduceDebts(debts);
+  return reduceDebts(debtsArray);
 }

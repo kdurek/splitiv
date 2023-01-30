@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "ExpenseDebt" ALTER COLUMN "settled" SET DEFAULT '0.00',
+ALTER COLUMN "settled" SET DATA TYPE TEXT;

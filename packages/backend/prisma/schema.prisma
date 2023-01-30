@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fieldReference"]
 }
 
 datasource db {
@@ -49,7 +50,7 @@ model ExpenseDebt {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   amount    String
-  settled   Boolean  @default(false)
+  settled   String   @default("0.00")
   expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   expenseId String
   debtor    User     @relation(fields: [debtorId], references: [id])

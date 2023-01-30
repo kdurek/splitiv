@@ -127,7 +127,7 @@ export const expenseRouter = router({
         },
       });
 
-      if (input.settled > expenseDebt?.amount) {
+      if (parseFloat(input.settled) > parseFloat(expenseDebt?.amount)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Kwota do oddania nie może być większa niż kwota do zapłaty",

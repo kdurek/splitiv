@@ -9,7 +9,6 @@
     "dev": "nodemon",
     "build": "rimraf dist && etsc && cd ../.. && docker build -f ./packages/backend/Dockerfile . -t splitiv-backend",
     "prisma:generate": "prisma generate",
-    "prisma:migrate:deploy": "prisma migrate deploy",
     "lint": "eslint --cache 'src/**/*.ts'",
     "lint:fix": "eslint --fix --cache 'src/**/*.ts'"
   },

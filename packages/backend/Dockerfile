@@ -15,4 +15,5 @@ LABEL maintainer="Krzysztof Durek <walendes@gmail.com>"
 WORKDIR /usr/src/backend
 COPY packages/backend/dist ./dist
 COPY --from=base /usr/src/backend/node_modules ./node_modules
+COPY --from=base /usr/src/backend/prisma ./prisma
 CMD ["node", "./dist/index.js"]

@@ -8,8 +8,8 @@
     "lint": "eslint --cache .",
     "lint:fix": "eslint --fix --cache .",
     "dev": "docker-compose up -d && nx run-many -p backend,frontend -t dev --verbose --output-style=stream",
-    "test": "nx run-many -p backend,frontend -t test --verbose --output-style=stream",
-    "build": "nx run-many -p backend,frontend -t build --verbose --output-style=stream"
+    "test": "nx run-many -p backend,frontend -t test --verbose --output-style=stream --parallel=false",
+    "build": "nx run-many -p backend,frontend -t build --verbose --output-style=stream --parallel=false"
   },
   "devDependencies": {
     "lint-staged": "^13.1.0",

@@ -1,11 +1,12 @@
 import { PLN } from "@dinero.js/currencies";
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { allocate, dinero, toDecimal } from "dinero.js";
+import { allocate, toDecimal } from "dinero.js";
 
 import ExpenseForm from "components/ExpenseForm";
 import { ExpenseFormValues } from "components/ExpenseForm/ExpenseFormSchema";
 import { useCreateExpense } from "hooks/useCreateExpense";
+import { dineroFromString } from "utils/dinero";
 import { GetGroupById } from "utils/trpc";
 
 interface CreateExpenseModalProps {
@@ -54,8 +55,8 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
   const onSubmit = (values: ExpenseFormValues) => {
     const { name, amount, payer, method, single, equal, unequal, ratio } =
       values;
-    const dineroAmount = dinero({
-      amount,
+    const dineroAmount = dineroFromString({
+      amount: amount.toFixed(2),
       currency: PLN,
       scale: 2,
     });

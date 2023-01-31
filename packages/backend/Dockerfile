@@ -8,7 +8,7 @@ COPY packages/backend/package.json ./
 COPY pnpm-lock.yaml ./
 RUN pnpm install --prod
 COPY packages/backend/prisma ./prisma
-RUN pnpx prisma generate
+RUN pnpm dlx prisma generate
 
 FROM node:18-alpine
 LABEL maintainer="Krzysztof Durek <walendes@gmail.com>"

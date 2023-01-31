@@ -2,12 +2,8 @@
   "name": "splitiv",
   "private": true,
   "version": "0.0.0",
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "packageManager": "pnpm@7.22.0",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "postinstall": "simple-git-hooks",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --fix --cache .",
@@ -22,7 +18,7 @@
     "simple-git-hooks": "^2.8.1"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm exec lint-staged --concurrent false"
+    "pre-commit": "pnpm dlx lint-staged --concurrent false"
   },
   "lint-staged": {
     "packages/*/src/**/*.{ts,tsx}": [

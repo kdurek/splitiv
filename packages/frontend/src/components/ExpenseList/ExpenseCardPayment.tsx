@@ -1,54 +1,84 @@
-import {
-  ActionIcon,
-  Button,
-  Group,
-  List,
-  NumberInput,
-  Text,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ActionIcon, Box, Group, List, NumberInput, Text } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
-import { IconSquare, IconSquareCheck, IconSquareX } from "@tabler/icons-react";
+import {
+  IconSquare,
+  IconSquareArrowUp,
+  IconSquareCheck,
+  IconSquareX,
+} from "@tabler/icons-react";
 import Decimal from "decimal.js";
-import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
 
 import { useUpdateExpenseDebt } from "hooks/useUpdateExpenseDebt";
+import { useAuth } from "providers/AuthProvider";
 
 interface ExpenseCardPaymentProps {
   debt: {
-    debtor: {
-      givenName: string;
-    };
     id: string;
     settled: Decimal;
     amount: Decimal;
+    expense: {
+      payerId: string;
+    };
+    debtor: {
+      givenName: string;
+    };
+    debtorId: string;
   };
   groupId: string;
 }
+
+const schema = z.object({
+  amount: z.number().positive("Kwota musi być większa niż 0"),
+});
+
+type ExpenseCardPaymentFormValues = z.infer<typeof schema>;
 
 function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
   const { mutate: updateExpenseDebt } = useUpdateExpenseDebt({
     groupId,
   });
-  const { colorScheme } = useMantineColorScheme();
   const [isEditing, toggleIsEditing] = useToggle();
-  const [payAmount, setPayAmount] = useState(0);
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setError,
+    setValue,
+    formState: { errors },
+  } = useForm<ExpenseCardPaymentFormValues>({
+    shouldUnregister: true,
+    defaultValues: {
+      amount: 0,
+    },
+    resolver: zodResolver(schema),
+  });
+
+  const { user } = useAuth();
+  const notHavePermission =
+    user?.id !== debt.debtorId && user?.id !== debt.expense.payerId;
+
   const isSettled = debt.settled === debt.amount;
   const maximumAmount = Number(debt.amount) - Number(debt.settled);
 
   const statusIcon = isSettled ? <IconSquareCheck /> : <IconSquare />;
   const statusColor = isSettled ? "teal" : "blue";
 
-  const handlePay = () => {
+  const onSubmit = (values: ExpenseCardPaymentFormValues) => {
     updateExpenseDebt(
       {
         expenseDebtId: debt.id,
-        settled: payAmount + Number(debt.settled),
+        settled: values.amount + Number(debt.settled),
       },
       {
-        onSuccess() {
-          toggleIsEditing();
-          setPayAmount(0);
+        onSuccess: () => {
+          toggleIsEditing(false);
+          reset();
+        },
+        onError: (v) => {
+          setError("amount", { message: v.message });
         },
       }
     );
@@ -57,52 +87,73 @@ function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
   if (!debt) return null;
 
   return (
-    <List.Item
-      icon={
-        <ActionIcon
-          color={isEditing ? "red" : statusColor}
-          variant={colorScheme === "light" ? "light" : "filled"}
-          size={36}
-          onClick={() => !isSettled && toggleIsEditing()}
-        >
-          {isEditing ? <IconSquareX /> : statusIcon}
-        </ActionIcon>
-      }
-    >
-      {isEditing ? (
-        <Group>
+    <>
+      <List.Item
+        h={36}
+        icon={
           <ActionIcon
-            color="teal"
-            variant={colorScheme === "light" ? "light" : "filled"}
+            color={isEditing ? "red" : statusColor}
             size={36}
-            onClick={() => handlePay()}
+            onClick={() =>
+              !isSettled && !notHavePermission && toggleIsEditing()
+            }
           >
-            <IconSquareCheck />
+            {isEditing ? <IconSquareX /> : statusIcon}
           </ActionIcon>
-          <NumberInput
-            decimalSeparator=","
-            min={0}
-            max={maximumAmount}
-            precision={2}
-            step={0.01}
-            value={payAmount}
-            onChange={(v: number) => setPayAmount(v)}
-            sx={{
-              flex: 1,
-            }}
-          />
-          <Button onClick={() => setPayAmount(maximumAmount)}>MAX</Button>
-        </Group>
-      ) : (
-        <Text>
-          {isSettled
-            ? `${debt.debtor.givenName} - oddane`
-            : `${debt.debtor.givenName} - ${maximumAmount.toFixed(
-                2
-              )} zł do oddania`}
+        }
+      >
+        {isEditing ? (
+          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+            <Group>
+              <ActionIcon color="teal" size={36} type="submit">
+                <IconSquareCheck />
+              </ActionIcon>
+              <Controller
+                name="amount"
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    {...field}
+                    defaultValue={0}
+                    decimalSeparator=","
+                    min={0}
+                    max={maximumAmount}
+                    precision={2}
+                    step={0.01}
+                    sx={{
+                      flex: 1,
+                    }}
+                    rightSection={
+                      <ActionIcon
+                        mr={12}
+                        size={36}
+                        color="blue"
+                        onClick={() => setValue("amount", maximumAmount)}
+                      >
+                        <IconSquareArrowUp />
+                      </ActionIcon>
+                    }
+                  />
+                )}
+              />
+            </Group>
+          </Box>
+        ) : (
+          <Text>
+            {isSettled
+              ? `${debt.debtor.givenName} - oddane`
+              : `${debt.debtor.givenName} - ${maximumAmount.toFixed(
+                  2
+                )} zł do oddania`}
+          </Text>
+        )}
+      </List.Item>
+      {errors.amount && (
+        <Text mt={8} size="xs" color="red">
+          {errors.amount?.message}
         </Text>
       )}
-    </List.Item>
+    </>
   );
 }
 

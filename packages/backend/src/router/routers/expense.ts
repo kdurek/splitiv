@@ -18,6 +18,11 @@ export const expenseRouter = router({
               debtorId: "desc",
             },
             include: {
+              expense: {
+                select: {
+                  payerId: true,
+                },
+              },
               debtor: true,
             },
           },
@@ -127,14 +132,24 @@ export const expenseRouter = router({
         },
       });
 
-      if (input.settled > Number(expenseDebt?.amount)) {
+      if (
+        ctx.user.id !== expenseDebt.debtorId &&
+        ctx.user.id !== expenseDebt.expense.payerId
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Tylko osoba płacąca i oddająca dług może go edytować",
+        });
+      }
+
+      if (input.settled > Number(expenseDebt.amount)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Kwota do oddania nie może być większa niż kwota do zapłaty",
         });
       }
 
-      if (expenseDebt?.expense.payerId === expenseDebt?.debtorId) {
+      if (expenseDebt?.expense.payerId === expenseDebt.debtorId) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Nie można edytować kwoty do oddania osoby płacącej",

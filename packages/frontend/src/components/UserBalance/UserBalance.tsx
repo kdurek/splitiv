@@ -2,8 +2,13 @@ import { Accordion, Avatar, Box, Group, Text } from "@mantine/core";
 
 import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
-import { Debt } from "types";
 import { GetUsers } from "utils/trpc";
+
+interface Debt {
+  fromId: string;
+  toId: string;
+  amount: string;
+}
 
 interface UserDebtsProps {
   member: GetUsers[number];

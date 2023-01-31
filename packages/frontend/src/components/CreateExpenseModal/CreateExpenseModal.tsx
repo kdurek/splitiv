@@ -1,12 +1,11 @@
 import { PLN } from "@dinero.js/currencies";
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { allocate, toDecimal } from "dinero.js";
+import { allocate, dinero, toDecimal } from "dinero.js";
 
 import ExpenseForm from "components/ExpenseForm";
 import { ExpenseFormValues } from "components/ExpenseForm/ExpenseFormSchema";
 import { useCreateExpense } from "hooks/useCreateExpense";
-import { dineroFromString } from "utils/dinero";
 import { GetGroupById } from "utils/trpc";
 
 interface CreateExpenseModalProps {
@@ -53,9 +52,9 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
   };
 
   const onSubmit = (values: ExpenseFormValues) => {
-    const { name, payer, method, single, equal, unequal, ratio } = values;
-    const amount = values.amount.toFixed(2);
-    const dineroAmount = dineroFromString({
+    const { name, amount, payer, method, single, equal, unequal, ratio } =
+      values;
+    const dineroAmount = dinero({
       amount,
       currency: PLN,
       scale: 2,
@@ -91,10 +90,10 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
       );
       const debts = filteredDebtors.map((debt, index) => {
         const isPayer = payer === debt.id;
-        const debtAmount = toDecimal(allocated[index]);
+        const debtAmount = Number(toDecimal(allocated[index]));
 
         return {
-          settled: isPayer ? debtAmount : "0.00",
+          settled: isPayer ? debtAmount : 0,
           amount: debtAmount,
           debtorId: debt.id,
         };
@@ -116,8 +115,8 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
           const isPayer = payer === debt.id;
 
           return {
-            settled: isPayer ? amount : "0.00",
-            amount: debt.amount.toFixed(2),
+            settled: isPayer ? amount : 0,
+            amount: debt.amount,
             debtorId: debt.id,
           };
         });
@@ -139,10 +138,10 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
       const allocated = allocate(dineroAmount, debtorRatios);
       const debts = filteredDebtors.map((debt, index) => {
         const isPayer = payer === debt.id;
-        const debtAmount = toDecimal(allocated[index]);
+        const debtAmount = Number(toDecimal(allocated[index]));
 
         return {
-          settled: isPayer ? debtAmount : "0.00",
+          settled: isPayer ? debtAmount : 0,
           amount: debtAmount,
           debtorId: debt.id,
         };

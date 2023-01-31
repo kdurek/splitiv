@@ -49,8 +49,8 @@ model ExpenseDebt {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  amount    String
-  settled   String   @default("0.00")
+  amount    Decimal
+  settled   Decimal  @default(0)
   expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   expenseId String
   debtor    User     @relation(fields: [debtorId], references: [id])
@@ -64,7 +64,7 @@ model Expense {
   name      String
   payer     User          @relation(fields: [payerId], references: [id])
   payerId   String
-  amount    String
+  amount    Decimal
   debts     ExpenseDebt[]
   group     Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId   String

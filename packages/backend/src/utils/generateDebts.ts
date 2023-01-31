@@ -5,7 +5,7 @@ import { dineroFromString } from "./dinero";
 
 import type { ExpenseDebt } from "@prisma/client";
 
-interface IDebt {
+export interface IDebt {
   fromId: string;
   toId: string;
   amount: string;
@@ -82,12 +82,12 @@ export function generateDebts(debts: DebtWithExpense[]) {
   debts.forEach((debt) => {
     if (debt.debtorId !== debt.expense.payerId) {
       const dineroDebtAmount = dineroFromString({
-        amount: debt.amount,
+        amount: Number(debt.amount).toFixed(2),
         currency: PLN,
         scale: 2,
       });
       const dineroSettledAmount = dineroFromString({
-        amount: debt.settled,
+        amount: Number(debt.settled).toFixed(2),
         currency: PLN,
         scale: 2,
       });

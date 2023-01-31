@@ -28,13 +28,15 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
           <Text sx={{ flex: 1 }} weight={700}>
             {expense.name}
           </Text>
-          <Text weight={700}>{expense.amount} zł</Text>
+          <Text weight={700}>{Number(expense.amount).toFixed(2)} zł</Text>
         </Group>
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
-          <Text>{`${expense.payer.givenName} - zapłacone ${expense.amount} zł ${
-            payer ? `i oddane ${payer.amount} zł` : ""
+          <Text>{`${expense.payer.givenName} - zapłacone ${Number(
+            expense.amount
+          ).toFixed(2)} zł ${
+            payer ? `i oddane ${Number(payer.amount).toFixed(2)} zł` : ""
           }`}</Text>
           <List center spacing={16}>
             {debts.map((debt) => (

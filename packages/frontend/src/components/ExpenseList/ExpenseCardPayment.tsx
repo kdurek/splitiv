@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 import { IconSquare, IconSquareCheck, IconSquareX } from "@tabler/icons-react";
+import Decimal from "decimal.js";
 import { useState } from "react";
 
 import { useUpdateExpenseDebt } from "hooks/useUpdateExpenseDebt";
@@ -19,8 +20,8 @@ interface ExpenseCardPaymentProps {
       givenName: string;
     };
     id: string;
-    settled: string;
-    amount: string;
+    settled: Decimal;
+    amount: Decimal;
   };
   groupId: string;
 }
@@ -33,7 +34,7 @@ function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
   const [isEditing, toggleIsEditing] = useToggle();
   const [payAmount, setPayAmount] = useState(0);
   const isSettled = debt.settled === debt.amount;
-  const maximumAmount = parseFloat(debt.amount) - parseFloat(debt.settled);
+  const maximumAmount = Number(debt.amount) - Number(debt.settled);
 
   const statusIcon = isSettled ? <IconSquareCheck /> : <IconSquare />;
   const statusColor = isSettled ? "teal" : "blue";
@@ -42,7 +43,7 @@ function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
     updateExpenseDebt(
       {
         expenseDebtId: debt.id,
-        settled: (payAmount + parseFloat(debt.settled)).toFixed(2),
+        settled: payAmount + Number(debt.settled),
       },
       {
         onSuccess() {

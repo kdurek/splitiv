@@ -4,7 +4,7 @@ import { Dinero, multiply, subtract, toUnit } from "dinero.js";
 import { dineroFromString } from "./dinero";
 import { upsert } from "./upsert";
 
-import type { ExpenseDebt } from "@prisma/client";
+import type { ExpenseDebt, Prisma } from "@prisma/client";
 
 export interface IUserBalances {
   userId: string;
@@ -13,7 +13,7 @@ export interface IUserBalances {
 
 interface DebtWithExpense extends ExpenseDebt {
   expense: {
-    amount: string;
+    amount: Prisma.Decimal;
     payerId: string;
   };
 }
@@ -23,12 +23,12 @@ export function generateBalances(debts: DebtWithExpense[]) {
 
   debts.forEach((debt) => {
     const dineroDebtAmount = dineroFromString({
-      amount: debt.amount,
+      amount: Number(debt.amount).toFixed(2),
       currency: PLN,
       scale: 2,
     });
     const dineroSettledAmount = dineroFromString({
-      amount: debt.settled,
+      amount: Number(debt.settled).toFixed(2),
       currency: PLN,
       scale: 2,
     });

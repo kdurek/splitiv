@@ -32,12 +32,12 @@ export const expenseRouter = router({
         groupId: z.string(),
         name: z.string(),
         payerId: z.string(),
-        amount: z.string(),
+        amount: z.number(),
         debts: z.array(
           z.object({
-            amount: z.string(),
+            amount: z.number(),
             debtorId: z.string(),
-            settled: z.string().default("0.00"),
+            settled: z.number().default(0),
           })
         ),
       })
@@ -74,12 +74,12 @@ export const expenseRouter = router({
         groupId: z.string(),
         name: z.string(),
         payerId: z.string(),
-        amount: z.string(),
+        amount: z.number(),
         debts: z.array(
           z.object({
-            amount: z.string(),
+            amount: z.number(),
             debtorId: z.string(),
-            settled: z.string().default("0.00"),
+            settled: z.number().default(0),
           })
         ),
       })
@@ -108,7 +108,7 @@ export const expenseRouter = router({
     .input(
       z.object({
         expenseDebtId: z.string(),
-        settled: z.string().default("0.00"),
+        settled: z.number().default(0),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -127,7 +127,7 @@ export const expenseRouter = router({
         },
       });
 
-      if (parseFloat(input.settled) > parseFloat(expenseDebt?.amount)) {
+      if (input.settled > Number(expenseDebt?.amount)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Kwota do oddania nie może być większa niż kwota do zapłaty",

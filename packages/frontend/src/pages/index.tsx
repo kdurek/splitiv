@@ -1,10 +1,10 @@
 import { Stack, Title } from "@mantine/core";
 
 import { MainLinks } from "components/Layout/MainLinks";
-import { useAuth } from "providers/AuthProvider";
+import { useCurrentUser } from "hooks/useCurrentUser";
 
 function HomePage() {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
 
   return (
     <Stack>

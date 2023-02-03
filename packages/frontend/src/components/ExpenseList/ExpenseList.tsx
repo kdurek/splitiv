@@ -1,15 +1,15 @@
 import { Accordion, Checkbox, Paper, Stack, Text } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 
+import { useCurrentUser } from "hooks/useCurrentUser";
 import { useExpenses } from "hooks/useExpenses";
 import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
-import { useAuth } from "providers/AuthProvider";
 
 import ExpenseCard from "./ExpenseCard";
 
 function ExpenseList() {
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const [onlyUserDebts, toggleOnlyUserDebts] = useToggle();
   const { activeGroupId: groupId } = useActiveGroup();
   const { data: group } = useGroup(groupId);

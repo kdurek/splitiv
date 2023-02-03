@@ -1,7 +1,13 @@
+import { useAuth0 } from "@auth0/auth0-react";
+
 import { trpc } from "utils/trpc";
 
 function useCurrentUser() {
-  return trpc.user.getCurrentUser.useQuery();
+  const { isAuthenticated } = useAuth0();
+
+  return trpc.user.getCurrentUser.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
 }
 
 export { useCurrentUser };

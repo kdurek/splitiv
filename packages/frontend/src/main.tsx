@@ -11,7 +11,6 @@ import { BrowserRouter, useRoutes } from "react-router-dom";
 
 import { CustomFonts } from "components/Layout/CustomFonts";
 import { ActiveGroupProvider } from "providers/ActiveGroupProvider";
-import { AuthProvider } from "providers/AuthProvider";
 import { LayoutProvider } from "providers/LayoutProvider";
 import { QueryProvider } from "providers/QueryProvider";
 
@@ -57,11 +56,9 @@ function App() {
           <CustomFonts />
           <LayoutProvider>
             <QueryProvider>
-              <AuthProvider>
-                <ActiveGroupProvider>
-                  <Suspense>{useRoutes(routes)}</Suspense>
-                </ActiveGroupProvider>
-              </AuthProvider>
+              <ActiveGroupProvider>
+                <Suspense>{useRoutes(routes)}</Suspense>
+              </ActiveGroupProvider>
             </QueryProvider>
           </LayoutProvider>
         </MantineProvider>

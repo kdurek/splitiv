@@ -1,15 +1,15 @@
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { useNavigate, useParams } from "react-router";
 
+import { useCurrentUser } from "hooks/useCurrentUser";
 import { useDeleteRecipeBySlug } from "hooks/useDeleteRecipeBySlug";
 import { useRecipeBySlug } from "hooks/useRecipeBySlug";
-import { useAuth } from "providers/AuthProvider";
 
 function RecipeEditButtons() {
   const navigate = useNavigate();
   const { recipeSlug } = useParams();
   const { data: recipe } = useRecipeBySlug(recipeSlug);
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const { mutate: deleteRecipeBySlug } = useDeleteRecipeBySlug();
 
   if (!recipe || !user) return null;

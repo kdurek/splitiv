@@ -11,8 +11,8 @@ import Decimal from "decimal.js";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
+import { useCurrentUser } from "hooks/useCurrentUser";
 import { useUpdateExpenseDebt } from "hooks/useUpdateExpenseDebt";
-import { useAuth } from "providers/AuthProvider";
 
 interface ExpenseCardPaymentProps {
   debt: {
@@ -56,7 +56,7 @@ function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
     resolver: zodResolver(schema),
   });
 
-  const { user } = useAuth();
+  const { data: user } = useCurrentUser();
   const notHavePermission =
     user?.id !== debt.debtorId && user?.id !== debt.expense.payerId;
 

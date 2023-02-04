@@ -4,8 +4,8 @@ function useCreateGroup() {
   const utils = trpc.useContext();
 
   return trpc.group.createGroup.useMutation({
-    onSuccess() {
-      utils.group.getGroupsByMe.invalidate();
+    async onSuccess() {
+      await utils.group.getGroupsByMe.invalidate();
     },
   });
 }

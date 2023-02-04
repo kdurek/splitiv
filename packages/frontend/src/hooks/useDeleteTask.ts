@@ -4,7 +4,7 @@ function useDeleteTask() {
   const utils = trpc.useContext();
 
   return trpc.task.deleteTask.useMutation({
-    onMutate: async (input) => {
+    async onMutate(input) {
       await utils.task.getTasksByGroup.cancel({ groupId: input.groupId });
       const previousTasksByGroup = utils.task.getTasksByGroup.getData({
         groupId: input.groupId,
@@ -17,7 +17,7 @@ function useDeleteTask() {
       }
       return { previousTasksByGroup };
     },
-    onError: (error, input, context) => {
+    onError(error, input, context) {
       utils.task.getTasksByGroup.setData(
         { groupId: input.groupId },
         context?.previousTasksByGroup

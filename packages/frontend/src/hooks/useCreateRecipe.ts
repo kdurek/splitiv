@@ -4,8 +4,8 @@ function useCreateRecipe() {
   const utils = trpc.useContext();
 
   return trpc.recipe.createRecipe.useMutation({
-    onSuccess() {
-      utils.recipe.getRecipes.invalidate();
+    async onSuccess() {
+      await utils.recipe.getRecipes.invalidate();
     },
   });
 }

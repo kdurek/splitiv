@@ -2,6 +2,7 @@ import { PLN } from "@dinero.js/currencies";
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { allocate, toDecimal } from "dinero.js";
+import { UseFormReturn } from "react-hook-form";
 
 import ExpenseForm from "components/ExpenseForm";
 import { ExpenseFormValues } from "components/ExpenseForm/ExpenseFormSchema";
@@ -15,7 +16,8 @@ interface CreateExpenseModalProps {
 
 function CreateExpenseModal({ group }: CreateExpenseModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
-  const { mutate: createExpense } = useCreateExpense();
+  const { mutate: createExpense, isLoading: isLoadingCreateExpense } =
+    useCreateExpense();
 
   if (!group) return null;
 
@@ -52,7 +54,10 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
     ratio: ratioDefaults,
   };
 
-  const onSubmit = (values: ExpenseFormValues) => {
+  const onSubmit = (
+    values: ExpenseFormValues,
+    methods: UseFormReturn<ExpenseFormValues>
+  ) => {
     const { name, amount, payer, method, single, equal, unequal, ratio } =
       values;
     const dineroAmount = dineroFromString({
@@ -69,13 +74,21 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         },
       ];
 
-      createExpense({
-        groupId: group.id,
-        name,
-        amount,
-        payerId: payer,
-        debts,
-      });
+      createExpense(
+        {
+          groupId: group.id,
+          name,
+          amount,
+          payerId: payer,
+          debts,
+        },
+        {
+          onSuccess() {
+            close();
+            methods.reset();
+          },
+        }
+      );
     }
 
     if (method === "equal") {
@@ -100,13 +113,21 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         };
       });
 
-      createExpense({
-        groupId: group.id,
-        name,
-        amount,
-        payerId: payer,
-        debts,
-      });
+      createExpense(
+        {
+          groupId: group.id,
+          name,
+          amount,
+          payerId: payer,
+          debts,
+        },
+        {
+          onSuccess() {
+            close();
+            methods.reset();
+          },
+        }
+      );
     }
 
     if (method === "unequal") {
@@ -122,13 +143,21 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
           };
         });
 
-      createExpense({
-        groupId: group.id,
-        name,
-        amount,
-        payerId: payer,
-        debts,
-      });
+      createExpense(
+        {
+          groupId: group.id,
+          name,
+          amount,
+          payerId: payer,
+          debts,
+        },
+        {
+          onSuccess() {
+            close();
+            methods.reset();
+          },
+        }
+      );
     }
 
     if (method === "ratio") {
@@ -148,13 +177,21 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         };
       });
 
-      createExpense({
-        groupId: group.id,
-        name,
-        amount,
-        payerId: payer,
-        debts,
-      });
+      createExpense(
+        {
+          groupId: group.id,
+          name,
+          amount,
+          payerId: payer,
+          debts,
+        },
+        {
+          onSuccess() {
+            close();
+            methods.reset();
+          },
+        }
+      );
     }
   };
 
@@ -170,7 +207,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
             group={group}
             defaultValues={defaultValues}
             onSubmit={onSubmit}
-            afterSubmit={close}
+            isSubmitting={isLoadingCreateExpense}
             submitButtonText="Dodaj"
           />
         </Modal>

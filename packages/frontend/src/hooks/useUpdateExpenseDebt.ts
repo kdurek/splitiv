@@ -8,9 +8,9 @@ function useUpdateExpenseDebt({ groupId }: UseUpdateExpenseDebtProps) {
   const utils = trpc.useContext();
 
   return trpc.expense.updateExpenseDebt.useMutation({
-    onSuccess() {
-      utils.group.getGroupById.invalidate({ groupId });
-      utils.expense.getExpensesByGroup.invalidate({
+    async onSuccess() {
+      await utils.group.getGroupById.invalidate({ groupId });
+      await utils.expense.getExpensesByGroup.invalidate({
         groupId,
       });
     },

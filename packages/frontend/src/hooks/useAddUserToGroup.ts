@@ -4,8 +4,8 @@ function useAddUserToGroup() {
   const utils = trpc.useContext();
 
   return trpc.group.addUserToGroup.useMutation({
-    onSuccess(input) {
-      utils.group.getGroupById.invalidate({ groupId: input.groupId });
+    async onSuccess(input) {
+      await utils.group.getGroupById.invalidate({ groupId: input.groupId });
     },
   });
 }

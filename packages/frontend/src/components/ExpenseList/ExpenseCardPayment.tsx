@@ -37,9 +37,10 @@ const schema = z.object({
 type ExpenseCardPaymentFormValues = z.infer<typeof schema>;
 
 function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
-  const { mutate: updateExpenseDebt } = useUpdateExpenseDebt({
-    groupId,
-  });
+  const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } =
+    useUpdateExpenseDebt({
+      groupId,
+    });
   const [isEditing, toggleIsEditing] = useToggle();
   const {
     control,
@@ -73,11 +74,11 @@ function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
         settled: values.amount + Number(debt.settled),
       },
       {
-        onSuccess: () => {
+        onSuccess() {
           toggleIsEditing(false);
           reset();
         },
-        onError: (v) => {
+        onError(v) {
           setError("amount", { message: v.message });
         },
       }
@@ -105,7 +106,12 @@ function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
         {isEditing ? (
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Group>
-              <ActionIcon color="teal" size={36} type="submit">
+              <ActionIcon
+                color="teal"
+                loading={isLoadingUpdateExpenseDebt}
+                size={36}
+                type="submit"
+              >
                 <IconSquareCheck />
               </ActionIcon>
               <Controller

@@ -4,8 +4,8 @@ function useDeleteGroup() {
   const utils = trpc.useContext();
 
   return trpc.group.deleteGroupById.useMutation({
-    onSuccess() {
-      utils.group.getGroupsByMe.invalidate();
+    async onSuccess() {
+      await utils.group.getGroupsByMe.invalidate();
     },
   });
 }

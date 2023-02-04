@@ -4,8 +4,8 @@ function useUpdateRecipe() {
   const utils = trpc.useContext();
 
   return trpc.recipe.updateRecipe.useMutation({
-    onSuccess(input) {
-      utils.recipe.getRecipeBySlug.invalidate({ slug: input.slug });
+    async onSuccess(input) {
+      await utils.recipe.getRecipeBySlug.invalidate({ slug: input.slug });
     },
   });
 }

@@ -7,7 +7,8 @@ import { useCreateRecipe } from "hooks/useCreateRecipe";
 
 function CreateRecipeForm() {
   const navigate = useNavigate();
-  const { mutate: createRecipe } = useCreateRecipe();
+  const { mutate: createRecipe, isLoading: isLoadingCreateRecipe } =
+    useCreateRecipe();
   const defaultValues = {
     name: "",
     ingredients: [{ name: "", amount: 1, unit: "gram" }],
@@ -25,8 +26,12 @@ function CreateRecipeForm() {
         steps: values.steps,
       },
       {
-        onSuccess: (v) => navigate(`/przepisy/${v.slug}`, { replace: true }),
-        onError: (v) => methods.setError("name", { message: v.message }),
+        onSuccess(v) {
+          navigate(`/przepisy/${v.slug}`, { replace: true });
+        },
+        onError(v) {
+          methods.setError("name", { message: v.message });
+        },
       }
     );
   };
@@ -36,6 +41,7 @@ function CreateRecipeForm() {
       formTitle="Tworzenie przepisu"
       defaultValues={defaultValues}
       onSubmit={onSubmit}
+      isSubmitting={isLoadingCreateRecipe}
       submitButtonText="Dodaj"
     />
   );

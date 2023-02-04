@@ -15,7 +15,7 @@ interface ExpenseFormProps {
     values: ExpenseFormValues,
     methods: UseFormReturn<ExpenseFormValues>
   ) => void;
-  afterSubmit?: () => void;
+  isSubmitting: boolean;
   submitButtonText: string;
 }
 
@@ -23,7 +23,7 @@ function ExpenseForm({
   group,
   defaultValues,
   onSubmit,
-  afterSubmit,
+  isSubmitting,
   submitButtonText,
 }: ExpenseFormProps) {
   const methods = useForm<ExpenseFormValues>({
@@ -31,25 +31,18 @@ function ExpenseForm({
     resolver: zodResolver(ExpenseFormSchema),
   });
 
-  const { handleSubmit, reset } = methods;
-
-  const handleOnSubmit = (values: ExpenseFormValues) => {
+  const handleOnSubmit = (values: ExpenseFormValues) =>
     onSubmit(values, methods);
-    reset();
-    if (afterSubmit) {
-      afterSubmit();
-    }
-  };
 
   if (!group) return null;
 
   return (
     <FormProvider {...methods}>
-      <Paper component="form" onSubmit={handleSubmit(handleOnSubmit)}>
+      <Paper component="form" onSubmit={methods.handleSubmit(handleOnSubmit)}>
         <ExpenseFormDetails group={group} />
         <ExpenseFormMethodTabs group={group} />
         <Group mt={24} position="right">
-          <Button variant="default" type="submit">
+          <Button loading={isSubmitting} variant="default" type="submit">
             {submitButtonText}
           </Button>
         </Group>

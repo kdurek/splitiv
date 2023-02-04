@@ -7,12 +7,12 @@ import { useUpdateRecipe } from "hooks/useUpdateRecipe";
 
 export interface UpdateRecipeFormProps {
   recipe: RecipeFormValues & { id: string };
-  afterSubmit?: () => void;
 }
 
-function UpdateRecipeForm({ recipe, afterSubmit }: UpdateRecipeFormProps) {
+function UpdateRecipeForm({ recipe }: UpdateRecipeFormProps) {
   const navigate = useNavigate();
-  const { mutate: updateRecipe } = useUpdateRecipe();
+  const { mutate: updateRecipe, isLoading: isLoadingUpdateRecipe } =
+    useUpdateRecipe();
 
   const onSubmit = (
     values: RecipeFormValues,
@@ -26,15 +26,12 @@ function UpdateRecipeForm({ recipe, afterSubmit }: UpdateRecipeFormProps) {
         steps: values.steps,
       },
       {
-        onSuccess: (v) => {
-          if (recipe.name !== v.name) {
-            navigate(`/przepisy/${v.slug}`, { replace: true });
-          }
-          if (afterSubmit) {
-            afterSubmit();
-          }
+        onSuccess(v) {
+          navigate(`/przepisy/${v.slug}`, { replace: true });
         },
-        onError: (v) => methods.setError("name", { message: v.message }),
+        onError(v) {
+          methods.setError("name", { message: v.message });
+        },
       }
     );
   };
@@ -44,6 +41,7 @@ function UpdateRecipeForm({ recipe, afterSubmit }: UpdateRecipeFormProps) {
       formTitle="Edycja przepisu"
       defaultValues={recipe}
       onSubmit={onSubmit}
+      isSubmitting={isLoadingUpdateRecipe}
       submitButtonText="Zapisz"
     />
   );

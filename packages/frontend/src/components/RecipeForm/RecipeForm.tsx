@@ -14,7 +14,7 @@ interface RecipeFormProps {
     values: RecipeFormValues,
     methods: UseFormReturn<RecipeFormValues>
   ) => void;
-  afterSubmit?: () => void;
+  isSubmitting: boolean;
   submitButtonText: string;
 }
 
@@ -22,7 +22,7 @@ function RecipeForm({
   formTitle,
   defaultValues,
   onSubmit,
-  afterSubmit,
+  isSubmitting,
   submitButtonText,
 }: RecipeFormProps) {
   const methods = useForm({
@@ -32,12 +32,8 @@ function RecipeForm({
 
   const { handleSubmit } = methods;
 
-  const handleOnSubmit = (values: RecipeFormValues) => {
+  const handleOnSubmit = (values: RecipeFormValues) =>
     onSubmit(values, methods);
-    if (afterSubmit) {
-      afterSubmit();
-    }
-  };
 
   return (
     <FormProvider {...methods}>
@@ -47,7 +43,9 @@ function RecipeForm({
           <RecipeDetails />
           <RecipeIngredients />
           <RecipeSteps />
-          <Button type="submit">{submitButtonText}</Button>
+          <Button loading={isSubmitting} type="submit">
+            {submitButtonText}
+          </Button>
         </Stack>
       </Paper>
     </FormProvider>

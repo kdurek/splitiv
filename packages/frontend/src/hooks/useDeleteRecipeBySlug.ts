@@ -4,9 +4,9 @@ function useDeleteRecipeBySlug() {
   const utils = trpc.useContext();
 
   return trpc.recipe.deleteRecipeBySlug.useMutation({
-    onSuccess(input) {
-      utils.recipe.getRecipes.invalidate();
-      utils.recipe.getRecipeBySlug.invalidate({ slug: input.slug });
+    async onSuccess(input) {
+      await utils.recipe.getRecipes.invalidate();
+      await utils.recipe.getRecipeBySlug.invalidate({ slug: input.slug });
     },
   });
 }

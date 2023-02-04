@@ -1,4 +1,11 @@
-import { Accordion, Checkbox, Paper, Stack, Text } from "@mantine/core";
+import {
+  Accordion,
+  Checkbox,
+  Divider,
+  Paper,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 
 import { useCurrentUser } from "hooks/useCurrentUser";
@@ -15,18 +22,36 @@ function ExpenseList() {
   const { data: group } = useGroup(groupId);
   const { data: expenses } = useExpenses(groupId);
 
-  if (!group || !expenses) return null;
+  if (!user || !group || !expenses) return null;
 
-  const filteredExpenses = expenses.filter(
-    (expense) =>
-      !onlyUserDebts ||
-      expense.debts.some(
-        (debt) =>
-          debt.debtorId === user?.id &&
-          debt.debtorId !== debt.expense.payerId &&
-          debt.settled !== debt.amount
-      )
-  );
+  const unsettledExpenses = expenses
+    .filter((expense) =>
+      expense.debts.some((debt) => debt.settled !== debt.amount)
+    )
+    .filter((expense) =>
+      onlyUserDebts
+        ? expense.debts.some(
+            (debt) =>
+              debt.debtorId === user?.id &&
+              debt.debtorId !== debt.expense.payerId &&
+              debt.settled !== debt.amount
+          )
+        : true
+    );
+
+  const settledExpenses = expenses
+    .filter((expense) =>
+      expense.debts.every((debt) => debt.settled === debt.amount)
+    )
+    .filter((expense) =>
+      onlyUserDebts
+        ? expense.debts.some(
+            (debt) =>
+              debt.debtorId === user.id &&
+              debt.debtorId !== debt.expense.payerId
+          )
+        : true
+    );
 
   return (
     <Stack>
@@ -35,17 +60,23 @@ function ExpenseList() {
         checked={onlyUserDebts}
         onChange={() => toggleOnlyUserDebts()}
       />
-      {filteredExpenses.length ? (
-        <Accordion variant="contained">
-          {filteredExpenses.map((expense) => (
+      <Accordion variant="contained">
+        {unsettledExpenses.length ? (
+          unsettledExpenses.map((expense) => (
             <ExpenseCard key={expense.id} group={group} expense={expense} />
-          ))}
-        </Accordion>
-      ) : (
-        <Paper withBorder p="md">
-          <Text>Nie masz żadnych długów</Text>
-        </Paper>
-      )}
+          ))
+        ) : (
+          <Paper withBorder p="md">
+            <Text>{`Nie ${onlyUserDebts ? "masz" : "ma"} żadnych długów`}</Text>
+          </Paper>
+        )}
+      </Accordion>
+      <Divider label="Historia" labelPosition="center" />
+      <Accordion variant="contained">
+        {settledExpenses.map((expense) => (
+          <ExpenseCard key={expense.id} group={group} expense={expense} />
+        ))}
+      </Accordion>
     </Stack>
   );
 }

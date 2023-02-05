@@ -58,16 +58,17 @@ model ExpenseDebt {
 }
 
 model Expense {
-  id        String        @id @default(uuid())
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  name      String
-  payer     User          @relation(fields: [payerId], references: [id])
-  payerId   String
-  amount    Decimal
-  debts     ExpenseDebt[]
-  group     Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId   String
+  id          String        @id @default(uuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  name        String
+  description String?
+  payer       User          @relation(fields: [payerId], references: [id])
+  payerId     String
+  amount      Decimal
+  debts       ExpenseDebt[]
+  group       Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     String
 }
 
 model Task {

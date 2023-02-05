@@ -3,6 +3,12 @@ import { z } from "zod";
 export const ExpenseFormSchema = z
   .object({
     name: z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
+    description: z
+      .union([
+        z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
+        z.string().length(0),
+      ])
+      .optional(),
     amount: z.number().gt(0, { message: "Kwota musi być większa niż 0" }),
     payer: z.string().uuid("Musisz wybrać osobę płacącą"),
     method: z.string(),

@@ -58,8 +58,17 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
     values: ExpenseFormValues,
     methods: UseFormReturn<ExpenseFormValues>
   ) => {
-    const { name, amount, payer, method, single, equal, unequal, ratio } =
-      values;
+    const {
+      name,
+      description,
+      amount,
+      payer,
+      method,
+      single,
+      equal,
+      unequal,
+      ratio,
+    } = values;
     const dineroAmount = dineroFromString({
       amount: amount.toFixed(2),
       currency: PLN,
@@ -78,6 +87,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
+          description,
           amount,
           payerId: payer,
           debts,
@@ -117,6 +127,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
+          description,
           amount,
           payerId: payer,
           debts,
@@ -147,6 +158,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
+          description,
           amount,
           payerId: payer,
           debts,
@@ -181,6 +193,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
+          description,
           amount,
           payerId: payer,
           debts,

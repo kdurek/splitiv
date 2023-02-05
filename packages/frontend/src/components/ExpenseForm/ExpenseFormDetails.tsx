@@ -1,4 +1,10 @@
-import { NativeSelect, NumberInput, Stack, TextInput } from "@mantine/core";
+import {
+  NativeSelect,
+  NumberInput,
+  Stack,
+  TextInput,
+  Textarea,
+} from "@mantine/core";
 import { Controller, useFormContext } from "react-hook-form";
 
 import { GetGroupById } from "utils/trpc";
@@ -27,6 +33,12 @@ function ExpenseFormDetails({ group }: ExpenseFormDetailsProps) {
         label="Nazwa"
         placeholder="Wprowadź nazwę"
         error={errors.name?.message}
+      />
+      <Textarea
+        {...register("description")}
+        label="Opis"
+        placeholder="Wprowadź opis (opcjonalne)"
+        error={errors.description?.message}
       />
       <Controller
         name="amount"

@@ -36,6 +36,12 @@ export const expenseRouter = router({
       z.object({
         groupId: z.string(),
         name: z.string(),
+        description: z
+          .union([
+            z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
+            z.string().length(0),
+          ])
+          .optional(),
         payerId: z.string(),
         amount: z.number(),
         debts: z.array(
@@ -56,6 +62,7 @@ export const expenseRouter = router({
             },
           },
           name: input.name,
+          description: input.description ?? null,
           amount: input.amount,
           payer: {
             connect: {

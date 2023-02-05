@@ -45,8 +45,9 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
           {descriptionParts?.length && (
             <>
               <Box>
-                {descriptionParts?.map((part) => (
-                  <Text>{part}</Text>
+                {descriptionParts?.map((part, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Text key={part + index}>{part}</Text>
                 ))}
               </Box>
               <Divider />

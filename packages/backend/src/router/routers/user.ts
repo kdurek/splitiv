@@ -26,6 +26,11 @@ export const userRouter = router({
         include: {
           expense: true,
         },
+        orderBy: {
+          expense: {
+            createdAt: "desc",
+          },
+        },
       });
     }),
 

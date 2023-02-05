@@ -1,4 +1,12 @@
-import { Accordion, Divider, Group, List, Stack, Text } from "@mantine/core";
+import {
+  Accordion,
+  Box,
+  Divider,
+  Group,
+  List,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons-react";
 
 import { GetExpensesByGroup, GetGroupById } from "utils/trpc";
@@ -15,6 +23,7 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
   const debts = expense.debts.filter(
     (debt) => expense.payerId !== debt.debtorId
   );
+  const descriptionParts = expense.description?.split("\n");
 
   if (!group) return null;
 
@@ -33,9 +42,13 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
-          {expense.description && (
+          {descriptionParts?.length && (
             <>
-              <Text>{expense.description}</Text>
+              <Box>
+                {descriptionParts?.map((part) => (
+                  <Text>{part}</Text>
+                ))}
+              </Box>
               <Divider />
             </>
           )}

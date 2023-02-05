@@ -166,6 +166,30 @@ export const expenseRouter = router({
       });
     }),
 
+  settleExpenseDebts: protectedProcedure
+    .input(
+      z.object({
+        expenseDebts: z.array(
+          z.object({
+            id: z.string().uuid(),
+            settled: z.number(),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return input.expenseDebts.forEach(async (debt) => {
+        await ctx.prisma.expenseDebt.update({
+          where: {
+            id: debt.id,
+          },
+          data: {
+            settled: debt.settled,
+          },
+        });
+      });
+    }),
+
   deleteExpense: protectedProcedure
     .input(z.object({ expenseId: z.string() }))
     .mutation(async ({ input, ctx }) => {

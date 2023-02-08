@@ -51,10 +51,10 @@ specifiers:
   zod: ^3.20.2
 
 dependencies:
-  '@dinero.js/currencies': 2.0.0-alpha.13
+  '@dinero.js/currencies': 2.0.0-alpha.1
   '@emotion/react': 11.10.5_3stiutgnnbnfnf3uowm5cip22i
   '@emotion/server': 11.10.0
-  '@hookform/resolvers': 2.9.10_react-hook-form@7.43.0
+  '@hookform/resolvers': 2.9.11_react-hook-form@7.43.1
   '@mantine/core': 5.10.3_ylq7zkqz7uvrjy7wd5cseqyxu4
   '@mantine/hooks': 5.10.3_react@18.2.0
   '@mantine/next': 5.10.3_frkyvidol3cyjondljhrqtyp5u
@@ -73,14 +73,14 @@ dependencies:
   next-auth: 4.19.2_3vryta7zmbcsw4rrqf4axjqggm
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
-  react-hook-form: 7.43.0_react@18.2.0
+  react-hook-form: 7.43.1_react@18.2.0
   slugify: 1.6.5
   superjson: 1.9.1
-  zod: 3.20.2
+  zod: 3.20.3
 
 devDependencies:
   '@next/eslint-plugin-next': 13.1.6
-  '@types/node': 18.11.19
+  '@types/node': 18.13.0
   '@types/react': 18.0.27
   '@types/react-dom': 18.0.10
   '@typescript-eslint/eslint-plugin': 5.51.0_b635kmla6dsb4frxfihkw4m47e
@@ -93,11 +93,11 @@ devDependencies:
   eslint-import-resolver-typescript: 3.5.3_ohdts44xlqyeyrlje4qnefqeay
   eslint-plugin-import: 2.27.5_kuqv7qxblf6fgldep4hddd7xwa
   eslint-plugin-jsx-a11y: 6.7.1_eslint@8.33.0
-  eslint-plugin-prettier: 4.2.1_jqplj6qf3uqpxpu4gdyhwwasnq
+  eslint-plugin-prettier: 4.2.1_qa2thblfovmfepmgrc7z2owbo4
   eslint-plugin-react: 7.32.2_eslint@8.33.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.33.0
   lint-staged: 13.1.1
-  prettier: 2.8.3
+  prettier: 2.8.4
   prisma: 4.10.0
   simple-git-hooks: 2.8.1
   typescript: 4.9.5
@@ -178,12 +178,12 @@ packages:
       '@dinero.js/currencies': 2.0.0-alpha.10
     dev: false
 
-  /@dinero.js/currencies/2.0.0-alpha.10:
-    resolution: {integrity: sha512-IDKaAh0YcJh700uLCrvWtIRCl5sItc3S2rk4IfVJBbms3j+NBDOlVFJnwru+UrMh7VpqU9GlZRsHcHf0NxYE9A==}
+  /@dinero.js/currencies/2.0.0-alpha.1:
+    resolution: {integrity: sha512-JoKY6q3AOm2II44qLp6VMGn+j+p6QC39m3DFogKZXsucWIIvzt7c2v04DZrrHWLNnDYNzITOnbQ7f2pGbONjig==}
     dev: false
 
-  /@dinero.js/currencies/2.0.0-alpha.13:
-    resolution: {integrity: sha512-vEfDara+xAqOrLww80FyFVw4usWcCsR4HwhaoCvwIzB5UdsLPDeUviAGFi8CoWjtLCR44iIeOHdn9jDr7Jj+TQ==}
+  /@dinero.js/currencies/2.0.0-alpha.10:
+    resolution: {integrity: sha512-IDKaAh0YcJh700uLCrvWtIRCl5sItc3S2rk4IfVJBbms3j+NBDOlVFJnwru+UrMh7VpqU9GlZRsHcHf0NxYE9A==}
     dev: false
 
   /@emotion/babel-plugin/11.10.5:
@@ -348,12 +348,12 @@ packages:
       - '@types/react'
     dev: false
 
-  /@hookform/resolvers/2.9.10_react-hook-form@7.43.0:
-    resolution: {integrity: sha512-JIL1DgJIlH9yuxcNGtyhsWX/PgNltz+5Gr6+8SX9fhXc/hPbEIk6wPI82nhgvp3uUb6ZfAM5mqg/x7KR7NAb+A==}
+  /@hookform/resolvers/2.9.11_react-hook-form@7.43.1:
+    resolution: {integrity: sha512-bA3aZ79UgcHj7tFV7RlgThzwSSHZgvfbt2wprldRkYBcMopdMvHyO17Wwp/twcJasNFischFfS7oz8Katz8DdQ==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.43.0_react@18.2.0
+      react-hook-form: 7.43.1_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.11.8:
@@ -631,7 +631,7 @@ packages:
     dependencies:
       cross-spawn: 7.0.3
       is-glob: 4.0.3
-      open: 8.4.0
+      open: 8.4.1
       picocolors: 1.0.0
       tiny-glob: 0.2.9
       tslib: 2.5.0
@@ -882,8 +882,8 @@ packages:
     resolution: {integrity: sha512-vzLe5NaNMjIE3mcddFVGlAXN1LEWueUsMsOJWaT6wWMJGyljHAWHznqfnKUQWGzu7TLPrGvWdNAsvQYW+C0xtw==}
     dev: false
 
-  /@types/node/18.11.19:
-    resolution: {integrity: sha512-YUgMWAQBWLObABqrvx8qKO1enAvBUdjZOAWQ5grBAkp5LQv45jBvYKZ3oFS9iKRCQyFjqw6iuEa1vmFqtxYLZw==}
+  /@types/node/18.13.0:
+    resolution: {integrity: sha512-gC3TazRzGoOnoKAhUx+Q0t8S9Tzs74z7m0ipwGpSqQrleP14hKxP4/JUeEQcD3W1/aIpnWl8pHowI7WokuZpXg==}
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -1248,8 +1248,8 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  /caniuse-lite/1.0.30001450:
-    resolution: {integrity: sha512-qMBmvmQmFXaSxexkjjfMvD5rnDL0+m+dUMZKoDYsGG8iZN29RuYh9eRoMvKsT6uMAWlyUUGDEQGJJYjzCIO9ew==}
+  /caniuse-lite/1.0.30001451:
+    resolution: {integrity: sha512-XY7UbUpGRatZzoRft//5xOa69/1iGJRBlrieH6QYrkKLIFn3m7OVEJ81dSrKoy2BnKsdbX5cLrOispZNYo9v2w==}
     dev: false
 
   /chalk/2.4.2:
@@ -1855,7 +1855,7 @@ packages:
       semver: 6.3.0
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_jqplj6qf3uqpxpu4gdyhwwasnq:
+  /eslint-plugin-prettier/4.2.1_qa2thblfovmfepmgrc7z2owbo4:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -1868,7 +1868,7 @@ packages:
     dependencies:
       eslint: 8.33.0
       eslint-config-prettier: 8.6.0_eslint@8.33.0
-      prettier: 2.8.3
+      prettier: 2.8.4
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -2596,8 +2596,8 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
-  /jose/4.11.2:
-    resolution: {integrity: sha512-njj0VL2TsIxCtgzhO+9RRobBvws4oYyCM8TpvoUQwl/MbIM3NFJRR9+e6x0sS5xXaP1t6OCBkaBME98OV9zU5A==}
+  /jose/4.11.4:
+    resolution: {integrity: sha512-94FdcR8felat4vaTJyL/WVdtlWLlsnLMZP8v+A0Vru18K3bQ22vn7TtpVh3JlgBFNIlYOUlGqwp/MjRPOnIyCQ==}
     dev: false
 
   /js-sdsl/4.3.0:
@@ -2822,12 +2822,12 @@ packages:
       '@babel/runtime': 7.20.13
       '@panva/hkdf': 1.0.2
       cookie: 0.5.0
-      jose: 4.11.2
+      jose: 4.11.4
       next: 13.1.6_biqbaboplfbrettd7655fr4n2y
       oauth: 0.9.15
       openid-client: 5.4.0
-      preact: 10.11.3
-      preact-render-to-string: 5.2.6_preact@10.11.3
+      preact: 10.12.0
+      preact-render-to-string: 5.2.6_preact@10.12.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       uuid: 8.3.2
@@ -2853,7 +2853,7 @@ packages:
     dependencies:
       '@next/env': 13.1.6
       '@swc/helpers': 0.4.14
-      caniuse-lite: 1.0.30001450
+      caniuse-lite: 1.0.30001451
       postcss: 8.4.14
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -2992,8 +2992,8 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
-  /open/8.4.0:
-    resolution: {integrity: sha512-XgFPPM+B28FtCCgSb9I+s9szOC1vZRSwgWsRUA5ylIxRTgKozqjOCrVOqGsYABPYK5qnfqClxZTFBa8PKt2v6Q==}
+  /open/8.4.1:
+    resolution: {integrity: sha512-/4b7qZNhv6Uhd7jjnREh1NjnPxlTq+XNWPG88Ydkj5AILcA5m3ajvcg57pB24EQjKv0dK62XnDqk9c/hkIG5Kg==}
     engines: {node: '>=12'}
     dependencies:
       define-lazy-prop: 2.0.0
@@ -3004,7 +3004,7 @@ packages:
   /openid-client/5.4.0:
     resolution: {integrity: sha512-hgJa2aQKcM2hn3eyVtN12tEA45ECjTJPXCgUh5YzTzy9qwapCvmDTVPWOcWVL0d34zeQoQ/hbG9lJhl3AYxJlQ==}
     dependencies:
-      jose: 4.11.2
+      jose: 4.11.4
       lru-cache: 6.0.0
       object-hash: 2.2.0
       oidc-token-hash: 5.0.1
@@ -3109,17 +3109,17 @@ packages:
       source-map-js: 1.0.2
     dev: false
 
-  /preact-render-to-string/5.2.6_preact@10.11.3:
+  /preact-render-to-string/5.2.6_preact@10.12.0:
     resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.11.3
+      preact: 10.12.0
       pretty-format: 3.8.0
     dev: false
 
-  /preact/10.11.3:
-    resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
+  /preact/10.12.0:
+    resolution: {integrity: sha512-+w8ix+huD8CNZemheC53IPjMUFk921i02o30u0K6h53spMX41y/QhVDnG/nU2k42/69tvqWmVsgNLIiwRAcmxg==}
     dev: false
 
   /prelude-ls/1.2.1:
@@ -3134,8 +3134,8 @@ packages:
       fast-diff: 1.2.0
     dev: true
 
-  /prettier/2.8.3:
-    resolution: {integrity: sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==}
+  /prettier/2.8.4:
+    resolution: {integrity: sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -3182,8 +3182,8 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-hook-form/7.43.0_react@18.2.0:
-    resolution: {integrity: sha512-/rVEz7T0gLdSFwPqutJ1kn2e0sQNyb9ci/hmwEYr2YG0KF/LSuRLvNrf9QWJM+gj88CjDpDW5Bh/1AD7B2+z9Q==}
+  /react-hook-form/7.43.1_react@18.2.0:
+    resolution: {integrity: sha512-+s3+s8LLytRMriwwuSqeLStVjRXFGxgjjx2jED7Z+wz1J/88vpxieRQGvJVvzrzVxshZ0BRuocFERb779m2kNg==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
@@ -3855,6 +3855,6 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zod/3.20.2:
-    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+  /zod/3.20.3:
+    resolution: {integrity: sha512-+MLeeUcLTlnzVo5xDn9+LVN9oX4esvgZ7qfZczBN+YVUvZBafIrPPVyG2WdjMWU2Qkb2ZAh2M8lpqf1wIoGqJQ==}
     dev: false

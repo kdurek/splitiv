@@ -1,6 +1,0 @@
-{
-  "watch": ["src", "tsconfig.json", ".env"],
-  "ignore": ["src/**/*.test.ts"],
-  "ext": "ts",
-  "exec": "rimraf dist && etsc && node ./dist/index.js"
-}

@@ -1,5 +1,5 @@
 import { PLN } from "@dinero.js/currencies";
-import { multiply, subtract, toDecimal } from "dinero.js";
+import { multiply, subtract, toUnit } from "dinero.js";
 
 import { dineroFromString } from "./dineroFromString";
 import { upsert } from "./upsert";
@@ -56,6 +56,6 @@ export function generateBalances(debts: DebtWithExpense[]) {
   });
 
   return usersBalanceArray.map((t) => {
-    return { ...t, amount: toDecimal(t.amount) };
+    return { ...t, amount: toUnit(t.amount).toFixed(2) };
   });
 }

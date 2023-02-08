@@ -28,7 +28,7 @@
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
     "cookies-next": "^2.1.1",
-    "dinero.js": "2.0.0-alpha.13",
+    "dinero.js": "2.0.0-alpha.10",
     "next": "13.1.6",
     "next-auth": "^4.19.0",
     "react": "18.2.0",

@@ -24,7 +24,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.47.1
   '@typescript-eslint/parser': ^5.47.1
   cookies-next: ^2.1.1
-  dinero.js: 2.0.0-alpha.13
+  dinero.js: 2.0.0-alpha.10
   eslint: ^8.30.0
   eslint-config-airbnb: ^19.0.4
   eslint-config-airbnb-typescript: ^17.0.0
@@ -51,7 +51,7 @@ specifiers:
   zod: ^3.20.2
 
 dependencies:
-  '@dinero.js/currencies': 2.0.0-alpha.1
+  '@dinero.js/currencies': 2.0.0-alpha.13
   '@emotion/react': 11.10.5_3stiutgnnbnfnf3uowm5cip22i
   '@emotion/server': 11.10.0
   '@hookform/resolvers': 2.9.10_react-hook-form@7.43.0
@@ -68,7 +68,7 @@ dependencies:
   '@trpc/react-query': 10.10.0_5mhyv2iryamqlilh5gtjpyz23q
   '@trpc/server': 10.10.0
   cookies-next: 2.1.1
-  dinero.js: 2.0.0-alpha.13
+  dinero.js: 2.0.0-alpha.10
   next: 13.1.6_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.19.2_3vryta7zmbcsw4rrqf4axjqggm
   react: 18.2.0
@@ -166,20 +166,20 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
-  /@dinero.js/calculator-number/2.0.0-alpha.13:
-    resolution: {integrity: sha512-Mo/0FUVFq4dVb/RfBIASUxPFbQbkHYC0VBe36DgWfbbhwG6K6ONuzTLBU5W6LdrMpB7D/CxgZISdQ0pyZKwg9w==}
+  /@dinero.js/calculator-number/2.0.0-alpha.10:
+    resolution: {integrity: sha512-EdKG0yykukigfdq+TsxZ9r0Wrg5flYAncKWSfr2snWDXurFsg8JE0oazVraCBA3Vb5LN4vGuFEpTFTH+dIrRCg==}
     dependencies:
-      '@dinero.js/core': 2.0.0-alpha.13
+      '@dinero.js/core': 2.0.0-alpha.10
     dev: false
 
-  /@dinero.js/core/2.0.0-alpha.13:
-    resolution: {integrity: sha512-RLZz8WmYe1ehqD2YtTpzCzdk0Hqf6oaAVmRlULLkua6vuEVEXjPQEhuyTMLHcS6/Gppy9nuEw8mpSNvU+Sy8QQ==}
+  /@dinero.js/core/2.0.0-alpha.10:
+    resolution: {integrity: sha512-vjeGXQbNvDXlXK54zaWDydEXyFAvLDj6LCfwO4CTZJIqn3+PaXakaEd5S0AXC6hluPatxnQa5J63x3WQ/Imrjw==}
     dependencies:
-      '@dinero.js/currencies': 2.0.0-alpha.13
+      '@dinero.js/currencies': 2.0.0-alpha.10
     dev: false
 
-  /@dinero.js/currencies/2.0.0-alpha.1:
-    resolution: {integrity: sha512-JoKY6q3AOm2II44qLp6VMGn+j+p6QC39m3DFogKZXsucWIIvzt7c2v04DZrrHWLNnDYNzITOnbQ7f2pGbONjig==}
+  /@dinero.js/currencies/2.0.0-alpha.10:
+    resolution: {integrity: sha512-IDKaAh0YcJh700uLCrvWtIRCl5sItc3S2rk4IfVJBbms3j+NBDOlVFJnwru+UrMh7VpqU9GlZRsHcHf0NxYE9A==}
     dev: false
 
   /@dinero.js/currencies/2.0.0-alpha.13:
@@ -1470,12 +1470,12 @@ packages:
       object-keys: 1.1.1
     dev: true
 
-  /dinero.js/2.0.0-alpha.13:
-    resolution: {integrity: sha512-xuBgE/3/67SXOW/UKjmaRd/YJQkUSlYS+6DvfglFg1Mbfn2K7cp+WQcgU76CLJpJPkJABgILsPjw1Om9OJ5puA==}
+  /dinero.js/2.0.0-alpha.10:
+    resolution: {integrity: sha512-EDiOZanmJBJnFfiz5cUL/I2UI7EXQ0jXf18srqgO7sQhChyBbN39b5sf6T4fq4Oj3f4/6x2L96YPUbMRcUmd/A==}
     dependencies:
-      '@dinero.js/calculator-number': 2.0.0-alpha.13
-      '@dinero.js/core': 2.0.0-alpha.13
-      '@dinero.js/currencies': 2.0.0-alpha.13
+      '@dinero.js/calculator-number': 2.0.0-alpha.10
+      '@dinero.js/core': 2.0.0-alpha.10
+      '@dinero.js/currencies': 2.0.0-alpha.10
     dev: false
 
   /dir-glob/3.0.1:

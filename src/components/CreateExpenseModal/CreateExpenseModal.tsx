@@ -1,7 +1,7 @@
 import { PLN } from "@dinero.js/currencies";
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { allocate, toDecimal } from "dinero.js";
+import { allocate, toUnit } from "dinero.js";
 
 import ExpenseForm from "components/ExpenseForm";
 import { useCreateExpense } from "hooks/useCreateExpense";
@@ -116,9 +116,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
       );
       const debts = filteredDebtors.map((debt, index) => {
         const isPayer = payer === debt.id;
-        const debtAmount = Number(
-          toDecimal(allocated[index] as Dinero<number>)
-        );
+        const debtAmount = toUnit(allocated[index] as Dinero<number>);
 
         return {
           settled: isPayer ? debtAmount : 0,
@@ -184,9 +182,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
       const allocated = allocate(dineroAmount, debtorRatios);
       const debts = filteredDebtors.map((debt, index) => {
         const isPayer = payer === debt.id;
-        const debtAmount = Number(
-          toDecimal(allocated[index] as Dinero<number>)
-        );
+        const debtAmount = toUnit(allocated[index] as Dinero<number>);
 
         return {
           settled: isPayer ? debtAmount : 0,

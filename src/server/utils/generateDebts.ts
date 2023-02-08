@@ -1,5 +1,5 @@
 import { PLN } from "@dinero.js/currencies";
-import { subtract, toDecimal } from "dinero.js";
+import { subtract, toUnit } from "dinero.js";
 
 import { dineroFromString } from "./dineroFromString";
 
@@ -98,7 +98,7 @@ export function generateDebts(debts: DebtWithExpense[]) {
         {
           fromId: debt.debtorId,
           toId: debt.expense.payerId,
-          amount: toDecimal(netDineroAmount),
+          amount: toUnit(netDineroAmount).toFixed(2),
         },
         "fromId",
         "toId"

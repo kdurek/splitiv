@@ -1,7 +1,7 @@
 include .env
 
 deploy:
-	docker compose -f docker-compose.yml -f docker-compose.production.yml down && git pull && pnpm install && pnpm build && docker compose -f docker-compose.yml -f docker-compose.production.yml up -d && docker exec -it backend sh -c "npx -y prisma migrate deploy"
+	docker compose -f docker-compose.yml -f docker-compose.production.yml down && git pull && pnpm install && docker compose -f docker-compose.yml -f docker-compose.production.yml build --no-cache && docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
 postgres-backup:
 	docker exec --tty --interactive pgbackups /bin/sh -c "./backup.sh"
 postgres-backup-fix:

@@ -7,8 +7,8 @@ import {
   Text,
 } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
+import { useSession } from "next-auth/react";
 
-import { useCurrentUser } from "hooks/useCurrentUser";
 import { useExpenses } from "hooks/useExpenses";
 import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
@@ -16,13 +16,13 @@ import { useActiveGroup } from "providers/ActiveGroupProvider";
 import ExpenseCard from "./ExpenseCard";
 
 function ExpenseList() {
-  const { data: user } = useCurrentUser();
+  const { data: session } = useSession();
   const [onlyUserDebts, toggleOnlyUserDebts] = useToggle();
   const { activeGroupId: groupId } = useActiveGroup();
   const { data: group } = useGroup(groupId);
   const { data: expenses } = useExpenses(groupId);
 
-  if (!user || !group || !expenses) return null;
+  if (!session || !group || !expenses) return null;
 
   const unsettledExpenses = expenses
     .filter((expense) =>
@@ -32,7 +32,7 @@ function ExpenseList() {
       onlyUserDebts
         ? expense.debts.some(
             (debt) =>
-              debt.debtorId === user?.id &&
+              debt.debtorId === session.user?.id &&
               debt.debtorId !== debt.expense.payerId &&
               debt.settled !== debt.amount
           )
@@ -47,7 +47,7 @@ function ExpenseList() {
       onlyUserDebts
         ? expense.debts.some(
             (debt) =>
-              debt.debtorId === user.id &&
+              debt.debtorId === session.user.id &&
               debt.debtorId !== debt.expense.payerId
           )
         : true

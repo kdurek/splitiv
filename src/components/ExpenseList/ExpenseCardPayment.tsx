@@ -7,10 +7,10 @@ import {
   IconSquareCheck,
   IconSquareX,
 } from "@tabler/icons-react";
+import { useSession } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
-import { useCurrentUser } from "hooks/useCurrentUser";
 import { useUpdateExpenseDebt } from "hooks/useUpdateExpenseDebt";
 
 import type { Decimal } from "@prisma/client/runtime";
@@ -58,10 +58,11 @@ function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
     resolver: zodResolver(schema),
   });
 
-  const { data: user } = useCurrentUser();
+  const { data: session } = useSession();
   const [debtorFirstName] = debt.debtor.name?.split(" ") ?? "";
   const notHavePermission =
-    user?.id !== debt.debtorId && user?.id !== debt.expense.payerId;
+    session?.user?.id !== debt.debtorId &&
+    session?.user?.id !== debt.expense.payerId;
 
   const isSettled = debt.settled === debt.amount;
   const maximumAmount = Number(debt.amount) - Number(debt.settled);

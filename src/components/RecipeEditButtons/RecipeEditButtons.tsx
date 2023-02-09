@@ -1,7 +1,7 @@
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
-import { useCurrentUser } from "hooks/useCurrentUser";
 import { useDeleteRecipeBySlug } from "hooks/useDeleteRecipeBySlug";
 import { useRecipeBySlug } from "hooks/useRecipeBySlug";
 
@@ -9,12 +9,12 @@ function RecipeEditButtons() {
   const router = useRouter();
   const { recipeSlug } = router.query;
   const { data: recipe } = useRecipeBySlug({ slug: recipeSlug as string });
-  const { data: user } = useCurrentUser();
+  const { data: session } = useSession();
   const { mutate: deleteRecipeBySlug } = useDeleteRecipeBySlug();
 
-  if (!recipe || !user) return null;
+  if (!recipe || !session) return null;
 
-  if (recipe.authorId !== user.id) return null;
+  if (recipe.authorId !== session.user.id) return null;
 
   return (
     <Stack>

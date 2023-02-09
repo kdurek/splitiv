@@ -20,11 +20,11 @@ import { ExpensePayListSchema } from "./ExpensePayListSchema";
 import type { ExpensePayListSchemaValues } from "./ExpensePayListSchema";
 
 interface ExpensePayListProps {
-  defaultValues: ExpensePayListSchemaValues;
+  values: ExpensePayListSchemaValues;
   afterSubmit?: () => void;
 }
 
-function ExpensePayList({ defaultValues, afterSubmit }: ExpensePayListProps) {
+function ExpensePayList({ values: debts, afterSubmit }: ExpensePayListProps) {
   const { activeGroupId } = useActiveGroup();
   const {
     control,
@@ -35,7 +35,7 @@ function ExpensePayList({ defaultValues, afterSubmit }: ExpensePayListProps) {
     setValue,
     formState: { errors },
   } = useForm<ExpensePayListSchemaValues>({
-    defaultValues,
+    values: debts,
     resolver: zodResolver(ExpensePayListSchema),
   });
 

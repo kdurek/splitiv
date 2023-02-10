@@ -3,20 +3,36 @@ import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
 
 import GroupSelectModal from "components/GroupSelectModal";
+import { api } from "utils/api";
 
 import type { ReactNode } from "react";
+import type { GetGroupById } from "utils/api";
 
 export const activeGroupContext = createContext<{
+  group?: GetGroupById;
   activeGroupId: string;
   setActiveGroupId: (value: string | ((val: string) => string)) => void;
 }>({ activeGroupId: "", setActiveGroupId: () => null });
 
 const useProvideActiveGroup = () => {
-  const [activeGroupId, setActiveGroupId] = useLocalStorage<string>({
-    key: "activeGroupId",
-  });
+  const [activeGroupId, setActiveGroupId, removeActiveGroupId] =
+    useLocalStorage({
+      key: "activeGroupId",
+    });
 
-  return { activeGroupId, setActiveGroupId };
+  const { data: group } = api.group.getGroupById.useQuery(
+    {
+      groupId: activeGroupId,
+    },
+    {
+      enabled: Boolean(activeGroupId),
+      onError() {
+        removeActiveGroupId();
+      },
+    }
+  );
+
+  return { activeGroup: group, activeGroupId, setActiveGroupId };
 };
 
 interface ActiveGroupProviderProps {

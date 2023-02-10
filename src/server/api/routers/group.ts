@@ -30,9 +30,9 @@ export const groupRouter = createTRPCRouter({
   }),
 
   getGroupById: protectedProcedure
-    .input(z.object({ groupId: z.string() }))
+    .input(z.object({ groupId: z.string().cuid2() }))
     .query(async ({ input, ctx }) => {
-      const group = await ctx.prisma.group.findUnique({
+      const group = await ctx.prisma.group.findUniqueOrThrow({
         where: { id: input.groupId },
         include: {
           members: {
@@ -40,8 +40,6 @@ export const groupRouter = createTRPCRouter({
           },
         },
       });
-
-      if (!group) return null;
 
       const expenseDebts = await ctx.prisma.expenseDebt.findMany({
         where: {

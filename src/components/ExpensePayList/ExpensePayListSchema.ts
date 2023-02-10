@@ -4,7 +4,7 @@ export const ExpensePayListSchema = z
   .object({
     debts: z.array(
       z.object({
-        id: z.string().uuid(),
+        id: z.string().cuid2(),
         name: z.string(),
         amount: z.number(),
         check: z.boolean(),

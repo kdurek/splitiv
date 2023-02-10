@@ -10,7 +10,7 @@ export const ExpenseFormSchema = z
       ])
       .optional(),
     amount: z.number().gt(0, { message: "Kwota musi być większa niż 0" }),
-    payer: z.string().uuid("Musisz wybrać osobę płacącą"),
+    payer: z.string().cuid2("Musisz wybrać osobę płacącą"),
     method: z.string(),
     single: z.object({
       ower: z.string(),

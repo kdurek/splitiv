@@ -8,7 +8,7 @@ export const userRouter = createTRPCRouter({
   }),
 
   getCurrentUserUnsettledDebtsByGroup: protectedProcedure
-    .input(z.object({ groupId: z.string().uuid() }))
+    .input(z.object({ groupId: z.string().cuid2() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.expenseDebt.findMany({
         where: {

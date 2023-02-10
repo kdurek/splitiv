@@ -178,7 +178,7 @@ export const expenseRouter = createTRPCRouter({
       z.object({
         expenseDebts: z.array(
           z.object({
-            id: z.string().uuid(),
+            id: z.string().cuid2(),
             settled: z.number(),
           })
         ),

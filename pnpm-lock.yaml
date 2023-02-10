@@ -13,6 +13,7 @@ specifiers:
   '@next/font': ^13.1.6
   '@prisma/client': ^4.10.0
   '@tabler/icons-react': ^2.2.0
+  '@tanstack/eslint-plugin-query': ^4.24.5
   '@tanstack/react-query': ^4.24.4
   '@trpc/client': ^10.10.0
   '@trpc/next': ^10.10.0
@@ -80,6 +81,7 @@ dependencies:
 
 devDependencies:
   '@next/eslint-plugin-next': 13.1.6
+  '@tanstack/eslint-plugin-query': 4.24.5
   '@types/node': 18.13.0
   '@types/react': 18.0.27
   '@types/react-dom': 18.0.10
@@ -794,6 +796,10 @@ packages:
   /@tabler/icons/2.2.0:
     resolution: {integrity: sha512-s2mm+7JqmLObKdU89Dtiy+USmUpOlACsoXZZPykjAJZC4pK3wMYxLsclJxViWLeLTb6Bc0oga92V7R+9nrj1ZQ==}
     dev: false
+
+  /@tanstack/eslint-plugin-query/4.24.5:
+    resolution: {integrity: sha512-KvuRkA9fYRZF9umwpLpWLcEqAVK7IWK8qjmnR3iwPIpkTFNGzaGogs7YkRCZs6q77QxI+c6MWG4xwjLIK/UmdA==}
+    dev: true
 
   /@tanstack/query-core/4.24.4:
     resolution: {integrity: sha512-9dqjv9eeB6VHN7lD3cLo16ZAjfjCsdXetSAD5+VyKqLUvcKTL0CklGQRJu+bWzdrS69R6Ea4UZo8obHYZnG6aA==}

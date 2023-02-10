@@ -6,8 +6,8 @@ import { useTasksByGroup } from "hooks/useTasksByGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 function TaskList() {
-  const { activeGroupId: groupId } = useActiveGroup();
-  const { data: tasks } = useTasksByGroup(groupId);
+  const { activeGroupId } = useActiveGroup();
+  const { data: tasks } = useTasksByGroup(activeGroupId);
   const { mutate: deleteTask } = useDeleteTask();
 
   if (!tasks) return null;
@@ -19,7 +19,9 @@ function TaskList() {
           <Text>{task.name}</Text>
           <ActionIcon
             type="button"
-            onClick={() => deleteTask({ taskId: task.id, groupId })}
+            onClick={() =>
+              deleteTask({ taskId: task.id, groupId: activeGroupId })
+            }
             size={36}
             variant="default"
           >

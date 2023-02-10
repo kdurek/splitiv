@@ -6,10 +6,8 @@ import GroupSelectModal from "components/GroupSelectModal";
 import { api } from "utils/api";
 
 import type { ReactNode } from "react";
-import type { GetGroupById } from "utils/api";
 
-export const activeGroupContext = createContext<{
-  group?: GetGroupById;
+export const ActiveGroupContext = createContext<{
   activeGroupId: string;
   setActiveGroupId: (value: string | ((val: string) => string)) => void;
 }>({ activeGroupId: "", setActiveGroupId: () => null });
@@ -18,9 +16,10 @@ const useProvideActiveGroup = () => {
   const [activeGroupId, setActiveGroupId, removeActiveGroupId] =
     useLocalStorage({
       key: "activeGroupId",
+      defaultValue: "",
     });
 
-  const { data: group } = api.group.getGroupById.useQuery(
+  api.group.getGroupById.useQuery(
     {
       groupId: activeGroupId,
     },
@@ -32,7 +31,7 @@ const useProvideActiveGroup = () => {
     }
   );
 
-  return { activeGroup: group, activeGroupId, setActiveGroupId };
+  return { activeGroupId, setActiveGroupId };
 };
 
 interface ActiveGroupProviderProps {
@@ -40,8 +39,8 @@ interface ActiveGroupProviderProps {
 }
 
 export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
-  const group = useProvideActiveGroup();
-  const { activeGroupId, setActiveGroupId } = group;
+  const activeGroupContext = useProvideActiveGroup();
+  const { activeGroupId, setActiveGroupId } = activeGroupContext;
   const { status } = useSession();
 
   if (status === "authenticated" && !activeGroupId) {
@@ -54,12 +53,20 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
   }
 
   return (
-    <activeGroupContext.Provider value={group}>
+    <ActiveGroupContext.Provider value={activeGroupContext}>
       {children}
-    </activeGroupContext.Provider>
+    </ActiveGroupContext.Provider>
   );
 }
 
 export const useActiveGroup = () => {
-  return useContext(activeGroupContext);
+  const activeGroupContext = useContext(ActiveGroupContext);
+
+  if (!activeGroupContext) {
+    throw new Error(
+      "useActiveGroup has to be used within <ActiveGroupProvider>"
+    );
+  }
+
+  return activeGroupContext;
 };

@@ -10,13 +10,13 @@ interface CreateTaskValues {
 }
 
 function CreateTaskForm() {
-  const { activeGroupId: groupId } = useActiveGroup();
+  const { activeGroupId } = useActiveGroup();
   const { mutate: createTask } = useCreateTask();
   const { handleSubmit, register, reset } = useForm<CreateTaskValues>();
 
   const onSubmit = (values: CreateTaskValues) => {
     const { name } = values;
-    createTask({ groupId, name });
+    createTask({ groupId: activeGroupId, name });
     reset();
   };
 

@@ -6,8 +6,8 @@ import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 function ExpenseCreateButtons() {
-  const { activeGroupId: groupId } = useActiveGroup();
-  const { data: group } = useGroup(groupId);
+  const { activeGroupId } = useActiveGroup();
+  const { data: group } = useGroup(activeGroupId);
 
   if (!group) return null;
 

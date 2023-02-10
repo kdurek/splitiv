@@ -18,9 +18,9 @@ import ExpenseCard from "./ExpenseCard";
 function ExpenseList() {
   const { data: session } = useSession();
   const [onlyUserDebts, toggleOnlyUserDebts] = useToggle();
-  const { activeGroupId: groupId } = useActiveGroup();
-  const { data: group } = useGroup(groupId);
-  const { data: expenses } = useExpenses(groupId);
+  const { activeGroupId } = useActiveGroup();
+  const { data: group } = useGroup(activeGroupId);
+  const { data: expenses } = useExpenses(activeGroupId);
 
   if (!session || !group || !expenses) return null;
 

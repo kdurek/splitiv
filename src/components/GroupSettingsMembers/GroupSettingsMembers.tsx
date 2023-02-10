@@ -6,8 +6,8 @@ import { useActiveGroup } from "providers/ActiveGroupProvider";
 import AddUserToGroupModal from "../AddUserToGroupModal";
 
 function GroupSettingsMembers() {
-  const { activeGroupId: groupId } = useActiveGroup();
-  const { data: group } = useGroup(groupId);
+  const { activeGroupId } = useActiveGroup();
+  const { data: group } = useGroup(activeGroupId);
 
   if (!group) return null;
 
@@ -19,7 +19,7 @@ function GroupSettingsMembers() {
           <List.Item key={user.id}>{user.name}</List.Item>
         ))}
       </List>
-      <AddUserToGroupModal groupId={groupId} />
+      <AddUserToGroupModal groupId={activeGroupId} />
     </Stack>
   );
 }

@@ -44,8 +44,8 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
 }
 
 function UserBalance() {
-  const { activeGroupId: groupId } = useActiveGroup();
-  const { data: group } = useGroup(groupId);
+  const { activeGroupId } = useActiveGroup();
+  const { data: group } = useGroup(activeGroupId);
 
   if (!group) return null;
 

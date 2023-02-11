@@ -3,6 +3,8 @@ import {
   AppShell,
   Burger,
   Flex,
+  Footer,
+  Group,
   Header,
   MediaQuery,
   Navbar,
@@ -10,12 +12,54 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconMoon, IconSun } from "@tabler/icons-react";
+import {
+  IconCash,
+  IconChefHat,
+  IconHome,
+  IconListCheck,
+  IconMoon,
+  IconSettings,
+  IconSun,
+} from "@tabler/icons-react";
+import { useRouter } from "next/router";
 
 import { Logo } from "./Logo";
 import { MainLinks } from "./MainLinks";
 
 import type { ReactNode } from "react";
+
+const data = [
+  {
+    icon: <IconChefHat />,
+    color: "yellow",
+    label: "Przepisy",
+    href: "/przepisy",
+  },
+  {
+    icon: <IconCash />,
+    color: "teal",
+    label: "Wydatki",
+    href: "/wydatki",
+  },
+  {
+    icon: <IconHome />,
+    color: "dark",
+    label: "Główna",
+    href: "/",
+  },
+  {
+    icon: <IconListCheck />,
+    color: "blue",
+    label: "Zadania",
+    href: "/zadania",
+  },
+  {
+    icon: <IconSettings />,
+    color: "violet",
+    label: "Ustawienia grupy",
+    href: "/ustawienia-grupy",
+  },
+];
 
 interface LayoutProps {
   children: ReactNode;
@@ -25,6 +69,7 @@ function Layout({ children }: LayoutProps) {
   const [opened, { close, toggle }] = useDisclosure(false);
   const theme = useMantineTheme();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const router = useRouter();
 
   return (
     <AppShell
@@ -48,6 +93,22 @@ function Layout({ children }: LayoutProps) {
             </Flex>
           </Flex>
         </Header>
+      }
+      footer={
+        <Footer height={{ base: 60 }}>
+          <Group h="100%" grow p="xs">
+            {data.map((link) => (
+              <ActionIcon
+                key={link.label}
+                color={link.color}
+                h="100%"
+                onClick={() => router.push(link.href)}
+              >
+                {link.icon}
+              </ActionIcon>
+            ))}
+          </Group>
+        </Footer>
       }
       navbar={
         <Navbar

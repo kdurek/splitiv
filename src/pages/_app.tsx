@@ -1,6 +1,7 @@
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { Poppins } from "@next/font/google";
 import { getCookie, setCookie } from "cookies-next";
+import dayjs from "dayjs";
 import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
@@ -13,6 +14,8 @@ import { api } from "../utils/api";
 import type { ColorScheme } from "@mantine/core";
 import type { GetServerSidePropsContext, NextComponentType } from "next";
 import type { Session } from "next-auth";
+
+import "dayjs/locale/pl";
 
 const poppins = Poppins({
   subsets: ["latin-ext"],
@@ -40,6 +43,8 @@ function MyApp({
       maxAge: 60 * 60 * 24 * 30,
     });
   };
+
+  dayjs.locale("pl");
 
   return (
     <main className={poppins.className}>

@@ -8,6 +8,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons-react";
+import dayjs from "dayjs";
 
 import ExpenseCardPayment from "./ExpenseCardPayment";
 
@@ -26,19 +27,21 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
   const descriptionParts = expense.description?.split("\n");
   const [payerFirstName] = expense.payer.name?.split(" ") ?? "";
 
+  const formattedDate = dayjs(expense.createdAt).format("ddd, D MMMM");
+
   if (!group) return null;
 
   return (
     <Accordion.Item value={expense.id}>
-      <Accordion.Control
-        sx={{ alignItems: "start" }}
-        icon={<IconReportMoney />}
-      >
-        <Group align="start">
-          <Text sx={{ flex: 1 }} weight={700}>
-            {expense.name}
-          </Text>
-          <Text weight={700}>{Number(expense.amount).toFixed(2)} zł</Text>
+      <Accordion.Control p="xs" icon={<IconReportMoney />}>
+        <Group>
+          <Box sx={{ flex: 1 }}>
+            <Text>{expense.name}</Text>
+            <Text size="sm" color="dimmed">
+              {formattedDate}
+            </Text>
+          </Box>
+          <Text>{Number(expense.amount).toFixed(2)} zł</Text>
         </Group>
       </Accordion.Control>
       <Accordion.Panel>

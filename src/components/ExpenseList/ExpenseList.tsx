@@ -17,7 +17,7 @@ function ExpenseList() {
   const { data: expenses } = useExpensesByGroup({
     groupId: activeGroupId,
     debtorId: onlyUserDebts ? session?.user.id : undefined,
-    settled: onlyUnsettled ? false : undefined,
+    settled: !onlyUnsettled,
   });
 
   if (!session || !group || !expenses) return null;

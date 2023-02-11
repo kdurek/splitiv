@@ -1,11 +1,4 @@
-import {
-  Accordion,
-  Checkbox,
-  Divider,
-  Paper,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Accordion, Checkbox, Group, Paper, Stack, Text } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 import { useSession } from "next-auth/react";
 
@@ -18,51 +11,34 @@ import ExpenseCard from "./ExpenseCard";
 function ExpenseList() {
   const { data: session } = useSession();
   const [onlyUserDebts, toggleOnlyUserDebts] = useToggle();
+  const [onlyUnsettled, setOnlyUnsettled] = useToggle();
   const { activeGroupId } = useActiveGroup();
   const { data: group } = useGroup(activeGroupId);
-  const { data: expenses } = useExpensesByGroup({ groupId: activeGroupId });
+  const { data: expenses } = useExpensesByGroup({
+    groupId: activeGroupId,
+    debtorId: onlyUserDebts ? session?.user.id : undefined,
+    settled: onlyUnsettled ? false : undefined,
+  });
 
   if (!session || !group || !expenses) return null;
 
-  const unsettledExpenses = expenses
-    .filter((expense) =>
-      expense.debts.some((debt) => debt.settled !== debt.amount)
-    )
-    .filter((expense) =>
-      onlyUserDebts
-        ? expense.debts.some(
-            (debt) =>
-              debt.debtorId === session.user?.id &&
-              debt.debtorId !== debt.expense.payerId &&
-              debt.settled !== debt.amount
-          )
-        : true
-    );
-
-  const settledExpenses = expenses
-    .filter((expense) =>
-      expense.debts.every((debt) => debt.settled === debt.amount)
-    )
-    .filter((expense) =>
-      onlyUserDebts
-        ? expense.debts.some(
-            (debt) =>
-              debt.debtorId === session.user.id &&
-              debt.debtorId !== debt.expense.payerId
-          )
-        : true
-    );
-
   return (
     <Stack>
-      <Checkbox
-        label="Moje długi"
-        checked={onlyUserDebts}
-        onChange={() => toggleOnlyUserDebts()}
-      />
+      <Group>
+        <Checkbox
+          label="Moje długi"
+          checked={onlyUserDebts}
+          onChange={() => toggleOnlyUserDebts()}
+        />
+        <Checkbox
+          label="Nie oddane"
+          checked={onlyUnsettled}
+          onChange={() => setOnlyUnsettled()}
+        />
+      </Group>
       <Accordion variant="contained">
-        {unsettledExpenses.length ? (
-          unsettledExpenses.map((expense) => (
+        {expenses.length ? (
+          expenses.map((expense) => (
             <ExpenseCard key={expense.id} group={group} expense={expense} />
           ))
         ) : (
@@ -70,12 +46,6 @@ function ExpenseList() {
             <Text>{`Nie ${onlyUserDebts ? "masz" : "ma"} żadnych długów`}</Text>
           </Paper>
         )}
-      </Accordion>
-      <Divider label="Historia" labelPosition="center" />
-      <Accordion variant="contained">
-        {settledExpenses.map((expense) => (
-          <ExpenseCard key={expense.id} group={group} expense={expense} />
-        ))}
       </Accordion>
     </Stack>
   );

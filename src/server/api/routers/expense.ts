@@ -5,12 +5,13 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const expenseRouter = createTRPCRouter({
   getExpensesByGroup: protectedProcedure
-    .input(z.object({ groupId: z.string() }))
+    .input(z.object({ groupId: z.string(), take: z.number().optional() }))
     .query(async ({ input, ctx }) => {
       return ctx.prisma.expense.findMany({
         where: {
           groupId: input.groupId,
         },
+        take: input.take,
         include: {
           payer: true,
           debts: {

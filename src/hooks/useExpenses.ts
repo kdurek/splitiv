@@ -2,11 +2,12 @@ import { api } from "utils/api";
 
 interface UseExpensesByGroupProps {
   groupId: string;
+  take?: number;
 }
 
-function useExpensesByGroup({ groupId }: UseExpensesByGroupProps) {
+function useExpensesByGroup({ groupId, take }: UseExpensesByGroupProps) {
   return api.expense.getExpensesByGroup.useQuery(
-    { groupId },
+    { groupId, take },
     { enabled: Boolean(groupId) }
   );
 }

@@ -1,22 +1,22 @@
 import { Stack, Title } from "@mantine/core";
 
 import ExpenseCreateButtons from "components/ExpenseCreateButtons";
-import ExpenseList from "components/ExpenseList";
+import ExpenseMainList from "components/ExpenseList/ExpenseMainList";
 import GroupSelect from "components/GroupSelect";
 import UserBalance from "components/UserBalance";
-import ProtectedRoute from "ProtectedRoute";
+import ProtectedContent from "ProtectedContent";
 
 function ExpensesPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedContent>
       <Stack>
         <Title order={1}>Wydatki</Title>
         <GroupSelect />
         <UserBalance />
         <ExpenseCreateButtons />
-        <ExpenseList />
+        <ExpenseMainList />
       </Stack>
-    </ProtectedRoute>
+    </ProtectedContent>
   );
 }
 

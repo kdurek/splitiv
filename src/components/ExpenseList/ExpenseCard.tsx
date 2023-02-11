@@ -12,14 +12,13 @@ import dayjs from "dayjs";
 
 import ExpenseCardPayment from "./ExpenseCardPayment";
 
-import type { GetExpensesByGroup, GetGroupById } from "utils/api";
+import type { GetExpensesByGroup } from "utils/api";
 
 interface ExpenseCardProps {
-  group: GetGroupById;
   expense: GetExpensesByGroup[number];
 }
 
-function ExpenseCard({ group, expense }: ExpenseCardProps) {
+function ExpenseCard({ expense }: ExpenseCardProps) {
   const payer = expense.debts.find((debt) => expense.payerId === debt.debtorId);
   const debts = expense.debts.filter(
     (debt) => expense.payerId !== debt.debtorId
@@ -28,8 +27,6 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
   const [payerFirstName] = expense.payer.name?.split(" ") ?? "";
 
   const formattedDate = dayjs(expense.createdAt).format("ddd, D MMMM");
-
-  if (!group) return null;
 
   return (
     <Accordion.Item value={expense.id}>
@@ -64,11 +61,7 @@ function ExpenseCard({ group, expense }: ExpenseCardProps) {
           }`}</Text>
           <List center spacing={16}>
             {debts.map((debt) => (
-              <ExpenseCardPayment
-                key={debt.id}
-                debt={debt}
-                groupId={group.id}
-              />
+              <ExpenseCardPayment key={debt.id} debt={debt} />
             ))}
           </List>
         </Stack>

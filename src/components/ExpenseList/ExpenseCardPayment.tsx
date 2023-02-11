@@ -12,6 +12,7 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 import { useUpdateExpenseDebt } from "hooks/useUpdateExpenseDebt";
+import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 import type { Decimal } from "@prisma/client/runtime";
 
@@ -28,7 +29,6 @@ interface ExpenseCardPaymentProps {
     };
     debtorId: string;
   };
-  groupId: string;
 }
 
 const schema = z.object({
@@ -37,10 +37,11 @@ const schema = z.object({
 
 type ExpenseCardPaymentFormValues = z.infer<typeof schema>;
 
-function ExpenseCardPayment({ debt, groupId }: ExpenseCardPaymentProps) {
+function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
+  const { activeGroupId } = useActiveGroup();
   const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } =
     useUpdateExpenseDebt({
-      groupId,
+      groupId: activeGroupId,
     });
   const [isEditing, toggleIsEditing] = useToggle();
   const {

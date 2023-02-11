@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-function ProtectedRoute({ children }: ProtectedRouteProps) {
+function ProtectedContent({ children }: ProtectedRouteProps) {
   const { status } = useSession();
 
   if (status === "loading") return null;
@@ -21,4 +21,4 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   return <Box>{children}</Box>;
 }
 
-export default ProtectedRoute;
+export default ProtectedContent;

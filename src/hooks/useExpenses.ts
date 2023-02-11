@@ -15,7 +15,7 @@ function useExpensesByGroup({
 }: UseExpensesByGroupProps) {
   return api.expense.getExpensesByGroup.useQuery(
     { groupId, take, debtorId, settled },
-    { enabled: Boolean(groupId) }
+    { enabled: Boolean(groupId), keepPreviousData: true }
   );
 }
 

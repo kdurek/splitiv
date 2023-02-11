@@ -1,49 +1,46 @@
-import { Accordion, Checkbox, Group, Paper, Stack, Text } from "@mantine/core";
-import { useToggle } from "@mantine/hooks";
-import { useSession } from "next-auth/react";
+import { Accordion, Paper, Stack, Text } from "@mantine/core";
 
 import { useExpensesByGroup } from "hooks/useExpenses";
-import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 import ExpenseCard from "./ExpenseCard";
 
-function ExpenseList() {
-  const { data: session } = useSession();
-  const [onlyUserDebts, toggleOnlyUserDebts] = useToggle();
-  const [onlyUnsettled, setOnlyUnsettled] = useToggle();
+interface ExpenseListProps {
+  filters: {
+    groupId?: string;
+    debtorId?: string;
+    settled?: boolean;
+    take?: number;
+  };
+}
+
+function ExpenseList({ filters }: ExpenseListProps) {
   const { activeGroupId } = useActiveGroup();
-  const { data: group } = useGroup(activeGroupId);
-  const { data: expenses } = useExpensesByGroup({
-    groupId: activeGroupId,
-    debtorId: onlyUserDebts ? session?.user.id : undefined,
-    settled: !onlyUnsettled,
+
+  const {
+    data: expenses,
+    isLoading: isLoadingExpenses,
+    isError: isErrorExpenses,
+  } = useExpensesByGroup({
+    groupId: filters?.groupId ?? activeGroupId,
+    debtorId: filters?.debtorId,
+    settled: filters?.settled,
+    take: filters?.take,
   });
 
-  if (!session || !group || !expenses) return null;
+  if (isLoadingExpenses) return null;
+  if (isErrorExpenses) return null;
 
   return (
     <Stack>
-      <Group>
-        <Checkbox
-          label="Moje długi"
-          checked={onlyUserDebts}
-          onChange={() => toggleOnlyUserDebts()}
-        />
-        <Checkbox
-          label="Nie oddane"
-          checked={onlyUnsettled}
-          onChange={() => setOnlyUnsettled()}
-        />
-      </Group>
       <Accordion variant="contained">
         {expenses.length ? (
           expenses.map((expense) => (
-            <ExpenseCard key={expense.id} group={group} expense={expense} />
+            <ExpenseCard key={expense.id} expense={expense} />
           ))
         ) : (
           <Paper withBorder p="md">
-            <Text>{`Nie ${onlyUserDebts ? "masz" : "ma"} żadnych długów`}</Text>
+            <Text>Brak długów</Text>
           </Paper>
         )}
       </Accordion>

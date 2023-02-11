@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import UpdateRecipeForm from "components/UpdateRecipeForm/UpdateRecipeForm";
 import { useRecipeBySlug } from "hooks/useRecipeBySlug";
-import ProtectedRoute from "ProtectedRoute";
+import ProtectedContent from "ProtectedContent";
 
 function EditRecipePage() {
   const router = useRouter();
@@ -13,7 +13,7 @@ function EditRecipePage() {
   if (!recipe) return null;
 
   return (
-    <ProtectedRoute>
+    <ProtectedContent>
       <Stack>
         <UpdateRecipeForm recipe={recipe} />
         <Button
@@ -23,7 +23,7 @@ function EditRecipePage() {
           Anuluj
         </Button>
       </Stack>
-    </ProtectedRoute>
+    </ProtectedContent>
   );
 }
 

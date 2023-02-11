@@ -13,6 +13,7 @@ export const ActiveGroupContext = createContext<{
 }>({ activeGroupId: "", setActiveGroupId: () => null });
 
 const useProvideActiveGroup = () => {
+  const { status } = useSession();
   const [activeGroupId, setActiveGroupId, removeActiveGroupId] =
     useLocalStorage({
       key: "activeGroupId",
@@ -24,7 +25,7 @@ const useProvideActiveGroup = () => {
       groupId: activeGroupId,
     },
     {
-      enabled: Boolean(activeGroupId),
+      enabled: status === "authenticated" && Boolean(activeGroupId),
       onError() {
         removeActiveGroupId();
       },

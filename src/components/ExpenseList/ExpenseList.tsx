@@ -9,7 +9,7 @@ import {
 import { useToggle } from "@mantine/hooks";
 import { useSession } from "next-auth/react";
 
-import { useExpenses } from "hooks/useExpenses";
+import { useExpensesByGroup } from "hooks/useExpenses";
 import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 
@@ -20,7 +20,7 @@ function ExpenseList() {
   const [onlyUserDebts, toggleOnlyUserDebts] = useToggle();
   const { activeGroupId } = useActiveGroup();
   const { data: group } = useGroup(activeGroupId);
-  const { data: expenses } = useExpenses(activeGroupId);
+  const { data: expenses } = useExpensesByGroup({ groupId: activeGroupId });
 
   if (!session || !group || !expenses) return null;
 

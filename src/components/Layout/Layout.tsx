@@ -95,13 +95,12 @@ function Layout({ children }: LayoutProps) {
         </Header>
       }
       footer={
-        <Footer height={{ base: 60 }}>
-          <Group h="100%" grow p="xs">
+        <Footer height={{ base: 90 }}>
+          <Group grow p="xs">
             {data.map((link) => (
               <ActionIcon
                 key={link.label}
                 color={link.color}
-                h="100%"
                 onClick={() => router.push(link.href)}
               >
                 {link.icon}

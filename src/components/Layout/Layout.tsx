@@ -16,7 +16,6 @@ import {
   IconCash,
   IconChefHat,
   IconHome,
-  IconListCheck,
   IconMoon,
   IconSettings,
   IconSun,
@@ -30,10 +29,10 @@ import type { ReactNode } from "react";
 
 const data = [
   {
-    icon: <IconChefHat />,
-    color: "yellow",
-    label: "Przepisy",
-    href: "/przepisy",
+    icon: <IconHome />,
+    color: "dark",
+    label: "Główna",
+    href: "/",
   },
   {
     icon: <IconCash />,
@@ -42,16 +41,10 @@ const data = [
     href: "/wydatki",
   },
   {
-    icon: <IconHome />,
-    color: "dark",
-    label: "Główna",
-    href: "/",
-  },
-  {
-    icon: <IconListCheck />,
-    color: "blue",
-    label: "Zadania",
-    href: "/zadania",
+    icon: <IconChefHat />,
+    color: "yellow",
+    label: "Przepisy",
+    href: "/przepisy",
   },
   {
     icon: <IconSettings />,
@@ -95,7 +88,7 @@ function Layout({ children }: LayoutProps) {
         </Header>
       }
       footer={
-        <Footer height={{ base: 90 }}>
+        <Footer display={{ sm: "none" }} height={{ base: 90 }}>
           <Group grow p="xs">
             {data.map((link) => (
               <ActionIcon

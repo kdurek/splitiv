@@ -35,7 +35,7 @@ function ExpensePayList({ values: debts, afterSubmit }: ExpensePayListProps) {
     setValue,
     formState: { errors },
   } = useForm<ExpensePayListSchemaValues>({
-    values: debts,
+    defaultValues: debts,
     resolver: zodResolver(ExpensePayListSchema),
   });
 

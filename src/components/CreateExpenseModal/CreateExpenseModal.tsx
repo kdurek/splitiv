@@ -89,7 +89,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
-          description,
+          description: description || undefined,
           amount,
           payerId: payer,
           debts,
@@ -129,7 +129,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
-          description,
+          description: description || undefined,
           amount,
           payerId: payer,
           debts,
@@ -160,7 +160,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
-          description,
+          description: description || undefined,
           amount,
           payerId: payer,
           debts,
@@ -195,7 +195,7 @@ function CreateExpenseModal({ group }: CreateExpenseModalProps) {
         {
           groupId: group.id,
           name,
-          description,
+          description: description || undefined,
           amount,
           payerId: payer,
           debts,

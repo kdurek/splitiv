@@ -1,13 +1,20 @@
 // @ts-check
-
+import withPWA from "next-pwa";
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
  */
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
 
+const withPWAConfig = withPWA({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  skipWaiting: true,
+});
+
 /** @type {import("next").NextConfig} */
-const config = {
+const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
   eslint: {
@@ -24,4 +31,5 @@ const config = {
     defaultLocale: "pl",
   },
 };
-export default config;
+
+export default withPWAConfig(nextConfig);

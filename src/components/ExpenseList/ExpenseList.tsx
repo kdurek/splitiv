@@ -8,6 +8,9 @@ import ExpenseCard from "./ExpenseCard";
 interface ExpenseListProps {
   filters: {
     groupId?: string;
+    name?: string;
+    description?: string;
+    payerId?: string;
     debtorId?: string;
     settled?: boolean;
     take?: number;
@@ -22,10 +25,12 @@ function ExpenseList({ filters }: ExpenseListProps) {
     isLoading: isLoadingExpenses,
     isError: isErrorExpenses,
   } = useExpensesByGroup({
-    groupId: filters?.groupId ?? activeGroupId,
-    debtorId: filters?.debtorId,
-    settled: filters?.settled,
-    take: filters?.take,
+    groupId: filters?.groupId || activeGroupId,
+    name: filters?.name || "",
+    description: filters?.name || "",
+    payerId: filters?.payerId || undefined,
+    debtorId: filters?.debtorId || undefined,
+    take: filters?.take || undefined,
   });
 
   if (isLoadingExpenses) return null;

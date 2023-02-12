@@ -8,23 +8,35 @@ export const expenseRouter = createTRPCRouter({
     .input(
       z.object({
         groupId: z.string(),
-        take: z.number().optional(),
+        name: z.string().optional(),
+        description: z.string().optional(),
+        payerId: z.string().optional(),
         debtorId: z.string().optional(),
-        settled: z.boolean().optional(),
+        take: z.number().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
       return ctx.prisma.expense.findMany({
         where: {
           groupId: input.groupId,
+          OR: [
+            {
+              name: {
+                contains: input.name,
+                mode: "insensitive",
+              },
+            },
+            {
+              description: {
+                contains: input.description,
+                mode: "insensitive",
+              },
+            },
+          ],
+          payerId: input.payerId,
           debts: {
             some: {
               debtorId: input.debtorId,
-              settled: {
-                lt: input.settled
-                  ? undefined
-                  : ctx.prisma.expenseDebt.fields.amount,
-              },
             },
           },
         },

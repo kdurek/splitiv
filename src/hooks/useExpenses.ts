@@ -2,19 +2,23 @@ import { api } from "utils/api";
 
 interface UseExpensesByGroupProps {
   groupId: string;
-  take?: number;
+  name?: string;
+  description?: string;
+  payerId?: string;
   debtorId?: string;
-  settled?: boolean;
+  take?: number;
 }
 
 function useExpensesByGroup({
   groupId,
-  take,
+  name,
+  description,
+  payerId,
   debtorId,
-  settled,
+  take,
 }: UseExpensesByGroupProps) {
   return api.expense.getExpensesByGroup.useQuery(
-    { groupId, take, debtorId, settled },
+    { groupId, name, description, payerId, debtorId, take },
     { enabled: Boolean(groupId), keepPreviousData: true }
   );
 }

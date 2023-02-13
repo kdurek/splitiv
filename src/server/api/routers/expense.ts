@@ -12,6 +12,7 @@ export const expenseRouter = createTRPCRouter({
         description: z.string().optional(),
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
+        settled: z.boolean().optional(),
         take: z.number().optional(),
       })
     )
@@ -37,6 +38,16 @@ export const expenseRouter = createTRPCRouter({
           debts: {
             some: {
               debtorId: input.debtorId,
+              settled: {
+                lt:
+                  input.settled === false
+                    ? ctx.prisma.expenseDebt.fields.amount
+                    : undefined,
+                equals:
+                  input.settled === true
+                    ? ctx.prisma.expenseDebt.fields.amount
+                    : undefined,
+              },
             },
           },
         },

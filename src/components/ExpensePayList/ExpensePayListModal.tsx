@@ -42,6 +42,7 @@ function ExpensePayListModal() {
       return {
         id: debt.id,
         name: debt.expense.name,
+        settled: Number(debt.settled),
         amount: Number(debt.amount),
         check: false,
       };

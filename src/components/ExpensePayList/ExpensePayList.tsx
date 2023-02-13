@@ -50,7 +50,7 @@ function ExpensePayList({ values: debts, afterSubmit }: ExpensePayListProps) {
     });
 
   const debtsSum = watch("debts").reduce(
-    (prev, curr) => prev + (curr.check ? curr.amount : 0),
+    (prev, curr) => prev + (curr.check ? curr.amount - curr.settled : 0),
     0
   );
 
@@ -90,7 +90,9 @@ function ExpensePayList({ values: debts, afterSubmit }: ExpensePayListProps) {
               </Text>
               <Checkbox
                 {...register(`debts.${index}.check`)}
-                label={`${debtField.amount.toFixed(2)} zł`}
+                label={`${(debtField.amount - debtField.settled).toFixed(
+                  2
+                )} zł`}
                 labelPosition="left"
               />
             </Group>

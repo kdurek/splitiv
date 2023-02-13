@@ -6,6 +6,7 @@ export const ExpensePayListSchema = z
       z.object({
         id: z.string().cuid2(),
         name: z.string(),
+        settled: z.number(),
         amount: z.number(),
         check: z.boolean(),
       })

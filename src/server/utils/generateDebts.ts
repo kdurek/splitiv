@@ -106,5 +106,9 @@ export function generateDebts(debts: DebtWithExpense[]) {
     }
   });
 
-  return reduceDebts(debtsArray);
+  return debtsArray;
+}
+
+export function generateSimplifiedDebts(debts: DebtWithExpense[]) {
+  return reduceDebts(generateDebts(debts));
 }

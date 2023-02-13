@@ -67,34 +67,29 @@ function ExpenseCard({ activeExpenseId, expense }: ExpenseCardProps) {
         p="xs"
         icon={getSettledStateIcon()}
       >
-        <Group sx={{ alignItems: "start", minHeight: 40 }}>
-          <Box sx={{ flex: 1 }}>
-            <Text size="sm" color="dimmed">
-              {formattedDate}
-            </Text>
-            <Text
-              lh="1"
-              lineClamp={activeExpenseId === expense.id ? undefined : 1}
-            >
-              {expense.name}
-            </Text>
-          </Box>
-          <Text>{Number(expense.amount).toFixed(2)} zł</Text>
+        <Text lineClamp={activeExpenseId === expense.id ? undefined : 1}>
+          {expense.name}
+        </Text>
+        <Group position="apart">
+          <Text size="sm" color="dimmed">
+            {formattedDate}
+          </Text>
+          <Text size="sm" color="dimmed">
+            {Number(expense.amount).toFixed(2)} zł
+          </Text>
         </Group>
       </Accordion.Control>
       <Accordion.Panel>
         <Stack>
           {descriptionParts?.length && (
-            <>
-              <Box>
-                {descriptionParts?.map((part, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Text key={part + index}>{part}</Text>
-                ))}
-              </Box>
-              <Divider />
-            </>
+            <Box>
+              {descriptionParts?.map((part, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Text key={part + index}>{part}</Text>
+              ))}
+            </Box>
           )}
+          <Divider />
           <Text>{`${payerFirstName} - zapłacone ${Number(
             expense.amount
           ).toFixed(2)} zł`}</Text>

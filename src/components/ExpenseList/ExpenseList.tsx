@@ -52,7 +52,7 @@ function ExpenseList({
   if (isLoadingExpenses) return null;
   if (isErrorExpenses) return null;
 
-  const expensesPerPage = 10;
+  const expensesPerPage = 8;
   const indexOfLastExpense = activePage * expensesPerPage;
   const indexOfFirstExpense = indexOfLastExpense - expensesPerPage;
   const currentExpenses = expenses.slice(

@@ -1,14 +1,45 @@
 import { Accordion, Paper, Stack, Text } from "@mantine/core";
 
+import { useExpensesByGroup } from "hooks/useExpenses";
+
 import ExpenseCard from "./ExpenseCard";
 
-import type { GetExpensesByGroup } from "utils/api";
-
 interface ExpenseListProps {
-  expenses: GetExpensesByGroup;
+  groupId: string;
+  name?: string;
+  description?: string;
+  payerId?: string;
+  debtorId?: string;
+  settled?: boolean;
+  take?: number;
 }
 
-function ExpenseList({ expenses }: ExpenseListProps) {
+function ExpenseList({
+  groupId,
+  name,
+  description,
+  payerId,
+  debtorId,
+  settled,
+  take,
+}: ExpenseListProps) {
+  const {
+    data: expenses,
+    isLoading: isLoadingExpenses,
+    isError: isErrorExpenses,
+  } = useExpensesByGroup({
+    groupId,
+    name,
+    description,
+    payerId,
+    debtorId,
+    settled,
+    take,
+  });
+
+  if (isLoadingExpenses) return null;
+  if (isErrorExpenses) return null;
+
   return (
     <Stack>
       <Accordion variant="contained">

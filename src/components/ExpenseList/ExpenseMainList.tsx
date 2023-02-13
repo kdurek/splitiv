@@ -3,7 +3,6 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import { useState } from "react";
 
-import { useExpensesByGroup } from "hooks/useExpenses";
 import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 
@@ -21,23 +20,8 @@ function ExpenseMainList() {
   const [payer, setPayer] = useState<string>("");
   const [debtor, setDebtor] = useState<string>("");
 
-  const {
-    data: expenses,
-    isLoading: isLoadingExpenses,
-    isError: isErrorExpenses,
-  } = useExpensesByGroup({
-    groupId: activeGroupId,
-    name: debouncedSearch,
-    description: debouncedSearch,
-    payerId: payer || undefined,
-    debtorId: debtor || undefined,
-  });
-
   if (isLoadingGroup) return null;
   if (isErrorGroup) return null;
-
-  if (isLoadingExpenses) return null;
-  if (isErrorExpenses) return null;
 
   const groupUsersToSelect = [
     { value: "", label: "Wszyscy" },
@@ -76,7 +60,13 @@ function ExpenseMainList() {
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
-      <ExpenseList expenses={expenses} />
+      <ExpenseList
+        groupId={activeGroupId}
+        name={debouncedSearch}
+        description={debouncedSearch}
+        payerId={payer || undefined}
+        debtorId={debtor || undefined}
+      />
     </Stack>
   );
 }

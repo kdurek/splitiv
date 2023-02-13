@@ -63,6 +63,7 @@ function ExpenseMainList() {
         </Accordion.Item>
       </Accordion>
       <ExpenseList
+        withPagination
         groupId={activeGroupId}
         name={debouncedSearch}
         description={debouncedSearch}

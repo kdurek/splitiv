@@ -16,10 +16,11 @@ import ExpenseCardPayment from "./ExpenseCardPayment";
 import type { GetExpensesByGroup } from "utils/api";
 
 interface ExpenseCardProps {
+  activeExpenseId: string | null;
   expense: GetExpensesByGroup[number];
 }
 
-function ExpenseCard({ expense }: ExpenseCardProps) {
+function ExpenseCard({ activeExpenseId, expense }: ExpenseCardProps) {
   const descriptionParts = expense.description?.split("\n");
   const [payerFirstName] = expense.payer.name?.split(" ") ?? "";
   const formattedDate = dayjs(expense.createdAt).format("ddd, D MMMM");
@@ -61,12 +62,21 @@ function ExpenseCard({ expense }: ExpenseCardProps) {
 
   return (
     <Accordion.Item value={expense.id}>
-      <Accordion.Control p="xs" icon={getSettledStateIcon()}>
-        <Group>
+      <Accordion.Control
+        sx={{ alignItems: "start" }}
+        p="xs"
+        icon={getSettledStateIcon()}
+      >
+        <Group sx={{ alignItems: "start", minHeight: 40 }}>
           <Box sx={{ flex: 1 }}>
-            <Text>{expense.name}</Text>
             <Text size="sm" color="dimmed">
               {formattedDate}
+            </Text>
+            <Text
+              lh="1"
+              lineClamp={activeExpenseId === expense.id ? undefined : 1}
+            >
+              {expense.name}
             </Text>
           </Box>
           <Text>{Number(expense.amount).toFixed(2)} zł</Text>

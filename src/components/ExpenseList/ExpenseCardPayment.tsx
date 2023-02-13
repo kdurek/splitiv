@@ -65,11 +65,28 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
     session?.user?.id !== debt.debtorId &&
     session?.user?.id !== debt.expense.payerId;
 
-  const isSettled = debt.settled === debt.amount;
+  const isFullySettled = debt.settled === debt.amount;
+  const isPartiallySettled =
+    debt.settled !== debt.amount && Number(debt.settled) !== 0;
   const maximumAmount = Number(debt.amount) - Number(debt.settled);
 
-  const statusIcon = isSettled ? <IconSquareCheck /> : <IconSquare />;
-  const statusColor = isSettled ? "teal" : "blue";
+  const statusIcon = isFullySettled ? <IconSquareCheck /> : <IconSquare />;
+
+  const getSettledStateColor = () => {
+    if (isEditing) {
+      return "red";
+    }
+
+    if (isFullySettled) {
+      return "teal";
+    }
+
+    if (isPartiallySettled) {
+      return "yellow";
+    }
+
+    return "blue";
+  };
 
   const onSubmit = (values: ExpenseCardPaymentFormValues) => {
     updateExpenseDebt(
@@ -97,10 +114,10 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
         h={36}
         icon={
           <ActionIcon
-            color={isEditing ? "red" : statusColor}
+            color={getSettledStateColor()}
             size={36}
             onClick={() =>
-              !isSettled && !notHavePermission && toggleIsEditing()
+              !isFullySettled && !notHavePermission && toggleIsEditing()
             }
           >
             {isEditing ? <IconSquareX /> : statusIcon}
@@ -150,8 +167,10 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
           </Box>
         ) : (
           <Text>
-            {isSettled
-              ? `${debtorFirstName} - oddane`
+            {isFullySettled
+              ? `${debtorFirstName} - ${Number(debt.amount).toFixed(
+                  2
+                )} zł oddane`
               : `${debtorFirstName} - ${maximumAmount.toFixed(
                   2
                 )} zł do oddania`}

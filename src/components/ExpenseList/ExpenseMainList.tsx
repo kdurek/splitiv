@@ -7,6 +7,7 @@ import { useGroup } from "hooks/useGroup";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 import ExpenseList from "./ExpenseList";
+import ExpensePaymentLegend from "./ExpensePaymentLegend";
 
 function ExpenseMainList() {
   const { activeGroupId } = useActiveGroup();
@@ -33,6 +34,7 @@ function ExpenseMainList() {
 
   return (
     <Stack>
+      <ExpensePaymentLegend />
       <Accordion variant="contained">
         <Accordion.Item value="filters">
           <Accordion.Control py="xs">Szukaj</Accordion.Control>

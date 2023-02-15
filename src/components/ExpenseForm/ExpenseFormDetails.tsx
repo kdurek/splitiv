@@ -23,8 +23,6 @@ function ExpenseFormDetails({ group }: ExpenseFormDetailsProps) {
     formState: { errors },
   } = methods;
 
-  if (!group) return null;
-
   return (
     <Stack>
       <TextInput

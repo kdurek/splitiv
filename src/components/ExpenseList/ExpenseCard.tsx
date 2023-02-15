@@ -10,6 +10,9 @@ import {
 } from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons-react";
 import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
+
+import DeleteExpenseModal from "components/DeleteExpenseModal";
 
 import ExpenseCardPayment from "./ExpenseCardPayment";
 
@@ -21,6 +24,7 @@ interface ExpenseCardProps {
 }
 
 function ExpenseCard({ activeExpenseId, expense }: ExpenseCardProps) {
+  const { data: session } = useSession();
   const descriptionParts = expense.description?.split("\n");
   const [payerFirstName] = expense.payer.name?.split(" ") ?? "";
   const formattedDate = dayjs(expense.createdAt).format("ddd, D MMMM");
@@ -98,6 +102,14 @@ function ExpenseCard({ activeExpenseId, expense }: ExpenseCardProps) {
               <ExpenseCardPayment key={debt.id} debt={debt} />
             ))}
           </List>
+          {session?.user.id === expense.payerId && (
+            <>
+              <Divider />
+              <Box sx={{ textAlign: "end" }}>
+                <DeleteExpenseModal expenseId={expense.id} />
+              </Box>
+            </>
+          )}
         </Stack>
       </Accordion.Panel>
     </Accordion.Item>

@@ -1,6 +1,14 @@
-import { Accordion, NativeSelect, Stack, TextInput } from "@mantine/core";
+import {
+  Accordion,
+  Button,
+  Divider,
+  NativeSelect,
+  Stack,
+  TextInput,
+} from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 import { useGroup } from "hooks/useGroup";
@@ -10,6 +18,7 @@ import ExpenseList from "./ExpenseList";
 import ExpensePaymentLegend from "./ExpensePaymentLegend";
 
 function ExpenseMainList() {
+  const { data: session } = useSession();
   const { activeGroupId } = useActiveGroup();
   const {
     data: group,
@@ -31,6 +40,18 @@ function ExpenseMainList() {
       label: user.name ?? "Brak nazwy",
     })),
   ];
+
+  const handleFilterParticipatedDebts = () => {
+    if (session) {
+      setDebtor(session.user.id);
+    }
+  };
+
+  const handleFiltersReset = () => {
+    setSearch("");
+    setPayer("");
+    setDebtor("");
+  };
 
   return (
     <Stack>
@@ -58,6 +79,13 @@ function ExpenseMainList() {
                 onChange={(event) => setDebtor(event.currentTarget.value)}
                 data={groupUsersToSelect}
               />
+              <Divider label="Szybkie filtry" labelPosition="center" />
+              <Button variant="default" onClick={handleFilterParticipatedDebts}>
+                Wydatki w których uczestniczę
+              </Button>
+              <Button variant="subtle" color="red" onClick={handleFiltersReset}>
+                Resetuj filtry
+              </Button>
             </Stack>
           </Accordion.Panel>
         </Accordion.Item>

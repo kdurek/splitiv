@@ -10,7 +10,7 @@ interface UseExpensesByGroupProps {
   take?: number;
 }
 
-function useExpensesByGroup({
+function useExpenses({
   groupId,
   name = "",
   description = "",
@@ -33,4 +33,4 @@ function useExpensesByGroup({
   );
 }
 
-export { useExpensesByGroup };
+export { useExpenses };

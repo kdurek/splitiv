@@ -9,6 +9,9 @@ function useUpdateExpenseDebt({ groupId }: UseUpdateExpenseDebtProps) {
 
   return api.expense.updateExpenseDebt.useMutation({
     async onSuccess() {
+      await utils.user.getCurrentUserUnsettledDebtsByGroup.invalidate({
+        groupId,
+      });
       await utils.group.getGroupById.invalidate({ groupId });
       await utils.expense.getExpensesByGroup.invalidate({
         groupId,

@@ -1,7 +1,7 @@
 import { Accordion, Flex, Pagination, Paper, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-import { useExpensesByGroup } from "hooks/useExpenses";
+import { useExpenses } from "hooks/useExpenses";
 
 import ExpenseCard from "./ExpenseCard";
 
@@ -39,7 +39,7 @@ function ExpenseList({
     data: expenses,
     isLoading: isLoadingExpenses,
     isError: isErrorExpenses,
-  } = useExpensesByGroup({
+  } = useExpenses({
     groupId,
     name,
     description,

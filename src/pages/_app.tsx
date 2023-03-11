@@ -1,7 +1,7 @@
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { Poppins } from "@next/font/google";
 import { getCookie, setCookie } from "cookies-next";
 import dayjs from "dayjs";
+import { Poppins } from "next/font/google";
 import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";

@@ -11,7 +11,6 @@ specifiers:
   '@mantine/next': ^5.10.3
   '@next-auth/prisma-adapter': ^1.0.5
   '@next/eslint-plugin-next': ^13.2.4
-  '@next/font': ^13.2.4
   '@prisma/client': ^4.11.0
   '@tabler/icons-react': ^2.10.0
   '@tanstack/eslint-plugin-query': ^4.26.2
@@ -65,7 +64,6 @@ dependencies:
   '@mantine/hooks': 5.10.3_react@18.2.0
   '@mantine/next': 5.10.3_qqau3dvbojnwvgou4gzbrwl7sy
   '@next-auth/prisma-adapter': 1.0.5_knaw3qxw4zwoiwojd3fn43zthi
-  '@next/font': 13.2.4
   '@prisma/client': 4.11.0_prisma@4.11.0
   '@tabler/icons-react': 2.10.0_react@18.2.0
   '@tanstack/react-query': 4.26.1_biqbaboplfbrettd7655fr4n2y
@@ -1567,10 +1565,6 @@ packages:
     dependencies:
       glob: 7.1.7
     dev: true
-
-  /@next/font/13.2.4:
-    resolution: {integrity: sha512-lMAnuOYjv5g22WhD00u0DQ9u2rTMJH0S64PKE4Sy8Y2q+FJTYs6ZHT2z3VRoI8+AOWSLK4FirpnygcjOienQ9A==}
-    dev: false
 
   /@next/swc-android-arm-eabi/13.2.4:
     resolution: {integrity: sha512-DWlalTSkLjDU11MY11jg17O1gGQzpRccM9Oes2yTqj2DpHndajrXHGxj9HGtJ+idq2k7ImUdJVWS2h2l/EDJOw==}

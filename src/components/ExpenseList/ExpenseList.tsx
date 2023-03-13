@@ -86,7 +86,7 @@ function ExpenseList({
       {withPagination && (
         <Flex justify="center">
           <Pagination
-            page={activePage}
+            value={activePage}
             onChange={setPage}
             total={Math.ceil(expenses.length / expensesPerPage)}
           />

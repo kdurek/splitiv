@@ -4,7 +4,7 @@ specifiers:
   '@dinero.js/currencies': ^2.0.0-alpha.1
   '@emotion/react': ^11.10.6
   '@emotion/server': ^11.10.0
-  '@hookform/resolvers': ^2.9.11
+  '@hookform/resolvers': ^3.0.1
   '@mantine/core': ^6.0.6
   '@mantine/dates': ^6.0.6
   '@mantine/hooks': ^6.0.6
@@ -58,7 +58,7 @@ dependencies:
   '@dinero.js/currencies': 2.0.0-alpha.1
   '@emotion/react': 11.10.6_pofolu2o2erjq4lhyzl3hqovzq
   '@emotion/server': 11.10.0
-  '@hookform/resolvers': 2.9.11_react-hook-form@7.43.9
+  '@hookform/resolvers': 3.0.1_react-hook-form@7.43.9
   '@mantine/core': 6.0.6_z6mkljgfz35cqw5xrleq7kjcbq
   '@mantine/dates': 6.0.6_7cbxwq2i6ifycwljiccut564ni
   '@mantine/hooks': 6.0.6_react@18.2.0
@@ -1382,8 +1382,8 @@ packages:
       tabbable: 6.1.1
     dev: false
 
-  /@hookform/resolvers/2.9.11_react-hook-form@7.43.9:
-    resolution: {integrity: sha512-bA3aZ79UgcHj7tFV7RlgThzwSSHZgvfbt2wprldRkYBcMopdMvHyO17Wwp/twcJasNFischFfS7oz8Katz8DdQ==}
+  /@hookform/resolvers/3.0.1_react-hook-form@7.43.9:
+    resolution: {integrity: sha512-n5oOt0cLw9mQNW3/k9zWaPsNWQcc0k6Jpc7XUrg2Q/AqqsHp3IVa1juqHCxczXI6uXHBa69ILc4pdtsRGyuzsw==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:

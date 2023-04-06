@@ -1,13 +1,15 @@
 import {
-  Accordion,
   Box,
   Divider,
   Group,
-  List,
+  Modal,
+  Paper,
   Stack,
   Text,
   ThemeIcon,
+  UnstyledButton,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconReportMoney } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
@@ -19,13 +21,14 @@ import ExpenseCardPayment from "./ExpenseCardPayment";
 import type { GetExpensesByGroup } from "utils/api";
 
 interface ExpenseCardProps {
-  activeExpenseId: string | null;
   expense: GetExpensesByGroup[number];
 }
 
-function ExpenseCard({ activeExpenseId, expense }: ExpenseCardProps) {
+function ExpenseCard({ expense }: ExpenseCardProps) {
+  const [opened, { open, close }] = useDisclosure(false);
   const { data: session } = useSession();
   const descriptionParts = expense.description?.split("\n");
+  const hasDescription = descriptionParts?.length;
   const [payerFirstName] = expense.payer.name?.split(" ") ?? "";
   const formattedDate = dayjs(expense.createdAt).format("ddd, D MMMM");
 
@@ -65,54 +68,54 @@ function ExpenseCard({ activeExpenseId, expense }: ExpenseCardProps) {
   };
 
   return (
-    <Accordion.Item value={expense.id}>
-      <Accordion.Control
-        sx={{ alignItems: "start" }}
-        p="xs"
-        icon={getSettledStateIcon()}
-      >
-        <Text lineClamp={activeExpenseId === expense.id ? undefined : 1}>
-          {expense.name}
-        </Text>
-        <Group position="apart">
-          <Text size="sm" color="dimmed">
-            {formattedDate}
-          </Text>
-          <Text size="sm" color="dimmed">
-            {Number(expense.amount).toFixed(2)} zł
-          </Text>
-        </Group>
-      </Accordion.Control>
-      <Accordion.Panel>
-        <Stack>
-          {descriptionParts?.length && (
-            <Box>
-              {descriptionParts?.map((part, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Text key={part + index}>{part}</Text>
-              ))}
-            </Box>
-          )}
-          <Divider />
-          <Text>{`${payerFirstName} - zapłacone ${Number(
-            expense.amount
-          ).toFixed(2)} zł`}</Text>
-          <List center spacing={16}>
-            {expense.debts.map((debt) => (
-              <ExpenseCardPayment key={debt.id} debt={debt} />
+    <>
+      <Modal opened={opened} onClose={close} title={expense.name}>
+        {hasDescription && (
+          <Box>
+            {descriptionParts?.map((part, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Text key={part + index}>{part}</Text>
             ))}
-          </List>
-          {session?.user.id === expense.payerId && (
-            <>
-              <Divider />
-              <Box sx={{ textAlign: "end" }}>
-                <DeleteExpenseModal expenseId={expense.id} />
-              </Box>
-            </>
-          )}
+          </Box>
+        )}
+        <Divider mb="md" mt={hasDescription ? "md" : undefined} />
+        <Text>{`${payerFirstName} - zapłacone ${Number(expense.amount).toFixed(
+          2
+        )} zł`}</Text>
+        <Stack mt="md">
+          {expense.debts.map((debt) => (
+            <ExpenseCardPayment key={debt.id} debt={debt} />
+          ))}
         </Stack>
-      </Accordion.Panel>
-    </Accordion.Item>
+        {session?.user.id === expense.payerId && (
+          <>
+            <Divider my="md" />
+            <Box sx={{ textAlign: "end" }}>
+              <DeleteExpenseModal expenseId={expense.id} />
+            </Box>
+          </>
+        )}
+      </Modal>
+
+      <UnstyledButton onClick={open}>
+        <Paper p="sm" withBorder>
+          <Group position="apart">
+            <Group>
+              {getSettledStateIcon()}
+              <Box>
+                <Text lineClamp={1}>{expense.name}</Text>
+                <Text size="sm" color="dimmed">
+                  {formattedDate}
+                </Text>
+              </Box>
+            </Group>
+            <Text size="sm" color="dimmed">
+              {Number(expense.amount).toFixed(2)} zł
+            </Text>
+          </Group>
+        </Paper>
+      </UnstyledButton>
+    </>
   );
 }
 

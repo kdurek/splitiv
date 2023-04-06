@@ -1,12 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ActionIcon, Box, Group, List, NumberInput, Text } from "@mantine/core";
-import { useToggle } from "@mantine/hooks";
 import {
-  IconSquare,
-  IconSquareArrowUp,
-  IconSquareCheck,
-  IconSquareX,
-} from "@tabler/icons-react";
+  ActionIcon,
+  Box,
+  Button,
+  Collapse,
+  Divider,
+  Group,
+  NumberInput,
+  Paper,
+  Text,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { IconSquare, IconSquareCheck, IconSquareX } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
@@ -43,13 +48,18 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
     useUpdateExpenseDebt({
       groupId: activeGroupId,
     });
-  const [isEditing, toggleIsEditing] = useToggle();
+  const [isEditing, { toggle: toggleIsEditing, close: closeIsEditing }] =
+    useDisclosure(false);
+  const [
+    isPartialPay,
+    { toggle: toggleIsPartialPay, close: closeIsPartialPay },
+  ] = useDisclosure(false);
   const {
     control,
     handleSubmit,
     reset,
     setError,
-    setValue,
+    watch,
     formState: { errors },
   } = useForm<ExpenseCardPaymentFormValues>({
     shouldUnregister: true,
@@ -64,6 +74,7 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
   const notHavePermission =
     session?.user?.id !== debt.debtorId &&
     session?.user?.id !== debt.expense.payerId;
+  const watchAmount = watch("amount");
 
   const isFullySettled = debt.settled === debt.amount;
   const isPartiallySettled =
@@ -88,7 +99,7 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
     return "blue";
   };
 
-  const onSubmit = (values: ExpenseCardPaymentFormValues) => {
+  const handlePayPartially = (values: ExpenseCardPaymentFormValues) => {
     updateExpenseDebt(
       {
         expenseDebtId: debt.id,
@@ -96,7 +107,26 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
       },
       {
         onSuccess() {
-          toggleIsEditing(false);
+          closeIsEditing();
+          closeIsPartialPay();
+          reset();
+        },
+        onError(v) {
+          setError("amount", { message: v.message });
+        },
+      }
+    );
+  };
+
+  const handlePayFully = () => {
+    updateExpenseDebt(
+      {
+        expenseDebtId: debt.id,
+        settled: Number(debt.amount),
+      },
+      {
+        onSuccess() {
+          closeIsEditing();
           reset();
         },
         onError(v) {
@@ -109,32 +139,46 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
   if (!debt) return null;
 
   return (
-    <>
-      <List.Item
-        h={36}
-        icon={
-          <ActionIcon
-            color={getSettledStateColor()}
-            size={36}
-            onClick={() =>
-              !isFullySettled && !notHavePermission && toggleIsEditing()
-            }
+    <Paper p="xs" withBorder>
+      <Group spacing="xs">
+        <ActionIcon
+          color={getSettledStateColor()}
+          onClick={() =>
+            !isFullySettled && !notHavePermission && toggleIsEditing()
+          }
+        >
+          {isEditing ? <IconSquareX /> : statusIcon}
+        </ActionIcon>
+        <Text>
+          {isFullySettled
+            ? `${debtorFirstName} - ${Number(debt.amount).toFixed(2)} zł oddane`
+            : `${debtorFirstName} - ${maximumAmount.toFixed(2)} zł do oddania`}
+        </Text>
+      </Group>
+
+      <Collapse in={isEditing}>
+        <Divider mt="xs" />
+        <Text pt="md" align="center">
+          Jaką kwotę chcesz oddać?
+        </Text>
+        <Group mt="xs" position="center">
+          <Button color="blue" onClick={toggleIsPartialPay}>
+            Część
+          </Button>
+          <Button color="teal" disabled={isPartialPay} onClick={handlePayFully}>
+            Całość
+          </Button>
+        </Group>
+
+        <Collapse in={isPartialPay}>
+          <Divider mt="md" />
+          <Box
+            mx="xl"
+            pt="md"
+            component="form"
+            onSubmit={handleSubmit(handlePayPartially)}
           >
-            {isEditing ? <IconSquareX /> : statusIcon}
-          </ActionIcon>
-        }
-      >
-        {isEditing ? (
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Group>
-              <ActionIcon
-                color="teal"
-                loading={isLoadingUpdateExpenseDebt}
-                size={36}
-                type="submit"
-              >
-                <IconSquareCheck />
-              </ActionIcon>
               <Controller
                 name="amount"
                 control={control}
@@ -150,39 +194,29 @@ function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
                     sx={{
                       flex: 1,
                     }}
-                    rightSection={
-                      <ActionIcon
-                        mr={12}
-                        size={36}
-                        color="blue"
-                        onClick={() => setValue("amount", maximumAmount)}
-                      >
-                        <IconSquareArrowUp />
-                      </ActionIcon>
-                    }
                   />
                 )}
               />
+              <Button
+                color="teal"
+                loading={isLoadingUpdateExpenseDebt}
+                type="submit"
+              >
+                Oddaj
+              </Button>
             </Group>
+            <Text align="center" mt="xs">
+              Zostanie do oddania {(maximumAmount - watchAmount).toFixed(2)} zł
+            </Text>
+            {errors.amount && (
+              <Text mt={8} size="xs" color="red">
+                {errors.amount?.message}
+              </Text>
+            )}
           </Box>
-        ) : (
-          <Text>
-            {isFullySettled
-              ? `${debtorFirstName} - ${Number(debt.amount).toFixed(
-                  2
-                )} zł oddane`
-              : `${debtorFirstName} - ${maximumAmount.toFixed(
-                  2
-                )} zł do oddania`}
-          </Text>
-        )}
-      </List.Item>
-      {errors.amount && (
-        <Text mt={8} size="xs" color="red">
-          {errors.amount?.message}
-        </Text>
-      )}
-    </>
+        </Collapse>
+      </Collapse>
+    </Paper>
   );
 }
 

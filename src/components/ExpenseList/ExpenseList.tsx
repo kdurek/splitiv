@@ -1,4 +1,4 @@
-import { Accordion, Flex, Pagination, Paper, Stack, Text } from "@mantine/core";
+import { Flex, Pagination, Paper, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 
 import { useExpenses } from "hooks/useExpenses";
@@ -27,7 +27,6 @@ function ExpenseList({
   withPagination,
 }: ExpenseListProps) {
   const [activePage, setPage] = useState(1);
-  const [activeExpenseId, setActiveExpenseId] = useState<string | null>(null);
 
   useEffect(() => {
     if (withPagination) {
@@ -64,25 +63,17 @@ function ExpenseList({
 
   return (
     <Stack>
-      <Accordion
-        value={activeExpenseId}
-        onChange={setActiveExpenseId}
-        variant="contained"
-      >
+      <Stack spacing="xs">
         {expensesToRender.length ? (
           expensesToRender.map((expense) => (
-            <ExpenseCard
-              key={expense.id}
-              activeExpenseId={activeExpenseId}
-              expense={expense}
-            />
+            <ExpenseCard key={expense.id} expense={expense} />
           ))
         ) : (
           <Paper withBorder p="md">
             <Text>Brak długów</Text>
           </Paper>
         )}
-      </Accordion>
+      </Stack>
       {withPagination && (
         <Flex justify="center">
           <Pagination

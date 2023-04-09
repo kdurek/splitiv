@@ -1,3 +1,4 @@
+/* eslint-disable */
 // @ts-check
 import { clientEnv, clientSchema } from "./schema.mjs";
 

@@ -20,7 +20,7 @@ const useProvideActiveGroup = () => {
       defaultValue: "",
     });
 
-  api.group.getGroupById.useQuery(
+  const { isLoading: isLoadingGroup } = api.group.getGroupById.useQuery(
     {
       groupId: activeGroupId,
     },
@@ -32,7 +32,7 @@ const useProvideActiveGroup = () => {
     }
   );
 
-  return { activeGroupId, setActiveGroupId };
+  return { activeGroupId, setActiveGroupId, isLoadingGroup };
 };
 
 interface ActiveGroupProviderProps {
@@ -41,8 +41,13 @@ interface ActiveGroupProviderProps {
 
 export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
   const activeGroupContext = useProvideActiveGroup();
-  const { activeGroupId, setActiveGroupId } = activeGroupContext;
+  const { activeGroupId, setActiveGroupId, isLoadingGroup } =
+    activeGroupContext;
   const { status } = useSession();
+
+  if (status === "authenticated" && isLoadingGroup) {
+    return null;
+  }
 
   if (status === "authenticated" && !activeGroupId) {
     return (

@@ -1,10 +1,6 @@
 import { api } from "utils/api";
 
-function useGroup(groupId: string | undefined) {
-  if (!groupId) {
-    throw new Error("groupId not defined");
-  }
-
+function useGroup(groupId: string) {
   return api.group.getGroupById.useQuery(
     { groupId },
     {

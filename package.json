@@ -8,6 +8,7 @@
     "dev": "next dev -p 37533",
     "postinstall": "prisma generate && simple-git-hooks",
     "lint": "next lint",
+    "typecheck": "tsc",
     "start": "next start -p 37533"
   },
   "dependencies": {

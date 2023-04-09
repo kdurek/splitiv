@@ -27,6 +27,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.57.1
   cookies-next: ^2.1.1
   dayjs: ^1.11.7
+  decimal.js: ^10.4.3
   dinero.js: 2.0.0-alpha.10
   eslint: ^8.37.0
   eslint-config-airbnb: ^19.0.4
@@ -39,6 +40,7 @@ specifiers:
   eslint-plugin-prettier: ^4.2.1
   eslint-plugin-react: ^7.32.2
   eslint-plugin-react-hooks: ^4.6.0
+  install: ^0.13.0
   lint-staged: ^13.2.0
   next: 13.2.4
   next-auth: ^4.21.1
@@ -73,7 +75,9 @@ dependencies:
   '@trpc/server': 10.18.0
   cookies-next: 2.1.1
   dayjs: 1.11.7
+  decimal.js: 10.4.3
   dinero.js: 2.0.0-alpha.10
+  install: 0.13.0
   next: 13.2.4_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.21.1_ld2jel3hspngo3u5lti2kgl2sq
   next-pwa: 5.6.0_next@13.2.4
@@ -2717,6 +2721,10 @@ packages:
     dependencies:
       ms: 2.1.2
 
+  /decimal.js/10.4.3:
+    resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
+    dev: false
+
   /deep-equal/2.2.0:
     resolution: {integrity: sha512-RdpzE0Hv4lhowpIUKKMJfeH6C1pXdtT1/it80ubgWqwI3qpuxUBpC1S4hnHg+zjnuOoDkzUtUCEEkG+XG5l3Mw==}
     dependencies:
@@ -3737,6 +3745,11 @@ packages:
 
   /inline-style-parser/0.1.1:
     resolution: {integrity: sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==}
+    dev: false
+
+  /install/0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
     dev: false
 
   /internal-slot/1.0.5:

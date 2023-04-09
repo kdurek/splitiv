@@ -3,6 +3,14 @@ name: CI
 on:
   push:
 
+env:
+  DATABASE_URL: "https://fake.com"
+  NODE_ENV: test
+  NEXTAUTH_SECRET: fake
+  NEXTAUTH_URL: "https://fake.com"
+  GOOGLE_CLIENT_ID: fake
+  GOOGLE_CLIENT_SECRET: fake
+
 jobs:
   build:
     runs-on: ubuntu-latest

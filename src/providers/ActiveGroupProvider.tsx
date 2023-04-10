@@ -45,10 +45,6 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
     activeGroupContext;
   const { status } = useSession();
 
-  if (status === "authenticated" && isLoadingGroup) {
-    return null;
-  }
-
   if (status === "authenticated" && !activeGroupId) {
     return (
       <GroupSelectModal
@@ -56,6 +52,10 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
         onSubmit={(values) => setActiveGroupId(values.group)}
       />
     );
+  }
+
+  if (status === "authenticated" && isLoadingGroup) {
+    return null;
   }
 
   return (

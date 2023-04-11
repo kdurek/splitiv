@@ -1,6 +1,6 @@
 import { Stack, Title } from "@mantine/core";
 
-import ExpenseWidgetList from "components/ExpenseList/ExpenseWidgetList";
+import { ExpenseWidgetList } from "features/expense";
 
 function HomePage() {
   return (

@@ -1,19 +1,24 @@
 import { api } from "utils/api";
 
-function useDeleteTask() {
+export function useCreateTask() {
   const utils = api.useContext();
 
-  return api.task.deleteTask.useMutation({
+  return api.task.createTask.useMutation({
     async onMutate(input) {
       await utils.task.getTasksByGroup.cancel({ groupId: input.groupId });
       const previousTasksByGroup = utils.task.getTasksByGroup.getData({
         groupId: input.groupId,
       });
       if (previousTasksByGroup) {
-        utils.task.getTasksByGroup.setData(
-          { groupId: input.groupId },
-          previousTasksByGroup.filter((task) => task.id !== input.taskId)
-        );
+        utils.task.getTasksByGroup.setData({ groupId: input.groupId }, [
+          {
+            id: Math.random().toString(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            ...input,
+          },
+          ...previousTasksByGroup,
+        ]);
       }
       return { previousTasksByGroup };
     },
@@ -31,5 +36,3 @@ function useDeleteTask() {
     },
   });
 }
-
-export { useDeleteTask };

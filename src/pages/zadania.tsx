@@ -1,8 +1,7 @@
 import { Stack, Title } from "@mantine/core";
 
-import CreateTaskForm from "components/CreateTaskForm";
 import GroupSelect from "components/GroupSelect";
-import TaskList from "components/TaskList";
+import { CreateTaskForm, TaskList } from "features/task";
 import ProtectedContent from "ProtectedContent";
 
 function TasksPage() {

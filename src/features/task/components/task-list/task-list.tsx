@@ -1,11 +1,11 @@
 import { ActionIcon, Group, Stack, Text } from "@mantine/core";
 import { IconCheck } from "@tabler/icons-react";
 
-import { useDeleteTask } from "hooks/useDeleteTask";
-import { useTasksByGroup } from "hooks/useTasksByGroup";
+import { useDeleteTask } from "features/task/api/use-delete-task";
+import { useTasksByGroup } from "features/task/api/use-tasks-by-group";
 import { useActiveGroup } from "providers/ActiveGroupProvider";
 
-function TaskList() {
+export function TaskList() {
   const { activeGroupId } = useActiveGroup();
   const { data: tasks } = useTasksByGroup(activeGroupId);
   const { mutate: deleteTask } = useDeleteTask();
@@ -32,5 +32,3 @@ function TaskList() {
     </Stack>
   );
 }
-
-export default TaskList;

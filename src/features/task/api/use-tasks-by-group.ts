@@ -1,6 +1,6 @@
 import { api } from "utils/api";
 
-function useTasksByGroup(groupId: string | undefined) {
+export function useTasksByGroup(groupId: string | undefined) {
   if (!groupId) {
     throw new Error("groupId not defined");
   }
@@ -10,5 +10,3 @@ function useTasksByGroup(groupId: string | undefined) {
     { enabled: Boolean(groupId) }
   );
 }
-
-export { useTasksByGroup };

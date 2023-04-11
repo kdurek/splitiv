@@ -1,7 +1,7 @@
 import { Stack, Title } from "@mantine/core";
 
+import { ProtectedContent } from "features/auth";
 import { GroupSelect, GroupSettingsMembers } from "features/group";
-import ProtectedContent from "ProtectedContent";
 
 function GroupSettingsPage() {
   return (

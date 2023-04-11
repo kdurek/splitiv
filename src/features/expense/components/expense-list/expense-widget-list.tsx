@@ -1,8 +1,8 @@
 import { Box, Title } from "@mantine/core";
 import { useSession } from "next-auth/react";
 
+import { ProtectedContent } from "features/auth";
 import { useActiveGroup } from "features/group";
-import ProtectedContent from "ProtectedContent";
 
 import { ExpenseList } from "./expense-list";
 

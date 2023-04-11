@@ -1,7 +1,5 @@
 import { api } from "utils/api";
 
-function useUsers() {
+export function useUsers() {
   return api.user.getUsers.useQuery();
 }
-
-export { useUsers };

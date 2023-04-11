@@ -2,7 +2,7 @@ import { Button, Center, Paper, Stack, Title } from "@mantine/core";
 import { IconLogin } from "@tabler/icons-react";
 import { signIn } from "next-auth/react";
 
-function LoginPlaceholder() {
+export function LoginPlaceholder() {
   return (
     <Paper withBorder p="md">
       <Center component={Stack} w="100%" h="100%">
@@ -20,5 +20,3 @@ function LoginPlaceholder() {
     </Paper>
   );
 }
-
-export default LoginPlaceholder;

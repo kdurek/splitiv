@@ -1,8 +1,8 @@
 import { Stack, Title } from "@mantine/core";
 
+import { ProtectedContent } from "features/auth";
 import { GroupSelect } from "features/group";
 import { CreateTaskForm, TaskList } from "features/task";
-import ProtectedContent from "ProtectedContent";
 
 function TasksPage() {
   return (

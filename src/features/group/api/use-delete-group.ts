@@ -1,6 +1,6 @@
 import { api } from "utils/api";
 
-function useDeleteGroup() {
+export function useDeleteGroup() {
   const utils = api.useContext();
 
   return api.group.deleteGroupById.useMutation({
@@ -9,5 +9,3 @@ function useDeleteGroup() {
     },
   });
 }
-
-export { useDeleteGroup };

@@ -1,11 +1,11 @@
 import { List, Stack, Title } from "@mantine/core";
 
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useGroup } from "features/group/api/use-group";
 
-import AddUserToGroupModal from "../AddUserToGroupModal";
+import { useActiveGroup } from "../active-group.context";
+import { AddUserToGroupModal } from "../add-user-to-group-modal";
 
-function GroupSettingsMembers() {
+export function GroupSettingsMembers() {
   const { activeGroupId } = useActiveGroup();
   const { data: group } = useGroup(activeGroupId);
 
@@ -23,5 +23,3 @@ function GroupSettingsMembers() {
     </Stack>
   );
 }
-
-export default GroupSettingsMembers;

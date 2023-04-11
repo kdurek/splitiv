@@ -1,9 +1,9 @@
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import CreateGroupForm from "./CreateGroupForm";
+import { CreateGroupForm } from "./create-group-form";
 
-function CreateGroupModal() {
+export function CreateGroupModal() {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -18,5 +18,3 @@ function CreateGroupModal() {
     </>
   );
 }
-
-export default CreateGroupModal;

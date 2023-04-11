@@ -1,8 +1,7 @@
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup, useGroup } from "features/group";
 
 import { ExpenseForm } from "./expense-form";
 

@@ -1,8 +1,8 @@
 import { Button, Group, NativeSelect, Paper } from "@mantine/core";
 import { useForm } from "react-hook-form";
 
-import { useAddUserToGroup } from "hooks/useAddUserToGroup";
-import { useUsers } from "hooks/useUsers";
+import { useAddUserToGroup } from "features/group/api/use-add-user-to-group";
+import { useUsers } from "features/group/api/use-users";
 
 import type { GetGroupById } from "utils/api";
 
@@ -16,7 +16,10 @@ interface AddUserToGroupFormProps {
   afterSubmit?: () => void;
 }
 
-function AddUserToGroupForm({ group, afterSubmit }: AddUserToGroupFormProps) {
+export function AddUserToGroupForm({
+  group,
+  afterSubmit,
+}: AddUserToGroupFormProps) {
   const { mutate: addUserToGroup } = useAddUserToGroup();
   const { handleSubmit, register, reset } = useForm<AddUserToGroupFormValues>({
     defaultValues: { name: "Płatność" },
@@ -57,5 +60,3 @@ function AddUserToGroupForm({ group, afterSubmit }: AddUserToGroupFormProps) {
     </Paper>
   );
 }
-
-export default AddUserToGroupForm;

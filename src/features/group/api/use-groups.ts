@@ -1,7 +1,5 @@
 import { api } from "utils/api";
 
-function useGroups() {
+export function useGroups() {
   return api.group.getGroupsByMe.useQuery();
 }
-
-export { useGroups };

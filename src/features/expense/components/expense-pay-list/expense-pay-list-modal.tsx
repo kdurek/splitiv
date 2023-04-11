@@ -4,8 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 import { useCurrentUserUnsettledDebtsByGroup } from "features/expense/api/use-current-user-unsettled-debts-by-group";
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup, useGroup } from "features/group";
 
 import { ExpensePayList } from "./expense-pay-list";
 

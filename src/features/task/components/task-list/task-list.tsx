@@ -1,9 +1,9 @@
 import { ActionIcon, Group, Stack, Text } from "@mantine/core";
 import { IconCheck } from "@tabler/icons-react";
 
+import { useActiveGroup } from "features/group";
 import { useDeleteTask } from "features/task/api/use-delete-task";
 import { useTasksByGroup } from "features/task/api/use-tasks-by-group";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 export function TaskList() {
   const { activeGroupId } = useActiveGroup();

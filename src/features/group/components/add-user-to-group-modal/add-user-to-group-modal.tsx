@@ -1,15 +1,15 @@
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { useGroup } from "hooks/useGroup";
+import { useGroup } from "features/group/api/use-group";
 
-import AddUserToGroupForm from "./AddUserToGroupForm";
+import { AddUserToGroupForm } from "./add-user-to-group-form";
 
 interface AddUserToGroupModalProps {
   groupId: string;
 }
 
-function AddUserToGroupModal({ groupId }: AddUserToGroupModalProps) {
+export function AddUserToGroupModal({ groupId }: AddUserToGroupModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const { data: group } = useGroup(groupId);
 
@@ -27,5 +27,3 @@ function AddUserToGroupModal({ groupId }: AddUserToGroupModalProps) {
     </>
   );
 }
-
-export default AddUserToGroupModal;

@@ -11,8 +11,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup, useGroup } from "features/group";
 
 import { ExpensePaymentLegend } from "./expense-card-legend";
 import { ExpenseList } from "./expense-list";

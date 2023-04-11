@@ -1,7 +1,7 @@
 import { Button, Group, Paper, TextInput } from "@mantine/core";
 import { useForm } from "react-hook-form";
 
-import { useCreateGroup } from "hooks/useCreateGroup";
+import { useCreateGroup } from "features/group/api/use-create-group";
 
 interface CreateGroupFormValues {
   name: string;
@@ -11,7 +11,7 @@ interface CreateGroupFormProps {
   afterSubmit?: () => void;
 }
 
-function CreateGroupForm({ afterSubmit }: CreateGroupFormProps) {
+export function CreateGroupForm({ afterSubmit }: CreateGroupFormProps) {
   const { handleSubmit, register, reset } = useForm<CreateGroupFormValues>();
   const { mutate: createGroup } = useCreateGroup();
 
@@ -42,5 +42,3 @@ function CreateGroupForm({ afterSubmit }: CreateGroupFormProps) {
     </Paper>
   );
 }
-
-export default CreateGroupForm;

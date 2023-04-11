@@ -2,8 +2,8 @@ import { ActionIcon, Box, Group, TextInput } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useForm } from "react-hook-form";
 
+import { useActiveGroup } from "features/group";
 import { useCreateTask } from "features/task/api/use-create-task";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
 
 interface CreateTaskValues {
   name: string;

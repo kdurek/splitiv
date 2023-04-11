@@ -6,7 +6,7 @@ import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 
-import { ActiveGroupProvider } from "providers/ActiveGroupProvider";
+import { ActiveGroupProvider } from "features/group";
 import { LayoutProvider } from "providers/LayoutProvider";
 
 import { api } from "../utils/api";

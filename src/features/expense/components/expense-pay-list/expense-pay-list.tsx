@@ -13,7 +13,7 @@ import { IconSquareArrowUp } from "@tabler/icons-react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 import { useSettleExpenseDebts } from "features/expense/api/use-update-expense-debts";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup } from "features/group";
 
 import { ExpensePayListSchema } from "./expense-pay-list.schema";
 

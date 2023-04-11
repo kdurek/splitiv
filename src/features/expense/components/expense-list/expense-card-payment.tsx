@@ -17,7 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 import { useUpdateExpenseDebt } from "features/expense/api/use-update-expense-debt";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup } from "features/group";
 
 import type { Decimal } from "@prisma/client/runtime";
 

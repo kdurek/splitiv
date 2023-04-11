@@ -1,11 +1,11 @@
 import { Stack, Title } from "@mantine/core";
 
-import GroupSelect from "components/GroupSelect";
 import {
   ExpenseCreateButtons,
   ExpenseMainList,
   UserBalance,
 } from "features/expense";
+import { GroupSelect } from "features/group";
 import ProtectedContent from "ProtectedContent";
 
 function ExpensesPage() {

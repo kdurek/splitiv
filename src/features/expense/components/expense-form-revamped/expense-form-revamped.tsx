@@ -26,8 +26,7 @@ import {
 } from "react-hook-form";
 
 import { useCreateExpense } from "features/expense/api/use-create-expense";
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup, useGroup } from "features/group";
 
 import { ExpenseFormRevampedMethods } from "./expense-form-revamped-methods";
 import { ExpenseFormSchemaRevamped } from "./expense-form-revamped.schema";

@@ -1,7 +1,6 @@
 import { Stack, Title } from "@mantine/core";
 
-import GroupSelect from "components/GroupSelect";
-import GroupSettingsMembers from "components/GroupSettingsMembers";
+import { GroupSelect, GroupSettingsMembers } from "features/group";
 import ProtectedContent from "ProtectedContent";
 
 function GroupSettingsPage() {

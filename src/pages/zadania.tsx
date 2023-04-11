@@ -1,6 +1,6 @@
 import { Stack, Title } from "@mantine/core";
 
-import GroupSelect from "components/GroupSelect";
+import { GroupSelect } from "features/group";
 import { CreateTaskForm, TaskList } from "features/task";
 import ProtectedContent from "ProtectedContent";
 

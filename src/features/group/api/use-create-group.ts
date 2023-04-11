@@ -1,6 +1,6 @@
 import { api } from "utils/api";
 
-function useCreateGroup() {
+export function useCreateGroup() {
   const utils = api.useContext();
 
   return api.group.createGroup.useMutation({
@@ -9,5 +9,3 @@ function useCreateGroup() {
     },
   });
 }
-
-export { useCreateGroup };

@@ -2,8 +2,9 @@ import { useLocalStorage } from "@mantine/hooks";
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
 
-import GroupSelectModal from "components/GroupSelectModal";
 import { api } from "utils/api";
+
+import { GroupSelectModal } from "./group-select-modal";
 
 import type { ReactNode } from "react";
 

@@ -1,9 +1,10 @@
 import { NativeSelect } from "@mantine/core";
 
-import { useGroups } from "hooks/useGroups";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useGroups } from "features/group/api/use-groups";
 
-function GroupSelect() {
+import { useActiveGroup } from "../active-group.context";
+
+export function GroupSelect() {
   const { data: groups, isLoading: isLoadingGroups } = useGroups();
   const { activeGroupId, setActiveGroupId } = useActiveGroup();
 
@@ -20,5 +21,3 @@ function GroupSelect() {
     />
   );
 }
-
-export default GroupSelect;

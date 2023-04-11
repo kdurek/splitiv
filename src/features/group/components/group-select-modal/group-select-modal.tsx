@@ -2,8 +2,9 @@ import { Button, Group, Modal, NativeSelect, Paper } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 
-import CreateGroupModal from "components/CreateGroupModal";
-import { useGroups } from "hooks/useGroups";
+import { useGroups } from "features/group/api/use-groups";
+
+import { CreateGroupModal } from "../create-group-modal";
 
 interface GroupSelectModalValues {
   group: string;
@@ -14,7 +15,10 @@ interface GroupSelectModalProps {
   onSubmit: (values: GroupSelectModalValues) => void;
 }
 
-function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
+export function GroupSelectModal({
+  defaultIsOpen,
+  onSubmit,
+}: GroupSelectModalProps) {
   const [opened, { close }] = useDisclosure(defaultIsOpen);
   const { data: groups } = useGroups();
   const {
@@ -67,5 +71,3 @@ function GroupSelectModal({ defaultIsOpen, onSubmit }: GroupSelectModalProps) {
     </Modal>
   );
 }
-
-export default GroupSelectModal;

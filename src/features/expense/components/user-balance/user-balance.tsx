@@ -1,7 +1,6 @@
 import { Accordion, Avatar, Box, Group, Text } from "@mantine/core";
 
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup, useGroup } from "features/group";
 
 import type { GetUsers } from "utils/api";
 

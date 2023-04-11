@@ -14,8 +14,7 @@ import { allocate, toUnit } from "dinero.js";
 import { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
-import { useGroup } from "hooks/useGroup";
-import { useActiveGroup } from "providers/ActiveGroupProvider";
+import { useActiveGroup, useGroup } from "features/group";
 import { dineroFromString } from "server/utils/dineroFromString";
 
 import type { ExpenseFormValuesRevamped } from "./expense-form-revamped.schema";

@@ -5,7 +5,7 @@ interface AddButtonProps {
   onClick: () => void;
 }
 
-function AddButton({ onClick }: AddButtonProps) {
+export function AddButton({ onClick }: AddButtonProps) {
   return (
     <UnstyledButton
       onClick={onClick}
@@ -37,5 +37,3 @@ function AddButton({ onClick }: AddButtonProps) {
     </UnstyledButton>
   );
 }
-
-export default AddButton;

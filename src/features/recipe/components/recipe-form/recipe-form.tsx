@@ -2,12 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Paper, Stack, Title } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 
-import RecipeDetails from "./RecipeDetails";
-import { RecipeFormSchema } from "./RecipeFormSchema";
-import RecipeIngredients from "./RecipeIngredients";
-import RecipeSteps from "./RecipeSteps";
+import { RecipeDetails } from "./recipe-form-details";
+import { RecipeIngredients } from "./recipe-form-ingredients";
+import { RecipeSteps } from "./recipe-form-steps";
+import { RecipeFormSchema } from "./recipe-form.schema";
 
-import type { RecipeFormValues } from "./RecipeFormSchema";
+import type { RecipeFormValues } from "./recipe-form.schema";
 import type { UseFormReturn } from "react-hook-form";
 
 interface RecipeFormProps {
@@ -21,7 +21,7 @@ interface RecipeFormProps {
   submitButtonText: string;
 }
 
-function RecipeForm({
+export function RecipeForm({
   formTitle,
   defaultValues,
   onSubmit,
@@ -54,5 +54,3 @@ function RecipeForm({
     </FormProvider>
   );
 }
-
-export default RecipeForm;

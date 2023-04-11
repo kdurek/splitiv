@@ -1,9 +1,9 @@
 import { Stack, TextInput } from "@mantine/core";
 import { useFormContext } from "react-hook-form";
 
-import type { RecipeFormValues } from "./RecipeFormSchema";
+import type { RecipeFormValues } from "./recipe-form.schema";
 
-function RecipeDetails() {
+export function RecipeDetails() {
   const {
     register,
     formState: { errors },
@@ -19,5 +19,3 @@ function RecipeDetails() {
     </Stack>
   );
 }
-
-export default RecipeDetails;

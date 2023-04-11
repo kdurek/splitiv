@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 
-import RecipeForm from "components/RecipeForm";
-import { useUpdateRecipe } from "hooks/useUpdateRecipe";
+import { useUpdateRecipe } from "features/recipe/api/use-update-recipe";
 
-import type { RecipeFormValues } from "components/RecipeForm/RecipeFormSchema";
+import { RecipeForm } from "./recipe-form";
+
+import type { RecipeFormValues } from "./recipe-form.schema";
 import type { UseFormReturn } from "react-hook-form";
 
 export interface UpdateRecipeFormProps {
   recipe: RecipeFormValues & { id: string };
 }
 
-function UpdateRecipeForm({ recipe }: UpdateRecipeFormProps) {
+export function UpdateRecipeForm({ recipe }: UpdateRecipeFormProps) {
   const router = useRouter();
   const { mutate: updateRecipe, isLoading: isLoadingUpdateRecipe } =
     useUpdateRecipe();
@@ -47,5 +48,3 @@ function UpdateRecipeForm({ recipe }: UpdateRecipeFormProps) {
     />
   );
 }
-
-export default UpdateRecipeForm;

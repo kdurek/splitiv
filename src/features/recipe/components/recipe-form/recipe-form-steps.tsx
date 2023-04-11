@@ -2,11 +2,11 @@ import { ActionIcon, Box, Group, Stack, Textarea, Title } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
-import AddButton from "./AddButton";
+import { AddButton } from "./add-button";
 
-import type { RecipeFormValues } from "./RecipeFormSchema";
+import type { RecipeFormValues } from "./recipe-form.schema";
 
-function RecipeSteps() {
+export function RecipeSteps() {
   const {
     control,
     register,
@@ -50,5 +50,3 @@ function RecipeSteps() {
     </Stack>
   );
 }
-
-export default RecipeSteps;

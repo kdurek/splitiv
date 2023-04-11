@@ -12,11 +12,11 @@ import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import { unitsList } from "lib/unitsMap";
 
-import AddButton from "./AddButton";
+import { AddButton } from "./add-button";
 
-import type { RecipeFormValues } from "./RecipeFormSchema";
+import type { RecipeFormValues } from "./recipe-form.schema";
 
-function RecipeIngredients() {
+export function RecipeIngredients() {
   const {
     control,
     register,
@@ -80,5 +80,3 @@ function RecipeIngredients() {
     </Stack>
   );
 }
-
-export default RecipeIngredients;

@@ -4,11 +4,9 @@ interface UseRecipeBySlugProps {
   slug: string;
 }
 
-function useRecipeBySlug({ slug }: UseRecipeBySlugProps) {
+export function useRecipeBySlug({ slug }: UseRecipeBySlugProps) {
   return api.recipe.getRecipeBySlug.useQuery(
     { slug },
     { enabled: Boolean(slug) }
   );
 }
-
-export { useRecipeBySlug };

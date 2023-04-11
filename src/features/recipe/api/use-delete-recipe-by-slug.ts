@@ -1,13 +1,12 @@
 import { api } from "utils/api";
 
-function useUpdateRecipe() {
+export function useDeleteRecipeBySlug() {
   const utils = api.useContext();
 
-  return api.recipe.updateRecipe.useMutation({
+  return api.recipe.deleteRecipeBySlug.useMutation({
     async onSuccess(input) {
+      await utils.recipe.getRecipes.invalidate();
       await utils.recipe.getRecipeBySlug.invalidate({ slug: input.slug });
     },
   });
 }
-
-export { useUpdateRecipe };

@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 
-import RecipeForm from "components/RecipeForm";
-import { useCreateRecipe } from "hooks/useCreateRecipe";
+import { useCreateRecipe } from "../../api/use-create-recipe";
 
-import type { RecipeFormValues } from "components/RecipeForm/RecipeFormSchema";
+import { RecipeForm } from "./recipe-form";
+
+import type { RecipeFormValues } from "./recipe-form.schema";
 import type { UseFormReturn } from "react-hook-form";
 
-function CreateRecipeForm() {
+export function CreateRecipeForm() {
   const router = useRouter();
   const { mutate: createRecipe, isLoading: isLoadingCreateRecipe } =
     useCreateRecipe();
@@ -47,5 +48,3 @@ function CreateRecipeForm() {
     />
   );
 }
-
-export default CreateRecipeForm;

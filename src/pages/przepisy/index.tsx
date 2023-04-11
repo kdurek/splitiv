@@ -3,7 +3,7 @@ import { useDebouncedState } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import Link from "next/link";
 
-import RecipeList from "components/RecipeList";
+import { RecipeList } from "features/recipe";
 
 function Recipes() {
   const [search, setSearch] = useDebouncedState("", 200);

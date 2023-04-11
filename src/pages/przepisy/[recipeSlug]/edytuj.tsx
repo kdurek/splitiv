@@ -1,8 +1,7 @@
 import { Button, Stack } from "@mantine/core";
 import { useRouter } from "next/router";
 
-import UpdateRecipeForm from "components/UpdateRecipeForm/UpdateRecipeForm";
-import { useRecipeBySlug } from "hooks/useRecipeBySlug";
+import { UpdateRecipeForm, useRecipeBySlug } from "features/recipe";
 import ProtectedContent from "ProtectedContent";
 
 function EditRecipePage() {

@@ -1,8 +1,7 @@
 import { Box, Divider, List, Stack, Text, Title } from "@mantine/core";
 import { useRouter } from "next/router";
 
-import RecipeEditButtons from "components/RecipeEditButtons";
-import { useRecipeBySlug } from "hooks/useRecipeBySlug";
+import { RecipeEditButtons, useRecipeBySlug } from "features/recipe";
 import { correctUnit } from "lib/unitsMap";
 
 function RecipePage() {

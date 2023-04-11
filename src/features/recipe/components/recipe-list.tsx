@@ -1,13 +1,13 @@
 import { Card, Stack, Text } from "@mantine/core";
 import Link from "next/link";
 
-import { useRecipes } from "hooks/useRecipes";
+import { useRecipes } from "../api/use-recipes";
 
 interface RecipeListProps {
   search: string;
 }
 
-function RecipeList({ search }: RecipeListProps) {
+export function RecipeList({ search }: RecipeListProps) {
   const { data: recipes } = useRecipes();
 
   if (!recipes) return null;
@@ -31,5 +31,3 @@ function RecipeList({ search }: RecipeListProps) {
     </Stack>
   );
 }
-
-export default RecipeList;

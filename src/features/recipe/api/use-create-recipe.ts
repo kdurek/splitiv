@@ -1,6 +1,6 @@
 import { api } from "utils/api";
 
-function useCreateRecipe() {
+export function useCreateRecipe() {
   const utils = api.useContext();
 
   return api.recipe.createRecipe.useMutation({
@@ -9,5 +9,3 @@ function useCreateRecipe() {
     },
   });
 }
-
-export { useCreateRecipe };

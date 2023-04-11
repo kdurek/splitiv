@@ -55,7 +55,7 @@ const data = [
   },
 ];
 
-function MainLink({ close, icon, color, label, href }: MainLinkProps) {
+export function MainLink({ close, icon, color, label, href }: MainLinkProps) {
   const theme = useMantineTheme();
   const router = useRouter();
 

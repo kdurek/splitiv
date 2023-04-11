@@ -22,8 +22,8 @@ import {
 } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 
-import { Logo } from "./Logo";
-import { MainLinks } from "./MainLinks";
+import { Logo } from "./logo";
+import { MainLinks } from "./main-links";
 
 import type { ReactNode } from "react";
 
@@ -58,7 +58,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-function Layout({ children }: LayoutProps) {
+export function Layout({ children }: LayoutProps) {
   const [opened, { close, toggle }] = useDisclosure(false);
   const theme = useMantineTheme();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();

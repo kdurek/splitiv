@@ -7,7 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 
 import { ActiveGroupProvider } from "features/group";
-import { LayoutProvider } from "providers/LayoutProvider";
+import { Layout } from "features/layout";
 
 import { api } from "../utils/api";
 
@@ -62,14 +62,14 @@ function MyApp({
               headings: { fontFamily: "Poppins, sans-serif" },
             }}
           >
-            <LayoutProvider>
+            <Layout>
               <ActiveGroupProvider>
                 <Head>
                   <title>Splitiv</title>
                 </Head>
                 <Component {...pageProps} />
               </ActiveGroupProvider>
-            </LayoutProvider>
+            </Layout>
           </MantineProvider>
         </ColorSchemeProvider>
       </SessionProvider>

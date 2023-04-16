@@ -73,7 +73,7 @@ export function ExpenseFormRevamped() {
   const liveFields = watch();
 
   const usedAmount = liveFields.debts?.reduce(
-    (prev, curr) => Decimal.add(prev, curr.amount),
+    (prev, curr) => Decimal.add(prev, curr.amount || 0),
     new Decimal(0)
   );
 
@@ -87,7 +87,10 @@ export function ExpenseFormRevamped() {
 
   const handleOnSubmit = (values: ExpenseFormValuesRevamped) => {
     const formattedDebts = values.debts
-      .filter((debt) => debt.amount !== 0 || values.payer === debt.id)
+      .filter(
+        (debt) =>
+          debt.amount !== 0 || (values.payer === debt.id && debt.amount !== 0)
+      )
       .map((debt) => {
         const isPayer = values.payer === debt.id;
 
@@ -190,7 +193,6 @@ export function ExpenseFormRevamped() {
                 <Controller
                   name="amount"
                   control={control}
-                  defaultValue={0}
                   render={({ field }) => (
                     <NumberInput
                       {...field}
@@ -307,7 +309,7 @@ export function ExpenseFormRevamped() {
                   Zapłacił
                 </Title>
                 <Text>
-                  {`${liveFields?.amount?.toFixed(
+                  {`${(liveFields?.amount || 0).toFixed(
                     2
                   )} zł - ${getUserNameByUserId(liveFields.payer)}`}
                 </Text>
@@ -357,7 +359,7 @@ export function ExpenseFormRevamped() {
                     }
                     if (active === 3) {
                       await trigger("debts");
-                      if (!errors.debts?.message) {
+                      if (!errors.debts?.message && remainingAmount.equals(0)) {
                         nextStep();
                       }
                     }

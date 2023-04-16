@@ -10,13 +10,15 @@ export const ExpenseFormSchemaRevamped = z
         z.string().length(0),
       ])
       .optional(),
-    amount: z.number().gt(0, { message: "Kwota musi być większa niż zero" }),
+    amount: z
+      .number({ required_error: "Musisz wpisać kwotę" })
+      .gt(0, { message: "Kwota musi być większa niż zero" }),
     payer: z.string().cuid2("Musisz wybrać osobę płacącą"),
     debts: z.array(
       z.object({
         id: z.string(),
         name: z.string(),
-        amount: z.number(),
+        amount: z.coerce.number({ required_error: "Musisz wpisać kwotę" }),
       })
     ),
   })

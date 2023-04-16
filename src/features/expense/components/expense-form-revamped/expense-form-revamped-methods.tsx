@@ -5,7 +5,7 @@ import {
   Collapse,
   Divider,
   Group,
-  NumberInput,
+  NativeSelect,
   Stack,
   Text,
 } from "@mantine/core";
@@ -37,8 +37,8 @@ export function ExpenseFormRevampedMethods() {
     keyName: "fieldId",
   });
 
-  const [equalSplit, setEqual] = useState<string[]>([]);
-  const [ratioSplit, setRatio] = useState<{ [key: string]: number }>({});
+  const [equalSplit, setEqualSplit] = useState<string[]>([]);
+  const [ratioSplit, setRatioSplit] = useState<{ [key: string]: number }>({});
 
   const [isEditing, { toggle: toggleIsEditing, close: closeIsEditing }] =
     useDisclosure(false);
@@ -48,6 +48,16 @@ export function ExpenseFormRevampedMethods() {
   const liveFields = watch();
 
   const divideByRatio = () => {
+    if (
+      Object.values(ratioSplit).every((v) => v === 0) ||
+      Object.keys(ratioSplit).length === 0
+    ) {
+      liveFields.debts.forEach((_, index) => {
+        setValue(`debts.${index}.amount`, 0);
+      });
+      return;
+    }
+
     const dineroAmount = dineroFromString({
       amount: liveFields.amount.toFixed(2),
       currency: PLN,
@@ -85,6 +95,13 @@ export function ExpenseFormRevampedMethods() {
   };
 
   const divideEqually = async () => {
+    if (equalSplit.length === 0) {
+      liveFields.debts.forEach((_, index) => {
+        setValue(`debts.${index}.amount`, 0);
+      });
+      return;
+    }
+
     const dineroAmount = dineroFromString({
       amount: liveFields.amount.toFixed(2),
       currency: PLN,
@@ -148,7 +165,7 @@ export function ExpenseFormRevampedMethods() {
 
         <Collapse in={method === "equal"}>
           <Stack mt="md">
-            <Checkbox.Group value={equalSplit} onChange={setEqual}>
+            <Checkbox.Group value={equalSplit} onChange={setEqualSplit}>
               <Stack spacing="xs">
                 {debts.map((debt) => (
                   <Checkbox
@@ -163,7 +180,6 @@ export function ExpenseFormRevampedMethods() {
               onClick={() => {
                 divideEqually();
                 closeIsEditing();
-                setEqual([]);
                 setMethod("");
               }}
             >
@@ -177,18 +193,20 @@ export function ExpenseFormRevampedMethods() {
             {debts.map((debt) => (
               <Group key={debt.id} noWrap position="apart">
                 <Text>{debt.name}</Text>
-                <NumberInput
-                  defaultValue={0}
-                  min={0}
-                  max={9}
-                  maw={80}
-                  onChange={(ratio: number) =>
-                    setRatio((prevState) => ({
+                <NativeSelect
+                  size="md"
+                  data={[...Array(10).keys()].map((num) => ({
+                    value: num.toString(),
+                    label: num.toString(),
+                  }))}
+                  value={ratioSplit[debt.id]}
+                  onChange={(event) => {
+                    const num = Number(event.currentTarget?.value);
+                    setRatioSplit((prevState) => ({
                       ...prevState,
-                      [debt.id]: ratio,
-                    }))
-                  }
-                  step={1}
+                      [debt.id]: num,
+                    }));
+                  }}
                 />
               </Group>
             ))}
@@ -197,7 +215,6 @@ export function ExpenseFormRevampedMethods() {
               onClick={() => {
                 divideByRatio();
                 closeIsEditing();
-                setEqual([]);
                 setMethod("");
               }}
             >

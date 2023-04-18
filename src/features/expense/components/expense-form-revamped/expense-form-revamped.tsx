@@ -254,6 +254,7 @@ export function ExpenseFormRevamped() {
                             maw={150}
                             precision={2}
                             step={0.01}
+                            size="md"
                           />
                         )}
                       />

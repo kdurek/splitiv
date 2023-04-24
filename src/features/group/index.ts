@@ -1,7 +1,6 @@
 export * from "./api/use-add-user-to-group";
 export * from "./api/use-create-group";
 export * from "./api/use-delete-group";
-export * from "./api/use-group";
 export * from "./api/use-groups";
 export * from "./api/use-users";
 

@@ -51,7 +51,7 @@ const data = [
     icon: <IconSettings size={16} />,
     color: "violet",
     label: "Ustawienia grupy",
-    href: "/ustawienia-grupy",
+    href: "/ustawienia",
   },
 ];
 

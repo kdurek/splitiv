@@ -11,30 +11,23 @@ import { IconSearch } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-import { useActiveGroup, useGroup } from "features/group";
+import { useActiveGroup } from "features/group";
 
 import { ExpensePaymentLegend } from "./expense-card-legend";
 import { ExpenseList } from "./expense-list";
 
 export function ExpenseMainList() {
   const { data: session } = useSession();
-  const { activeGroupId } = useActiveGroup();
-  const {
-    data: group,
-    isLoading: isLoadingGroup,
-    isError: isErrorGroup,
-  } = useGroup(activeGroupId);
+  const activeGroup = useActiveGroup();
+
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch] = useDebouncedValue(search, 500);
   const [payer, setPayer] = useState<string>("");
   const [debtor, setDebtor] = useState<string>("");
 
-  if (isLoadingGroup) return null;
-  if (isErrorGroup) return null;
-
   const groupUsersToSelect = [
     { value: "", label: "Wszyscy" },
-    ...group.members.map((user) => ({
+    ...activeGroup.members.map((user) => ({
       value: user.id,
       label: user.name ?? "Brak nazwy",
     })),
@@ -91,7 +84,6 @@ export function ExpenseMainList() {
       </Accordion>
       <ExpenseList
         withPagination
-        groupId={activeGroupId}
         name={debouncedSearch}
         description={debouncedSearch}
         payerId={payer || undefined}

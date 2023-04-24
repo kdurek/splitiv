@@ -1,39 +1,31 @@
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { useActiveGroup, useGroup } from "features/group";
+import { useActiveGroup } from "features/group";
 
 import { ExpenseForm } from "./expense-form";
 
 export function CreateExpenseModal() {
   const [opened, { open, close }] = useDisclosure(false);
-  const { activeGroupId } = useActiveGroup();
-  const {
-    data: group,
-    isLoading: isLoadingGroup,
-    isError: isErrorGroup,
-  } = useGroup(activeGroupId);
-
-  if (isLoadingGroup) return null;
-  if (isErrorGroup) return null;
+  const activeGroup = useActiveGroup();
 
   const singleDefaults = {
     ower: "",
   };
 
-  const equalDefaults = group.members.map((member) => ({
+  const equalDefaults = activeGroup.members.map((member) => ({
     id: member.id,
     name: member.name as string,
     check: false,
   }));
 
-  const unequalDefaults = group.members.map((member) => ({
+  const unequalDefaults = activeGroup.members.map((member) => ({
     id: member.id,
     name: member.name as string,
     amount: 0,
   }));
 
-  const ratioDefaults = group.members.map((member) => ({
+  const ratioDefaults = activeGroup.members.map((member) => ({
     id: member.id,
     name: member.name as string,
     ratio: 0,
@@ -58,7 +50,7 @@ export function CreateExpenseModal() {
 
       <Modal opened={opened} onClose={close} title="Dodawanie wydatku">
         <ExpenseForm
-          group={group}
+          group={activeGroup}
           defaultValues={defaultValues}
           onSuccess={close}
         />

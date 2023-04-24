@@ -1,22 +1,20 @@
 import { Stack, Title } from "@mantine/core";
 
 import { ProtectedContent } from "features/auth";
-import { GroupSelect } from "features/group";
-import { CreateTaskForm, TaskList } from "features/task";
+import { GroupSelect, GroupSettingsMembers } from "features/group";
 
-function TasksPage() {
+function SettingsPage() {
   return (
     <Stack>
-      <Title order={1}>Zadania</Title>
+      <Title order={1}>Ustawienia</Title>
       <ProtectedContent>
         <Stack>
           <GroupSelect />
-          <CreateTaskForm />
-          <TaskList />
+          <GroupSettingsMembers />
         </Stack>
       </ProtectedContent>
     </Stack>
   );
 }
 
-export default TasksPage;
+export default SettingsPage;

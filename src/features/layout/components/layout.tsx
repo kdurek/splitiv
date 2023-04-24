@@ -50,7 +50,7 @@ const data = [
     icon: <IconSettings />,
     color: "violet",
     label: "Ustawienia grupy",
-    href: "/ustawienia-grupy",
+    href: "/ustawienia",
   },
 ];
 

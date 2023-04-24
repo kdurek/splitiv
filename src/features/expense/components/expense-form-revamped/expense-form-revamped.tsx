@@ -26,7 +26,7 @@ import {
 } from "react-hook-form";
 
 import { useCreateExpense } from "features/expense/api/use-create-expense";
-import { useActiveGroup, useGroup } from "features/group";
+import { useActiveGroup } from "features/group";
 
 import { ExpenseFormRevampedMethods } from "./expense-form-revamped-methods";
 import { ExpenseFormSchemaRevamped } from "./expense-form-revamped.schema";
@@ -35,18 +35,14 @@ import type { ExpenseFormValuesRevamped } from "./expense-form-revamped.schema";
 
 export function ExpenseFormRevamped() {
   const [opened, { open, close }] = useDisclosure(false);
-  const { activeGroupId } = useActiveGroup();
-  const {
-    data: group,
-    isLoading: isLoadingGroup,
-    isError: isErrorGroup,
-  } = useGroup(activeGroupId);
+  const activeGroup = useActiveGroup();
+
   const { mutate: createExpense, isLoading: isLoadingCreateExpense } =
     useCreateExpense();
 
   const methods = useForm<ExpenseFormValuesRevamped>({
     defaultValues: {
-      debts: group?.members.map((member) => ({
+      debts: activeGroup?.members.map((member) => ({
         id: member.id,
         name: member.name ?? "Brak nazwy",
         amount: 0,
@@ -103,7 +99,7 @@ export function ExpenseFormRevamped() {
 
     createExpense(
       {
-        groupId: activeGroupId,
+        groupId: activeGroup.id,
         name: values.name,
         description: values.description || undefined,
         amount: values.amount,
@@ -121,12 +117,9 @@ export function ExpenseFormRevamped() {
   };
 
   const getUserNameByUserId = (userId: string) => {
-    const user = group?.members.find((member) => member.id === userId);
+    const user = activeGroup?.members.find((member) => member.id === userId);
     return user?.name ?? "...";
   };
-
-  if (isLoadingGroup) return null;
-  if (isErrorGroup) return null;
 
   return (
     <>
@@ -225,7 +218,7 @@ export function ExpenseFormRevamped() {
                   error={errors.payer?.message}
                   data={[
                     { value: "", label: "" },
-                    ...group.members.map((user) => {
+                    ...activeGroup.members.map((user) => {
                       return {
                         value: user.id,
                         label: user.name ?? "Brak nazwy",

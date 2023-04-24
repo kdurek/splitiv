@@ -10,15 +10,17 @@ import { GroupSelect } from "features/group";
 
 function ExpensesPage() {
   return (
-    <ProtectedContent>
-      <Stack>
-        <Title order={1}>Wydatki</Title>
-        <GroupSelect />
-        <UserBalance />
-        <ExpenseCreateButtons />
-        <ExpenseMainList />
-      </Stack>
-    </ProtectedContent>
+    <Stack>
+      <Title order={1}>Wydatki</Title>
+      <ProtectedContent>
+        <Stack>
+          <GroupSelect />
+          <UserBalance />
+          <ExpenseCreateButtons />
+          <ExpenseMainList />
+        </Stack>
+      </ProtectedContent>
+    </Stack>
   );
 }
 

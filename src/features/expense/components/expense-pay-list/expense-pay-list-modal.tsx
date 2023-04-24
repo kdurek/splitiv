@@ -4,23 +4,24 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 import { useCurrentUserUnsettledDebtsByGroup } from "features/expense/api/use-current-user-unsettled-debts-by-group";
-import { useActiveGroup, useGroup } from "features/group";
+import { useActiveGroup } from "features/group";
 
 import { ExpensePayList } from "./expense-pay-list";
 
 export function ExpensePayListModal() {
   const [opened, { open, close }] = useDisclosure(false);
-  const { activeGroupId } = useActiveGroup();
+  const activeGroup = useActiveGroup();
+
   const { data: unsettledDebts } = useCurrentUserUnsettledDebtsByGroup({
-    groupId: activeGroupId,
+    groupId: activeGroup.id,
   });
   const { data: session } = useSession();
-  const { data: group } = useGroup(activeGroupId);
+
   const [selectedUserId, setSelectedUserId] = useState<string>();
 
-  if (!unsettledDebts?.length || !group || !session) return null;
+  if (!unsettledDebts?.length || !session) return null;
 
-  const owedGroupUsers = group.members
+  const owedGroupUsers = activeGroup.members
     .filter((member) => member.id !== session.user.id)
     .filter((member) =>
       unsettledDebts.some(

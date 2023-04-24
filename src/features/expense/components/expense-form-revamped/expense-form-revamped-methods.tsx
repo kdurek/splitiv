@@ -14,19 +14,14 @@ import { allocate, toUnit } from "dinero.js";
 import { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
-import { useActiveGroup, useGroup } from "features/group";
+import { useActiveGroup } from "features/group";
 import { dineroFromString } from "server/utils/dineroFromString";
 
 import type { ExpenseFormValuesRevamped } from "./expense-form-revamped.schema";
 import type { Dinero } from "dinero.js";
 
 export function ExpenseFormRevampedMethods() {
-  const { activeGroupId } = useActiveGroup();
-  const {
-    data: group,
-    isLoading: isLoadingGroup,
-    isError: isErrorGroup,
-  } = useGroup(activeGroupId);
+  const activeGroup = useActiveGroup();
 
   const methods = useFormContext<ExpenseFormValuesRevamped>();
   const { watch, control, setValue, trigger } = methods;
@@ -124,7 +119,7 @@ export function ExpenseFormRevampedMethods() {
         : 0,
     }));
 
-    if (!group) return;
+    if (!activeGroup) return;
 
     const newDebts = liveFields.debts.map((debtor) => {
       const isInArray = usersToAllocate.find((user) => user.id === debtor.id);
@@ -143,9 +138,6 @@ export function ExpenseFormRevampedMethods() {
     });
     trigger("debts");
   };
-
-  if (isLoadingGroup) return null;
-  if (isErrorGroup) return null;
 
   return (
     <Stack>

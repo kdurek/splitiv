@@ -2,11 +2,11 @@ import { Flex, Pagination, Paper, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 
 import { useExpenses } from "features/expense/api/use-expenses";
+import { useActiveGroup } from "features/group";
 
 import { ExpenseCard } from "./expense-card";
 
 interface ExpenseListProps {
-  groupId: string;
   name?: string;
   description?: string;
   payerId?: string;
@@ -17,7 +17,6 @@ interface ExpenseListProps {
 }
 
 export function ExpenseList({
-  groupId,
   name,
   description,
   payerId,
@@ -27,6 +26,7 @@ export function ExpenseList({
   withPagination,
 }: ExpenseListProps) {
   const [activePage, setPage] = useState(1);
+  const activeGroup = useActiveGroup();
 
   useEffect(() => {
     if (withPagination) {
@@ -39,7 +39,7 @@ export function ExpenseList({
     isLoading: isLoadingExpenses,
     isError: isErrorExpenses,
   } = useExpenses({
-    groupId,
+    groupId: activeGroup.id,
     name,
     description,
     payerId,

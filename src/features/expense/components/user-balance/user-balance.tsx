@@ -1,6 +1,6 @@
 import { Accordion, Avatar, Box, Group, Text } from "@mantine/core";
 
-import { useActiveGroup, useGroup } from "features/group";
+import { useActiveGroup } from "features/group";
 
 import type { GetUsers } from "utils/api";
 
@@ -43,14 +43,11 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
 }
 
 export function UserBalance() {
-  const { activeGroupId } = useActiveGroup();
-  const { data: group } = useGroup(activeGroupId);
-
-  if (!group) return null;
+  const activeGroup = useActiveGroup();
 
   return (
     <Accordion variant="contained">
-      {group.members.map((member) => (
+      {activeGroup.members.map((member) => (
         <Accordion.Item key={member.id} value={member.id}>
           <Accordion.Control>
             <Group>
@@ -66,8 +63,8 @@ export function UserBalance() {
           <Accordion.Panel>
             <UserDebts
               member={member}
-              members={group.members}
-              debts={group.debts}
+              members={activeGroup.members}
+              debts={activeGroup.debts}
             />
           </Accordion.Panel>
         </Accordion.Item>

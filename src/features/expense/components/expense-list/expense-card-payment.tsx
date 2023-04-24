@@ -43,10 +43,10 @@ const schema = z.object({
 type ExpenseCardPaymentFormValues = z.infer<typeof schema>;
 
 export function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
-  const { activeGroupId } = useActiveGroup();
+  const activeGroup = useActiveGroup();
   const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } =
     useUpdateExpenseDebt({
-      groupId: activeGroupId,
+      groupId: activeGroup.id,
     });
   const [isEditing, { toggle: toggleIsEditing, close: closeIsEditing }] =
     useDisclosure(false);

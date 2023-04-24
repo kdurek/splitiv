@@ -6,8 +6,8 @@ import { useDeleteTask } from "features/task/api/use-delete-task";
 import { useTasksByGroup } from "features/task/api/use-tasks-by-group";
 
 export function TaskList() {
-  const { activeGroupId } = useActiveGroup();
-  const { data: tasks } = useTasksByGroup(activeGroupId);
+  const activeGroup = useActiveGroup();
+  const { data: tasks } = useTasksByGroup(activeGroup.id);
   const { mutate: deleteTask } = useDeleteTask();
 
   if (!tasks) return null;
@@ -20,7 +20,7 @@ export function TaskList() {
           <ActionIcon
             type="button"
             onClick={() =>
-              deleteTask({ taskId: task.id, groupId: activeGroupId })
+              deleteTask({ taskId: task.id, groupId: activeGroup.id })
             }
             size={36}
             variant="default"

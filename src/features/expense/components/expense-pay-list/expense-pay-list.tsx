@@ -28,7 +28,7 @@ export function ExpensePayList({
   values: debts,
   afterSubmit,
 }: ExpensePayListProps) {
-  const { activeGroupId } = useActiveGroup();
+  const activeGroup = useActiveGroup();
   const {
     control,
     handleSubmit,
@@ -49,7 +49,7 @@ export function ExpensePayList({
 
   const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } =
     useSettleExpenseDebts({
-      groupId: activeGroupId,
+      groupId: activeGroup.id,
     });
 
   const debtsSum = watch("debts").reduce(

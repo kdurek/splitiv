@@ -1,4 +1,4 @@
-import { Button, Divider, Stack, TextInput } from "@mantine/core";
+import { Button, Divider, Stack, TextInput, Title } from "@mantine/core";
 import { useDebouncedState } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import Link from "next/link";
@@ -10,6 +10,7 @@ function Recipes() {
 
   return (
     <Stack>
+      <Title order={1}>Przepisy</Title>
       <Button variant="default" component={Link} href="/przepisy/dodaj">
         Dodaj przepis
       </Button>

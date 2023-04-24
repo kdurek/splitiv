@@ -1,17 +1,13 @@
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { useGroup } from "features/group/api/use-group";
+import { useActiveGroup } from "../active-group.context";
 
 import { AddUserToGroupForm } from "./add-user-to-group-form";
 
-interface AddUserToGroupModalProps {
-  groupId: string;
-}
-
-export function AddUserToGroupModal({ groupId }: AddUserToGroupModalProps) {
+export function AddUserToGroupModal() {
   const [opened, { open, close }] = useDisclosure(false);
-  const { data: group } = useGroup(groupId);
+  const activeGroup = useActiveGroup();
 
   return (
     <>
@@ -19,11 +15,9 @@ export function AddUserToGroupModal({ groupId }: AddUserToGroupModalProps) {
         Dodaj użytkownika
       </Button>
 
-      {group && (
-        <Modal opened={opened} onClose={close} title="Dodawanie użytkownika">
-          <AddUserToGroupForm group={group} afterSubmit={close} />
-        </Modal>
-      )}
+      <Modal opened={opened} onClose={close} title="Dodawanie użytkownika">
+        <AddUserToGroupForm group={activeGroup} afterSubmit={close} />
+      </Modal>
     </>
   );
 }

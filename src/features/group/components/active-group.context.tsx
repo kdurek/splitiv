@@ -6,45 +6,56 @@ import { api } from "utils/api";
 
 import { GroupSelectModal } from "./group-select-modal";
 
+import type { User } from "next-auth";
 import type { ReactNode } from "react";
-
-export const ActiveGroupContext = createContext<{
-  activeGroupId: string;
-  setActiveGroupId: (value: string | ((val: string) => string)) => void;
-}>({ activeGroupId: "", setActiveGroupId: () => null });
-
-const useProvideActiveGroup = () => {
-  const { status } = useSession();
-  const [activeGroupId, setActiveGroupId, removeActiveGroupId] =
-    useLocalStorage({
-      key: "activeGroupId",
-      defaultValue: "",
-    });
-
-  const { isLoading: isLoadingGroup } = api.group.getGroupById.useQuery(
-    {
-      groupId: activeGroupId,
-    },
-    {
-      enabled: status === "authenticated" && Boolean(activeGroupId),
-      onError() {
-        removeActiveGroupId();
-      },
-    }
-  );
-
-  return { activeGroupId, setActiveGroupId, isLoadingGroup };
-};
+import type { GetGroupById } from "utils/api";
 
 interface ActiveGroupProviderProps {
   children: ReactNode;
 }
 
+const ActiveGroupContext = createContext<GetGroupById | undefined>(undefined);
+
+export const useActiveGroup = (): GetGroupById => {
+  const data = useContext(ActiveGroupContext);
+
+  if (!data) {
+    throw new Error("Active group is being read outside ActiveGroupProvider");
+  }
+
+  return data;
+};
+
+const isUserInGroup = (user: User, group: GetGroupById) => {
+  return group.members.map((m) => m.id).includes(user.id);
+};
+
 export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
-  const activeGroupContext = useProvideActiveGroup();
-  const { activeGroupId, setActiveGroupId, isLoadingGroup } =
-    activeGroupContext;
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const [activeGroupId, setActiveGroupId, removeActiveGroupId] =
+    useLocalStorage({
+      key: "activeGroupId",
+    });
+
+  const groupQuery = api.group.getGroupById.useQuery(
+    {
+      groupId: activeGroupId,
+    },
+    {
+      enabled: status === "authenticated" && Boolean(activeGroupId),
+      onSuccess(group) {
+        if (
+          status === "authenticated" &&
+          (!isUserInGroup(session.user, group) || group.id !== activeGroupId)
+        ) {
+          removeActiveGroupId();
+        }
+      },
+      onError() {
+        removeActiveGroupId();
+      },
+    }
+  );
 
   if (status === "authenticated" && !activeGroupId) {
     return (
@@ -55,25 +66,21 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
     );
   }
 
-  if (status === "authenticated" && isLoadingGroup) {
+  if (groupQuery.isLoading || groupQuery.isError) {
+    return null;
+  }
+
+  if (
+    status === "authenticated" &&
+    (!isUserInGroup(session.user, groupQuery.data) ||
+      groupQuery.data.id !== activeGroupId)
+  ) {
     return null;
   }
 
   return (
-    <ActiveGroupContext.Provider value={activeGroupContext}>
+    <ActiveGroupContext.Provider value={groupQuery.data}>
       {children}
     </ActiveGroupContext.Provider>
   );
 }
-
-export const useActiveGroup = () => {
-  const activeGroupContext = useContext(ActiveGroupContext);
-
-  if (!activeGroupContext) {
-    throw new Error(
-      "useActiveGroup has to be used within <ActiveGroupProvider>"
-    );
-  }
-
-  return activeGroupContext;
-};

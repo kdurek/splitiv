@@ -6,6 +6,7 @@ import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 
+import { ActiveGroupProvider } from "features/group";
 import { Layout } from "features/layout";
 
 import { api } from "../utils/api";
@@ -62,10 +63,12 @@ function MyApp({
             }}
           >
             <Layout>
-              <Head>
-                <title>Splitiv</title>
-              </Head>
-              <Component {...pageProps} />
+              <ActiveGroupProvider>
+                <Head>
+                  <title>Splitiv</title>
+                </Head>
+                <Component {...pageProps} />
+              </ActiveGroupProvider>
             </Layout>
           </MantineProvider>
         </ColorSchemeProvider>

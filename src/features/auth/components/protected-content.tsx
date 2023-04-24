@@ -1,6 +1,5 @@
+import { Box } from "@mantine/core";
 import { useSession } from "next-auth/react";
-
-import { ActiveGroupProvider } from "features/group";
 
 import { LoginPlaceholder } from "./login-placeholder";
 
@@ -19,5 +18,5 @@ export function ProtectedContent({ children }: ProtectedRouteProps) {
     return <LoginPlaceholder />;
   }
 
-  return <ActiveGroupProvider>{children}</ActiveGroupProvider>;
+  return <Box>{children}</Box>;
 }

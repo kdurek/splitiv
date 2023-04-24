@@ -66,12 +66,16 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
     );
   }
 
-  if (groupQuery.isLoading || groupQuery.isError) {
+  if (
+    status === "authenticated" &&
+    (groupQuery.isLoading || groupQuery.isError)
+  ) {
     return null;
   }
 
   if (
     status === "authenticated" &&
+    groupQuery.data &&
     (!isUserInGroup(session.user, groupQuery.data) ||
       groupQuery.data.id !== activeGroupId)
   ) {

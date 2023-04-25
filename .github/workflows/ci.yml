@@ -51,11 +51,8 @@ jobs:
           script_stop: true
           script: |
             cd /usr/src/splitiv
-            docker compose -f docker-compose.production.yml up -d
-            docker system prune -f
-            docker compose -f docker-compose.production.yml down
             git pull origin main
             pnpm install
-            docker compose -f docker-compose.production.yml build --no-cache
-            docker compose -f docker-compose.production.yml up -d
+            pnpm build
+            pm2 restart splitiv
 

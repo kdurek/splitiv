@@ -1,25 +1,4 @@
 services:
-  app:
-    container_name: app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - NEXTAUTH_URL=${NEXTAUTH_URL}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-    expose:
-      - "37533"
-    ports:
-      - '37533:37533'
-    restart: unless-stopped
-    depends_on:
-      - postgres
-    networks:
-      - main
-
   postgres:
     container_name: postgres
     image: postgres:latest

@@ -1,14 +1,12 @@
 import { Stack } from "@mantine/core";
 
-import { CreateExpenseModal } from "../expense-form";
-import { ExpenseFormRevamped } from "../expense-form-revamped";
+import { ExpenseForm } from "../expense-form";
 import { ExpensePayListModal } from "../expense-pay-list";
 
 export function ExpenseCreateButtons() {
   return (
     <Stack>
-      <ExpenseFormRevamped />
-      <CreateExpenseModal />
+      <ExpenseForm />
       <ExpensePayListModal />
     </Stack>
   );

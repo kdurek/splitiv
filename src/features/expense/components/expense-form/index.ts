@@ -1,1 +1,1 @@
-export { CreateExpenseModal } from "./create-expense-modal";
+export { ExpenseForm } from "./expense-form";

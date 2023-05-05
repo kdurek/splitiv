@@ -17,13 +17,13 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { useActiveGroup } from "features/group";
 import { dineroFromString } from "server/utils/dineroFromString";
 
-import type { ExpenseFormValuesRevamped } from "./expense-form-revamped.schema";
+import type { ExpenseFormValues } from "./expense-form.schema";
 import type { Dinero } from "dinero.js";
 
-export function ExpenseFormRevampedMethods() {
+export function ExpenseFormMethods() {
   const activeGroup = useActiveGroup();
 
-  const methods = useFormContext<ExpenseFormValuesRevamped>();
+  const methods = useFormContext<ExpenseFormValues>();
   const { watch, control, setValue, trigger } = methods;
 
   const { fields: debts } = useFieldArray({

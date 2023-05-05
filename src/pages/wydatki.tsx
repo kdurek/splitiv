@@ -2,8 +2,8 @@ import { Stack, Title } from "@mantine/core";
 
 import { ProtectedContent } from "features/auth";
 import {
-  ExpenseCreateButtons,
   ExpenseMainList,
+  ExpensePayListModal,
   UserBalance,
 } from "features/expense";
 import { GroupSelect } from "features/group";
@@ -16,7 +16,7 @@ function ExpensesPage() {
         <Stack>
           <GroupSelect />
           <UserBalance />
-          <ExpenseCreateButtons />
+          <ExpensePayListModal />
           <ExpenseMainList />
         </Stack>
       </ProtectedContent>

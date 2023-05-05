@@ -62,14 +62,14 @@ function MyApp({
               headings: { fontFamily: "Poppins, sans-serif" },
             }}
           >
-            <Layout>
-              <ActiveGroupProvider>
+            <ActiveGroupProvider>
+              <Layout>
                 <Head>
                   <title>Splitiv</title>
                 </Head>
                 <Component {...pageProps} />
-              </ActiveGroupProvider>
-            </Layout>
+              </Layout>
+            </ActiveGroupProvider>
           </MantineProvider>
         </ColorSchemeProvider>
       </SessionProvider>

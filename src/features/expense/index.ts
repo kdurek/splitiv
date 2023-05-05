@@ -7,7 +7,6 @@ export * from "./api/use-update-expense-debts";
 export * from "./api/use-update-expense";
 
 export * from "./components/delete-expense-modal";
-export * from "./components/expense-create-buttons";
 export * from "./components/expense-form";
 export * from "./components/expense-list";
 export * from "./components/expense-pay-list";

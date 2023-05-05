@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ActionIcon,
   Button,
   Divider,
   Group,
@@ -15,7 +16,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconCircleX } from "@tabler/icons-react";
+import { IconCircleX, IconPlus } from "@tabler/icons-react";
 import Decimal from "decimal.js";
 import { useState } from "react";
 import {
@@ -123,9 +124,9 @@ export function ExpenseForm() {
 
   return (
     <>
-      <Button variant="default" onClick={open}>
-        Dodaj wydatek nowym sposobem
-      </Button>
+      <ActionIcon p="lg" variant="filled" color="blue" onClick={open}>
+        <IconPlus />
+      </ActionIcon>
 
       <Modal
         opened={opened}

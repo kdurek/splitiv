@@ -55,38 +55,6 @@ model Expense {
   groupId     String
 }
 
-model RecipeIngredient {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  amount    Int
-  unit      String
-  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  recipeId  String
-}
-
-model RecipeStep {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  recipeId  String
-}
-
-model Recipe {
-  id          String             @id @default(cuid())
-  slug        String             @unique
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  name        String
-  ingredients RecipeIngredient[]
-  steps       RecipeStep[]
-  author      User               @relation(fields: [authorId], references: [id])
-  authorId    String
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -126,7 +94,6 @@ model User {
   groups        UserGroup[]
   expenses      Expense[]
   debts         ExpenseDebt[]
-  recipes       Recipe[]
 }
 
 model VerificationToken {

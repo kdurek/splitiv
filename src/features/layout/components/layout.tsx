@@ -9,9 +9,11 @@ import {
 } from "@mantine/core";
 import { IconCash, IconMoon, IconSettings, IconSun } from "@tabler/icons-react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
-import { ProtectedContent } from "features/auth";
+import { LoginPlaceholder } from "features/auth";
 import { ExpenseForm } from "features/expense";
+import { ActiveGroupProvider } from "features/group";
 
 import { Logo } from "./logo";
 
@@ -24,28 +26,35 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const router = useRouter();
+  const { status } = useSession();
+
+  if (status === "loading") return null;
+
+  if (status === "unauthenticated") {
+    return <LoginPlaceholder />;
+  }
 
   return (
-    <AppShell
-      header={
-        <Header height={{ base: 50, sm: 70 }} p="md">
-          <Flex h="100%" align="center" justify="space-between">
-            <Logo />
-            <ActionIcon color="gray.6" onClick={() => toggleColorScheme()}>
-              {colorScheme === "dark" ? <IconMoon /> : <IconSun />}
-            </ActionIcon>
-          </Flex>
-        </Header>
-      }
-      footer={
-        <ProtectedContent>
+    <ActiveGroupProvider>
+      <AppShell
+        header={
+          <Header height={{ base: 50, sm: 70 }} p="md">
+            <Flex h="100%" align="center" justify="space-between">
+              <Logo />
+              <ActionIcon color="gray.6" onClick={() => toggleColorScheme()}>
+                {colorScheme === "dark" ? <IconMoon /> : <IconSun />}
+              </ActionIcon>
+            </Flex>
+          </Header>
+        }
+        footer={
           <Footer height={{ base: 90 }}>
             <Group mx="auto" maw={400} grow p="xs">
               <ActionIcon
                 p="lg"
                 variant="light"
                 color="gray"
-                onClick={() => router.push("/wydatki")}
+                onClick={() => router.push("/")}
               >
                 <IconCash />
               </ActionIcon>
@@ -60,11 +69,11 @@ export function Layout({ children }: LayoutProps) {
               </ActionIcon>
             </Group>
           </Footer>
-        </ProtectedContent>
-      }
-    >
-      {children}
-    </AppShell>
+        }
+      >
+        {children}
+      </AppShell>
+    </ActiveGroupProvider>
   );
 }
 

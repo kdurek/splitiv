@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 
 export function LoginPlaceholder() {
   return (
-    <Paper withBorder p="md">
+    <Paper m="xl" withBorder p="md">
       <Center component={Stack} w="100%" h="100%">
         <Title maw={400} align="center">
           Ta część strony wymaga zalogowania

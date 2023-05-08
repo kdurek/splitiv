@@ -1,14 +1,22 @@
 import { Stack, Title } from "@mantine/core";
 
-import { ExpenseWidgetList } from "features/expense";
+import {
+  ExpenseMainList,
+  ExpensePayListModal,
+  UserBalance,
+} from "features/expense";
+import { GroupSelect } from "features/group";
 
-function HomePage() {
+function ExpensesPage() {
   return (
     <Stack>
-      <Title order={1}>Strona główna</Title>
-      <ExpenseWidgetList />
+      <Title order={1}>Wydatki</Title>
+      <GroupSelect />
+      <UserBalance />
+      <ExpensePayListModal />
+      <ExpenseMainList />
     </Stack>
   );
 }
 
-export default HomePage;
+export default ExpensesPage;

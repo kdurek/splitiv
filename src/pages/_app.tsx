@@ -6,7 +6,6 @@ import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 
-import { ActiveGroupProvider } from "features/group";
 import { Layout } from "features/layout";
 
 import { api } from "../utils/api";
@@ -62,14 +61,12 @@ function MyApp({
               headings: { fontFamily: "Poppins, sans-serif" },
             }}
           >
-            <ActiveGroupProvider>
-              <Layout>
-                <Head>
-                  <title>Splitiv</title>
-                </Head>
-                <Component {...pageProps} />
-              </Layout>
-            </ActiveGroupProvider>
+            <Layout>
+              <Head>
+                <title>Splitiv</title>
+              </Head>
+              <Component {...pageProps} />
+            </Layout>
           </MantineProvider>
         </ColorSchemeProvider>
       </SessionProvider>

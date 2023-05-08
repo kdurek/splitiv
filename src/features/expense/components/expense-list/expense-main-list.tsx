@@ -83,7 +83,6 @@ export function ExpenseMainList() {
         </Accordion.Item>
       </Accordion>
       <ExpenseList
-        withPagination
         name={debouncedSearch}
         description={debouncedSearch}
         payerId={payer || undefined}

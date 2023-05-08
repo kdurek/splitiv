@@ -4,6 +4,87 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const expenseRouter = createTRPCRouter({
+  getInfinite: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.string().nullish(),
+        groupId: z.string().optional(),
+        name: z.string().optional(),
+        description: z.string().optional(),
+        payerId: z.string().optional(),
+        debtorId: z.string().optional(),
+        settled: z.boolean().optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const items = await ctx.prisma.expense.findMany({
+        take: input.limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        where: {
+          groupId: input.groupId,
+          OR: [
+            {
+              name: {
+                contains: input.name,
+                mode: "insensitive",
+              },
+            },
+            {
+              description: {
+                contains: input.description,
+                mode: "insensitive",
+              },
+            },
+          ],
+          payerId: input.payerId,
+          debts: {
+            some: {
+              debtorId: input.debtorId,
+              settled: {
+                lt:
+                  input.settled === false
+                    ? ctx.prisma.expenseDebt.fields.amount
+                    : undefined,
+                equals:
+                  input.settled === true
+                    ? ctx.prisma.expenseDebt.fields.amount
+                    : undefined,
+              },
+            },
+          },
+        },
+        include: {
+          payer: true,
+          debts: {
+            orderBy: {
+              debtorId: "desc",
+            },
+            include: {
+              expense: {
+                select: {
+                  payerId: true,
+                },
+              },
+              debtor: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      let nextCursor: typeof input.cursor | undefined;
+      if (items.length > input.limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+
   getExpensesByGroup: protectedProcedure
     .input(
       z.object({

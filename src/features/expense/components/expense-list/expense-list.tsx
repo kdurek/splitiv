@@ -1,8 +1,9 @@
-import { Flex, Pagination, Paper, Stack, Text } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Box, Paper, Stack, Text } from "@mantine/core";
+import { useIntersection } from "@mantine/hooks";
+import { useEffect } from "react";
 
-import { useExpenses } from "features/expense/api/use-expenses";
 import { useActiveGroup } from "features/group";
+import { api } from "utils/api";
 
 import { ExpenseCard } from "./expense-card";
 
@@ -12,8 +13,6 @@ interface ExpenseListProps {
   payerId?: string;
   debtorId?: string;
   settled?: boolean;
-  take?: number;
-  withPagination?: boolean;
 }
 
 export function ExpenseList({
@@ -22,50 +21,47 @@ export function ExpenseList({
   payerId,
   debtorId,
   settled,
-  take,
-  withPagination,
 }: ExpenseListProps) {
-  const [activePage, setPage] = useState(1);
   const activeGroup = useActiveGroup();
-
-  useEffect(() => {
-    if (withPagination) {
-      setPage(1);
-    }
-  }, [name, description, payerId, debtorId, withPagination]);
+  const { ref, entry } = useIntersection();
 
   const {
-    data: expenses,
+    data,
+    fetchNextPage,
+    hasNextPage,
     isLoading: isLoadingExpenses,
     isError: isErrorExpenses,
-  } = useExpenses({
-    groupId: activeGroup.id,
-    name,
-    description,
-    payerId,
-    debtorId,
-    settled,
-    take,
-  });
+  } = api.expense.getInfinite.useInfiniteQuery(
+    {
+      limit: 10,
+      groupId: activeGroup.id,
+      name,
+      description,
+      payerId,
+      debtorId,
+      settled,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
+
+  useEffect(() => {
+    if (entry?.isIntersecting && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [entry?.isIntersecting, hasNextPage, fetchNextPage]);
 
   if (isLoadingExpenses) return null;
   if (isErrorExpenses) return null;
 
-  const expensesPerPage = 8;
-  const indexOfLastExpense = activePage * expensesPerPage;
-  const indexOfFirstExpense = indexOfLastExpense - expensesPerPage;
-  const currentExpenses = expenses.slice(
-    indexOfFirstExpense,
-    indexOfLastExpense
-  );
-
-  const expensesToRender = withPagination ? currentExpenses : expenses;
+  const expenses = data?.pages.flatMap((page) => page.items);
 
   return (
-    <Stack>
+    <Box>
       <Stack spacing="xs">
-        {expensesToRender.length ? (
-          expensesToRender.map((expense) => (
+        {expenses.length ? (
+          expenses.map((expense) => (
             <ExpenseCard key={expense.id} expense={expense} />
           ))
         ) : (
@@ -74,15 +70,7 @@ export function ExpenseList({
           </Paper>
         )}
       </Stack>
-      {withPagination && (
-        <Flex justify="center">
-          <Pagination
-            value={activePage}
-            onChange={setPage}
-            total={Math.ceil(expenses.length / expensesPerPage)}
-          />
-        </Flex>
-      )}
-    </Stack>
+      <Box ref={ref} />
+    </Box>
   );
 }

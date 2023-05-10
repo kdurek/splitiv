@@ -12,6 +12,9 @@ export function useCreateExpense() {
       await utils.expense.getExpensesByGroup.invalidate({
         groupId: input.groupId,
       });
+      await utils.expense.getInfinite.invalidate({
+        groupId: input.groupId,
+      });
     },
   });
 }

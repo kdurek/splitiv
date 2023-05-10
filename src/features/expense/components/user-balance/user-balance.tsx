@@ -1,6 +1,16 @@
-import { Accordion, Avatar, Box, Group, Text } from "@mantine/core";
+import {
+  Accordion,
+  Avatar,
+  Box,
+  Divider,
+  Group,
+  Stack,
+  Text,
+} from "@mantine/core";
 
 import { useActiveGroup } from "features/group";
+
+import { DebtDetails } from "../debt-details";
 
 import type { GetUsers } from "utils/api";
 
@@ -21,24 +31,39 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
 
   const userDebts = debts.filter((debt) => debt.fromId === member.id);
   const userGets = debts.filter((debt) => debt.toId === member.id);
-  const getUserNickname = (userId: string) =>
-    members.find((user) => user.id === userId)?.name;
+  const getUserFirstName = (userId: string) =>
+    members.find((user) => user.id === userId)?.name?.split(" ")[0];
 
   return (
-    <Box>
-      {userDebts.length > 0 &&
-        userDebts.map((debt) => (
-          <Text key={debt.fromId + debt.toId} weight={500} color="red">
-            {`${debt.amount} zł dla ${getUserNickname(debt.toId)}`}
-          </Text>
-        ))}
-      {userGets.length > 0 &&
-        userGets.map((debt) => (
-          <Text key={debt.fromId + debt.toId} weight={500} color="green">
-            {`${debt.amount} zł od ${getUserNickname(debt.fromId)}`}
-          </Text>
-        ))}
-    </Box>
+    <Stack>
+      {userGets.length > 0 && (
+        <Stack>
+          <Box>
+            {userGets.map((debt) => (
+              <Text key={debt.fromId + debt.toId} weight={500} color="green">
+                {`${debt.amount} zł od ${getUserFirstName(debt.fromId)}`}
+              </Text>
+            ))}
+          </Box>
+          <DebtDetails type="payer" id={member.id} />
+        </Stack>
+      )}
+
+      {userGets.length > 0 && userDebts.length > 0 && <Divider />}
+
+      {userDebts.length > 0 && (
+        <Stack>
+          <Box>
+            {userDebts.map((debt) => (
+              <Text key={debt.fromId + debt.toId} weight={500} color="red">
+                {`${debt.amount} zł dla ${getUserFirstName(debt.toId)}`}
+              </Text>
+            ))}
+          </Box>
+          <DebtDetails type="debtor" id={member.id} />
+        </Stack>
+      )}
+    </Stack>
   );
 }
 

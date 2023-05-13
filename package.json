@@ -5,6 +5,7 @@
   "packageManager": "pnpm@7.26.3",
   "engines": {
     "node": "18.x",
+    "npm": "9.x",
     "pnpm": "8.x"
   },
   "scripts": {

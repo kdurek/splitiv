@@ -62,8 +62,11 @@ export function DebtDetails({ type, id }: DebtDetailsProps) {
         {type === "debtor" && (
           <Stack>
             {expenses?.map((expense) => {
-              const amount = Number(
-                expense.debts.find((debt) => debt.debtorId === id)?.amount
+              const debtorDebt = expense.debts.find(
+                (debt) => debt.debtorId === id
+              );
+              const amount = (
+                Number(debtorDebt?.amount) - Number(debtorDebt?.settled)
               ).toFixed(2);
               const debtorName = expense.debts
                 .find((debt) => debt.debtorId === id)

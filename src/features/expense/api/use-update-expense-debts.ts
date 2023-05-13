@@ -16,6 +16,9 @@ export function useSettleExpenseDebts({ groupId }: UseUpdateExpenseDebtProps) {
       await utils.expense.getExpensesByGroup.invalidate({
         groupId,
       });
+      await utils.expense.getInfinite.invalidate({
+        groupId,
+      });
     },
   });
 }

@@ -11,7 +11,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev -p 37533",
-    "postinstall": "pnpm dlx prisma generate && pnpm dlx simple-git-hooks",
+    "install": "prisma generate && simple-git-hooks",
     "lint": "next lint",
     "typecheck": "tsc",
     "start": "next start -p 37533"

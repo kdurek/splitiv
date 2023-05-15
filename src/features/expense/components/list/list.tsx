@@ -2,27 +2,19 @@ import { Box, Paper, Stack, Text } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect } from "react";
 
-import { useActiveGroup } from "features/group";
-import { api } from "utils/api";
+import { useInfiniteExpenses } from "features/expense/api/use-infinite-expenses";
 
-import { ExpenseCard } from "./expense-card";
+import { ExpenseListItem } from "./item";
+
+import type { ExpenseFilters } from "./filters";
 
 interface ExpenseListProps {
-  name?: string;
-  description?: string;
-  payerId?: string;
-  debtorId?: string;
-  settled?: boolean;
+  filters: ExpenseFilters;
 }
 
 export function ExpenseList({
-  name,
-  description,
-  payerId,
-  debtorId,
-  settled,
+  filters: { searchText, payerId, debtorId, isSettled },
 }: ExpenseListProps) {
-  const activeGroup = useActiveGroup();
   const { ref, entry } = useIntersection();
 
   const {
@@ -31,20 +23,12 @@ export function ExpenseList({
     hasNextPage,
     isLoading: isLoadingExpenses,
     isError: isErrorExpenses,
-  } = api.expense.getInfinite.useInfiniteQuery(
-    {
-      limit: 10,
-      groupId: activeGroup.id,
-      name,
-      description,
-      payerId,
-      debtorId,
-      settled,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
-  );
+  } = useInfiniteExpenses({
+    searchText,
+    payerId,
+    debtorId,
+    isSettled,
+  });
 
   useEffect(() => {
     if (entry?.isIntersecting && hasNextPage) {
@@ -62,7 +46,7 @@ export function ExpenseList({
       <Stack spacing="xs">
         {expenses.length ? (
           expenses.map((expense) => (
-            <ExpenseCard key={expense.id} expense={expense} />
+            <ExpenseListItem key={expense.id} expense={expense} />
           ))
         ) : (
           <Paper withBorder p="md">

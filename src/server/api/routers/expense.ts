@@ -14,7 +14,7 @@ export const expenseRouter = createTRPCRouter({
         description: z.string().optional(),
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
-        settled: z.boolean().optional(),
+        isSettled: z.boolean().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -26,28 +26,28 @@ export const expenseRouter = createTRPCRouter({
           OR: [
             {
               name: {
-                contains: input.name,
+                contains: input.name || "",
                 mode: "insensitive",
               },
             },
             {
               description: {
-                contains: input.description,
+                contains: input.description || "",
                 mode: "insensitive",
               },
             },
           ],
-          payerId: input.payerId,
+          payerId: input.payerId || undefined,
           debts: {
             some: {
-              debtorId: input.debtorId,
+              debtorId: input.debtorId || undefined,
               settled: {
                 lt:
-                  input.settled === false
+                  input.isSettled === false
                     ? ctx.prisma.expenseDebt.fields.amount
                     : undefined,
                 equals:
-                  input.settled === true
+                  input.isSettled === true
                     ? ctx.prisma.expenseDebt.fields.amount
                     : undefined,
               },
@@ -88,51 +88,51 @@ export const expenseRouter = createTRPCRouter({
   getExpensesByGroup: protectedProcedure
     .input(
       z.object({
-        groupId: z.string(),
+        limit: z.number().optional(),
+        groupId: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
-        settled: z.boolean().optional(),
-        take: z.number().optional(),
+        isSettled: z.boolean().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
       return ctx.prisma.expense.findMany({
+        take: input.limit || undefined,
         where: {
           groupId: input.groupId,
           OR: [
             {
               name: {
-                contains: input.name,
+                contains: input.name || "",
                 mode: "insensitive",
               },
             },
             {
               description: {
-                contains: input.description,
+                contains: input.description || "",
                 mode: "insensitive",
               },
             },
           ],
-          payerId: input.payerId,
+          payerId: input.payerId || undefined,
           debts: {
             some: {
-              debtorId: input.debtorId,
+              debtorId: input.debtorId || undefined,
               settled: {
                 lt:
-                  input.settled === false
+                  input.isSettled === false
                     ? ctx.prisma.expenseDebt.fields.amount
                     : undefined,
                 equals:
-                  input.settled === true
+                  input.isSettled === true
                     ? ctx.prisma.expenseDebt.fields.amount
                     : undefined,
               },
             },
           },
         },
-        take: input.take,
         include: {
           payer: true,
           debts: {

@@ -36,10 +36,7 @@ function DebtDetail({ name, amount, payerName, debtorName }: DebtDetailProps) {
 }
 
 type DebtDetailsProps =
-  | {
-      type: "debtor";
-      id: string;
-    }
+  | { type: "debtor"; id: string }
   | { type: "payer"; id: string };
 
 export function DebtDetails({ type, id }: DebtDetailsProps) {
@@ -49,7 +46,7 @@ export function DebtDetails({ type, id }: DebtDetailsProps) {
     groupId: activeGroup.id,
     debtorId: type === "debtor" ? id : undefined,
     payerId: type === "payer" ? id : undefined,
-    settled: false,
+    isSettled: false,
   });
 
   return (
@@ -59,57 +56,59 @@ export function DebtDetails({ type, id }: DebtDetailsProps) {
       </Button>
 
       <Modal opened={opened} onClose={close} title="Szczegóły">
-        {type === "debtor" && (
-          <Stack>
-            {expenses?.map((expense) => {
-              const debtorDebt = expense.debts.find(
-                (debt) => debt.debtorId === id
-              );
-              const amount = (
-                Number(debtorDebt?.amount) - Number(debtorDebt?.settled)
-              ).toFixed(2);
-              const debtorName = expense.debts
-                .find((debt) => debt.debtorId === id)
-                ?.debtor.name?.split(" ")[0];
-              const payerName = expense.payer.name?.split(" ")[0];
+        <Stack>
+          {type === "debtor" && (
+            <Stack>
+              {expenses?.map((expense) => {
+                const debtorDebt = expense.debts.find(
+                  (debt) => debt.debtorId === id
+                );
+                const amount = (
+                  Number(debtorDebt?.amount) - Number(debtorDebt?.settled)
+                ).toFixed(2);
+                const debtorName = expense.debts
+                  .find((debt) => debt.debtorId === id)
+                  ?.debtor.name?.split(" ")[0];
+                const payerName = expense.payer.name?.split(" ")[0];
 
-              return (
-                <DebtDetail
-                  key={expense.id}
-                  name={expense.name}
-                  amount={amount}
-                  debtorName={debtorName}
-                  payerName={payerName}
-                />
-              );
-            })}
-          </Stack>
-        )}
-
-        {type === "payer" &&
-          expenses?.map((expense) => (
-            <Stack key={expense.id}>
-              {expense.debts
-                .filter((debt) => debt.settled !== debt.amount)
-                .map((debt) => {
-                  const amount = (
-                    Number(debt.amount) - Number(debt.settled)
-                  ).toFixed(2);
-                  const debtorName = debt.debtor.name?.split(" ")[0];
-                  const payerName = expense.payer.name?.split(" ")[0];
-
-                  return (
-                    <DebtDetail
-                      key={debt.id}
-                      name={expense.name}
-                      amount={amount}
-                      debtorName={debtorName}
-                      payerName={payerName}
-                    />
-                  );
-                })}
+                return (
+                  <DebtDetail
+                    key={expense.id}
+                    name={expense.name}
+                    amount={amount}
+                    debtorName={debtorName}
+                    payerName={payerName}
+                  />
+                );
+              })}
             </Stack>
-          ))}
+          )}
+
+          {type === "payer" &&
+            expenses?.map((expense) => (
+              <Stack key={expense.id}>
+                {expense.debts
+                  .filter((debt) => debt.settled !== debt.amount)
+                  .map((debt) => {
+                    const amount = (
+                      Number(debt.amount) - Number(debt.settled)
+                    ).toFixed(2);
+                    const debtorName = debt.debtor.name?.split(" ")[0];
+                    const payerName = expense.payer.name?.split(" ")[0];
+
+                    return (
+                      <DebtDetail
+                        key={debt.id}
+                        name={expense.name}
+                        amount={amount}
+                        debtorName={debtorName}
+                        payerName={payerName}
+                      />
+                    );
+                  })}
+              </Stack>
+            ))}
+        </Stack>
       </Modal>
     </>
   );

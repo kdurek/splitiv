@@ -1,7 +1,7 @@
 import { Box, Paper, SimpleGrid, Space, Text, ThemeIcon } from "@mantine/core";
 import { IconReportMoney } from "@tabler/icons-react";
 
-export function ExpensePaymentLegend() {
+export function ExpenseListLegend() {
   return (
     <Paper withBorder p="md">
       <SimpleGrid cols={3}>

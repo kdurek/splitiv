@@ -16,7 +16,7 @@ import { useSession } from "next-auth/react";
 
 import { DeleteExpenseModal } from "../delete-expense-modal";
 
-import { ExpenseCardPayment } from "./expense-card-payment";
+import { ExpenseListPayment } from "./payment";
 
 import type { GetExpensesByGroup } from "utils/api";
 
@@ -24,7 +24,7 @@ interface ExpenseCardProps {
   expense: GetExpensesByGroup[number];
 }
 
-export function ExpenseCard({ expense }: ExpenseCardProps) {
+export function ExpenseListItem({ expense }: ExpenseCardProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const { data: session } = useSession();
   const descriptionParts = expense.description?.split("\n");
@@ -84,7 +84,7 @@ export function ExpenseCard({ expense }: ExpenseCardProps) {
         )} zł`}</Text>
         <Stack mt="md">
           {expense.debts.map((debt) => (
-            <ExpenseCardPayment key={debt.id} debt={debt} />
+            <ExpenseListPayment key={debt.id} debt={debt} />
           ))}
         </Stack>
         {session?.user.id === expense.payerId && (

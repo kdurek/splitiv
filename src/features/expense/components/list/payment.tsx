@@ -42,7 +42,7 @@ const schema = z.object({
 
 type ExpenseCardPaymentFormValues = z.infer<typeof schema>;
 
-export function ExpenseCardPayment({ debt }: ExpenseCardPaymentProps) {
+export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
   const activeGroup = useActiveGroup();
   const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } =
     useUpdateExpenseDebt({

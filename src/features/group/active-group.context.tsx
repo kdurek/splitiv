@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
 
 import { api } from "utils/api";
 
-import { GroupSelectModal } from "./group-select-modal";
+import { GroupSelectModal } from "./components/group-select-modal";
 
 import type { User } from "next-auth";
 import type { ReactNode } from "react";

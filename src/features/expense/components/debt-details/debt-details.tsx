@@ -3,7 +3,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconChevronRight } from "@tabler/icons-react";
 
 import { useExpenses } from "features/expense/api/use-expenses";
-import { useActiveGroup } from "features/group";
 
 interface DebtDetailProps {
   name: string;
@@ -41,9 +40,7 @@ type DebtDetailsProps =
 
 export function DebtDetails({ type, id }: DebtDetailsProps) {
   const [opened, { open, close }] = useDisclosure();
-  const activeGroup = useActiveGroup();
   const { data: expenses } = useExpenses({
-    groupId: activeGroup.id,
     debtorId: type === "debtor" ? id : undefined,
     payerId: type === "payer" ? id : undefined,
     isSettled: false,

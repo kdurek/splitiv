@@ -1,11 +1,8 @@
+import { useActiveGroup } from "features/group";
 import { api } from "utils/api";
 
-interface UseCurrentUserUnsettledDebtsByGroupProps {
-  groupId: string;
-}
+export function useCurrentUserUnsettledDebtsByGroup() {
+  const { id: groupId } = useActiveGroup();
 
-export function useCurrentUserUnsettledDebtsByGroup({
-  groupId,
-}: UseCurrentUserUnsettledDebtsByGroupProps) {
   return api.user.getCurrentUserUnsettledDebtsByGroup.useQuery({ groupId });
 }

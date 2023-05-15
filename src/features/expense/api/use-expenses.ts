@@ -1,8 +1,8 @@
+import { useActiveGroup } from "features/group";
 import { api } from "utils/api";
 
 interface UseExpensesProps {
   limit?: number;
-  groupId: string;
   searchText?: string;
   payerId?: string;
   debtorId?: string;
@@ -11,12 +11,13 @@ interface UseExpensesProps {
 
 export function useExpenses({
   limit,
-  groupId,
   searchText,
   payerId,
   debtorId,
   isSettled,
 }: UseExpensesProps) {
+  const { id: groupId } = useActiveGroup();
+
   return api.expense.getExpensesByGroup.useQuery({
     limit,
     groupId,

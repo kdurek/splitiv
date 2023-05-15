@@ -1,10 +1,9 @@
 import { Button, Group, NativeSelect, Paper } from "@mantine/core";
 import { useForm } from "react-hook-form";
 
+import { useActiveGroup } from "features/group/active-group.context";
 import { useAddUserToGroup } from "features/group/api/use-add-user-to-group";
 import { useUsers } from "features/group/api/use-users";
-
-import type { GetGroupById } from "utils/api";
 
 interface AddUserToGroupFormValues {
   name: string;
@@ -12,14 +11,11 @@ interface AddUserToGroupFormValues {
 }
 
 interface AddUserToGroupFormProps {
-  group: GetGroupById;
   afterSubmit?: () => void;
 }
 
-export function AddUserToGroupForm({
-  group,
-  afterSubmit,
-}: AddUserToGroupFormProps) {
+export function AddUserToGroupForm({ afterSubmit }: AddUserToGroupFormProps) {
+  const activeGroup = useActiveGroup();
   const { mutate: addUserToGroup } = useAddUserToGroup();
   const { handleSubmit, register, reset } = useForm<AddUserToGroupFormValues>({
     defaultValues: { name: "Płatność" },
@@ -27,17 +23,17 @@ export function AddUserToGroupForm({
 
   const { data: users } = useUsers();
 
-  if (!group || !users) return null;
+  if (!users) return null;
 
   const onSubmit = (values: AddUserToGroupFormValues) => {
-    addUserToGroup({ userId: values.user, groupId: group.id });
+    addUserToGroup({ userId: values.user, groupId: activeGroup.id });
     reset();
     if (afterSubmit) {
       afterSubmit();
     }
   };
 
-  const groupUsers = group.members.map((user) => user.id);
+  const groupUsers = activeGroup.members.map((user) => user.id);
   const usersNotInGroup = users
     .filter((user) => !groupUsers.includes(user.id))
     .map((user) => ({ value: user.id, label: user.name ?? "Brak nazwy" }));

@@ -12,9 +12,7 @@ export function ExpensePayListModal() {
   const [opened, { open, close }] = useDisclosure(false);
   const activeGroup = useActiveGroup();
 
-  const { data: unsettledDebts } = useCurrentUserUnsettledDebtsByGroup({
-    groupId: activeGroup.id,
-  });
+  const { data: unsettledDebts } = useCurrentUserUnsettledDebtsByGroup();
   const { data: session } = useSession();
 
   const [selectedUserId, setSelectedUserId] = useState<string>();

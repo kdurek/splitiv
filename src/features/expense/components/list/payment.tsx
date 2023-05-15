@@ -17,7 +17,6 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 import { useUpdateExpenseDebt } from "features/expense/api/use-update-expense-debt";
-import { useActiveGroup } from "features/group";
 
 import type { Decimal } from "@prisma/client/runtime";
 
@@ -43,11 +42,8 @@ const schema = z.object({
 type ExpenseCardPaymentFormValues = z.infer<typeof schema>;
 
 export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
-  const activeGroup = useActiveGroup();
   const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } =
-    useUpdateExpenseDebt({
-      groupId: activeGroup.id,
-    });
+    useUpdateExpenseDebt();
   const [isEditing, { toggle: toggleIsEditing, close: closeIsEditing }] =
     useDisclosure(false);
   const [

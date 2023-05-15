@@ -14,12 +14,12 @@ export function useInfiniteExpenses({
   debtorId,
   isSettled,
 }: UseInfiniteExpensesProps) {
-  const activeGroup = useActiveGroup();
+  const { id: groupId } = useActiveGroup();
 
   return api.expense.getInfinite.useInfiniteQuery(
     {
       limit: 10,
-      groupId: activeGroup.id,
+      groupId,
       name: searchText,
       description: searchText,
       payerId,

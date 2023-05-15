@@ -1,10 +1,8 @@
+import { useActiveGroup } from "features/group";
 import { api } from "utils/api";
 
-interface UseUpdateExpenseDebtProps {
-  groupId: string;
-}
-
-export function useSettleExpenseDebts({ groupId }: UseUpdateExpenseDebtProps) {
+export function useSettleExpenseDebts() {
+  const { id: groupId } = useActiveGroup();
   const utils = api.useContext();
 
   return api.expense.settleExpenseDebts.useMutation({
@@ -13,12 +11,8 @@ export function useSettleExpenseDebts({ groupId }: UseUpdateExpenseDebtProps) {
         groupId,
       });
       await utils.group.getGroupById.invalidate({ groupId });
-      await utils.expense.getExpensesByGroup.invalidate({
-        groupId,
-      });
-      await utils.expense.getInfinite.invalidate({
-        groupId,
-      });
+      await utils.expense.getExpensesByGroup.invalidate({ groupId });
+      await utils.expense.getInfinite.invalidate({ groupId });
     },
   });
 }

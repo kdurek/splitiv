@@ -13,7 +13,6 @@ import { IconSquareArrowUp } from "@tabler/icons-react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 import { useSettleExpenseDebts } from "features/expense/api/use-update-expense-debts";
-import { useActiveGroup } from "features/group";
 
 import { ExpensePayListSchema } from "./expense-pay-list.schema";
 
@@ -28,7 +27,6 @@ export function ExpensePayList({
   values: debts,
   afterSubmit,
 }: ExpensePayListProps) {
-  const activeGroup = useActiveGroup();
   const {
     control,
     handleSubmit,
@@ -48,9 +46,7 @@ export function ExpensePayList({
   });
 
   const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } =
-    useSettleExpenseDebts({
-      groupId: activeGroup.id,
-    });
+    useSettleExpenseDebts();
 
   const debtsSum = watch("debts").reduce(
     (prev, curr) => prev + (curr.check ? curr.amount - curr.settled : 0),

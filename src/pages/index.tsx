@@ -1,4 +1,4 @@
-import { Stack, Title } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useState } from "react";
 
 import {
@@ -8,7 +8,7 @@ import {
   ExpensePayListModal,
   UserBalance,
 } from "features/expense";
-import { GroupSelect } from "features/group";
+import { Section } from "features/layout";
 
 import type { ExpenseFilters } from "features/expense";
 
@@ -16,15 +16,15 @@ function ExpensesPage() {
   const [filters, setFilters] = useState<ExpenseFilters>({});
 
   return (
-    <Stack>
-      <Title order={1}>Wydatki</Title>
-      <GroupSelect />
-      <UserBalance />
-      <ExpensePayListModal />
-      <ExpenseListLegend />
-      <ExpenseListFilters setFilters={setFilters} />
-      <ExpenseList filters={filters} />
-    </Stack>
+    <Section title="Wydatki">
+      <Stack>
+        <UserBalance />
+        <ExpensePayListModal />
+        <ExpenseListLegend />
+        <ExpenseListFilters setFilters={setFilters} />
+        <ExpenseList filters={filters} />
+      </Stack>
+    </Section>
   );
 }
 

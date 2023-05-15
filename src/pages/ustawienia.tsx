@@ -1,26 +1,26 @@
-import { Button, Divider, Stack, Title } from "@mantine/core";
+import { Button, Divider, Stack } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import { signOut } from "next-auth/react";
 
 import { GroupSelect, GroupSettingsMembers } from "features/group";
+import { Section } from "features/layout";
 
 function SettingsPage() {
   return (
-    <Stack>
-      <Title order={1}>Ustawienia</Title>
+    <Section title="Ustawienia">
       <Stack>
         <GroupSelect />
         <GroupSettingsMembers />
+        <Divider />
+        <Button
+          variant="default"
+          leftIcon={<IconLogout />}
+          onClick={() => signOut()}
+        >
+          Wyloguj
+        </Button>
       </Stack>
-      <Divider />
-      <Button
-        variant="default"
-        leftIcon={<IconLogout />}
-        onClick={() => signOut()}
-      >
-        Wyloguj
-      </Button>
-    </Stack>
+    </Section>
   );
 }
 

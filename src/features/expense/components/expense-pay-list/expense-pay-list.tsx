@@ -5,28 +5,42 @@ import {
   Button,
   Checkbox,
   Group,
+  Modal,
   Paper,
   Stack,
   Text,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconSquareArrowUp } from "@tabler/icons-react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 import { useSettleExpenseDebts } from "features/expense/api/use-update-expense-debts";
+import { useActiveGroup } from "features/group";
+import { api } from "utils/api";
 
 import { ExpensePayListSchema } from "./expense-pay-list.schema";
 
 import type { ExpensePayListSchemaValues } from "./expense-pay-list.schema";
 
-interface ExpensePayListProps {
-  values: ExpensePayListSchemaValues;
-  afterSubmit?: () => void;
+interface ExpensePayListFormProps {
+  payerId: string;
+  debtorId: string;
+  closeModal: () => void;
 }
 
-export function ExpensePayList({
-  values: debts,
-  afterSubmit,
-}: ExpensePayListProps) {
+function ExpensePayListForm({
+  payerId,
+  debtorId,
+  closeModal,
+}: ExpensePayListFormProps) {
+  const activeGroup = useActiveGroup();
+  const { data: debts } = api.debt.getDebts.useQuery({
+    groupId: activeGroup.id,
+    payerId,
+    debtorId,
+    isSettled: false,
+  });
+
   const {
     control,
     handleSubmit,
@@ -36,26 +50,36 @@ export function ExpensePayList({
     setValue,
     formState: { errors },
   } = useForm<ExpensePayListSchemaValues>({
-    defaultValues: debts,
+    values: {
+      debts: debts?.map((debt) => ({
+        id: debt.id,
+        name: debt.debtor.name ?? "Brak nazwy",
+        settled: Number(debt.settled),
+        amount: Number(debt.amount),
+        check: false,
+      })),
+    },
     resolver: zodResolver(ExpensePayListSchema),
   });
+
+  const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } =
+    useSettleExpenseDebts();
+
+  const debtsSum = watch("debts")
+    ?.reduce(
+      (prev, curr) => prev + (curr.check ? curr.amount - curr.settled : 0),
+      0
+    )
+    .toFixed(2);
 
   const { fields: debtFields } = useFieldArray({
     control,
     name: "debts",
   });
 
-  const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } =
-    useSettleExpenseDebts();
-
-  const debtsSum = watch("debts").reduce(
-    (prev, curr) => prev + (curr.check ? curr.amount - curr.settled : 0),
-    0
-  );
-
-  const onSubmit = (values: ExpensePayListSchemaValues) => {
+  const handleSettleExpenseDebts = (values: ExpensePayListSchemaValues) => {
     const expenseDebts = values.debts
-      .filter((debt) => debt.check)
+      ?.filter((debt) => debt.check)
       .map((debt) => {
         return {
           id: debt.id,
@@ -63,23 +87,23 @@ export function ExpensePayList({
         };
       });
 
-    settleExpenseDebts(
-      {
-        expenseDebts,
-      },
-      {
-        onSuccess() {
-          reset();
-          if (afterSubmit) {
-            afterSubmit();
-          }
+    if (expenseDebts) {
+      settleExpenseDebts(
+        {
+          expenseDebts,
         },
-      }
-    );
+        {
+          onSuccess() {
+            reset();
+            closeModal();
+          },
+        }
+      );
+    }
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+    <Box component="form" onSubmit={handleSubmit(handleSettleExpenseDebts)}>
       <Stack>
         {debtFields.map((debtField, index) => (
           <Paper key={debtField.id} withBorder p="md">
@@ -89,9 +113,9 @@ export function ExpensePayList({
               </Text>
               <Checkbox
                 {...register(`debts.${index}.check`)}
-                label={`${(debtField.amount - debtField.settled).toFixed(
-                  2
-                )} zł`}
+                label={`${(
+                  Number(debtField.amount) - Number(debtField.settled)
+                ).toFixed(2)} zł`}
                 labelPosition="left"
               />
             </Group>
@@ -103,7 +127,7 @@ export function ExpensePayList({
           </Text>
         )}
         <Group position="apart">
-          <Text weight={700}>{`${debtsSum.toFixed(2)} zł`}</Text>
+          <Text weight={700}>{`${debtsSum} zł`}</Text>
           <Group>
             <ActionIcon
               color="blue"
@@ -124,5 +148,32 @@ export function ExpensePayList({
         </Group>
       </Stack>
     </Box>
+  );
+}
+
+interface ExpensePayListProps {
+  payerId: string;
+  debtorId: string;
+}
+
+export function ExpensePayList({ payerId, debtorId }: ExpensePayListProps) {
+  const [opened, { open, close }] = useDisclosure(false);
+
+  return (
+    <>
+      <Button variant="default" onClick={open}>
+        Oddaj długi
+      </Button>
+
+      <Modal opened={opened} onClose={close} title="Oddawanie długów">
+        <Stack>
+          <ExpensePayListForm
+            payerId={payerId}
+            debtorId={debtorId}
+            closeModal={close}
+          />
+        </Stack>
+      </Modal>
+    </>
   );
 }

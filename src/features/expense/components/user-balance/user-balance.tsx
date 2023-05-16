@@ -7,10 +7,12 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
+import { useSession } from "next-auth/react";
 
 import { useActiveGroup } from "features/group";
 
 import { DebtDetails } from "../debt-details";
+import { ExpensePayList } from "../expense-pay-list";
 
 import type { GetUsers } from "utils/api";
 
@@ -27,12 +29,16 @@ interface UserDebtsProps {
 }
 
 function UserDebts({ member, members, debts }: UserDebtsProps) {
-  if (!debts) return null;
+  const { data: session } = useSession();
 
   const userDebts = debts.filter((debt) => debt.fromId === member.id);
   const userGets = debts.filter((debt) => debt.toId === member.id);
   const getUserFirstName = (userId: string) =>
     members.find((user) => user.id === userId)?.name?.split(" ")[0];
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <Stack>
@@ -46,6 +52,9 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
             ))}
           </Box>
           <DebtDetails type="payer" id={member.id} />
+          {userGets.some((debt) => debt.fromId === session?.user.id) && (
+            <ExpensePayList payerId={member.id} debtorId={session?.user.id} />
+          )}
         </Stack>
       )}
 

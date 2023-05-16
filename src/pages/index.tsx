@@ -5,7 +5,6 @@ import {
   ExpenseList,
   ExpenseListFilters,
   ExpenseListLegend,
-  ExpensePayListModal,
   UserBalance,
 } from "features/expense";
 import { Section } from "features/layout";
@@ -19,7 +18,6 @@ function ExpensesPage() {
     <Section title="Wydatki">
       <Stack>
         <UserBalance />
-        <ExpensePayListModal />
         <ExpenseListLegend />
         <ExpenseListFilters setFilters={setFilters} />
         <ExpenseList filters={filters} />

@@ -13,6 +13,7 @@ export function useSettleExpenseDebts() {
       await utils.group.getGroupById.invalidate({ groupId });
       await utils.expense.getExpensesByGroup.invalidate({ groupId });
       await utils.expense.getInfinite.invalidate({ groupId });
+      await utils.debt.getDebts.invalidate({ groupId });
     },
   });
 }

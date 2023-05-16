@@ -7,9 +7,6 @@ export function useUpdateExpenseDebt() {
 
   return api.expense.updateExpenseDebt.useMutation({
     async onSuccess() {
-      await utils.user.getCurrentUserUnsettledDebtsByGroup.invalidate({
-        groupId,
-      });
       await utils.group.getGroupById.invalidate({ groupId });
       await utils.expense.getExpensesByGroup.invalidate({ groupId });
       await utils.expense.getInfinite.invalidate({ groupId });

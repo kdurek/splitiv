@@ -1,5 +1,4 @@
 export * from "./api/use-create-expense";
-export * from "./api/use-current-user-unsettled-debts-by-group";
 export * from "./api/use-delete-expense";
 export * from "./api/use-expenses";
 export * from "./api/use-update-expense-debt";

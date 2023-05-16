@@ -53,7 +53,7 @@ function ExpensePayListForm({
     values: {
       debts: debts?.map((debt) => ({
         id: debt.id,
-        name: debt.debtor.name ?? "Brak nazwy",
+        name: debt.expense.name ?? "Brak nazwy",
         settled: Number(debt.settled),
         amount: Number(debt.amount),
         check: false,

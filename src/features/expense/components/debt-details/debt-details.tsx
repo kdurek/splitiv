@@ -2,7 +2,7 @@ import { Button, Group, Modal, Paper, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronRight } from "@tabler/icons-react";
 
-import { useExpenses } from "features/expense/api/use-expenses";
+import { api } from "utils/api";
 
 interface DebtDetailProps {
   name: string;
@@ -40,11 +40,15 @@ type DebtDetailsProps =
 
 export function DebtDetails({ type, id }: DebtDetailsProps) {
   const [opened, { open, close }] = useDisclosure();
-  const { data: expenses } = useExpenses({
-    debtorId: type === "debtor" ? id : undefined,
-    payerId: type === "payer" ? id : undefined,
-    isSettled: false,
-  });
+
+  const { data: expenses } = api.expense.getExpensesByGroup.useQuery(
+    {
+      debtorId: type === "debtor" ? id : undefined,
+      payerId: type === "payer" ? id : undefined,
+      isSettled: false,
+    },
+    { enabled: !!opened }
+  );
 
   return (
     <>

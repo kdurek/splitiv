@@ -20,6 +20,7 @@ export function ExpenseList({
   const {
     data,
     fetchNextPage,
+    isFetchingNextPage,
     hasNextPage,
     isLoading: isLoadingExpenses,
     isError: isErrorExpenses,
@@ -31,10 +32,10 @@ export function ExpenseList({
   });
 
   useEffect(() => {
-    if (entry?.isIntersecting && hasNextPage) {
+    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [entry?.isIntersecting, hasNextPage, fetchNextPage]);
+  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoadingExpenses) return null;
   if (isErrorExpenses) return null;

@@ -1,38 +1,55 @@
 import { Button, Group, Paper, TextInput } from "@mantine/core";
-import { useForm } from "react-hook-form";
+import { useForm, zodResolver } from "@mantine/form";
+import { useLocalStorage } from "@mantine/hooks";
+import { z } from "zod";
 
 import { useCreateGroup } from "features/group/api/use-create-group";
 
-interface CreateGroupFormValues {
-  name: string;
-}
+const createGroupFormSchema = z.object({
+  name: z
+    .string({ required_error: "Musisz podać nazwę grupy" })
+    .min(3, "Minimalna długość to 3 znaki"),
+});
+
+type CreateGroupFormSchema = z.infer<typeof createGroupFormSchema>;
 
 interface CreateGroupFormProps {
-  afterSubmit?: () => void;
+  onSubmit?: () => void;
 }
 
-export function CreateGroupForm({ afterSubmit }: CreateGroupFormProps) {
-  const { handleSubmit, register, reset } = useForm<CreateGroupFormValues>();
+export function CreateGroupForm({ onSubmit }: CreateGroupFormProps) {
+  const [, setActiveGroupId] = useLocalStorage({
+    key: "activeGroupId",
+  });
+
+  const form = useForm<CreateGroupFormSchema>({
+    initialValues: {
+      name: "",
+    },
+    validate: zodResolver(createGroupFormSchema),
+  });
   const { mutate: createGroup } = useCreateGroup();
 
-  const onSubmit = (values: CreateGroupFormValues) => {
-    const { name } = values;
-    createGroup({ name });
-    reset();
-    if (afterSubmit) {
-      afterSubmit();
-    }
+  const handleCreateGroup = (values: CreateGroupFormSchema) => {
+    createGroup(
+      { name: values.name },
+      {
+        onSuccess: (data) => {
+          setActiveGroupId(data.id);
+          if (onSubmit) {
+            onSubmit();
+          }
+        },
+      }
+    );
   };
 
   return (
-    <Paper component="form" onSubmit={handleSubmit(onSubmit)}>
+    <Paper component="form" onSubmit={form.onSubmit(handleCreateGroup)}>
       <TextInput
-        {...register("name", {
-          required: "Pole jest wymagane",
-          minLength: { value: 3, message: "Minimum length should be 3" },
-        })}
-        label="Nazwa grupy"
         withAsterisk
+        label="Nazwa grupy"
+        {...form.getInputProps("name")}
       />
       <Group mt={24} position="right">
         <Button variant="default" type="submit">

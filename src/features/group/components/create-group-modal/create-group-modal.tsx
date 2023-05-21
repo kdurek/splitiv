@@ -13,7 +13,7 @@ export function CreateGroupModal() {
       </Button>
 
       <Modal opened={opened} onClose={close} title="Tworzenie grupy">
-        <CreateGroupForm afterSubmit={close} />
+        <CreateGroupForm onSubmit={close} />
       </Modal>
     </>
   );

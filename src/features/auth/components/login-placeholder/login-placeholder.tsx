@@ -7,7 +7,7 @@ export function LoginPlaceholder() {
     <Paper m="xl" withBorder p="md">
       <Center component={Stack} w="100%" h="100%">
         <Title maw={400} align="center">
-          Ta część strony wymaga zalogowania
+          Aby przejść dalej, zaloguj się
         </Title>
         <Button
           variant="default"

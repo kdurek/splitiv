@@ -1,12 +1,14 @@
+import { LoadingOverlay, Stack } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
 
+import { LoginPlaceholder } from "features/auth";
 import { api } from "utils/api";
 
+import { CreateGroupModal } from "./components/create-group-modal";
 import { GroupSelectModal } from "./components/group-select-modal";
 
-import type { User } from "next-auth";
 import type { ReactNode } from "react";
 import type { GetGroupById } from "utils/api";
 
@@ -26,16 +28,11 @@ export const useActiveGroup = (): GetGroupById => {
   return data;
 };
 
-const isUserInGroup = (user: User, group: GetGroupById) => {
-  return group.members.map((m) => m.id).includes(user.id);
-};
-
 export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
-  const { data: session, status } = useSession();
-  const [activeGroupId, setActiveGroupId, removeActiveGroupId] =
-    useLocalStorage({
-      key: "activeGroupId",
-    });
+  const { status } = useSession();
+  const [activeGroupId, , removeActiveGroupId] = useLocalStorage({
+    key: "activeGroupId",
+  });
 
   const groupQuery = api.group.getById.useQuery(
     {
@@ -43,43 +40,35 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
     },
     {
       enabled: status === "authenticated" && Boolean(activeGroupId),
-      onSuccess(group) {
-        if (
-          status === "authenticated" &&
-          (!isUserInGroup(session.user, group) || group.id !== activeGroupId)
-        ) {
-          removeActiveGroupId();
-        }
-      },
       onError() {
         removeActiveGroupId();
       },
     }
   );
 
-  if (status === "authenticated" && !activeGroupId) {
-    return (
-      <GroupSelectModal
-        defaultIsOpen
-        onSubmit={(values) => setActiveGroupId(values.group)}
-      />
-    );
+  if (status === "loading") {
+    return <LoadingOverlay visible overlayOpacity={0} />;
+  }
+
+  if (status === "unauthenticated") {
+    return <LoginPlaceholder />;
   }
 
   if (
     status === "authenticated" &&
+    activeGroupId &&
     (groupQuery.isLoading || groupQuery.isError)
   ) {
-    return null;
+    return <LoadingOverlay visible overlayOpacity={0} />;
   }
 
-  if (
-    status === "authenticated" &&
-    groupQuery.data &&
-    (!isUserInGroup(session.user, groupQuery.data) ||
-      groupQuery.data.id !== activeGroupId)
-  ) {
-    return null;
+  if (status === "authenticated" && !activeGroupId) {
+    return (
+      <Stack p="md">
+        <GroupSelectModal />
+        <CreateGroupModal />
+      </Stack>
+    );
   }
 
   return (
@@ -88,3 +77,5 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
     </ActiveGroupContext.Provider>
   );
 }
+
+// clhxtxlz90000y8xawcvocxpt

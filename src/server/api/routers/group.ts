@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { generateBalances } from "../../utils/generateBalances";
@@ -40,6 +41,14 @@ export const groupRouter = createTRPCRouter({
           },
         },
       });
+
+      if (
+        !group.members.find((member) => member.user.id === ctx.session.user.id)
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+        });
+      }
 
       const expenseDebts = await ctx.prisma.expenseDebt.findMany({
         where: {

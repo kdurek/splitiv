@@ -2,7 +2,7 @@ import { List, Stack, Title } from "@mantine/core";
 
 import { useActiveGroup } from "features/group/active-group.context";
 
-import { AddUserToGroupModal } from "../add-user-to-group-modal";
+import { AddUserToGroupModal } from "../add-user-to-group-form";
 
 export function GroupSettingsMembers() {
   const activeGroup = useActiveGroup();

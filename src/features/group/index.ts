@@ -6,7 +6,7 @@ export * from "./api/use-users";
 
 export * from "./active-group.context";
 
-export * from "./components/add-user-to-group-modal";
+export * from "./components/add-user-to-group-form";
 export * from "./components/create-group-modal";
 export * from "./components/group-select";
 export * from "./components/group-select-modal";

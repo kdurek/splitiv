@@ -13,7 +13,7 @@ export function AddUserToGroupModal() {
       </Button>
 
       <Modal opened={opened} onClose={close} title="Dodawanie użytkownika">
-        <AddUserToGroupForm afterSubmit={close} />
+        <AddUserToGroupForm onSubmit={close} />
       </Modal>
     </>
   );

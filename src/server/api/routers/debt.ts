@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const debtRouter = createTRPCRouter({
-  getDebts: protectedProcedure
+  getAll: protectedProcedure
     .input(
       z.object({
         groupId: z.string().cuid2().optional(),

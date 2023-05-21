@@ -37,7 +37,7 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
       key: "activeGroupId",
     });
 
-  const groupQuery = api.group.getGroupById.useQuery(
+  const groupQuery = api.group.getById.useQuery(
     {
       groupId: activeGroupId,
     },

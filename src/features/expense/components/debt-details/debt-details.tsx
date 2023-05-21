@@ -41,7 +41,7 @@ type DebtDetailsProps =
 export function DebtDetails({ type, id }: DebtDetailsProps) {
   const [opened, { open, close }] = useDisclosure();
 
-  const { data: expenses } = api.expense.getExpensesByGroup.useQuery(
+  const { data: expenses } = api.expense.getAll.useQuery(
     {
       debtorId: type === "debtor" ? id : undefined,
       payerId: type === "payer" ? id : undefined,

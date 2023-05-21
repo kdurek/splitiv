@@ -5,12 +5,12 @@ export function useSettleExpenseDebts() {
   const { id: groupId } = useActiveGroup();
   const utils = api.useContext();
 
-  return api.expense.settleExpenseDebts.useMutation({
+  return api.expense.settleDebts.useMutation({
     async onSuccess() {
-      await utils.group.getGroupById.invalidate({ groupId });
-      await utils.expense.getExpensesByGroup.invalidate({ groupId });
+      await utils.group.getById.invalidate({ groupId });
+      await utils.expense.getAll.invalidate({ groupId });
       await utils.expense.getInfinite.invalidate({ groupId });
-      await utils.debt.getDebts.invalidate({ groupId });
+      await utils.debt.getAll.invalidate({ groupId });
     },
   });
 }

@@ -5,7 +5,7 @@ import { generateDebts } from "../../utils/generateDebts";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const groupRouter = createTRPCRouter({
-  createGroup: protectedProcedure
+  create: protectedProcedure
     .input(z.object({ name: z.string() }))
     .mutation(({ input, ctx }) => {
       return ctx.prisma.group.create({
@@ -23,13 +23,13 @@ export const groupRouter = createTRPCRouter({
       });
     }),
 
-  getGroupsByMe: protectedProcedure.query(({ ctx }) => {
+  getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.group.findMany({
       where: { members: { some: { userId: ctx.session.user.id } } },
     });
   }),
 
-  getGroupById: protectedProcedure
+  getById: protectedProcedure
     .input(z.object({ groupId: z.string().cuid2() }))
     .query(async ({ input, ctx }) => {
       const group = await ctx.prisma.group.findUniqueOrThrow({
@@ -83,7 +83,7 @@ export const groupRouter = createTRPCRouter({
       };
     }),
 
-  deleteGroupById: protectedProcedure
+  deleteById: protectedProcedure
     .input(z.object({ groupId: z.string() }))
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.group.delete({

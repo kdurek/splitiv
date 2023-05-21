@@ -34,7 +34,7 @@ function ExpensePayListForm({
   closeModal,
 }: ExpensePayListFormProps) {
   const activeGroup = useActiveGroup();
-  const { data: debts } = api.debt.getDebts.useQuery({
+  const { data: debts } = api.debt.getAll.useQuery({
     groupId: activeGroup.id,
     payerId,
     debtorId,

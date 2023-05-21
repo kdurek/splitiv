@@ -85,7 +85,7 @@ export const expenseRouter = createTRPCRouter({
       };
     }),
 
-  getExpensesByGroup: protectedProcedure
+  getAll: protectedProcedure
     .input(
       z.object({
         limit: z.number().optional(),
@@ -153,7 +153,7 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  createExpense: protectedProcedure
+  create: protectedProcedure
     .input(
       z.object({
         groupId: z.string(),
@@ -201,7 +201,7 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  updateExpense: protectedProcedure
+  update: protectedProcedure
     .input(
       z.object({
         expenseId: z.string(),
@@ -238,7 +238,7 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  updateExpenseDebt: protectedProcedure
+  updateDebt: protectedProcedure
     .input(
       z.object({
         expenseDebtId: z.string(),
@@ -295,7 +295,7 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  settleExpenseDebts: protectedProcedure
+  settleDebts: protectedProcedure
     .input(
       z.object({
         expenseDebts: z.array(
@@ -319,7 +319,7 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  deleteExpense: protectedProcedure
+  delete: protectedProcedure
     .input(z.object({ expenseId: z.string() }))
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.expense.delete({

@@ -3,9 +3,9 @@ import { api } from "utils/api";
 export function useCreateGroup() {
   const utils = api.useContext();
 
-  return api.group.createGroup.useMutation({
+  return api.group.create.useMutation({
     async onSuccess() {
-      await utils.group.getGroupsByMe.invalidate();
+      await utils.group.getAll.invalidate();
     },
   });
 }

@@ -8,7 +8,7 @@ export function useAddUserToGroup() {
 
   return api.group.addUserToGroup.useMutation({
     async onSuccess() {
-      await utils.group.getGroupById.invalidate({ groupId });
+      await utils.group.getById.invalidate({ groupId });
     },
   });
 }

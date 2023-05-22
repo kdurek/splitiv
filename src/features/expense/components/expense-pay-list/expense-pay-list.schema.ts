@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const ExpensePayListSchema = z
+export const expensePayListSchema = z
   .object({
     debts: z
       .array(
@@ -19,4 +19,4 @@ export const ExpensePayListSchema = z
     path: ["debts"],
   });
 
-export type ExpensePayListSchemaValues = z.infer<typeof ExpensePayListSchema>;
+export type ExpensePayListSchema = z.infer<typeof expensePayListSchema>;

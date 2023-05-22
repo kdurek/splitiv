@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import { useActiveGroup } from "features/group";
 
 import { DebtDetails } from "../debt-details";
-import { ExpensePayList } from "../expense-pay-list";
+import { ExpensePayListModal } from "../expense-pay-list";
 
 import type { GetUsers } from "utils/api";
 
@@ -53,7 +53,10 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
           </Box>
           <DebtDetails type="payer" id={member.id} />
           {userGets.some((debt) => debt.fromId === session?.user.id) && (
-            <ExpensePayList payerId={member.id} debtorId={session?.user.id} />
+            <ExpensePayListModal
+              payerId={member.id}
+              debtorId={session?.user.id}
+            />
           )}
         </Stack>
       )}

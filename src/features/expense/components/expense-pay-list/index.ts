@@ -1,1 +1,1 @@
-export { ExpensePayList } from "./expense-pay-list";
+export { ExpensePayListModal } from "./expense-pay-list-modal";

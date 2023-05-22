@@ -1,4 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ActionIcon,
   Box,
@@ -10,71 +9,62 @@ import {
   Paper,
   Text,
 } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSquare, IconSquareCheck, IconSquareX } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
-import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 import { useUpdateExpenseDebt } from "features/expense/api/use-update-expense-debt";
 
-import type { Decimal } from "@prisma/client/runtime";
+import type { GetExpensesByGroup } from "utils/api";
 
 interface ExpenseCardPaymentProps {
-  debt: {
-    id: string;
-    settled: Decimal;
-    amount: Decimal;
-    expense: {
-      payerId: string;
-    };
-    debtor: {
-      name: string | null;
-    };
-    debtorId: string;
-  };
+  debt: GetExpensesByGroup[number]["debts"][number];
 }
 
-const schema = z.object({
-  amount: z.number().positive("Kwota musi być większa niż 0"),
+const expenseCardPaymentFormSchema = z.object({
+  amount: z.number().positive("Kwota musi być większa niż zero"),
 });
 
-type ExpenseCardPaymentFormValues = z.infer<typeof schema>;
+type ExpenseCardPaymentFormSchema = z.infer<
+  typeof expenseCardPaymentFormSchema
+>;
 
 export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
+  const { data: session } = useSession();
+
   const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } =
     useUpdateExpenseDebt();
+
   const [isEditing, { toggle: toggleIsEditing, close: closeIsEditing }] =
     useDisclosure(false);
+
   const [
     isPartialPay,
     { toggle: toggleIsPartialPay, close: closeIsPartialPay },
   ] = useDisclosure(false);
-  const {
-    control,
-    handleSubmit,
-    reset,
-    setError,
-    watch,
-    formState: { errors },
-  } = useForm<ExpenseCardPaymentFormValues>({
-    shouldUnregister: true,
-    defaultValues: {
+
+  const form = useForm<ExpenseCardPaymentFormSchema>({
+    initialValues: {
       amount: 0,
     },
-    resolver: zodResolver(schema),
+    validate: zodResolver(expenseCardPaymentFormSchema),
   });
 
-  const { data: session } = useSession();
   const [debtorFirstName] = debt.debtor.name?.split(" ") ?? "";
+
   const notHavePermission =
     session?.user?.id !== debt.debtorId &&
     session?.user?.id !== debt.expense.payerId;
-  const watchAmount = watch("amount");
+
+  const watchAmount = form.values.amount;
 
   const isFullySettled = debt.settled === debt.amount;
+
   const isPartiallySettled =
     debt.settled !== debt.amount && Number(debt.settled) !== 0;
+
   const maximumAmount = Number(debt.amount) - Number(debt.settled);
 
   const statusIcon = isFullySettled ? <IconSquareCheck /> : <IconSquare />;
@@ -95,7 +85,7 @@ export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
     return "blue";
   };
 
-  const handlePayPartially = (values: ExpenseCardPaymentFormValues) => {
+  const handlePayPartially = (values: ExpenseCardPaymentFormSchema) => {
     updateExpenseDebt(
       {
         expenseDebtId: debt.id,
@@ -105,10 +95,10 @@ export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
         onSuccess() {
           closeIsEditing();
           closeIsPartialPay();
-          reset();
+          form.reset();
         },
-        onError(v) {
-          setError("amount", { message: v.message });
+        onError(error) {
+          form.setFieldError("amount", error.message);
         },
       }
     );
@@ -123,10 +113,10 @@ export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
       {
         onSuccess() {
           closeIsEditing();
-          reset();
+          form.reset();
         },
-        onError(v) {
-          setError("amount", { message: v.message });
+        onError(error) {
+          form.setFieldError("amount", error.message);
         },
       }
     );
@@ -172,26 +162,21 @@ export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
             mx="xl"
             pt="md"
             component="form"
-            onSubmit={handleSubmit(handlePayPartially)}
+            onSubmit={form.onSubmit(handlePayPartially)}
           >
             <Group>
-              <Controller
-                name="amount"
-                control={control}
-                render={({ field }) => (
-                  <NumberInput
-                    {...field}
-                    defaultValue={0}
-                    decimalSeparator=","
-                    min={0}
-                    max={maximumAmount}
-                    precision={2}
-                    step={0.01}
-                    sx={{
-                      flex: 1,
-                    }}
-                  />
-                )}
+              <NumberInput
+                decimalSeparator=","
+                min={0}
+                max={maximumAmount}
+                precision={2}
+                step={0.01}
+                sx={{
+                  flex: 1,
+                }}
+                {...form.getInputProps("amount", {
+                  withError: false,
+                })}
               />
               <Button
                 color="teal"
@@ -204,9 +189,9 @@ export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
             <Text align="center" mt="xs">
               Zostanie do oddania {(maximumAmount - watchAmount).toFixed(2)} zł
             </Text>
-            {errors.amount && (
-              <Text mt={8} size="xs" color="red">
-                {errors.amount?.message}
+            {form.errors.amount && (
+              <Text mt={8} size="xs" align="center" color="red">
+                {form.errors.amount}
               </Text>
             )}
           </Box>

@@ -29,6 +29,8 @@ export function GroupSelectForm({ onSubmit }: GroupSelectFormProps) {
     isLoading,
     isError,
   } = api.group.getAll.useQuery(undefined, {
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     onSuccess: (data) => {
       form.setValues({ groupId: data[0]?.id });
     },

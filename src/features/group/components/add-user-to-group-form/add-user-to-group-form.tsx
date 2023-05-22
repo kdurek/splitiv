@@ -33,6 +33,7 @@ export function AddUserToGroupForm({ onSubmit }: AddUserToGroupFormProps) {
       groupId,
     },
     {
+      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         form.setValues({ userId: data[0]?.id });
       },

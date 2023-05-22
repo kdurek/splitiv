@@ -44,6 +44,8 @@ export function ExpensePayListForm({
       isSettled: false,
     },
     {
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         form.setValues({
           debts: data.map((debt) => ({

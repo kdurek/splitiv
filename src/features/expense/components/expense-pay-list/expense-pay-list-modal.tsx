@@ -1,7 +1,7 @@
 import { Button, Modal, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { ExpensePayListForm } from "./expense-pay-list";
+import { ExpensePayListForm } from "./expense-pay-list-form";
 
 interface ExpensePayListModalProps {
   payerId: string;

@@ -174,6 +174,7 @@ export function ExpenseListPayment({ debt }: ExpenseCardPaymentProps) {
                 sx={{
                   flex: 1,
                 }}
+                onClick={(event) => event.currentTarget.select()}
                 {...form.getInputProps("amount", {
                   withError: false,
                 })}

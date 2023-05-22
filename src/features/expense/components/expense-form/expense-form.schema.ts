@@ -1,7 +1,8 @@
+import { createFormContext } from "@mantine/form";
 import Decimal from "decimal.js";
 import { z } from "zod";
 
-export const ExpenseFormSchema = z
+export const expenseFormSchema = z
   .object({
     name: z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
     description: z
@@ -38,4 +39,7 @@ export const ExpenseFormSchema = z
     }
   );
 
-export type ExpenseFormValues = z.infer<typeof ExpenseFormSchema>;
+export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
+
+export const [ExpenseFormProvider, useExpenseFormContext, useExpenseForm] =
+  createFormContext<ExpenseFormSchema>();

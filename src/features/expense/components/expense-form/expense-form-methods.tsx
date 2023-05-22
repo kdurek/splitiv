@@ -12,25 +12,18 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { allocate, toUnit } from "dinero.js";
 import { useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { useActiveGroup } from "features/group";
 import { dineroFromString } from "server/utils/dineroFromString";
 
-import type { ExpenseFormValues } from "./expense-form.schema";
+import { useExpenseFormContext } from "./expense-form.schema";
+
 import type { Dinero } from "dinero.js";
 
 export function ExpenseFormMethods() {
   const activeGroup = useActiveGroup();
 
-  const methods = useFormContext<ExpenseFormValues>();
-  const { watch, control, setValue, trigger } = methods;
-
-  const { fields: debts } = useFieldArray({
-    control,
-    name: "debts",
-    keyName: "fieldId",
-  });
+  const form = useExpenseFormContext();
 
   const [equalSplit, setEqualSplit] = useState<string[]>([]);
   const [ratioSplit, setRatioSplit] = useState<{ [key: string]: number }>({});
@@ -40,21 +33,19 @@ export function ExpenseFormMethods() {
 
   const [method, setMethod] = useState<"equal" | "ratio" | "">("");
 
-  const liveFields = watch();
-
   const divideByRatio = () => {
     if (
       Object.values(ratioSplit).every((v) => v === 0) ||
       Object.keys(ratioSplit).length === 0
     ) {
-      liveFields.debts.forEach((_, index) => {
-        setValue(`debts.${index}.amount`, 0);
+      form.values.debts.forEach((_, index) => {
+        form.setFieldValue(`debts.${index}.amount`, 0);
       });
       return;
     }
 
     const dineroAmount = dineroFromString({
-      amount: liveFields.amount.toFixed(2),
+      amount: form.values.amount.toFixed(2),
       currency: PLN,
       scale: 2,
     });
@@ -72,7 +63,7 @@ export function ExpenseFormMethods() {
       };
     });
 
-    const newDebts = liveFields.debts.map((debtor) => {
+    const newDebts = form.values.debts.map((debtor) => {
       const amountToPay =
         allocatedRatio.find((user) => user.id === debtor.id)?.amount || 0;
 
@@ -84,26 +75,28 @@ export function ExpenseFormMethods() {
     });
 
     newDebts.forEach((debt, index) => {
-      setValue(`debts.${index}.amount`, debt.amount);
+      form.setFieldValue(`debts.${index}.amount`, debt.amount);
     });
-    trigger("debts");
+
+    closeIsEditing();
+    setMethod("");
   };
 
-  const divideEqually = async () => {
+  const divideEqually = () => {
     if (equalSplit.length === 0) {
-      liveFields.debts.forEach((_, index) => {
-        setValue(`debts.${index}.amount`, 0);
+      form.values.debts.forEach((_, index) => {
+        form.setFieldValue(`debts.${index}.amount`, 0);
       });
       return;
     }
 
     const dineroAmount = dineroFromString({
-      amount: liveFields.amount.toFixed(2),
+      amount: form.values.amount.toFixed(2),
       currency: PLN,
       scale: 2,
     });
 
-    const usersToAllocate = liveFields.debts.filter((user) =>
+    const usersToAllocate = form.values.debts.filter((user) =>
       equalSplit.includes(user.id)
     );
 
@@ -121,7 +114,7 @@ export function ExpenseFormMethods() {
 
     if (!activeGroup) return;
 
-    const newDebts = liveFields.debts.map((debtor) => {
+    const newDebts = form.values.debts.map((debtor) => {
       const isInArray = usersToAllocate.find((user) => user.id === debtor.id);
       const amountToPay =
         allocatedUsers.find((user) => user.id === debtor.id)?.amount || 0;
@@ -134,9 +127,11 @@ export function ExpenseFormMethods() {
     });
 
     newDebts.forEach((debt, index) => {
-      setValue(`debts.${index}.amount`, debt.amount);
+      form.setFieldValue(`debts.${index}.amount`, debt.amount);
     });
-    trigger("debts");
+
+    closeIsEditing();
+    setMethod("");
   };
 
   return (
@@ -159,30 +154,18 @@ export function ExpenseFormMethods() {
           <Stack mt="md">
             <Checkbox.Group value={equalSplit} onChange={setEqualSplit}>
               <Stack spacing="xs">
-                {debts.map((debt) => (
-                  <Checkbox
-                    key={debt.fieldId}
-                    value={debt.id}
-                    label={debt.name}
-                  />
+                {form.values.debts.map((debt) => (
+                  <Checkbox key={debt.id} value={debt.id} label={debt.name} />
                 ))}
               </Stack>
             </Checkbox.Group>
-            <Button
-              onClick={() => {
-                divideEqually();
-                closeIsEditing();
-                setMethod("");
-              }}
-            >
-              Potwierdź
-            </Button>
+            <Button onClick={divideEqually}>Potwierdź</Button>
           </Stack>
         </Collapse>
 
         <Collapse in={method === "ratio"}>
           <Stack mt="md">
-            {debts.map((debt) => (
+            {form.values.debts.map((debt) => (
               <Group key={debt.id} noWrap position="apart">
                 <Text>{debt.name}</Text>
                 <NativeSelect
@@ -203,15 +186,7 @@ export function ExpenseFormMethods() {
               </Group>
             ))}
 
-            <Button
-              onClick={() => {
-                divideByRatio();
-                closeIsEditing();
-                setMethod("");
-              }}
-            >
-              Potwierdź
-            </Button>
+            <Button onClick={divideByRatio}>Potwierdź</Button>
           </Stack>
         </Collapse>
       </Collapse>

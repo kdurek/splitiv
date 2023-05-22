@@ -10,7 +10,7 @@ import {
 import { IconCash, IconMoon, IconSettings, IconSun } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 
-import { ExpenseForm } from "features/expense";
+import { ExpenseModal } from "features/expense";
 
 import { Logo } from "./logo";
 
@@ -47,7 +47,7 @@ export function Layout({ children }: LayoutProps) {
             >
               <IconCash />
             </ActionIcon>
-            <ExpenseForm />
+            <ExpenseModal />
             <ActionIcon
               p="lg"
               variant="light"

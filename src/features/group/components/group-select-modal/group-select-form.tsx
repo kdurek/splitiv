@@ -29,10 +29,13 @@ export function GroupSelectForm({ onSubmit }: GroupSelectFormProps) {
     isLoading,
     isError,
   } = api.group.getAll.useQuery(undefined, {
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+    staleTime: Infinity,
     onSuccess: (data) => {
-      form.setValues({ groupId: data[0]?.id });
+      if (data[0]) {
+        const initialValues = { groupId: data[0].id };
+        form.setValues(initialValues);
+        form.resetDirty(initialValues);
+      }
     },
   });
 

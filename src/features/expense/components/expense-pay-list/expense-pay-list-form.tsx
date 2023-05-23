@@ -44,10 +44,9 @@ export function ExpensePayListForm({
       isSettled: false,
     },
     {
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
+      staleTime: Infinity,
       onSuccess: (data) => {
-        form.setValues({
+        const initialValues = {
           debts: data.map((debt) => ({
             id: debt.id,
             name: debt.expense.name ?? "Brak nazwy",
@@ -55,7 +54,9 @@ export function ExpensePayListForm({
             amount: Number(debt.amount),
             check: false,
           })),
-        });
+        };
+        form.setValues(initialValues);
+        form.resetDirty(initialValues);
       },
     }
   );

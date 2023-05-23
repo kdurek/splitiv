@@ -15,7 +15,7 @@ import {
 import { zodResolver } from "@mantine/form";
 import { IconCircleX } from "@tabler/icons-react";
 import Decimal from "decimal.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useCreateExpense } from "features/expense/api/use-create-expense";
 import { useActiveGroup } from "features/group";
@@ -39,28 +39,21 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
   const { mutate: createExpense, isLoading: isLoadingCreateExpense } =
     useCreateExpense();
 
-  const form = useExpenseForm({
-    initialValues: {
-      name: "",
+  const initialValues = {
+    name: "",
+    amount: 0,
+    payer: activeGroup.members[0]?.id || "",
+    debts: activeGroup.members.map((member) => ({
+      id: member.id,
+      name: member.name ?? "Brak nazwy",
       amount: 0,
-      payer: "",
-      debts: [],
-    },
+    })),
+  };
+
+  const form = useExpenseForm({
+    initialValues,
     validate: zodResolver(expenseFormSchema),
   });
-
-  useEffect(() => {
-    if (activeGroup.members[0]) {
-      form.setFieldValue("payer", activeGroup.members[0].id);
-      form.setValues({
-        debts: activeGroup.members.map((member) => ({
-          id: member.id,
-          name: member.name ?? "Brak nazwy",
-          amount: 0,
-        })),
-      });
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [active, setActive] = useState(0);
   const nextStep = () =>

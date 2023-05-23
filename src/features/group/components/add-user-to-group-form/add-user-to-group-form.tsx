@@ -33,9 +33,13 @@ export function AddUserToGroupForm({ onSubmit }: AddUserToGroupFormProps) {
       groupId,
     },
     {
-      refetchOnWindowFocus: false,
+      staleTime: Infinity,
       onSuccess: (data) => {
-        form.setValues({ userId: data[0]?.id });
+        if (data[0]) {
+          const initialValues = { userId: data[0].id };
+          form.setValues(initialValues);
+          form.resetDirty(initialValues);
+        }
       },
     }
   );

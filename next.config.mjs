@@ -6,6 +6,7 @@ import withPWA from "@imbios/next-pwa";
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
 
 const withPWAConfig = withPWA({
+  buildExcludes: ["app-build-manifest.json"],
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   register: true,

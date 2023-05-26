@@ -13,7 +13,6 @@ import {
   Title,
 } from "@mantine/core";
 import { zodResolver } from "@mantine/form";
-import { IconCircleX } from "@tabler/icons-react";
 import Decimal from "decimal.js";
 import { useState } from "react";
 
@@ -56,8 +55,54 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
   });
 
   const [active, setActive] = useState(0);
+
+  const usedAmount = form.values.debts?.reduce(
+    (prev, curr) => Decimal.add(prev, curr.amount || 0),
+    new Decimal(0)
+  );
+
+  const remainingAmount = Decimal.sub(form.values.amount || 0, usedAmount || 0);
+
+  const getUserNameByUserId = (userId: string) => {
+    const user = activeGroup?.members.find((member) => member.id === userId);
+    return user?.name ?? "Brak nazwy";
+  };
+
   const nextStep = () =>
-    setActive((current) => (current < 4 ? current + 1 : current));
+    setActive((current) => {
+      if (active === 0) {
+        if (
+          form.validateField("name").hasError ||
+          form.validateField("description").hasError
+        ) {
+          return current;
+        }
+      }
+
+      if (active === 1) {
+        if (form.validateField("amount").hasError) {
+          return current;
+        }
+      }
+
+      if (active === 2) {
+        if (form.validateField("payer").hasError) {
+          return current;
+        }
+      }
+
+      if (active === 3) {
+        if (
+          form.validateField("debts").hasError ||
+          !remainingAmount.equals(0)
+        ) {
+          return current;
+        }
+      }
+
+      return current < 4 ? current + 1 : current;
+    });
+
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
 
@@ -98,18 +143,6 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
     );
   };
 
-  const usedAmount = form.values.debts?.reduce(
-    (prev, curr) => Decimal.add(prev, curr.amount || 0),
-    new Decimal(0)
-  );
-
-  const remainingAmount = Decimal.sub(form.values.amount || 0, usedAmount || 0);
-
-  const getUserNameByUserId = (userId: string) => {
-    const user = activeGroup?.members.find((member) => member.id === userId);
-    return user?.name ?? "Brak nazwy";
-  };
-
   return (
     <ExpenseFormProvider form={form}>
       <Paper component="form" onSubmit={form.onSubmit(handleOnSubmit)}>
@@ -118,12 +151,7 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
           onStepClick={setActive}
           allowNextStepsSelect={false}
         >
-          <Stepper.Step
-            color={form.errors.name || form.errors.description ? "red" : "blue"}
-            completedIcon={
-              (form.errors.name || form.errors.description) && <IconCircleX />
-            }
-          >
+          <Stepper.Step>
             <Title
               order={3}
               placeholder="Wprowadź czego dotyczy wydatek"
@@ -148,10 +176,7 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
             />
           </Stepper.Step>
 
-          <Stepper.Step
-            color={form.errors.amount ? "red" : "blue"}
-            completedIcon={form.errors.amount && <IconCircleX />}
-          >
+          <Stepper.Step>
             <Title order={3} align="center">
               Kwota wydatku
             </Title>
@@ -169,10 +194,7 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
             />
           </Stepper.Step>
 
-          <Stepper.Step
-            color={form.errors.payer ? "red" : "blue"}
-            completedIcon={form.errors.payer && <IconCircleX />}
-          >
+          <Stepper.Step>
             <Title order={3} align="center">
               Kto zapłacił za wydatek?
             </Title>
@@ -269,49 +291,13 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
 
         <Divider my="md" />
 
-        <Group position="center">
-          {active > 0 && (
+        <Group position="right">
+          {active !== 0 && (
             <Button variant="default" onClick={prevStep}>
               Wstecz
             </Button>
           )}
-          {active !== 4 && (
-            <Button
-              onClick={() => {
-                if (active === 0) {
-                  if (
-                    !form.validateField("name").hasError &&
-                    !form.validateField("description").hasError
-                  ) {
-                    nextStep();
-                  }
-                }
-
-                if (active === 1) {
-                  if (!form.validateField("amount").hasError) {
-                    nextStep();
-                  }
-                }
-
-                if (active === 2) {
-                  if (!form.validateField("payer").hasError) {
-                    nextStep();
-                  }
-                }
-
-                if (active === 3) {
-                  if (
-                    !form.validateField("debts").hasError &&
-                    remainingAmount.equals(0)
-                  ) {
-                    nextStep();
-                  }
-                }
-              }}
-            >
-              Dalej
-            </Button>
-          )}
+          {active !== 4 && <Button onClick={nextStep}>Dalej</Button>}
           {active === 4 && (
             <Button type="submit" loading={isLoadingCreateExpense}>
               Potwierdź

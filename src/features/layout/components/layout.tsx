@@ -8,7 +8,7 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 import { IconCash, IconMoon, IconSettings, IconSun } from "@tabler/icons-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import { ExpenseModal } from "features/expense";
 

@@ -21,6 +21,10 @@ next-env.d.ts
 # production
 /build
 
+# pwa
+/public/sw*
+/public/workbox*
+
 # misc
 .DS_Store
 *.pem

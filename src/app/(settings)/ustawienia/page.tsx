@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Divider, Stack } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import { signOut } from "next-auth/react";
@@ -5,7 +7,7 @@ import { signOut } from "next-auth/react";
 import { GroupSelect, GroupSettingsMembers } from "features/group";
 import { Section } from "features/layout";
 
-function SettingsPage() {
+export default function SettingsPage() {
   return (
     <Section title="Ustawienia">
       <Stack>
@@ -23,5 +25,3 @@ function SettingsPage() {
     </Section>
   );
 }
-
-export default SettingsPage;

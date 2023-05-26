@@ -11,7 +11,6 @@ import { env } from "../env/server.mjs";
 
 import { prisma } from "./db";
 
-import type { GetServerSidePropsContext } from "next";
 import type { GoogleProfile } from "next-auth/providers/google";
 
 declare module "next-auth" {
@@ -53,9 +52,6 @@ export const authOptions: NextAuthOptions = {
   ],
 };
 
-export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
-}) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
-};
+export function getServerAuthSession() {
+  return getServerSession(authOptions);
+}

@@ -47,7 +47,7 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
   );
 
   if (status === "loading") {
-    return <LoadingOverlay visible overlayOpacity={0} />;
+    return null;
   }
 
   if (status === "unauthenticated") {
@@ -77,5 +77,3 @@ export function ActiveGroupProvider({ children }: ActiveGroupProviderProps) {
     </ActiveGroupContext.Provider>
   );
 }
-
-// clhxtxlz90000y8xawcvocxpt

@@ -1,5 +1,4 @@
-// @ts-check
-import withPWA from "next-pwa";
+import withPWA from "@imbios/next-pwa";
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
@@ -10,7 +9,6 @@ const withPWAConfig = withPWA({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   register: true,
-  skipWaiting: true,
 });
 
 /** @type {import("next").NextConfig} */

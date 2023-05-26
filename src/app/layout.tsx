@@ -7,11 +7,12 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Splitiv",
-  themeColor: "#1A1B1E",
+  description: "Expense management",
+  applicationName: "Splitiv",
   manifest: "/manifest.json",
-  icons: [
-    { rel: "shortcut icon", url: "/favicon.ico" },
-    { rel: "apple-touch-icon", url: "/icon-192x192.png" },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#1A1B1E" },
   ],
 };
 

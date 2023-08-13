@@ -6,7 +6,6 @@ export const debtRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
       z.object({
-        groupId: z.string().cuid2().optional(),
         payerId: z.string().cuid2().optional(),
         debtorId: z.string().cuid2().optional(),
         isSettled: z.boolean().optional(),
@@ -16,7 +15,7 @@ export const debtRouter = createTRPCRouter({
       return ctx.prisma.expenseDebt.findMany({
         where: {
           expense: {
-            groupId: input.groupId,
+            groupId: ctx.session.activeGroupId,
             payerId: input.payerId || undefined,
           },
           debtorId: input.debtorId || undefined,

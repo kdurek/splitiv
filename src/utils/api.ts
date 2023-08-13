@@ -1,3 +1,5 @@
+"use client";
+
 import { createTRPCReact } from "@trpc/react-query";
 
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
@@ -9,5 +11,6 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
 
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type GetExpensesByGroup = RouterOutputs["expense"]["getAll"];
+export type GetGroups = RouterOutputs["group"]["getAll"];
 export type GetGroupById = RouterOutputs["group"]["getById"];
 export type GetUsers = RouterOutputs["user"]["getAll"];

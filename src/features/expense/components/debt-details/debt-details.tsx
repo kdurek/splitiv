@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Group, Modal, Paper, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronRight } from "@tabler/icons-react";

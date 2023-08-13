@@ -1,7 +1,9 @@
+"use client";
+
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { useDeleteExpense } from "features/expense/api/use-delete-expense";
+import { useDeleteExpense } from "hooks/use-delete-expense";
 
 interface DeleteExpenseModalProps {
   expenseId: string;

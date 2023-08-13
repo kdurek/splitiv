@@ -11,8 +11,7 @@ import {
 import { useForm, zodResolver } from "@mantine/form";
 import { IconSquareArrowUp } from "@tabler/icons-react";
 
-import { useSettleExpenseDebts } from "features/expense/api/use-update-expense-debts";
-import { useActiveGroup } from "features/group";
+import { useSettleExpenseDebts } from "hooks/use-update-expense-debts";
 import { api } from "utils/api";
 
 import { expensePayListSchema } from "./expense-pay-list.schema";
@@ -30,15 +29,12 @@ export function ExpensePayListForm({
   debtorId,
   onSubmit,
 }: ExpensePayListFormProps) {
-  const activeGroup = useActiveGroup();
-
   const form = useForm<ExpensePayListSchema>({
     validate: zodResolver(expensePayListSchema),
   });
 
   api.debt.getAll.useQuery(
     {
-      groupId: activeGroup.id,
       payerId,
       debtorId,
       isSettled: false,

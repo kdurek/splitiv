@@ -1,20 +1,14 @@
+"use client";
+
 import { Box, Paper, Stack, Text } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect } from "react";
 
-import { useInfiniteExpenses } from "features/expense/api/use-infinite-expenses";
+import { useInfiniteExpenses } from "hooks/use-infinite-expenses";
 
 import { ExpenseListItem } from "./item";
 
-import type { ExpenseFilters } from "./filters";
-
-interface ExpenseListProps {
-  filters: ExpenseFilters;
-}
-
-export function ExpenseList({
-  filters: { searchText, payerId, debtorId, isSettled },
-}: ExpenseListProps) {
+export function ExpenseList() {
   const { ref, entry } = useIntersection();
 
   const {
@@ -24,12 +18,7 @@ export function ExpenseList({
     hasNextPage,
     isLoading: isLoadingExpenses,
     isError: isErrorExpenses,
-  } = useInfiniteExpenses({
-    searchText,
-    payerId,
-    debtorId,
-    isSettled,
-  });
+  } = useInfiniteExpenses({});
 
   useEffect(() => {
     if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {

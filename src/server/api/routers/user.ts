@@ -7,16 +7,25 @@ export const userRouter = createTRPCRouter({
     return ctx.prisma.user.findMany();
   }),
 
-  getAllNotInGroup: protectedProcedure
-    .input(z.object({ groupId: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.user.findMany({
-        where: {
-          groups: {
-            none: {
-              groupId: input.groupId,
-            },
+  getAllNotInGroup: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.user.findMany({
+      where: {
+        groups: {
+          none: {
+            groupId: ctx.session.activeGroupId,
           },
+        },
+      },
+    });
+  }),
+
+  changeActiveGroup: protectedProcedure
+    .input(z.object({ groupId: z.string() }))
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: {
+          activeGroupId: input.groupId,
         },
       });
     }),

@@ -9,7 +9,6 @@ export const expenseRouter = createTRPCRouter({
       z.object({
         limit: z.number(),
         cursor: z.string().nullish(),
-        groupId: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         payerId: z.string().optional(),
@@ -22,7 +21,7 @@ export const expenseRouter = createTRPCRouter({
         take: input.limit + 1,
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
-          groupId: input.groupId,
+          groupId: ctx.session.activeGroupId,
           OR: [
             {
               name: {
@@ -89,7 +88,6 @@ export const expenseRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().optional(),
-        groupId: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         payerId: z.string().optional(),
@@ -101,7 +99,7 @@ export const expenseRouter = createTRPCRouter({
       return ctx.prisma.expense.findMany({
         take: input.limit || undefined,
         where: {
-          groupId: input.groupId,
+          groupId: ctx.session.activeGroupId,
           OR: [
             {
               name: {
@@ -156,7 +154,6 @@ export const expenseRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        groupId: z.string(),
         name: z.string(),
         description: z
           .union([
@@ -180,7 +177,7 @@ export const expenseRouter = createTRPCRouter({
         data: {
           group: {
             connect: {
-              id: input.groupId,
+              id: ctx.session.activeGroupId,
             },
           },
           name: input.name,
@@ -205,7 +202,6 @@ export const expenseRouter = createTRPCRouter({
     .input(
       z.object({
         expenseId: z.string(),
-        groupId: z.string(),
         name: z.string(),
         payerId: z.string(),
         amount: z.number(),

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   Button,
@@ -9,9 +11,8 @@ import { useDebouncedState } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
-import { useActiveGroup } from "features/group";
-
 import type { Dispatch, SetStateAction } from "react";
+import type { GetGroupById } from "utils/api";
 
 export interface ExpenseFilters {
   searchText?: string;
@@ -20,19 +21,21 @@ export interface ExpenseFilters {
   isSettled?: boolean;
 }
 interface ExpenseListFiltersProps {
+  group: GetGroupById;
   setFilters: Dispatch<SetStateAction<ExpenseFilters>>;
 }
 
-export function ExpenseListFilters({ setFilters }: ExpenseListFiltersProps) {
-  const activeGroup = useActiveGroup();
-
+export function ExpenseListFilters({
+  group,
+  setFilters,
+}: ExpenseListFiltersProps) {
   const [searchText, setSearchText] = useDebouncedState<string>("", 500);
   const [payerId, setPayerId] = useState<string>("");
   const [debtorId, setDebtorId] = useState<string>("");
 
   const groupUsersToSelect = [
     { value: "", label: "Wszyscy" },
-    ...activeGroup.members.map((user) => ({
+    ...group.members.map((user) => ({
       value: user.id,
       label: user.name ?? "Brak nazwy",
     })),

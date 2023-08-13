@@ -1,5 +1,6 @@
+"use client";
+
 import {
-  Button,
   Divider,
   Group,
   NativeSelect,
@@ -13,11 +14,12 @@ import {
   Title,
 } from "@mantine/core";
 import { zodResolver } from "@mantine/form";
+import { IconLoader2 } from "@tabler/icons-react";
 import Decimal from "decimal.js";
 import { useState } from "react";
 
-import { useCreateExpense } from "features/expense/api/use-create-expense";
-import { useActiveGroup } from "features/group";
+import { Button } from "components/ui/button";
+import { useCreateExpense } from "hooks/use-create-expense";
 
 import { ExpenseFormMethods } from "./expense-form-methods";
 import {
@@ -27,22 +29,21 @@ import {
 } from "./expense-form.schema";
 
 import type { ExpenseFormSchema } from "./expense-form.schema";
+import type { GetGroupById } from "utils/api";
 
 interface ExpenseFormProps {
-  onSubmit?: () => void;
+  group: GetGroupById;
 }
 
-export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
-  const activeGroup = useActiveGroup();
-
+export function ExpenseForm({ group }: ExpenseFormProps) {
   const { mutate: createExpense, isLoading: isLoadingCreateExpense } =
     useCreateExpense();
 
   const initialValues = {
     name: "",
     amount: 0,
-    payer: activeGroup.members[0]?.id || "",
-    debts: activeGroup.members.map((member) => ({
+    payer: group.members[0]?.id || "",
+    debts: group.members.map((member) => ({
       id: member.id,
       name: member.name ?? "Brak nazwy",
       amount: 0,
@@ -64,7 +65,7 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
   const remainingAmount = Decimal.sub(form.values.amount || 0, usedAmount || 0);
 
   const getUserNameByUserId = (userId: string) => {
-    const user = activeGroup?.members.find((member) => member.id === userId);
+    const user = group.members.find((member) => member.id === userId);
     return user?.name ?? "Brak nazwy";
   };
 
@@ -124,7 +125,6 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
 
     createExpense(
       {
-        groupId: activeGroup.id,
         name: values.name,
         description: values.description,
         amount: values.amount,
@@ -135,9 +135,6 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
         onSuccess() {
           setActive(0);
           form.reset();
-          if (onSubmit) {
-            onSubmit();
-          }
         },
       }
     );
@@ -201,7 +198,7 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
             <NativeSelect
               mt="xs"
               size="md"
-              data={activeGroup.members.map((user) => ({
+              data={group.members.map((user) => ({
                 value: user.id,
                 label: user.name ?? "Brak nazwy",
               }))}
@@ -291,19 +288,22 @@ export function ExpenseForm({ onSubmit }: ExpenseFormProps) {
 
         <Divider my="md" />
 
-        <Group position="right">
+        <div className="flex justify-end gap-4">
           {active !== 0 && (
-            <Button variant="default" onClick={prevStep}>
+            <Button variant="secondary" onClick={prevStep}>
               Wstecz
             </Button>
           )}
           {active !== 4 && <Button onClick={nextStep}>Dalej</Button>}
           {active === 4 && (
-            <Button type="submit" loading={isLoadingCreateExpense}>
+            <Button type="submit">
+              {isLoadingCreateExpense && (
+                <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Potwierdź
             </Button>
           )}
-        </Group>
+        </div>
       </Paper>
     </ExpenseFormProvider>
   );

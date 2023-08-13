@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   Avatar,
@@ -9,12 +11,10 @@ import {
 } from "@mantine/core";
 import { useSession } from "next-auth/react";
 
-import { useActiveGroup } from "features/group";
-
 import { DebtDetails } from "../debt-details";
 import { ExpensePayListModal } from "../expense-pay-list";
 
-import type { GetUsers } from "utils/api";
+import type { GetGroupById, GetUsers } from "utils/api";
 
 interface Debt {
   fromId: string;
@@ -79,12 +79,14 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
   );
 }
 
-export function UserBalance() {
-  const activeGroup = useActiveGroup();
+interface UserBalanceProps {
+  group: GetGroupById;
+}
 
+export function UserBalance({ group }: UserBalanceProps) {
   return (
     <Accordion variant="contained">
-      {activeGroup.members.map((member) => (
+      {group.members.map((member) => (
         <Accordion.Item key={member.id} value={member.id}>
           <Accordion.Control>
             <Group>
@@ -100,8 +102,8 @@ export function UserBalance() {
           <Accordion.Panel>
             <UserDebts
               member={member}
-              members={activeGroup.members}
-              debts={activeGroup.debts}
+              members={group.members}
+              debts={group.debts}
             />
           </Accordion.Panel>
         </Accordion.Item>

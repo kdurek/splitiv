@@ -15,7 +15,7 @@ import { IconSquare, IconSquareCheck, IconSquareX } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
 import z from "zod";
 
-import { useUpdateExpenseDebt } from "features/expense/api/use-update-expense-debt";
+import { useUpdateExpenseDebt } from "hooks/use-update-expense-debt";
 
 import type { GetExpensesByGroup } from "utils/api";
 

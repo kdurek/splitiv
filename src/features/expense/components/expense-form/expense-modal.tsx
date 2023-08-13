@@ -1,3 +1,5 @@
+"use client";
+
 import { ActionIcon, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
@@ -19,7 +21,7 @@ export function ExpenseModal() {
         onClose={close}
         title="Dodawanie wydatku"
       >
-        <ExpenseForm onSubmit={close} />
+        <ExpenseForm />
       </Modal>
     </>
   );

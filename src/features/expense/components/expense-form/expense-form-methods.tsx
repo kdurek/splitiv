@@ -13,7 +13,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { allocate, toUnit } from "dinero.js";
 import { useState } from "react";
 
-import { useActiveGroup } from "features/group";
 import { dineroFromString } from "server/utils/dineroFromString";
 
 import { useExpenseFormContext } from "./expense-form.schema";
@@ -21,8 +20,6 @@ import { useExpenseFormContext } from "./expense-form.schema";
 import type { Dinero } from "dinero.js";
 
 export function ExpenseFormMethods() {
-  const activeGroup = useActiveGroup();
-
   const form = useExpenseFormContext();
 
   const [equalSplit, setEqualSplit] = useState<string[]>([]);
@@ -111,8 +108,6 @@ export function ExpenseFormMethods() {
         ? toUnit(allocated[index] as Dinero<number>)
         : 0,
     }));
-
-    if (!activeGroup) return;
 
     const newDebts = form.values.debts.map((debtor) => {
       const isInArray = usersToAllocate.find((user) => user.id === debtor.id);

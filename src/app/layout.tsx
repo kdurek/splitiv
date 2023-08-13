@@ -1,7 +1,10 @@
 import { Poppins } from "next/font/google";
-import { cookies } from "next/headers";
 
-import ClientRootLayout from "./client-layout";
+import { TailwindIndicator } from "components/tailwind-indicator";
+
+import { NextAuthProvider, TrpcProvider } from "./providers";
+
+import "./globals.css";
 
 import type { Metadata } from "next";
 
@@ -27,15 +30,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = cookies();
-  const defaultColorScheme = cookieStore.get("mantine-color-scheme")?.value;
-
   return (
     <html lang="pl" className={poppins.className}>
       <body>
-        <ClientRootLayout defaultColorScheme={defaultColorScheme}>
-          {children}
-        </ClientRootLayout>
+        <NextAuthProvider>
+          <TrpcProvider>
+            {children}
+            <TailwindIndicator />
+          </TrpcProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

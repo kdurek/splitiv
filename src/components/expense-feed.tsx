@@ -1,8 +1,8 @@
 "use client";
 
 import { useIntersection } from "@mantine/hooks";
-import { IconReportMoney } from "@tabler/icons-react";
 import { format } from "date-fns";
+import { CircleDollarSign } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
@@ -48,7 +48,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
     if (isFullySettled) {
       return (
         <div className="w-10 h-10 bg-teal-100 grid place-content-center">
-          <IconReportMoney className="text-teal-500" />
+          <CircleDollarSign className="text-teal-500" />
         </div>
       );
     }
@@ -56,14 +56,14 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
     if (isPartiallySettled) {
       return (
         <div className="w-10 h-10 bg-yellow-100 grid place-content-center">
-          <IconReportMoney className="text-yellow-500" />
+          <CircleDollarSign className="text-yellow-500" />
         </div>
       );
     }
 
     return (
       <div className="w-10 h-10 bg-blue-100 grid place-content-center">
-        <IconReportMoney className="text-blue-500" />
+        <CircleDollarSign className="text-blue-500" />
       </div>
     );
   };

@@ -1,4 +1,4 @@
-import { IconChevronRight } from "@tabler/icons-react";
+import { ChevronRight } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { Section } from "components/section";
@@ -39,11 +39,11 @@ export default async function ExpenseDetailsPage({
                 <div className="text-sm text-muted-foreground">
                   {debt.debtor.name}
                 </div>
-                <IconChevronRight />
+                <ChevronRight />
                 <div className="text-sm text-muted-foreground">
                   {(Number(debt.amount) - Number(debt.settled)).toFixed(2)} zł
                 </div>
-                <IconChevronRight />
+                <ChevronRight />
                 <div className="text-sm text-muted-foreground">
                   {debt.expense.payer.name}
                 </div>
@@ -59,12 +59,12 @@ export default async function ExpenseDetailsPage({
                 <div className="text-sm text-muted-foreground">
                   {credit.debtor.name}
                 </div>
-                <IconChevronRight />
+                <ChevronRight />
                 <div className="text-sm text-muted-foreground">
                   {(Number(credit.amount) - Number(credit.settled)).toFixed(2)}
                   zł
                 </div>
-                <IconChevronRight />
+                <ChevronRight />
                 <div className="text-sm text-muted-foreground">
                   {credit.expense.payer.name}
                 </div>

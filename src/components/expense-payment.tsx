@@ -1,10 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  IconLoader2,
-  IconSquare,
-  IconSquareCheck,
-  IconSquareX,
-} from "@tabler/icons-react";
+import { Loader2, Square, XSquare } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -25,7 +20,14 @@ interface ExpenseCardPaymentProps {
 }
 
 const expenseCardPaymentFormSchema = z.object({
-  amount: z.coerce.number().positive("Kwota musi być większa niż zero"),
+  amount: z.string({ required_error: "Musisz wpisać kwotę" }).refine(
+    (value) => {
+      return parseFloat(value) > 0;
+    },
+    {
+      message: "Kwota musi być większa niż zero",
+    }
+  ),
 });
 
 type ExpenseCardPaymentFormSchema = z.infer<
@@ -48,7 +50,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
 
   const form = useForm<ExpenseCardPaymentFormSchema>({
     defaultValues: {
-      amount: 0,
+      amount: parseFloat("0").toFixed(2),
     },
     resolver: zodResolver(expenseCardPaymentFormSchema),
   });
@@ -68,7 +70,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
 
   const maximumAmount = Number(debt.amount) - Number(debt.settled);
 
-  const statusIcon = isFullySettled ? <IconSquareCheck /> : <IconSquare />;
+  const statusIcon = isFullySettled ? <XSquare /> : <Square />;
 
   const handlePayPartially = (values: ExpenseCardPaymentFormSchema) => {
     updateExpenseDebt(
@@ -124,7 +126,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
               !isFullySettled && !notHavePermission && toggleIsEditing()
             }
           >
-            {isEditing ? <IconSquareX /> : statusIcon}
+            {isEditing ? <XSquare /> : statusIcon}
           </Button>
           <div>
             {isFullySettled
@@ -179,7 +181,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
                 />
                 <Button>
                   {isLoadingUpdateExpenseDebt && (
-                    <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   Oddaj
                 </Button>

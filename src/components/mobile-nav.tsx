@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCash, IconPlus, IconSettings } from "@tabler/icons-react";
+import { CircleDollarSign, Plus, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -22,7 +22,7 @@ export function MobileNav() {
             pathname === "/" ? "text-foreground" : "text-muted-foreground"
           )}
         >
-          <IconCash />
+          <CircleDollarSign />
         </Link>
         Wydatki
       </div>
@@ -37,7 +37,7 @@ export function MobileNav() {
               : "text-muted-foreground"
           )}
         >
-          <IconPlus />
+          <Plus />
         </Link>
         Dodaj
       </div>
@@ -52,7 +52,7 @@ export function MobileNav() {
               : "text-muted-foreground"
           )}
         >
-          <IconSettings />
+          <Settings />
         </Link>
         Ustawienia
       </div>

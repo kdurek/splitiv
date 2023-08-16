@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconLoader2 } from "@tabler/icons-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -59,11 +59,6 @@ export function ExpenseForm({ group }: ExpenseFormProps) {
   });
 
   const handleOnSubmit = (values: ExpenseFormSchema) => {
-    console.log(
-      "🚀 > file: expense-form.tsx:67 > handleOnSubmit > values:",
-      values
-    );
-
     const formattedDebts = values.debts
       .filter(
         (debt) =>
@@ -177,7 +172,7 @@ export function ExpenseForm({ group }: ExpenseFormProps) {
         <div className="flex justify-end gap-4 mt-6">
           <Button>
             {isLoadingCreateExpense && (
-              <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
             Potwierdź
           </Button>

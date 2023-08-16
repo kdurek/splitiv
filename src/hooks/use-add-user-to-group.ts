@@ -9,6 +9,7 @@ export function useAddUserToGroup() {
   return api.group.addUserToGroup.useMutation({
     async onSuccess() {
       await utils.group.getById.invalidate();
+      await utils.user.getAllNotInGroup.invalidate();
       router.refresh();
     },
   });

@@ -87,10 +87,10 @@ interface UserBalanceProps {
 
 export function UserBalance({ group }: UserBalanceProps) {
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion type="single" collapsible className="w-full border border-b-0">
       {group.members.map((member) => (
         <AccordionItem key={member.id} value={member.id}>
-          <AccordionTrigger>
+          <AccordionTrigger className="px-4">
             <div className="flex items-center gap-4">
               <Avatar>
                 <AvatarImage src={member.image ?? undefined} />
@@ -102,7 +102,7 @@ export function UserBalance({ group }: UserBalanceProps) {
               </div>
             </div>
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="px-4">
             <UserDebts
               member={member}
               members={group.members}

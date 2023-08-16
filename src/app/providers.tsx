@@ -1,12 +1,20 @@
+/* eslint-disable import/no-duplicates */
+
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
+import { setDefaultOptions } from "date-fns";
+import { pl } from "date-fns/locale";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 import superjson from "superjson";
 
 import { api } from "utils/api";
+
+setDefaultOptions({
+  locale: pl,
+});
 
 type NextAuthProviderProps = {
   children: React.ReactNode;

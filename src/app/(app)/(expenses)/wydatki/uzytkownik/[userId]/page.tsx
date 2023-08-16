@@ -26,7 +26,7 @@ export default async function ExpenseDetailsPage({
 
   return (
     <Section title={user.name}>
-      <Tabs defaultValue="debts" className="w-full">
+      <Tabs defaultValue="debts">
         <TabsList>
           <TabsTrigger value="debts">Długi</TabsTrigger>
           <TabsTrigger value="credits">Pożyczki</TabsTrigger>

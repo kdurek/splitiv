@@ -2,7 +2,7 @@
 
 import { useIntersection } from "@mantine/hooks";
 import { IconReportMoney } from "@tabler/icons-react";
-import dayjs from "dayjs";
+import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
@@ -31,7 +31,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
   const descriptionParts = expense.description?.split("\n");
   const hasDescription = descriptionParts?.length;
   const [payerFirstName] = expense.payer.name?.split(" ") ?? "";
-  const formattedDate = dayjs(expense.createdAt).format("ddd, D MMMM");
+  const formattedDate = format(expense.createdAt, "EEEEEE, d MMMM");
 
   const getSettledStateIcon = () => {
     const isPartiallySettled = expense.debts

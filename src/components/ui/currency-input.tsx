@@ -13,7 +13,7 @@ const formatCurrency = (v: string): string => {
     return parsedValue.toFixed(2);
   }
 
-  return "0.00";
+  return parseFloat("0").toFixed(2);
 };
 
 const CurrencyInput = React.forwardRef<HTMLInputElement, InputProps>(
@@ -66,7 +66,6 @@ const CurrencyInput = React.forwardRef<HTMLInputElement, InputProps>(
         inputMode="decimal"
         min={0}
         step={0.01}
-        placeholder="0,00"
         onBlur={handleBlur}
         onChange={handleChange}
         onClick={handleClick}

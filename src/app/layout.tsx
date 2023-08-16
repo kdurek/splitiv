@@ -1,3 +1,6 @@
+/* eslint-disable import/no-duplicates */
+import { setDefaultOptions } from "date-fns";
+import { pl } from "date-fns/locale";
 import { Poppins } from "next/font/google";
 
 import { TailwindIndicator } from "components/tailwind-indicator";
@@ -7,6 +10,10 @@ import { NextAuthProvider, TrpcProvider } from "./providers";
 import "./globals.css";
 
 import type { Metadata } from "next";
+
+setDefaultOptions({
+  locale: pl,
+});
 
 export const metadata: Metadata = {
   title: "Splitiv",

@@ -9,10 +9,10 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { allocate, toUnit } from "dinero.js";
 import { useState } from "react";
 
+import { useDisclosure } from "hooks/use-disclosure";
 import { dineroFromString } from "server/utils/dineroFromString";
 
 import { useExpenseFormContext } from "./expense-form.schema";

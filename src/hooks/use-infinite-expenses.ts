@@ -1,10 +1,13 @@
 import { api } from "utils/api";
 
+import type { GetInfiniteExpenses } from "utils/api";
+
 interface UseInfiniteExpensesProps {
   searchText?: string;
   payerId?: string;
   debtorId?: string;
   isSettled?: boolean;
+  infiniteExpensesInitialData: GetInfiniteExpenses;
 }
 
 export function useInfiniteExpenses({
@@ -12,6 +15,7 @@ export function useInfiniteExpenses({
   payerId,
   debtorId,
   isSettled,
+  infiniteExpensesInitialData,
 }: UseInfiniteExpensesProps) {
   return api.expense.getInfinite.useInfiniteQuery(
     {
@@ -24,6 +28,10 @@ export function useInfiniteExpenses({
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      initialData: {
+        pages: [infiniteExpensesInitialData],
+        pageParams: [],
+      },
     }
   );
 }

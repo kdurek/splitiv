@@ -1,4 +1,3 @@
-import { createFormContext } from "@mantine/form";
 import Decimal from "decimal.js";
 import { z } from "zod";
 
@@ -11,10 +10,10 @@ export const expenseFormSchema = z
         z.string().length(0),
       ])
       .optional(),
-    amount: z
+    amount: z.coerce
       .number({ required_error: "Musisz wpisać kwotę" })
       .gt(0, { message: "Kwota musi być większa niż zero" }),
-    payer: z.string().cuid2("Musisz wybrać osobę płacącą"),
+    payer: z.string().cuid2({ message: "Musisz wybrać osobę płacącą" }),
     debts: z.array(
       z.object({
         id: z.string(),
@@ -40,6 +39,3 @@ export const expenseFormSchema = z
   );
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
-
-export const [ExpenseFormProvider, useExpenseFormContext, useExpenseForm] =
-  createFormContext<ExpenseFormSchema>();

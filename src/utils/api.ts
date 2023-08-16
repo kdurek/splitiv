@@ -10,6 +10,7 @@ export const api = createTRPCReact<AppRouter>();
 export type RouterInputs = inferRouterInputs<AppRouter>;
 
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
+export type GetInfiniteExpenses = RouterOutputs["expense"]["getInfinite"];
 export type GetExpensesByGroup = RouterOutputs["expense"]["getAll"];
 export type GetGroups = RouterOutputs["group"]["getAll"];
 export type GetGroupById = RouterOutputs["group"]["getById"];

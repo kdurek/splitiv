@@ -1,5 +1,5 @@
+import { ExpenseForm } from "components/forms/expense/expense-form";
 import { Section } from "components/section";
-import { ExpenseForm } from "features/expense/components/expense-form/expense-form";
 import { createTrpcCaller } from "server/api/caller";
 
 export default async function ExpenseAddPage() {

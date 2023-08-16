@@ -20,7 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui/select";
-import { type GetGroups, api } from "utils/api";
+import { useChangeActiveGroup } from "hooks/use-change-active-group";
+import { type GetGroups } from "utils/api";
 
 const groupSelectFormSchema = z.object({
   groupId: z.string({ required_error: "Musisz wybrać grupę" }),
@@ -37,8 +38,7 @@ export function GroupSelectForm({ groups }: GroupSelectFormProps) {
     resolver: zodResolver(groupSelectFormSchema),
   });
 
-  const { mutate: changeActiveGroup } =
-    api.user.changeActiveGroup.useMutation();
+  const { mutate: changeActiveGroup } = useChangeActiveGroup();
 
   const handleGroupSelect = (values: GroupSelectFormSchema) => {
     changeActiveGroup({ groupId: values.groupId });
@@ -72,7 +72,7 @@ export function GroupSelectForm({ groups }: GroupSelectFormProps) {
           )}
         />
         <div className="flex justify-end mt-6">
-          <Button type="submit">Wybierz</Button>
+          <Button>Wybierz</Button>
         </div>
       </form>
     </Form>

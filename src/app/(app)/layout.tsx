@@ -29,7 +29,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background md:hidden">
+      <header className="sticky top-0 z-40 border-b bg-background shadow-md md:hidden">
         <div className="flex h-16 items-center justify-between px-4">
           <Logo />
         </div>

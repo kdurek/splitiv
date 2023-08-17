@@ -50,7 +50,7 @@ export function TrpcProvider({ children }: TrpcProviderProps) {
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
-    })
+    }),
   );
 
   return (

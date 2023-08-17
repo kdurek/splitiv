@@ -6,10 +6,10 @@ import type { Dinero } from "dinero.js";
 export function upsert<T extends { amount: Dinero<number> }>(
   array: T[],
   element: T,
-  elementProp: keyof T
+  elementProp: keyof T,
 ) {
   const i = array.findIndex(
-    (_element) => _element[elementProp] === element[elementProp]
+    (_element) => _element[elementProp] === element[elementProp],
   );
 
   if (i > -1) {

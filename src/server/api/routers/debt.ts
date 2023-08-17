@@ -9,7 +9,7 @@ export const debtRouter = createTRPCRouter({
         payerId: z.string().cuid2().optional(),
         debtorId: z.string().cuid2().optional(),
         isSettled: z.boolean().optional(),
-      })
+      }),
     )
     .query(({ input, ctx }) => {
       return ctx.prisma.expenseDebt.findMany({

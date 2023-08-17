@@ -63,7 +63,7 @@ export function ExpenseForm({ group }: ExpenseFormProps) {
       .filter(
         (debt) =>
           parseFloat(debt.amount) !== 0 ||
-          (values.payer === debt.id && parseFloat(debt.amount) !== 0)
+          (values.payer === debt.id && parseFloat(debt.amount) !== 0),
       )
       .map((debt) => {
         const isPayer = values.payer === debt.id;
@@ -87,7 +87,7 @@ export function ExpenseForm({ group }: ExpenseFormProps) {
         onSuccess() {
           router.push("/");
         },
-      }
+      },
     );
   };
 

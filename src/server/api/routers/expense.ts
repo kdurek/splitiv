@@ -14,7 +14,7 @@ export const expenseRouter = createTRPCRouter({
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
         isSettled: z.boolean().optional(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const items = await ctx.prisma.expense.findMany({
@@ -93,7 +93,7 @@ export const expenseRouter = createTRPCRouter({
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
         isSettled: z.boolean().optional(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       return ctx.prisma.expense.findMany({
@@ -168,9 +168,9 @@ export const expenseRouter = createTRPCRouter({
             amount: z.number(),
             debtorId: z.string(),
             settled: z.number().default(0),
-          })
+          }),
         ),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.expense.create({
@@ -210,9 +210,9 @@ export const expenseRouter = createTRPCRouter({
             amount: z.number(),
             debtorId: z.string(),
             settled: z.number().default(0),
-          })
+          }),
         ),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.expense.update({
@@ -239,7 +239,7 @@ export const expenseRouter = createTRPCRouter({
       z.object({
         expenseDebtId: z.string(),
         settled: z.number().default(0),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const expenseDebt = await ctx.prisma.expenseDebt.findUniqueOrThrow({
@@ -298,9 +298,9 @@ export const expenseRouter = createTRPCRouter({
           z.object({
             id: z.string().cuid2(),
             settled: z.number(),
-          })
+          }),
         ),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.$transaction(async (tx) => {
@@ -313,8 +313,8 @@ export const expenseRouter = createTRPCRouter({
               data: {
                 settled: expenseDebt.settled,
               },
-            })
-          )
+            }),
+          ),
         );
       });
     }),

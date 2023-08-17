@@ -37,19 +37,19 @@ export function ExpenseFormMethods() {
   const [activeTab, setActiveTab] = useState("unequal");
   const [equalSplit, setEqualSplit] = useState<string[]>([]);
   const [ratioSplit, setRatioSplit] = useState<{ [key: string]: number }>(
-    defaultRatioSplit
+    defaultRatioSplit,
   );
 
   const usedAmount = form
     .watch("debts")
     .reduce(
       (prev, curr) => Decimal.add(prev, curr.amount || 0),
-      new Decimal(0)
+      new Decimal(0),
     );
 
   const remainingAmount = Decimal.sub(
     form.watch("amount") || 0,
-    usedAmount || 0
+    usedAmount || 0,
   );
 
   const divideByRatio = useCallback(() => {
@@ -117,12 +117,12 @@ export function ExpenseFormMethods() {
     });
 
     const usersToAllocate = getValues("debts").filter((user) =>
-      equalSplit.includes(user.id)
+      equalSplit.includes(user.id),
     );
 
     const allocated = allocate(
       dineroAmount,
-      new Array(usersToAllocate.length).fill(1)
+      new Array(usersToAllocate.length).fill(1),
     );
 
     const allocatedUsers = usersToAllocate.map((user, index) => ({
@@ -219,7 +219,7 @@ export function ExpenseFormMethods() {
                       return checked
                         ? setEqualSplit([...equalSplit, debt.id])
                         : setEqualSplit(
-                            equalSplit.filter((value) => value !== debt.id)
+                            equalSplit.filter((value) => value !== debt.id),
                           );
                     }}
                   />

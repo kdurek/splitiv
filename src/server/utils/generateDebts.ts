@@ -21,12 +21,12 @@ function upsertDebt<T extends { amount: string }>(
   array: T[],
   element: T,
   elementProp: keyof T,
-  secondElementProp: keyof T
+  secondElementProp: keyof T,
 ) {
   const i = array.findIndex(
     (_element) =>
       _element[elementProp] === element[elementProp] &&
-      _element[secondElementProp] === element[secondElementProp]
+      _element[secondElementProp] === element[secondElementProp],
   );
 
   if (i > -1) {
@@ -69,7 +69,7 @@ function reduceDebts(debts: IDebt[]) {
             amount: amount.toFixed(2),
           });
         }
-      }
+      },
     );
   });
 
@@ -101,7 +101,7 @@ export function generateDebts(debts: DebtWithExpense[]) {
           amount: toUnit(netDineroAmount).toFixed(2),
         },
         "fromId",
-        "toId"
+        "toId",
       );
     }
   });

@@ -76,7 +76,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string().cuid2(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const contextUserDebts = await ctx.prisma.expenseDebt.findMany({

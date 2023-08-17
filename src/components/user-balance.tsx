@@ -78,14 +78,15 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
         Szczegóły
       </Link>
 
-      {userGets.some((debt) => debt.fromId === session?.user.id) && (
-        <Link
-          href={`/wydatki/uzytkownik/${member.id}/rozliczenie`}
-          className={cn(buttonVariants({ variant: "outline" }))}
-        >
-          Rozliczenie
-        </Link>
-      )}
+      {userGets.some((debt) => debt.fromId === session?.user.id) ||
+        (userDebts.some((debt) => debt.toId === session?.user.id) && (
+          <Link
+            href={`/wydatki/uzytkownik/${member.id}/rozliczenie`}
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
+            Rozliczenie
+          </Link>
+        ))}
     </div>
   );
 }

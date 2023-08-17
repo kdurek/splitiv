@@ -16,7 +16,7 @@ export const expenseFormSchema = z
       },
       {
         message: "Kwota musi być większa niż zero",
-      }
+      },
     ),
     payer: z.string().cuid2({ message: "Musisz wybrać osobę płacącą" }),
     debts: z.array(
@@ -24,7 +24,7 @@ export const expenseFormSchema = z
         id: z.string(),
         name: z.string(),
         amount: z.string({ required_error: "Musisz wpisać kwotę" }),
-      })
+      }),
     ),
   })
   .refine(
@@ -32,15 +32,15 @@ export const expenseFormSchema = z
       const usedAmount = Number(
         values.debts.reduce(
           (prev, curr) => Decimal.add(prev, curr.amount),
-          new Decimal(0)
-        )
+          new Decimal(0),
+        ),
       );
       return parseFloat(values.amount) === usedAmount;
     },
     {
       message: "Kwota wydatku nie jest równo rozdzielona pomiędzy użytkowników",
       path: ["debts"],
-    }
+    },
   )
   .refine(
     (values) => {
@@ -56,7 +56,7 @@ export const expenseFormSchema = z
       message:
         "Kwota wydatku nie może być całkowicie przypisana do osoby płacącej",
       path: ["debts"],
-    }
+    },
   );
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;

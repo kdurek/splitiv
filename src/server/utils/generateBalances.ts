@@ -42,7 +42,7 @@ export function generateBalances(debts: DebtWithExpense[]) {
           userId: debt.debtorId,
           amount: multiply(netDineroAmount, -1),
         },
-        "userId"
+        "userId",
       );
       upsert(
         usersBalanceArray,
@@ -50,7 +50,7 @@ export function generateBalances(debts: DebtWithExpense[]) {
           userId: debt.expense.payerId,
           amount: netDineroAmount,
         },
-        "userId"
+        "userId",
       );
     }
   });

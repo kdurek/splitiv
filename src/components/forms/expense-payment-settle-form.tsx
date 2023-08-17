@@ -55,23 +55,23 @@ export function ExpensePaymentSettleForm({
     useSettleExpenseDebts();
 
   const filteredDebts = debts.filter((debt) =>
-    form.watch("debts").includes(debt.id)
+    form.watch("debts").includes(debt.id),
   );
 
   const paramUserDebts = filteredDebts.filter(
-    (debt) => debt.debtorId === paramUser?.id
+    (debt) => debt.debtorId === paramUser?.id,
   );
   const currentUserDebts = filteredDebts.filter(
-    (debt) => debt.debtorId === currentUser?.id
+    (debt) => debt.debtorId === currentUser?.id,
   );
 
   const paramUserTotalAmount = paramUserDebts.reduce(
     (acc, cur) => Decimal.add(acc, Decimal.sub(cur.amount, cur.settled)),
-    new Decimal(0)
+    new Decimal(0),
   );
   const currentUserTotalAmount = currentUserDebts.reduce(
     (acc, cur) => Decimal.add(acc, Decimal.sub(cur.amount, cur.settled)),
-    new Decimal(0)
+    new Decimal(0),
   );
 
   const totalDiff = currentUserTotalAmount.greaterThan(paramUserTotalAmount)
@@ -103,13 +103,13 @@ export function ExpensePaymentSettleForm({
       {
         onSuccess() {
           const hasExpenseDebtsLeft = debts.some(
-            (debt) => !values.debts.includes(debt.id)
+            (debt) => !values.debts.includes(debt.id),
           );
           if (!hasExpenseDebtsLeft) {
             router.push("/");
           }
         },
-      }
+      },
     );
   };
 
@@ -150,8 +150,8 @@ export function ExpensePaymentSettleForm({
                                   ? field.onChange([...field.value, item.id])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
+                                        (value) => value !== item.id,
+                                      ),
                                     );
                               }}
                             />
@@ -204,7 +204,7 @@ export function ExpensePaymentSettleForm({
               onClick={() =>
                 form.setValue(
                   "debts",
-                  debts.flatMap((debt) => debt.id)
+                  debts.flatMap((debt) => debt.id),
                 )
               }
             >

@@ -70,7 +70,7 @@ export const groupRouter = createTRPCRouter({
     const membersWithBalances = group.members.map((member) => {
       const findBalance = (userId: string) => {
         const foundBalance = generatedBalances.find(
-          (balance) => balance.userId === userId
+          (balance) => balance.userId === userId,
         );
         if (!foundBalance) return "0.00";
         return foundBalance.amount;

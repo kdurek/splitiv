@@ -26,7 +26,7 @@ const expenseCardPaymentFormSchema = z.object({
     },
     {
       message: "Kwota musi być większa niż zero",
-    }
+    },
   ),
 });
 
@@ -87,7 +87,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
         onError(error) {
           form.setError("amount", error);
         },
-      }
+      },
     );
   };
 
@@ -105,7 +105,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
         onError(error) {
           form.setError("amount", error);
         },
-      }
+      },
     );
   };
 
@@ -131,10 +131,10 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
           <div>
             {isFullySettled
               ? `${debtorFirstName} - ${Number(debt.amount).toFixed(
-                  2
+                  2,
                 )} zł oddane`
               : `${debtorFirstName} - ${maximumAmount.toFixed(
-                  2
+                  2,
                 )} zł do oddania`}
           </div>
         </div>

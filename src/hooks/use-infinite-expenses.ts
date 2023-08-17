@@ -34,6 +34,6 @@ export function useInfiniteExpenses({
         pages: [infiniteExpensesInitialData],
         pageParams: [],
       },
-    }
+    },
   );
 }

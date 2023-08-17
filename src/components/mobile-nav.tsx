@@ -19,7 +19,7 @@ export function MobileNav() {
           className={cn(
             buttonVariants({ variant: "ghost" }),
             "mx-auto flex h-8 w-16 items-center justify-center",
-            pathname === "/" ? "text-foreground" : "text-muted-foreground"
+            pathname === "/" ? "text-foreground" : "text-muted-foreground",
           )}
         >
           <CircleDollarSign />
@@ -34,7 +34,7 @@ export function MobileNav() {
             "mx-auto flex h-8 w-16 items-center justify-center",
             pathname === "/wydatki/dodaj"
               ? "text-foreground"
-              : "text-muted-foreground"
+              : "text-muted-foreground",
           )}
         >
           <Plus />
@@ -49,7 +49,7 @@ export function MobileNav() {
             "mx-auto flex h-8 w-16 items-center justify-center",
             pathname === "/ustawienia"
               ? "text-foreground"
-              : "text-muted-foreground"
+              : "text-muted-foreground",
           )}
         >
           <Settings />

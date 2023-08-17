@@ -39,10 +39,10 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
       .some(
         (debt) =>
           (debt.settled !== debt.amount && Number(debt.settled) !== 0) ||
-          debt.settled === debt.amount
+          debt.settled === debt.amount,
       );
     const isFullySettled = expense.debts.every(
-      (debt) => debt.settled === debt.amount
+      (debt) => debt.settled === debt.amount,
     );
 
     if (isFullySettled) {
@@ -101,7 +101,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
           )}
         </DialogHeader>
         <div>{`${payerFirstName} - zapłacone ${Number(expense.amount).toFixed(
-          2
+          2,
         )} zł`}</div>
         <div className="flex flex-col gap-4">
           {expense.debts.map((debt) => (

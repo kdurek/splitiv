@@ -22,6 +22,11 @@ export const metadata: Metadata = {
     { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
     { media: '(prefers-color-scheme: dark)', color: '#1A1B1E' },
   ],
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 const poppins = Poppins({

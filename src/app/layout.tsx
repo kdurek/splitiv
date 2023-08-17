@@ -1,41 +1,45 @@
-import { Poppins } from "next/font/google";
-import { cookies } from "next/headers";
+/* eslint-disable import/no-duplicates */
+import './globals.css';
 
-import ClientRootLayout from "./client-layout";
+import { TailwindIndicator } from 'components/tailwind-indicator';
+import { setDefaultOptions } from 'date-fns';
+import { pl } from 'date-fns/locale';
+import type { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
 
-import type { Metadata } from "next";
+import { NextAuthProvider, TrpcProvider } from './providers';
+
+setDefaultOptions({
+  locale: pl,
+});
 
 export const metadata: Metadata = {
-  title: "Splitiv",
-  description: "Expense management",
-  applicationName: "Splitiv",
-  manifest: "/manifest.json",
+  title: 'Splitiv',
+  description: 'Expense management',
+  applicationName: 'Splitiv',
+  manifest: '/manifest.json',
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#1A1B1E" },
+    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
+    { media: '(prefers-color-scheme: dark)', color: '#1A1B1E' },
   ],
 };
 
 const poppins = Poppins({
-  subsets: ["latin-ext"],
-  weight: ["400", "500", "700"],
+  subsets: ['latin-ext'],
+  weight: ['400', '500', '700'],
   preload: true,
 });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const cookieStore = cookies();
-  const defaultColorScheme = cookieStore.get("mantine-color-scheme")?.value;
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" className={poppins.className}>
       <body>
-        <ClientRootLayout defaultColorScheme={defaultColorScheme}>
-          {children}
-        </ClientRootLayout>
+        <NextAuthProvider>
+          <TrpcProvider>
+            {children}
+            <TailwindIndicator />
+          </TrpcProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

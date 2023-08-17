@@ -1,7 +1,7 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const expenseRouter = createTRPCRouter({
   getInfinite: protectedProcedure
@@ -9,31 +9,30 @@ export const expenseRouter = createTRPCRouter({
       z.object({
         limit: z.number(),
         cursor: z.string().nullish(),
-        groupId: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
         isSettled: z.boolean().optional(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const items = await ctx.prisma.expense.findMany({
         take: input.limit + 1,
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
-          groupId: input.groupId,
+          groupId: ctx.session.activeGroupId,
           OR: [
             {
               name: {
-                contains: input.name || "",
-                mode: "insensitive",
+                contains: input.name || '',
+                mode: 'insensitive',
               },
             },
             {
               description: {
-                contains: input.description || "",
-                mode: "insensitive",
+                contains: input.description || '',
+                mode: 'insensitive',
               },
             },
           ],
@@ -42,14 +41,8 @@ export const expenseRouter = createTRPCRouter({
             some: {
               debtorId: input.debtorId || undefined,
               settled: {
-                lt:
-                  input.isSettled === false
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
-                equals:
-                  input.isSettled === true
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
+                lt: input.isSettled === false ? ctx.prisma.expenseDebt.fields.amount : undefined,
+                equals: input.isSettled === true ? ctx.prisma.expenseDebt.fields.amount : undefined,
               },
             },
           },
@@ -58,7 +51,7 @@ export const expenseRouter = createTRPCRouter({
           payer: true,
           debts: {
             orderBy: {
-              debtorId: "desc",
+              debtorId: 'desc',
             },
             include: {
               expense: {
@@ -71,7 +64,7 @@ export const expenseRouter = createTRPCRouter({
           },
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       });
       let nextCursor: typeof input.cursor | undefined;
@@ -89,30 +82,29 @@ export const expenseRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().optional(),
-        groupId: z.string().optional(),
         name: z.string().optional(),
         description: z.string().optional(),
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
         isSettled: z.boolean().optional(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       return ctx.prisma.expense.findMany({
         take: input.limit || undefined,
         where: {
-          groupId: input.groupId,
+          groupId: ctx.session.activeGroupId,
           OR: [
             {
               name: {
-                contains: input.name || "",
-                mode: "insensitive",
+                contains: input.name || '',
+                mode: 'insensitive',
               },
             },
             {
               description: {
-                contains: input.description || "",
-                mode: "insensitive",
+                contains: input.description || '',
+                mode: 'insensitive',
               },
             },
           ],
@@ -121,14 +113,8 @@ export const expenseRouter = createTRPCRouter({
             some: {
               debtorId: input.debtorId || undefined,
               settled: {
-                lt:
-                  input.isSettled === false
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
-                equals:
-                  input.isSettled === true
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
+                lt: input.isSettled === false ? ctx.prisma.expenseDebt.fields.amount : undefined,
+                equals: input.isSettled === true ? ctx.prisma.expenseDebt.fields.amount : undefined,
               },
             },
           },
@@ -137,7 +123,7 @@ export const expenseRouter = createTRPCRouter({
           payer: true,
           debts: {
             orderBy: {
-              debtorId: "desc",
+              debtorId: 'desc',
             },
             include: {
               expense: {
@@ -149,20 +135,16 @@ export const expenseRouter = createTRPCRouter({
             },
           },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
       });
     }),
 
   create: protectedProcedure
     .input(
       z.object({
-        groupId: z.string(),
         name: z.string(),
         description: z
-          .union([
-            z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
-            z.string().length(0),
-          ])
+          .union([z.string().min(3, { message: 'Minimalna długość to 3 znaki' }), z.string().length(0)])
           .optional(),
         payerId: z.string(),
         amount: z.number(),
@@ -171,16 +153,16 @@ export const expenseRouter = createTRPCRouter({
             amount: z.number(),
             debtorId: z.string(),
             settled: z.number().default(0),
-          })
+          }),
         ),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.expense.create({
         data: {
           group: {
             connect: {
-              id: input.groupId,
+              id: ctx.session.activeGroupId,
             },
           },
           name: input.name,
@@ -205,7 +187,6 @@ export const expenseRouter = createTRPCRouter({
     .input(
       z.object({
         expenseId: z.string(),
-        groupId: z.string(),
         name: z.string(),
         payerId: z.string(),
         amount: z.number(),
@@ -214,9 +195,9 @@ export const expenseRouter = createTRPCRouter({
             amount: z.number(),
             debtorId: z.string(),
             settled: z.number().default(0),
-          })
+          }),
         ),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.expense.update({
@@ -243,7 +224,7 @@ export const expenseRouter = createTRPCRouter({
       z.object({
         expenseDebtId: z.string(),
         settled: z.number().default(0),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const expenseDebt = await ctx.prisma.expenseDebt.findUniqueOrThrow({
@@ -261,27 +242,24 @@ export const expenseRouter = createTRPCRouter({
         },
       });
 
-      if (
-        ctx.session.user.id !== expenseDebt.debtorId &&
-        ctx.session.user.id !== expenseDebt.expense.payerId
-      ) {
+      if (ctx.session.user.id !== expenseDebt.debtorId && ctx.session.user.id !== expenseDebt.expense.payerId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Tylko osoba płacąca i oddająca dług może go edytować",
+          code: 'BAD_REQUEST',
+          message: 'Tylko osoba płacąca i oddająca dług może go edytować',
         });
       }
 
       if (input.settled > Number(expenseDebt.amount)) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Kwota do oddania nie może być większa niż kwota do zapłaty",
+          code: 'BAD_REQUEST',
+          message: 'Kwota do oddania nie może być większa niż kwota do zapłaty',
         });
       }
 
       if (expenseDebt?.expense.payerId === expenseDebt.debtorId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Nie można edytować kwoty do oddania osoby płacącej",
+          code: 'BAD_REQUEST',
+          message: 'Nie można edytować kwoty do oddania osoby płacącej',
         });
       }
 
@@ -302,30 +280,32 @@ export const expenseRouter = createTRPCRouter({
           z.object({
             id: z.string().cuid2(),
             settled: z.number(),
-          })
+          }),
         ),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
-      return input.expenseDebts.forEach(async (debt) => {
-        await ctx.prisma.expenseDebt.update({
-          where: {
-            id: debt.id,
-          },
-          data: {
-            settled: debt.settled,
-          },
-        });
+      return ctx.prisma.$transaction(async (tx) => {
+        await Promise.all(
+          input.expenseDebts.map((expenseDebt) =>
+            tx.expenseDebt.update({
+              where: {
+                id: expenseDebt.id,
+              },
+              data: {
+                settled: expenseDebt.settled,
+              },
+            }),
+          ),
+        );
       });
     }),
 
-  delete: protectedProcedure
-    .input(z.object({ expenseId: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.expense.delete({
-        where: {
-          id: input.expenseId,
-        },
-      });
-    }),
+  delete: protectedProcedure.input(z.object({ expenseId: z.string() })).mutation(async ({ input, ctx }) => {
+    return ctx.prisma.expense.delete({
+      where: {
+        id: input.expenseId,
+      },
+    });
+  }),
 });

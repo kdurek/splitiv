@@ -1,6 +1,5 @@
-import { dinero } from "dinero.js";
-
-import type { Currency } from "dinero.js";
+import type { Currency } from 'dinero.js';
+import { dinero } from 'dinero.js';
 
 export function dineroFromString({
   amount: string,

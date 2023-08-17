@@ -64,15 +64,17 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
     <Dialog>
       <DialogTrigger asChild>
         <button type="button" className="w-full rounded-md border p-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center justify-between gap-4">
-              {getSettledStateIcon()}
-              <div className="text-start">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4 overflow-hidden">
+              <div>{getSettledStateIcon()}</div>
+              <div className="overflow-hidden text-start">
                 <div className="line-clamp-1">{expense.name}</div>
                 <div className="text-sm text-muted-foreground">{formattedDate}</div>
               </div>
             </div>
-            <div className="text-sm text-muted-foreground">{Number(expense.amount).toFixed(2)} zł</div>
+            <div className="whitespace-nowrap text-sm text-muted-foreground">
+              {Number(expense.amount).toFixed(2)} zł
+            </div>
           </div>
         </button>
       </DialogTrigger>

@@ -124,8 +124,7 @@ export function ExpensePaymentSettleForm({ paramUser, currentUser, debts }: Expe
                           <div className="text-sm text-muted-foreground">{item.debtor.name}</div>
                           <ChevronRight />
                           <div className="text-sm text-muted-foreground">
-                            {(Number(item.amount) - Number(item.settled)).toFixed(2)}
-                            zł
+                            {(Number(item.amount) - Number(item.settled)).toFixed(2)} zł
                           </div>
                           <ChevronRight />
                           <div className="text-sm text-muted-foreground">{item.expense.payer.name}</div>
@@ -147,10 +146,7 @@ export function ExpensePaymentSettleForm({ paramUser, currentUser, debts }: Expe
           <div className="grid grid-cols-5 place-items-center rounded-md border p-4">
             <div className="text-sm text-muted-foreground">{debtor?.name}</div>
             <ChevronRight />
-            <div className="text-sm text-muted-foreground">
-              {totalDiff}
-              zł
-            </div>
+            <div className="text-sm text-muted-foreground">{totalDiff} zł</div>
             <ChevronRight />
             <div className="text-sm text-muted-foreground">{payer?.name}</div>
           </div>

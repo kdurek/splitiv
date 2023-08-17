@@ -52,8 +52,7 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
                 <div className="text-sm text-muted-foreground">{credit.debtor.name}</div>
                 <ChevronRight />
                 <div className="text-sm text-muted-foreground">
-                  {(Number(credit.amount) - Number(credit.settled)).toFixed(2)}
-                  zł
+                  {(Number(credit.amount) - Number(credit.settled)).toFixed(2)} zł
                 </div>
                 <ChevronRight />
                 <div className="text-sm text-muted-foreground">{credit.expense.payer.name}</div>

@@ -30,7 +30,7 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
         </TabsList>
         <TabsContent value="debts" className="space-y-2">
           {debts.map((debt) => (
-            <div className="rounded-md border p-4">
+            <div key={debt.id} className="rounded-md border p-4">
               <div className="line-clamp-1">{debt.expense.name}</div>
               <div className="grid grid-cols-5 place-items-center">
                 <div className="text-sm text-muted-foreground">{debt.debtor.name}</div>
@@ -46,7 +46,7 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
         </TabsContent>
         <TabsContent value="credits" className="space-y-2">
           {credits.map((credit) => (
-            <div className="rounded-md border p-4">
+            <div key={credit.id} className="rounded-md border p-4">
               <div className="line-clamp-1">{credit.expense.name}</div>
               <div className="grid grid-cols-5 place-items-center">
                 <div className="text-sm text-muted-foreground">{credit.debtor.name}</div>

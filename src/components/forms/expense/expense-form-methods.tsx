@@ -223,14 +223,14 @@ export function ExpenseFormMethods() {
         </TabsContent>
       </Tabs>
 
-      {remainingAmount.equals(0) && <div className="text-bold text-center text-teal-500">Przydzielono poprawnie</div>}
+      {remainingAmount.equals(0) && <div className="text-center font-bold text-teal-500">Przydzielono poprawnie</div>}
       {remainingAmount.lessThan(0) && (
-        <div className="text-bold text-center text-red-500">
+        <div className="text-center font-bold text-red-500">
           {`Przydzieliłeś za dużo o ${remainingAmount.toFixed(2)} zł`}
         </div>
       )}
       {remainingAmount.greaterThan(0) && (
-        <div className="text-bold text-center text-red-500">
+        <div className="text-center font-bold text-red-500">
           {`Musisz przydzielić jeszcze ${remainingAmount.toFixed(2)} zł`}
         </div>
       )}

@@ -1,5 +1,6 @@
 import { ExpenseFeed } from "components/expense-feed";
 import { ExpenseLegend } from "components/expense-legend";
+import { ExpenseListFilters } from "components/filters";
 import { Section } from "components/section";
 import { UserBalance } from "components/user-balance";
 import { createTrpcCaller } from "server/api/caller";
@@ -16,6 +17,7 @@ export default async function ExpensesPage() {
       <div className="flex flex-col gap-4">
         <UserBalance group={group} />
         <ExpenseLegend />
+        <ExpenseListFilters group={group} />
         <ExpenseFeed infiniteExpensesInitialData={infiniteExpense} />
       </div>
     </Section>

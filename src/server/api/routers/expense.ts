@@ -303,15 +303,19 @@ export const expenseRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      return input.expenseDebts.forEach(async (debt) => {
-        await ctx.prisma.expenseDebt.update({
-          where: {
-            id: debt.id,
-          },
-          data: {
-            settled: debt.settled,
-          },
-        });
+      return ctx.prisma.$transaction(async (tx) => {
+        await Promise.all(
+          input.expenseDebts.map((expenseDebt) =>
+            tx.expenseDebt.update({
+              where: {
+                id: expenseDebt.id,
+              },
+              data: {
+                settled: expenseDebt.settled,
+              },
+            })
+          )
+        );
       });
     }),
 

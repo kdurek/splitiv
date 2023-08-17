@@ -1,22 +1,25 @@
+import { useAtomValue } from "jotai";
+
+import {
+  expenseFilterDebtorIdAtom,
+  expenseFilterPayerIdAtom,
+  expenseFilterSearchTextAtom,
+} from "lib/atoms";
 import { api } from "utils/api";
 
 import type { GetInfiniteExpenses } from "utils/api";
 
 interface UseInfiniteExpensesProps {
-  searchText?: string;
-  payerId?: string;
-  debtorId?: string;
-  isSettled?: boolean;
   infiniteExpensesInitialData: GetInfiniteExpenses;
 }
 
 export function useInfiniteExpenses({
-  searchText,
-  payerId,
-  debtorId,
-  isSettled,
   infiniteExpensesInitialData,
 }: UseInfiniteExpensesProps) {
+  const searchText = useAtomValue(expenseFilterSearchTextAtom);
+  const payerId = useAtomValue(expenseFilterPayerIdAtom);
+  const debtorId = useAtomValue(expenseFilterDebtorIdAtom);
+
   return api.expense.getInfinite.useInfiniteQuery(
     {
       limit: 10,
@@ -24,7 +27,6 @@ export function useInfiniteExpenses({
       description: searchText,
       payerId,
       debtorId,
-      isSettled,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

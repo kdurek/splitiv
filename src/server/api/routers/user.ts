@@ -72,6 +72,72 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
+  getPaymentSettle: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().cuid2(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const contextUserDebts = await ctx.prisma.expenseDebt.findMany({
+        where: {
+          debtorId: ctx.session.user.id,
+          settled: {
+            lt: ctx.prisma.expenseDebt.fields.amount,
+          },
+          expense: {
+            payer: {
+              is: {
+                id: input.userId,
+              },
+              isNot: {
+                id: ctx.session.user.id,
+              },
+            },
+            groupId: ctx.session.activeGroupId,
+          },
+        },
+        include: {
+          debtor: true,
+          expense: {
+            include: {
+              payer: true,
+            },
+          },
+        },
+      });
+
+      const pageUserDebts = await ctx.prisma.expenseDebt.findMany({
+        where: {
+          debtorId: input.userId,
+          settled: {
+            lt: ctx.prisma.expenseDebt.fields.amount,
+          },
+          expense: {
+            payer: {
+              is: {
+                id: ctx.session.user.id,
+              },
+              isNot: {
+                id: input.userId,
+              },
+            },
+            groupId: ctx.session.activeGroupId,
+          },
+        },
+        include: {
+          debtor: true,
+          expense: {
+            include: {
+              payer: true,
+            },
+          },
+        },
+      });
+
+      return [...contextUserDebts, ...pageUserDebts];
+    }),
+
   getAllNotInGroup: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findMany({
       where: {

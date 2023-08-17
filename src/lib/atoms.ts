@@ -1,3 +1,5 @@
 import { atom } from "jotai";
 
-const filtersAtom = atom({ searchText: "", payerId: "", debtorId: "" });
+export const expenseFilterSearchTextAtom = atom("");
+export const expenseFilterPayerIdAtom = atom("");
+export const expenseFilterDebtorIdAtom = atom("");

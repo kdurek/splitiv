@@ -1,77 +1,110 @@
-// export interface ExpenseFilters {
-//   searchText?: string;
-//   payerId?: string;
-//   debtorId?: string;
-//   isSettled?: boolean;
-// }
-// interface ExpenseListFiltersProps {
-//   group: GetGroupById;
-//   setFilters: Dispatch<SetStateAction<ExpenseFilters>>;
-// }
+"use client";
 
-// export function ExpenseListFilters({
-//   group,
-//   setFilters,
-// }: ExpenseListFiltersProps) {
-//   const [searchText, setSearchText] = useDebouncedState<string>("", 500);
-//   const [payerId, setPayerId] = useState<string>("");
-//   const [debtorId, setDebtorId] = useState<string>("");
+import { useDebouncedState } from "@mantine/hooks";
+import { useAtom, useSetAtom } from "jotai";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useState } from "react";
 
-//   const groupUsersToSelect = [
-//     { value: "", label: "Wszyscy" },
-//     ...group.members.map((user) => ({
-//       value: user.id,
-//       label: user.name ?? "Brak nazwy",
-//     })),
-//   ];
+import {
+  expenseFilterDebtorIdAtom,
+  expenseFilterPayerIdAtom,
+  expenseFilterSearchTextAtom,
+} from "lib/atoms";
 
-//   useEffect(() => {
-//     setFilters({
-//       searchText,
-//       payerId,
-//       debtorId,
-//     });
-//   }, [searchText, debtorId, payerId, setFilters]);
+import { Button } from "./ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
-//   const handleFiltersReset = () => {
-//     setSearchText("");
-//     setPayerId("");
-//     setDebtorId("");
-//   };
+import type { GetGroupById } from "utils/api";
 
-//   return (
-//     <Accordion variant="contained">
-//       <Accordion.Item value="filters">
-//         <Accordion.Control h={60} pl={0}>
-//           <TextInput
-//             placeholder="Nazwa lub opis..."
-//             defaultValue={searchText}
-//             variant="unstyled"
-//             size="xl"
-//             onChange={(event) => setSearchText(event.currentTarget.value)}
-//             icon={<IconSearch size={20} />}
-//           />
-//         </Accordion.Control>
-//         <Accordion.Panel>
-//           <Stack spacing="xs">
-//             <NativeSelect
-//               label="Zapłacone przez"
-//               defaultValue={payerId}
-//               onChange={(event) => setPayerId(event.currentTarget.value)}
-//               data={groupUsersToSelect}
-//             />
-//             <NativeSelect
-//               label="Pożyczone przez"
-//               value={debtorId}
-//               onChange={(event) => setDebtorId(event.currentTarget.value)}
-//               data={groupUsersToSelect}
-//             />
-//             <Button variant="subtle" color="red" onClick={handleFiltersReset}>
-//               Resetuj
-//             </Button>
-//           </Stack>
-//         </Accordion.Panel>
-//       </Accordion.Item>
-//     </Accordion>
-//   );
-// }
+export interface ExpenseFilters {
+  searchText?: string;
+  payerId?: string;
+  debtorId?: string;
+  isSettled?: boolean;
+}
+
+interface ExpenseListFiltersProps {
+  group: GetGroupById;
+}
+
+export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
+  const [open, setOpen] = useState(false);
+  const [searchTextDebounced, setSearchTextDebounced] =
+    useDebouncedState<string>("", 500);
+
+  const setSearchText = useSetAtom(expenseFilterSearchTextAtom);
+  const [payerId, setPayerId] = useAtom(expenseFilterPayerIdAtom);
+  const setDebtorId = useSetAtom(expenseFilterDebtorIdAtom);
+
+  useEffect(() => {
+    setSearchText(searchTextDebounced);
+  }, [searchTextDebounced, setSearchText]);
+
+  return (
+    <Collapsible open={open} onOpenChange={(value) => setOpen(value)}>
+      <div className="flex items-center gap-2">
+        <Input
+          placeholder="Szukaj..."
+          defaultValue={searchTextDebounced}
+          onChange={(event) =>
+            setSearchTextDebounced(event.currentTarget.value)
+          }
+        />
+        <div>
+          <CollapsibleTrigger asChild>
+            <Button type="button" variant="outline" size="icon">
+              {open ? <ChevronUp /> : <ChevronDown />}
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+      </div>
+
+      <CollapsibleContent className="mt-4 border p-4 rounded-md space-y-4">
+        <div>
+          <Label>Płacący</Label>
+          <Select value={payerId} onValueChange={(value) => setPayerId(value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Brak" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Brak</SelectItem>
+              {group.members.map((member) => (
+                <SelectItem key={member.id} value={member.id}>
+                  {member.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Pożyczający</Label>
+          <Select onValueChange={(value) => setDebtorId(value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Brak" />
+            </SelectTrigger>
+            <SelectContent>
+              {group.members.map((member) => (
+                <SelectItem key={member.id} value={member.id}>
+                  {member.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}

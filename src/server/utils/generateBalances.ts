@@ -1,11 +1,10 @@
-import { PLN } from "@dinero.js/currencies";
-import { multiply, subtract, toUnit } from "dinero.js";
+import { PLN } from '@dinero.js/currencies';
+import type { ExpenseDebt, Prisma } from '@prisma/client';
+import type { Dinero } from 'dinero.js';
+import { multiply, subtract, toUnit } from 'dinero.js';
 
-import { dineroFromString } from "./dineroFromString";
-import { upsert } from "./upsert";
-
-import type { ExpenseDebt, Prisma } from "@prisma/client";
-import type { Dinero } from "dinero.js";
+import { dineroFromString } from './dineroFromString';
+import { upsert } from './upsert';
 
 export interface IUserBalances {
   userId: string;
@@ -42,7 +41,7 @@ export function generateBalances(debts: DebtWithExpense[]) {
           userId: debt.debtorId,
           amount: multiply(netDineroAmount, -1),
         },
-        "userId",
+        'userId',
       );
       upsert(
         usersBalanceArray,
@@ -50,7 +49,7 @@ export function generateBalances(debts: DebtWithExpense[]) {
           userId: debt.expense.payerId,
           amount: netDineroAmount,
         },
-        "userId",
+        'userId',
       );
     }
   });

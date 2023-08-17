@@ -1,6 +1,5 @@
-import { useRouter } from "next/navigation";
-
-import { api } from "utils/api";
+import { useRouter } from 'next/navigation';
+import { api } from 'utils/api';
 
 export function useSettleExpenseDebts() {
   const router = useRouter();

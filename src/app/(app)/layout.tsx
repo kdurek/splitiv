@@ -1,22 +1,17 @@
-import { redirect } from "next/navigation";
+import { CreateGroupForm } from 'components/forms/create-group-form';
+import { GroupSelectForm } from 'components/forms/group-select-form';
+import { Logo } from 'components/logo';
+import { MobileNav } from 'components/mobile-nav';
+import { Separator } from 'components/ui/separator';
+import { redirect } from 'next/navigation';
+import { createTrpcCaller } from 'server/api/caller';
+import { getServerAuthSession } from 'server/auth';
 
-import { CreateGroupForm } from "components/forms/create-group-form";
-import { GroupSelectForm } from "components/forms/group-select-form";
-import { Logo } from "components/logo";
-import { MobileNav } from "components/mobile-nav";
-import { Separator } from "components/ui/separator";
-import { createTrpcCaller } from "server/api/caller";
-import { getServerAuthSession } from "server/auth";
-
-export default async function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerAuthSession();
 
   if (!session) {
-    redirect("/logowanie");
+    redirect('/logowanie');
   }
 
   if (!session?.activeGroupId) {
@@ -24,7 +19,7 @@ export default async function AppLayout({
     const groups = await caller.group.getAll();
 
     return (
-      <div className="p-4 space-y-4">
+      <div className="space-y-4 p-4">
         <GroupSelectForm groups={groups} />
         <Separator />
         <CreateGroupForm />

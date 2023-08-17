@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const debtRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -20,14 +20,8 @@ export const debtRouter = createTRPCRouter({
           },
           debtorId: input.debtorId || undefined,
           settled: {
-            lt:
-              input.isSettled === false
-                ? ctx.prisma.expenseDebt.fields.amount
-                : undefined,
-            equals:
-              input.isSettled === true
-                ? ctx.prisma.expenseDebt.fields.amount
-                : undefined,
+            lt: input.isSettled === false ? ctx.prisma.expenseDebt.fields.amount : undefined,
+            equals: input.isSettled === true ? ctx.prisma.expenseDebt.fields.amount : undefined,
           },
         },
         include: {
@@ -36,7 +30,7 @@ export const debtRouter = createTRPCRouter({
         },
         orderBy: {
           expense: {
-            createdAt: "desc",
+            createdAt: 'desc',
           },
         },
       });

@@ -1,7 +1,7 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const expenseRouter = createTRPCRouter({
   getInfinite: protectedProcedure
@@ -25,14 +25,14 @@ export const expenseRouter = createTRPCRouter({
           OR: [
             {
               name: {
-                contains: input.name || "",
-                mode: "insensitive",
+                contains: input.name || '',
+                mode: 'insensitive',
               },
             },
             {
               description: {
-                contains: input.description || "",
-                mode: "insensitive",
+                contains: input.description || '',
+                mode: 'insensitive',
               },
             },
           ],
@@ -41,14 +41,8 @@ export const expenseRouter = createTRPCRouter({
             some: {
               debtorId: input.debtorId || undefined,
               settled: {
-                lt:
-                  input.isSettled === false
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
-                equals:
-                  input.isSettled === true
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
+                lt: input.isSettled === false ? ctx.prisma.expenseDebt.fields.amount : undefined,
+                equals: input.isSettled === true ? ctx.prisma.expenseDebt.fields.amount : undefined,
               },
             },
           },
@@ -57,7 +51,7 @@ export const expenseRouter = createTRPCRouter({
           payer: true,
           debts: {
             orderBy: {
-              debtorId: "desc",
+              debtorId: 'desc',
             },
             include: {
               expense: {
@@ -70,7 +64,7 @@ export const expenseRouter = createTRPCRouter({
           },
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       });
       let nextCursor: typeof input.cursor | undefined;
@@ -103,14 +97,14 @@ export const expenseRouter = createTRPCRouter({
           OR: [
             {
               name: {
-                contains: input.name || "",
-                mode: "insensitive",
+                contains: input.name || '',
+                mode: 'insensitive',
               },
             },
             {
               description: {
-                contains: input.description || "",
-                mode: "insensitive",
+                contains: input.description || '',
+                mode: 'insensitive',
               },
             },
           ],
@@ -119,14 +113,8 @@ export const expenseRouter = createTRPCRouter({
             some: {
               debtorId: input.debtorId || undefined,
               settled: {
-                lt:
-                  input.isSettled === false
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
-                equals:
-                  input.isSettled === true
-                    ? ctx.prisma.expenseDebt.fields.amount
-                    : undefined,
+                lt: input.isSettled === false ? ctx.prisma.expenseDebt.fields.amount : undefined,
+                equals: input.isSettled === true ? ctx.prisma.expenseDebt.fields.amount : undefined,
               },
             },
           },
@@ -135,7 +123,7 @@ export const expenseRouter = createTRPCRouter({
           payer: true,
           debts: {
             orderBy: {
-              debtorId: "desc",
+              debtorId: 'desc',
             },
             include: {
               expense: {
@@ -147,7 +135,7 @@ export const expenseRouter = createTRPCRouter({
             },
           },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
       });
     }),
 
@@ -156,10 +144,7 @@ export const expenseRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         description: z
-          .union([
-            z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
-            z.string().length(0),
-          ])
+          .union([z.string().min(3, { message: 'Minimalna długość to 3 znaki' }), z.string().length(0)])
           .optional(),
         payerId: z.string(),
         amount: z.number(),
@@ -257,27 +242,24 @@ export const expenseRouter = createTRPCRouter({
         },
       });
 
-      if (
-        ctx.session.user.id !== expenseDebt.debtorId &&
-        ctx.session.user.id !== expenseDebt.expense.payerId
-      ) {
+      if (ctx.session.user.id !== expenseDebt.debtorId && ctx.session.user.id !== expenseDebt.expense.payerId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Tylko osoba płacąca i oddająca dług może go edytować",
+          code: 'BAD_REQUEST',
+          message: 'Tylko osoba płacąca i oddająca dług może go edytować',
         });
       }
 
       if (input.settled > Number(expenseDebt.amount)) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Kwota do oddania nie może być większa niż kwota do zapłaty",
+          code: 'BAD_REQUEST',
+          message: 'Kwota do oddania nie może być większa niż kwota do zapłaty',
         });
       }
 
       if (expenseDebt?.expense.payerId === expenseDebt.debtorId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Nie można edytować kwoty do oddania osoby płacącej",
+          code: 'BAD_REQUEST',
+          message: 'Nie można edytować kwoty do oddania osoby płacącej',
         });
       }
 
@@ -319,13 +301,11 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  delete: protectedProcedure
-    .input(z.object({ expenseId: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.expense.delete({
-        where: {
-          id: input.expenseId,
-        },
-      });
-    }),
+  delete: protectedProcedure.input(z.object({ expenseId: z.string() })).mutation(async ({ input, ctx }) => {
+    return ctx.prisma.expense.delete({
+      where: {
+        id: input.expenseId,
+      },
+    });
+  }),
 });

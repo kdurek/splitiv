@@ -1,11 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { type NextAuthOptions, getServerSession } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { env } from 'env.mjs';
+import { getServerSession, type NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 
-import { env } from "env.mjs";
-
-import { prisma } from "./db";
+import { prisma } from './db';
 
 export const authOptions: NextAuthOptions = {
   callbacks: {

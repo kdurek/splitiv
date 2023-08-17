@@ -1,7 +1,6 @@
-import { getServerAuthSession } from "../auth";
-import { prisma } from "../db";
-
-import { appRouter } from "./root";
+import { getServerAuthSession } from '../auth';
+import { prisma } from '../db';
+import { appRouter } from './root';
 
 export async function createTrpcCaller() {
   const session = await getServerAuthSession();

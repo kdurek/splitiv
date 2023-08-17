@@ -1,72 +1,44 @@
-import { PLN } from "@dinero.js/currencies";
-import Decimal from "decimal.js";
-import { allocate, toUnit } from "dinero.js";
-import { useCallback, useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { PLN } from '@dinero.js/currencies';
+import { Checkbox } from 'components/ui/checkbox';
+import { CurrencyInput } from 'components/ui/currency-input';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
+import Decimal from 'decimal.js';
+import type { Dinero } from 'dinero.js';
+import { allocate, toUnit } from 'dinero.js';
+import { useCallback, useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { dineroFromString } from 'server/utils/dineroFromString';
 
-import { Checkbox } from "components/ui/checkbox";
-import { CurrencyInput } from "components/ui/currency-input";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "components/ui/tabs";
-import { dineroFromString } from "server/utils/dineroFromString";
-
-import type { ExpenseFormSchema } from "./expense-form.schema";
-import type { Dinero } from "dinero.js";
+import type { ExpenseFormSchema } from './expense-form.schema';
 
 export function ExpenseFormMethods() {
   const form = useFormContext<ExpenseFormSchema>();
   const { watch, getValues, setValue, trigger } = form;
 
-  const defaultRatioSplit = form
-    .getValues("debts")
-    .reduce((acc, cur) => ({ ...acc, [cur.id]: 0 }), {});
+  const defaultRatioSplit = form.getValues('debts').reduce((acc, cur) => ({ ...acc, [cur.id]: 0 }), {});
 
-  const [activeTab, setActiveTab] = useState("unequal");
+  const [activeTab, setActiveTab] = useState('unequal');
   const [equalSplit, setEqualSplit] = useState<string[]>([]);
-  const [ratioSplit, setRatioSplit] = useState<{ [key: string]: number }>(
-    defaultRatioSplit,
-  );
+  const [ratioSplit, setRatioSplit] = useState<Record<string, number>>(defaultRatioSplit);
 
-  const usedAmount = form
-    .watch("debts")
-    .reduce(
-      (prev, curr) => Decimal.add(prev, curr.amount || 0),
-      new Decimal(0),
-    );
+  const usedAmount = form.watch('debts').reduce((prev, curr) => Decimal.add(prev, curr.amount || 0), new Decimal(0));
 
-  const remainingAmount = Decimal.sub(
-    form.watch("amount") || 0,
-    usedAmount || 0,
-  );
+  const remainingAmount = Decimal.sub(form.watch('amount') || 0, usedAmount || 0);
 
   const divideByRatio = useCallback(() => {
-    trigger("debts");
+    trigger('debts');
 
-    if (
-      Object.values(ratioSplit).every((v) => v === 0) ||
-      Object.keys(ratioSplit).length === 0
-    ) {
-      getValues("debts").forEach((_, index) => {
-        setValue(`debts.${index}.amount`, parseFloat("0").toFixed(2));
+    if (Object.values(ratioSplit).every((v) => v === 0) || Object.keys(ratioSplit).length === 0) {
+      getValues('debts').forEach((_, index) => {
+        setValue(`debts.${index}.amount`, parseFloat('0').toFixed(2));
       });
       return;
     }
 
     const dineroAmount = dineroFromString({
-      amount: getValues("amount"),
+      amount: getValues('amount'),
       currency: PLN,
       scale: 2,
     });
@@ -84,9 +56,8 @@ export function ExpenseFormMethods() {
       };
     });
 
-    const newDebts = getValues("debts").map((debtor) => {
-      const amountToPay =
-        allocatedRatio.find((user) => user.id === debtor.id)?.amount || 0;
+    const newDebts = getValues('debts').map((debtor) => {
+      const amountToPay = allocatedRatio.find((user) => user.id === debtor.id)?.amount || 0;
 
       return {
         name: debtor.name,
@@ -101,41 +72,33 @@ export function ExpenseFormMethods() {
   }, [ratioSplit, getValues, setValue, trigger]);
 
   const divideEqually = useCallback(() => {
-    trigger("debts");
+    trigger('debts');
 
     if (equalSplit.length === 0) {
-      getValues("debts").forEach((_, index) => {
-        setValue(`debts.${index}.amount`, parseFloat("0").toFixed(2));
+      getValues('debts').forEach((_, index) => {
+        setValue(`debts.${index}.amount`, parseFloat('0').toFixed(2));
       });
       return;
     }
 
     const dineroAmount = dineroFromString({
-      amount: getValues("amount"),
+      amount: getValues('amount'),
       currency: PLN,
       scale: 2,
     });
 
-    const usersToAllocate = getValues("debts").filter((user) =>
-      equalSplit.includes(user.id),
-    );
+    const usersToAllocate = getValues('debts').filter((user) => equalSplit.includes(user.id));
 
-    const allocated = allocate(
-      dineroAmount,
-      new Array(usersToAllocate.length).fill(1),
-    );
+    const allocated = allocate(dineroAmount, new Array(usersToAllocate.length).fill(1));
 
     const allocatedUsers = usersToAllocate.map((user, index) => ({
       id: user.id,
-      amount: equalSplit.includes(user.id)
-        ? toUnit(allocated[index] as Dinero<number>)
-        : 0,
+      amount: equalSplit.includes(user.id) ? toUnit(allocated[index] as Dinero<number>) : 0,
     }));
 
-    const newDebts = getValues("debts").map((debtor) => {
+    const newDebts = getValues('debts').map((debtor) => {
       const isInArray = usersToAllocate.find((user) => user.id === debtor.id);
-      const amountToPay =
-        allocatedUsers.find((user) => user.id === debtor.id)?.amount || 0;
+      const amountToPay = allocatedUsers.find((user) => user.id === debtor.id)?.amount || 0;
 
       return {
         name: debtor.name,
@@ -148,7 +111,7 @@ export function ExpenseFormMethods() {
       setValue(`debts.${index}.amount`, debt.amount.toFixed(2));
     });
 
-    trigger("debts");
+    trigger('debts');
   }, [equalSplit, getValues, setValue, trigger]);
 
   useEffect(() => {
@@ -159,16 +122,16 @@ export function ExpenseFormMethods() {
     divideByRatio();
   }, [divideByRatio, ratioSplit]);
 
-  const amountWatch = watch("amount");
+  const amountWatch = watch('amount');
 
   useEffect(() => {
     if (!amountWatch) {
       return;
     }
-    if (activeTab === "equal") {
+    if (activeTab === 'equal') {
       divideEqually();
     }
-    if (activeTab === "ratio") {
+    if (activeTab === 'ratio') {
       divideByRatio();
     }
   }, [activeTab, divideByRatio, divideEqually, amountWatch]);
@@ -186,8 +149,8 @@ export function ExpenseFormMethods() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="unequal">
-          <div className="flex flex-col gap-4 mt-4">
-            {form.watch("debts").map((debt, index) => (
+          <div className="mt-4 flex flex-col gap-4">
+            {form.watch('debts').map((debt, index) => (
               <FormField
                 key={debt.id}
                 control={form.control}
@@ -206,21 +169,19 @@ export function ExpenseFormMethods() {
           </div>
         </TabsContent>
         <TabsContent value="equal">
-          <div className="flex flex-col gap-4 mt-4">
-            {form.watch("debts").map((debt) => (
-              <div key={debt.id} className="flex justify-between items-center">
+          <div className="mt-4 flex flex-col gap-4">
+            {form.watch('debts').map((debt) => (
+              <div key={debt.id} className="flex items-center justify-between">
                 <FormLabel>{debt.name}</FormLabel>
-                <div className="flex items-center gap-4 h-10">
+                <div className="flex h-10 items-center gap-4">
                   <FormLabel>{`${debt.amount} zł`}</FormLabel>
                   <Checkbox
-                    className="w-6 h-6"
+                    className="h-6 w-6"
                     checked={equalSplit.includes(debt.id)}
                     onCheckedChange={(checked) => {
                       return checked
                         ? setEqualSplit([...equalSplit, debt.id])
-                        : setEqualSplit(
-                            equalSplit.filter((value) => value !== debt.id),
-                          );
+                        : setEqualSplit(equalSplit.filter((value) => value !== debt.id));
                     }}
                   />
                 </div>
@@ -229,12 +190,9 @@ export function ExpenseFormMethods() {
           </div>
         </TabsContent>
         <TabsContent value="ratio">
-          <div className="flex flex-col gap-4 mt-4">
-            {form.watch("debts").map((debt) => (
-              <div
-                key={debt.id}
-                className="flex items-center gap-4 flex-nowrap justify-between"
-              >
+          <div className="mt-4 flex flex-col gap-4">
+            {form.watch('debts').map((debt) => (
+              <div key={debt.id} className="flex flex-nowrap items-center justify-between gap-4">
                 <FormLabel>{debt.name}</FormLabel>
                 <div className="flex items-center gap-4">
                   <FormLabel>{`${debt.amount} zł`}</FormLabel>
@@ -265,18 +223,14 @@ export function ExpenseFormMethods() {
         </TabsContent>
       </Tabs>
 
-      {remainingAmount.equals(0) && (
-        <div className="text-teal-500 text-center text-bold">
-          Przydzielono poprawnie
-        </div>
-      )}
+      {remainingAmount.equals(0) && <div className="text-bold text-center text-teal-500">Przydzielono poprawnie</div>}
       {remainingAmount.lessThan(0) && (
-        <div className="text-red-500 text-center text-bold">
+        <div className="text-bold text-center text-red-500">
           {`Przydzieliłeś za dużo o ${remainingAmount.toFixed(2)} zł`}
         </div>
       )}
       {remainingAmount.greaterThan(0) && (
-        <div className="text-red-500 text-center text-bold">
+        <div className="text-bold text-center text-red-500">
           {`Musisz przydzielić jeszcze ${remainingAmount.toFixed(2)} zł`}
         </div>
       )}

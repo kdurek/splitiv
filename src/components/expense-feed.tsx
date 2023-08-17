@@ -1,12 +1,7 @@
-"use client";
+'use client';
 
-import { useIntersection } from "@mantine/hooks";
-import { format } from "date-fns";
-import { CircleDollarSign } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
-
-import { DeleteExpenseModal } from "components/delete-expense-modal";
+import { useIntersection } from '@mantine/hooks';
+import { DeleteExpenseModal } from 'components/delete-expense-modal';
 import {
   Dialog,
   DialogContent,
@@ -15,12 +10,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "components/ui/dialog";
-import { useInfiniteExpenses } from "hooks/use-infinite-expenses";
+} from 'components/ui/dialog';
+import { format } from 'date-fns';
+import { useInfiniteExpenses } from 'hooks/use-infinite-expenses';
+import { CircleDollarSign } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
+import type { GetExpensesByGroup, GetInfiniteExpenses } from 'utils/api';
 
-import { ExpensePayment } from "./expense-payment";
-
-import type { GetExpensesByGroup, GetInfiniteExpenses } from "utils/api";
+import { ExpensePayment } from './expense-payment';
 
 interface ExpenseCardProps {
   expense: GetExpensesByGroup[number];
@@ -28,26 +26,20 @@ interface ExpenseCardProps {
 
 export function ExpenseListItem({ expense }: ExpenseCardProps) {
   const { data: session } = useSession();
-  const descriptionParts = expense.description?.split("\n");
+  const descriptionParts = expense.description?.split('\n');
   const hasDescription = descriptionParts?.length;
-  const [payerFirstName] = expense.payer.name?.split(" ") ?? "";
-  const formattedDate = format(expense.createdAt, "EEEEEE, d MMMM");
+  const [payerFirstName] = expense.payer.name?.split(' ') ?? '';
+  const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM');
 
   const getSettledStateIcon = () => {
     const isPartiallySettled = expense.debts
       .filter((debt) => debt.debtorId !== expense.payerId)
-      .some(
-        (debt) =>
-          (debt.settled !== debt.amount && Number(debt.settled) !== 0) ||
-          debt.settled === debt.amount,
-      );
-    const isFullySettled = expense.debts.every(
-      (debt) => debt.settled === debt.amount,
-    );
+      .some((debt) => (debt.settled !== debt.amount && Number(debt.settled) !== 0) || debt.settled === debt.amount);
+    const isFullySettled = expense.debts.every((debt) => debt.settled === debt.amount);
 
     if (isFullySettled) {
       return (
-        <div className="w-10 h-10 bg-teal-100 grid place-content-center rounded-md">
+        <div className="grid h-10 w-10 place-content-center rounded-md bg-teal-100">
           <CircleDollarSign className="text-teal-500" />
         </div>
       );
@@ -55,14 +47,14 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
 
     if (isPartiallySettled) {
       return (
-        <div className="w-10 h-10 bg-yellow-100 grid place-content-center rounded-md">
+        <div className="grid h-10 w-10 place-content-center rounded-md bg-yellow-100">
           <CircleDollarSign className="text-yellow-500" />
         </div>
       );
     }
 
     return (
-      <div className="w-10 h-10 bg-blue-100 grid place-content-center rounded-md">
+      <div className="grid h-10 w-10 place-content-center rounded-md bg-blue-100">
         <CircleDollarSign className="text-blue-500" />
       </div>
     );
@@ -71,20 +63,16 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button type="button" className="p-2 w-full border rounded-md">
+        <button type="button" className="w-full rounded-md border p-2">
           <div className="flex items-center justify-between">
-            <div className="flex gap-4 items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               {getSettledStateIcon()}
               <div className="text-start">
                 <div className="line-clamp-1">{expense.name}</div>
-                <div className="text-sm text-muted-foreground">
-                  {formattedDate}
-                </div>
+                <div className="text-sm text-muted-foreground">{formattedDate}</div>
               </div>
             </div>
-            <div className="text-sm text-muted-foreground">
-              {Number(expense.amount).toFixed(2)} zł
-            </div>
+            <div className="text-sm text-muted-foreground">{Number(expense.amount).toFixed(2)} zł</div>
           </div>
         </button>
       </DialogTrigger>
@@ -100,9 +88,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
             </DialogDescription>
           )}
         </DialogHeader>
-        <div>{`${payerFirstName} - zapłacone ${Number(expense.amount).toFixed(
-          2,
-        )} zł`}</div>
+        <div>{`${payerFirstName} - zapłacone ${Number(expense.amount).toFixed(2)} zł`}</div>
         <div className="flex flex-col gap-2">
           {expense.debts.map((debt) => (
             <ExpensePayment key={debt.id} debt={debt} />
@@ -152,11 +138,9 @@ export function ExpenseFeed({ infiniteExpensesInitialData }: ExpenseListProps) {
     <>
       <div className="flex flex-col gap-2">
         {expenses.length ? (
-          expenses.map((expense) => (
-            <ExpenseListItem key={expense.id} expense={expense} />
-          ))
+          expenses.map((expense) => <ExpenseListItem key={expense.id} expense={expense} />)
         ) : (
-          <div className="p-4 border rounded-md">
+          <div className="rounded-md border p-4">
             <div>Brak długów</div>
           </div>
         )}

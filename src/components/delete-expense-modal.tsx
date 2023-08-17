@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useDeleteExpense } from "hooks/use-delete-expense";
+import { useDeleteExpense } from 'hooks/use-delete-expense';
 
 import {
   AlertDialog,
@@ -12,8 +12,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { Button } from "./ui/button";
+} from './ui/alert-dialog';
+import { Button } from './ui/button';
 
 interface DeleteExpenseModalProps {
   expenseId: string;
@@ -34,15 +34,11 @@ export function DeleteExpenseModal({ expenseId }: DeleteExpenseModalProps) {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Usuwanie wydatku</AlertDialogTitle>
-          <AlertDialogDescription>
-            Czy na pewno chcesz usunąć ten wydatek?
-          </AlertDialogDescription>
+          <AlertDialogDescription>Czy na pewno chcesz usunąć ten wydatek?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Nie</AlertDialogCancel>
-          <AlertDialogAction onClick={handleExpenseDelete}>
-            Tak
-          </AlertDialogAction>
+          <AlertDialogAction onClick={handleExpenseDelete}>Tak</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

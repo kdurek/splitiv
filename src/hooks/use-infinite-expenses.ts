@@ -1,21 +1,13 @@
-import { useAtomValue } from "jotai";
-
-import {
-  expenseFilterDebtorIdAtom,
-  expenseFilterPayerIdAtom,
-  expenseFilterSearchTextAtom,
-} from "lib/atoms";
-import { api } from "utils/api";
-
-import type { GetInfiniteExpenses } from "utils/api";
+import { useAtomValue } from 'jotai';
+import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from 'lib/atoms';
+import type { GetInfiniteExpenses } from 'utils/api';
+import { api } from 'utils/api';
 
 interface UseInfiniteExpensesProps {
   infiniteExpensesInitialData: GetInfiniteExpenses;
 }
 
-export function useInfiniteExpenses({
-  infiniteExpensesInitialData,
-}: UseInfiniteExpensesProps) {
+export function useInfiniteExpenses({ infiniteExpensesInitialData }: UseInfiniteExpensesProps) {
   const searchText = useAtomValue(expenseFilterSearchTextAtom);
   const payerId = useAtomValue(expenseFilterPayerIdAtom);
   const debtorId = useAtomValue(expenseFilterDebtorIdAtom);

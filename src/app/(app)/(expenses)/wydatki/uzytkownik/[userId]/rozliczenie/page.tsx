@@ -1,9 +1,8 @@
-import { redirect } from "next/navigation";
-
-import { ExpensePaymentSettleForm } from "components/forms/expense-payment-settle-form";
-import { Section } from "components/section";
-import { createTrpcCaller } from "server/api/caller";
-import { getServerAuthSession } from "server/auth";
+import { ExpensePaymentSettleForm } from 'components/forms/expense-payment-settle-form';
+import { Section } from 'components/section';
+import { redirect } from 'next/navigation';
+import { createTrpcCaller } from 'server/api/caller';
+import { getServerAuthSession } from 'server/auth';
 
 interface ExpenseDetailsPageProps {
   params: {
@@ -11,12 +10,10 @@ interface ExpenseDetailsPageProps {
   };
 }
 
-export default async function ExpenseDetailsPage({
-  params,
-}: ExpenseDetailsPageProps) {
+export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
   const session = await getServerAuthSession();
   if (!session) {
-    return redirect("/logowanie");
+    return redirect('/logowanie');
   }
 
   const caller = await createTrpcCaller();
@@ -26,7 +23,7 @@ export default async function ExpenseDetailsPage({
   });
 
   if (!paramUser) {
-    redirect("/");
+    redirect('/');
   }
 
   const debts = await caller.user.getPaymentSettle({
@@ -35,11 +32,7 @@ export default async function ExpenseDetailsPage({
 
   return (
     <Section title={paramUser.name}>
-      <ExpensePaymentSettleForm
-        paramUser={paramUser}
-        currentUser={currentUser}
-        debts={debts}
-      />
+      <ExpensePaymentSettleForm paramUser={paramUser} currentUser={currentUser} debts={debts} />
     </Section>
   );
 }

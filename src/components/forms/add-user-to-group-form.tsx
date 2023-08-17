@@ -1,30 +1,16 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { Button } from "components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
-import { useAddUserToGroup } from "hooks/use-add-user-to-group";
-
-import type { GetUsers } from "utils/api";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from 'components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormMessage } from 'components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
+import { useAddUserToGroup } from 'hooks/use-add-user-to-group';
+import { useForm } from 'react-hook-form';
+import type { GetUsers } from 'utils/api';
+import { z } from 'zod';
 
 const addUserToGroupFormSchema = z.object({
-  userId: z.string({ required_error: "Musisz wybrać użytkownika" }),
+  userId: z.string({ required_error: 'Musisz wybrać użytkownika' }),
 });
 
 type AddUserToGroupFormSchema = z.infer<typeof addUserToGroupFormSchema>;
@@ -70,7 +56,7 @@ export function AddUserToGroupForm({ users }: AddUserToGroupFormProps) {
             </FormItem>
           )}
         />
-        <div className="flex justify-end mt-6">
+        <div className="mt-6 flex justify-end">
           <Button>Dodaj</Button>
         </div>
       </form>

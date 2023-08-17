@@ -1,61 +1,49 @@
-import Decimal from "decimal.js";
-import { z } from "zod";
+import Decimal from 'decimal.js';
+import { z } from 'zod';
 
 export const expenseFormSchema = z
   .object({
-    name: z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
+    name: z.string().min(3, { message: 'Minimalna długość to 3 znaki' }),
     description: z
-      .union([
-        z.string().min(3, { message: "Minimalna długość to 3 znaki" }),
-        z.string().length(0),
-      ])
+      .union([z.string().min(3, { message: 'Minimalna długość to 3 znaki' }), z.string().length(0)])
       .optional(),
-    amount: z.string({ required_error: "Musisz wpisać kwotę" }).refine(
+    amount: z.string({ required_error: 'Musisz wpisać kwotę' }).refine(
       (value) => {
         return parseFloat(value) > 0;
       },
       {
-        message: "Kwota musi być większa niż zero",
+        message: 'Kwota musi być większa niż zero',
       },
     ),
-    payer: z.string().cuid2({ message: "Musisz wybrać osobę płacącą" }),
+    payer: z.string().cuid2({ message: 'Musisz wybrać osobę płacącą' }),
     debts: z.array(
       z.object({
         id: z.string(),
         name: z.string(),
-        amount: z.string({ required_error: "Musisz wpisać kwotę" }),
+        amount: z.string({ required_error: 'Musisz wpisać kwotę' }),
       }),
     ),
   })
   .refine(
     (values) => {
-      const usedAmount = Number(
-        values.debts.reduce(
-          (prev, curr) => Decimal.add(prev, curr.amount),
-          new Decimal(0),
-        ),
-      );
+      const usedAmount = Number(values.debts.reduce((prev, curr) => Decimal.add(prev, curr.amount), new Decimal(0)));
       return parseFloat(values.amount) === usedAmount;
     },
     {
-      message: "Kwota wydatku nie jest równo rozdzielona pomiędzy użytkowników",
-      path: ["debts"],
+      message: 'Kwota wydatku nie jest równo rozdzielona pomiędzy użytkowników',
+      path: ['debts'],
     },
   )
   .refine(
     (values) => {
-      if (
-        values.debts.find((v) => v.id === values.payer)?.amount ===
-        values.amount
-      ) {
+      if (values.debts.find((v) => v.id === values.payer)?.amount === values.amount) {
         return false;
       }
       return true;
     },
     {
-      message:
-        "Kwota wydatku nie może być całkowicie przypisana do osoby płacącej",
-      path: ["debts"],
+      message: 'Kwota wydatku nie może być całkowicie przypisana do osoby płacącej',
+      path: ['debts'],
     },
   );
 

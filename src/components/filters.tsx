@@ -1,33 +1,17 @@
-"use client";
+'use client';
 
-import { useDebouncedState } from "@mantine/hooks";
-import { useAtom, useSetAtom } from "jotai";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useDebouncedState } from '@mantine/hooks';
+import { useAtom, useSetAtom } from 'jotai';
+import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from 'lib/atoms';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { GetGroupById } from 'utils/api';
 
-import {
-  expenseFilterDebtorIdAtom,
-  expenseFilterPayerIdAtom,
-  expenseFilterSearchTextAtom,
-} from "lib/atoms";
-
-import { Button } from "./ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-
-import type { GetGroupById } from "utils/api";
+import { Button } from './ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 export interface ExpenseFilters {
   searchText?: string;
@@ -42,8 +26,7 @@ interface ExpenseListFiltersProps {
 
 export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
   const [open, setOpen] = useState(false);
-  const [searchTextDebounced, setSearchTextDebounced] =
-    useDebouncedState<string>("", 500);
+  const [searchTextDebounced, setSearchTextDebounced] = useDebouncedState<string>('', 500);
 
   const setSearchText = useSetAtom(expenseFilterSearchTextAtom);
   const [payerId, setPayerId] = useAtom(expenseFilterPayerIdAtom);
@@ -59,9 +42,7 @@ export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
         <Input
           placeholder="Szukaj..."
           defaultValue={searchTextDebounced}
-          onChange={(event) =>
-            setSearchTextDebounced(event.currentTarget.value)
-          }
+          onChange={(event) => setSearchTextDebounced(event.currentTarget.value)}
         />
         <div>
           <CollapsibleTrigger asChild>
@@ -72,7 +53,7 @@ export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
         </div>
       </div>
 
-      <CollapsibleContent className="mt-4 border p-4 rounded-md space-y-4">
+      <CollapsibleContent className="mt-4 space-y-4 rounded-md border p-4">
         <div>
           <Label>Płacący</Label>
           <Select value={payerId} onValueChange={(value) => setPayerId(value)}>

@@ -1,12 +1,11 @@
-"use client";
+'use client';
 
-import { CircleDollarSign, Plus, Settings } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { cn } from 'lib/utils';
+import { CircleDollarSign, Plus, Settings } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { cn } from "lib/utils";
-
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from './ui/button';
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -17,9 +16,9 @@ export function MobileNav() {
         <Link
           href="/"
           className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "mx-auto flex h-8 w-16 items-center justify-center",
-            pathname === "/" ? "text-foreground" : "text-muted-foreground",
+            buttonVariants({ variant: 'ghost' }),
+            'mx-auto flex h-8 w-16 items-center justify-center',
+            pathname === '/' ? 'text-foreground' : 'text-muted-foreground',
           )}
         >
           <CircleDollarSign />
@@ -30,11 +29,9 @@ export function MobileNav() {
         <Link
           href="/wydatki/dodaj"
           className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "mx-auto flex h-8 w-16 items-center justify-center",
-            pathname === "/wydatki/dodaj"
-              ? "text-foreground"
-              : "text-muted-foreground",
+            buttonVariants({ variant: 'ghost' }),
+            'mx-auto flex h-8 w-16 items-center justify-center',
+            pathname === '/wydatki/dodaj' ? 'text-foreground' : 'text-muted-foreground',
           )}
         >
           <Plus />
@@ -45,11 +42,9 @@ export function MobileNav() {
         <Link
           href="/ustawienia"
           className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "mx-auto flex h-8 w-16 items-center justify-center",
-            pathname === "/ustawienia"
-              ? "text-foreground"
-              : "text-muted-foreground",
+            buttonVariants({ variant: 'ghost' }),
+            'mx-auto flex h-8 w-16 items-center justify-center',
+            pathname === '/ustawienia' ? 'text-foreground' : 'text-muted-foreground',
           )}
         >
           <Settings />

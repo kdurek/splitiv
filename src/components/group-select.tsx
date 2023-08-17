@@ -1,15 +1,8 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
-import { type GetGroups, api } from "utils/api";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
+import { useRouter } from 'next/navigation';
+import { api, type GetGroups } from 'utils/api';
 
 interface GroupSelectProps {
   activeGroupId: string;
@@ -19,8 +12,7 @@ interface GroupSelectProps {
 export function GroupSelect({ activeGroupId, groups }: GroupSelectProps) {
   const router = useRouter();
 
-  const { mutate: changeActiveGroup } =
-    api.user.changeActiveGroup.useMutation();
+  const { mutate: changeActiveGroup } = api.user.changeActiveGroup.useMutation();
 
   const handleGroupSelect = (value: string) => {
     changeActiveGroup({ groupId: value });

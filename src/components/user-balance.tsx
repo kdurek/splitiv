@@ -1,21 +1,14 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'components/ui/accordion';
+import { cn, getInitials } from 'lib/utils';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import type { GetGroupById, GetUsers } from 'utils/api';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "components/ui/accordion";
-import { cn, getInitials } from "lib/utils";
-
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { buttonVariants } from "./ui/button";
-import { Separator } from "./ui/separator";
-
-import type { GetGroupById, GetUsers } from "utils/api";
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { buttonVariants } from './ui/button';
+import { Separator } from './ui/separator';
 
 interface Debt {
   fromId: string;
@@ -34,8 +27,7 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
 
   const userDebts = debts.filter((debt) => debt.fromId === member.id);
   const userGets = debts.filter((debt) => debt.toId === member.id);
-  const getUserFirstName = (userId: string) =>
-    members.find((user) => user.id === userId)?.name?.split(" ")[0];
+  const getUserFirstName = (userId: string) => members.find((user) => user.id === userId)?.name?.split(' ')[0];
 
   if (!session) {
     return null;
@@ -46,10 +38,7 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
       {userGets.length > 0 && (
         <div>
           {userGets.map((debt) => (
-            <div
-              key={debt.fromId + debt.toId}
-              className="font-medium text-green-500"
-            >
+            <div key={debt.fromId + debt.toId} className="font-medium text-green-500">
               {`${debt.amount} zł od ${getUserFirstName(debt.fromId)}`}
             </div>
           ))}
@@ -61,20 +50,14 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
       {userDebts.length > 0 && (
         <div>
           {userDebts.map((debt) => (
-            <div
-              key={debt.fromId + debt.toId}
-              className="font-medium text-red-500"
-            >
+            <div key={debt.fromId + debt.toId} className="font-medium text-red-500">
               {`${debt.amount} zł dla ${getUserFirstName(debt.toId)}`}
             </div>
           ))}
         </div>
       )}
 
-      <Link
-        href={`/wydatki/uzytkownik/${member.id}`}
-        className={cn(buttonVariants({ variant: "outline" }))}
-      >
+      <Link href={`/wydatki/uzytkownik/${member.id}`} className={cn(buttonVariants({ variant: 'outline' }))}>
         Szczegóły
       </Link>
 
@@ -82,7 +65,7 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
         (userDebts.some((debt) => debt.toId === session?.user.id) && (
           <Link
             href={`/wydatki/uzytkownik/${member.id}/rozliczenie`}
-            className={cn(buttonVariants({ variant: "outline" }))}
+            className={cn(buttonVariants({ variant: 'outline' }))}
           >
             Rozliczenie
           </Link>
@@ -97,11 +80,7 @@ interface UserBalanceProps {
 
 export function UserBalance({ group }: UserBalanceProps) {
   return (
-    <Accordion
-      type="single"
-      collapsible
-      className="w-full border rounded-md border-b-0"
-    >
+    <Accordion type="single" collapsible className="w-full rounded-md border border-b-0">
       {group.members.map((member) => (
         <AccordionItem key={member.id} value={member.id}>
           <AccordionTrigger className="px-4">
@@ -112,18 +91,12 @@ export function UserBalance({ group }: UserBalanceProps) {
               </Avatar>
               <div className="text-start">
                 <div className="font-medium">{member.name}</div>
-                <div className="text-sm font-medium text-muted-foreground">
-                  {member.balance} zł
-                </div>
+                <div className="text-sm font-medium text-muted-foreground">{member.balance} zł</div>
               </div>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4">
-            <UserDebts
-              member={member}
-              members={group.members}
-              debts={group.debts}
-            />
+            <UserDebts member={member} members={group.members} debts={group.debts} />
           </AccordionContent>
         </AccordionItem>
       ))}

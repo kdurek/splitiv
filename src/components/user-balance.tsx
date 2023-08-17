@@ -29,6 +29,9 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
   const userGets = debts.filter((debt) => debt.toId === member.id);
   const getUserFirstName = (userId: string) => members.find((user) => user.id === userId)?.name?.split(' ')[0];
 
+  const hasDebts = userDebts.some((debt) => debt.toId === session?.user.id);
+  const hasGets = userGets.some((debt) => debt.fromId === session?.user.id);
+
   if (!session) {
     return null;
   }
@@ -61,15 +64,14 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
         Szczegóły
       </Link>
 
-      {userGets.some((debt) => debt.fromId === session?.user.id) ||
-        (userDebts.some((debt) => debt.toId === session?.user.id) && (
-          <Link
-            href={`/wydatki/uzytkownik/${member.id}/rozliczenie`}
-            className={cn(buttonVariants({ variant: 'outline' }))}
-          >
-            Rozliczenie
-          </Link>
-        ))}
+      {(hasDebts || hasGets) && (
+        <Link
+          href={`/wydatki/uzytkownik/${member.id}/rozliczenie`}
+          className={cn(buttonVariants({ variant: 'outline' }))}
+        >
+          Rozliczenie
+        </Link>
+      )}
     </div>
   );
 }

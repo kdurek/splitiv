@@ -77,6 +77,7 @@ export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
               <SelectValue placeholder="Brak" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="">Brak</SelectItem>
               {group.members.map((member) => (
                 <SelectItem key={member.id} value={member.id}>
                   {member.name}

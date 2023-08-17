@@ -47,7 +47,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
 
     if (isFullySettled) {
       return (
-        <div className="w-10 h-10 bg-teal-100 grid place-content-center">
+        <div className="w-10 h-10 bg-teal-100 grid place-content-center rounded-md">
           <CircleDollarSign className="text-teal-500" />
         </div>
       );
@@ -55,14 +55,14 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
 
     if (isPartiallySettled) {
       return (
-        <div className="w-10 h-10 bg-yellow-100 grid place-content-center">
+        <div className="w-10 h-10 bg-yellow-100 grid place-content-center rounded-md">
           <CircleDollarSign className="text-yellow-500" />
         </div>
       );
     }
 
     return (
-      <div className="w-10 h-10 bg-blue-100 grid place-content-center">
+      <div className="w-10 h-10 bg-blue-100 grid place-content-center rounded-md">
         <CircleDollarSign className="text-blue-500" />
       </div>
     );
@@ -71,7 +71,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button type="button" className="p-2 w-full border">
+        <button type="button" className="p-2 w-full border rounded-md">
           <div className="flex items-center justify-between">
             <div className="flex gap-4 items-center justify-between">
               {getSettledStateIcon()}
@@ -103,7 +103,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
         <div>{`${payerFirstName} - zapłacone ${Number(expense.amount).toFixed(
           2,
         )} zł`}</div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {expense.debts.map((debt) => (
             <ExpensePayment key={debt.id} debt={debt} />
           ))}
@@ -156,7 +156,7 @@ export function ExpenseFeed({ infiniteExpensesInitialData }: ExpenseListProps) {
             <ExpenseListItem key={expense.id} expense={expense} />
           ))
         ) : (
-          <div className="p-4 border">
+          <div className="p-4 border rounded-md">
             <div>Brak długów</div>
           </div>
         )}

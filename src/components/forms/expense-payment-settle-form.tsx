@@ -134,7 +134,7 @@ export function ExpensePaymentSettleForm({
                   name="debts"
                   render={({ field }) => {
                     return (
-                      <FormItem className="p-4 border space-y-4">
+                      <FormItem className="p-4 border space-y-2 rounded-md">
                         <div className="flex justify-between items-center gap-4">
                           <FormLabel className="font-normal">
                             <div className="line-clamp-1">
@@ -187,7 +187,7 @@ export function ExpensePaymentSettleForm({
             <FormLabel className="text-base">Wydatki</FormLabel>
             <FormDescription>Zaznacz te które chcesz rozliczyć</FormDescription>
           </div>
-          <div className="grid grid-cols-5 place-items-center p-4 border">
+          <div className="grid grid-cols-5 place-items-center p-4 border rounded-md">
             <div className="text-sm text-muted-foreground">{debtor?.name}</div>
             <ChevronRight />
             <div className="text-sm text-muted-foreground">

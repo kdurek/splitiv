@@ -97,7 +97,11 @@ interface UserBalanceProps {
 
 export function UserBalance({ group }: UserBalanceProps) {
   return (
-    <Accordion type="single" collapsible className="w-full border border-b-0">
+    <Accordion
+      type="single"
+      collapsible
+      className="w-full border rounded-md border-b-0"
+    >
       {group.members.map((member) => (
         <AccordionItem key={member.id} value={member.id}>
           <AccordionTrigger className="px-4">
@@ -107,8 +111,10 @@ export function UserBalance({ group }: UserBalanceProps) {
                 <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
               </Avatar>
               <div className="text-start">
-                <div className="font-bold">{member.name}</div>
-                <div className="text-sm font-medium">{member.balance} zł</div>
+                <div className="font-medium">{member.name}</div>
+                <div className="text-sm font-medium text-muted-foreground">
+                  {member.balance} zł
+                </div>
               </div>
             </div>
           </AccordionTrigger>

@@ -31,9 +31,9 @@ export default async function ExpenseDetailsPage({
           <TabsTrigger value="debts">Długi</TabsTrigger>
           <TabsTrigger value="credits">Pożyczki</TabsTrigger>
         </TabsList>
-        <TabsContent value="debts">
+        <TabsContent value="debts" className="space-y-2">
           {debts.map((debt) => (
-            <div className="p-4 border">
+            <div className="p-4 border rounded-md">
               <div className="line-clamp-1">{debt.expense.name}</div>
               <div className="grid grid-cols-5 place-items-center">
                 <div className="text-sm text-muted-foreground">
@@ -51,9 +51,9 @@ export default async function ExpenseDetailsPage({
             </div>
           ))}
         </TabsContent>
-        <TabsContent value="credits">
+        <TabsContent value="credits" className="space-y-2">
           {credits.map((credit) => (
-            <div className="p-4 border">
+            <div className="p-4 border rounded-md">
               <div className="line-clamp-1">{credit.expense.name}</div>
               <div className="grid grid-cols-5 place-items-center">
                 <div className="text-sm text-muted-foreground">

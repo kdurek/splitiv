@@ -12,7 +12,7 @@ export default async function LoginPage() {
 
   return (
     <div className="p-4">
-      <div className="flex border p-4 flex-col items-center gap-4">
+      <div className="flex border rounded-md p-4 flex-col items-center gap-4">
         <h1 className="max-w-md">Aby przejść dalej, zaloguj się</h1>
         <LoginButton />
       </div>

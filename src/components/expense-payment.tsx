@@ -110,7 +110,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
   };
 
   return (
-    <div className="p-2 border">
+    <div className="p-2 border rounded-md">
       <Collapsible open={isEditing}>
         <div className="flex items-center gap-2">
           <Button

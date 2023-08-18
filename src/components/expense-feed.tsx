@@ -13,12 +13,15 @@ import {
 } from 'components/ui/dialog';
 import { format } from 'date-fns';
 import { useInfiniteExpenses } from 'hooks/use-infinite-expenses';
+import { cn } from 'lib/utils';
 import { CircleDollarSign } from 'lucide-react';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import type { GetExpensesByGroup, GetInfiniteExpenses } from 'utils/api';
 
 import { ExpensePayment } from './expense-payment';
+import { buttonVariants } from './ui/button';
 
 interface ExpenseCardProps {
   expense: GetExpensesByGroup[number];
@@ -82,10 +85,11 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
         <DialogHeader>
           <DialogTitle>{expense.name}</DialogTitle>
           {hasDescription && (
-            <DialogDescription>
+            <DialogDescription className="text-start">
               {descriptionParts?.map((part, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <span key={part + index}>{part}</span>
+                <span className="block" key={index}>
+                  {part}
+                </span>
               ))}
             </DialogDescription>
           )}
@@ -99,7 +103,10 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
 
         {session?.user.id === expense.payerId && (
           <DialogFooter>
-            <div className="text-end">
+            <div className="flex items-center justify-end gap-4">
+              <Link href={`/wydatki/${expense.id}/edytuj`} className={cn(buttonVariants({ variant: 'outline' }))}>
+                Edytuj
+              </Link>
               <DeleteExpenseModal expenseId={expense.id} />
             </div>
           </DialogFooter>

@@ -139,6 +139,21 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
+  getById: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
+    return ctx.prisma.expense.findFirst({
+      where: {
+        id: input.id,
+      },
+      include: {
+        debts: {
+          include: {
+            debtor: true,
+          },
+        },
+      },
+    });
+  }),
+
   create: protectedProcedure
     .input(
       z.object({
@@ -188,33 +203,58 @@ export const expenseRouter = createTRPCRouter({
       z.object({
         expenseId: z.string(),
         name: z.string(),
-        payerId: z.string(),
-        amount: z.number(),
-        debts: z.array(
-          z.object({
-            amount: z.number(),
-            debtorId: z.string(),
-            settled: z.number().default(0),
-          }),
-        ),
+        description: z
+          .union([z.string().min(3, { message: 'Minimalna długość to 3 znaki' }), z.string().length(0)])
+          .optional(),
+        // payerId: z.string(),
+        // amount: z.number(),
+        // debts: z.array(
+        //   z.object({
+        //     amount: z.number(),
+        //     debtorId: z.string(),
+        //     settled: z.number().default(0),
+        //   }),
+        // ),
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      // const isAlreadyPaid = await ctx.prisma.expenseDebt.count({
+      //   where: {
+      //     expenseId: input.expenseId,
+      //     debtorId: {
+      //       not: input.payerId,
+      //     },
+      //     settled: {
+      //       gt: 0,
+      //     },
+      //   },
+      // });
+
+      // if (!!isAlreadyPaid) {
+      //   return;
+      // }
+
       return ctx.prisma.expense.update({
         where: {
           id: input.expenseId,
         },
         data: {
           name: input.name,
-          amount: input.amount,
-          debts: {
-            deleteMany: {
-              expenseId: input.expenseId,
-            },
-            createMany: {
-              data: input.debts,
-            },
-          },
+          description: input.description ?? null,
+          // amount: input.amount,
+          // payer: {
+          //   connect: {
+          //     id: input.payerId,
+          //   },
+          // },
+          // debts: {
+          //   deleteMany: {
+          //     expenseId: input.expenseId,
+          //   },
+          //   createMany: {
+          //     data: input.debts,
+          //   },
+          // },
         },
       });
     }),

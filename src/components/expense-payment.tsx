@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'components/ui/button';
 import { Collapsible, CollapsibleContent } from 'components/ui/collapsible';
-import { CurrencyInput } from 'components/ui/currency-input';
 import { Form, FormControl, FormField, FormItem } from 'components/ui/form';
+import { NumberInput } from 'components/ui/number-input';
 import { Separator } from 'components/ui/separator';
 import { useDisclosure } from 'hooks/use-disclosure';
 import { useUpdateExpenseDebt } from 'hooks/use-update-expense-debt';
@@ -18,14 +18,7 @@ interface ExpenseCardPaymentProps {
 }
 
 const expenseCardPaymentFormSchema = z.object({
-  amount: z.string({ required_error: 'Musisz wpisać kwotę' }).refine(
-    (value) => {
-      return parseFloat(value) > 0;
-    },
-    {
-      message: 'Kwota musi być większa niż zero',
-    },
-  ),
+  amount: z.number({ required_error: 'Musisz wpisać kwotę' }).positive({ message: 'Kwota musi być większa niż zero' }),
 });
 
 type ExpenseCardPaymentFormSchema = z.infer<typeof expenseCardPaymentFormSchema>;
@@ -41,7 +34,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
 
   const form = useForm<ExpenseCardPaymentFormSchema>({
     defaultValues: {
-      amount: parseFloat('0').toFixed(2),
+      amount: 0,
     },
     resolver: zodResolver(expenseCardPaymentFormSchema),
   });
@@ -144,7 +137,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormControl>
-                        <CurrencyInput max={maximumAmount} {...field} />
+                        <NumberInput max={maximumAmount} {...field} />
                       </FormControl>
                     </FormItem>
                   )}

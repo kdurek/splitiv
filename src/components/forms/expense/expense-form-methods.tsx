@@ -1,7 +1,7 @@
 import { PLN } from '@dinero.js/currencies';
 import { Checkbox } from 'components/ui/checkbox';
-import { CurrencyInput } from 'components/ui/currency-input';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
+import { NumberInput } from 'components/ui/number-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import Decimal from 'decimal.js';
@@ -30,15 +30,17 @@ export function ExpenseFormMethods() {
   const divideByRatio = useCallback(() => {
     trigger('debts');
 
+    const formAmount = getValues('amount').toFixed(2);
+
     if (Object.values(ratioSplit).every((v) => v === 0) || Object.keys(ratioSplit).length === 0) {
       getValues('debts').forEach((_, index) => {
-        setValue(`debts.${index}.amount`, parseFloat('0').toFixed(2));
+        setValue(`debts.${index}.amount`, 0);
       });
       return;
     }
 
     const dineroAmount = dineroFromString({
-      amount: getValues('amount'),
+      amount: formAmount,
       currency: PLN,
       scale: 2,
     });
@@ -67,22 +69,24 @@ export function ExpenseFormMethods() {
     });
 
     newDebts.forEach((debt, index) => {
-      setValue(`debts.${index}.amount`, debt.amount.toFixed(2));
+      setValue(`debts.${index}.amount`, debt.amount);
     });
   }, [ratioSplit, getValues, setValue, trigger]);
 
   const divideEqually = useCallback(() => {
     trigger('debts');
 
+    const formAmount = getValues('amount').toFixed(2);
+
     if (equalSplit.length === 0) {
       getValues('debts').forEach((_, index) => {
-        setValue(`debts.${index}.amount`, parseFloat('0').toFixed(2));
+        setValue(`debts.${index}.amount`, 0);
       });
       return;
     }
 
     const dineroAmount = dineroFromString({
-      amount: getValues('amount'),
+      amount: formAmount,
       currency: PLN,
       scale: 2,
     });
@@ -108,24 +112,28 @@ export function ExpenseFormMethods() {
     });
 
     newDebts.forEach((debt, index) => {
-      setValue(`debts.${index}.amount`, debt.amount.toFixed(2));
+      setValue(`debts.${index}.amount`, debt.amount);
     });
 
     trigger('debts');
   }, [equalSplit, getValues, setValue, trigger]);
 
   useEffect(() => {
-    divideEqually();
-  }, [divideEqually, equalSplit]);
+    if (activeTab === 'equal') {
+      divideEqually();
+    }
+  }, [activeTab, divideEqually, equalSplit]);
 
   useEffect(() => {
-    divideByRatio();
-  }, [divideByRatio, ratioSplit]);
+    if (activeTab === 'ratio') {
+      divideByRatio();
+    }
+  }, [activeTab, divideByRatio, ratioSplit]);
 
-  const amountWatch = watch('amount');
+  const amountWatch = watch('amount') ?? 0;
 
   useEffect(() => {
-    if (!amountWatch) {
+    if (!amountWatch || activeTab === 'unequal') {
       return;
     }
     if (activeTab === 'equal') {
@@ -159,7 +167,7 @@ export function ExpenseFormMethods() {
                   <FormItem className="flex items-center justify-between space-y-0">
                     <FormLabel>{debt.name}</FormLabel>
                     <FormControl>
-                      <CurrencyInput className="w-20" {...field} />
+                      <NumberInput className="w-20" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -209,9 +217,9 @@ export function ExpenseFormMethods() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {[...Array(10).keys()].map((num) => (
-                        <SelectItem key={String(num)} value={String(num)}>
-                          {String(num)}
+                      {[...Array(10).keys()].map((value) => (
+                        <SelectItem key={String(value)} value={String(value)}>
+                          {value.toFixed(2)}
                         </SelectItem>
                       ))}
                     </SelectContent>

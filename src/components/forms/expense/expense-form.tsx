@@ -2,70 +2,105 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'components/ui/button';
-import { CurrencyInput } from 'components/ui/currency-input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import { Input } from 'components/ui/input';
+import { NumberInput } from 'components/ui/number-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
 import { Textarea } from 'components/ui/textarea';
 import { useCreateExpense } from 'hooks/use-create-expense';
+import { useUpdateExpense } from 'hooks/use-update-expense';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import type { GetGroupById } from 'utils/api';
+import type { GetExpenseById, GetGroupById } from 'utils/api';
 
 import { type ExpenseFormSchema, expenseFormSchema } from './expense-form.schema';
 import { ExpenseFormMethods } from './expense-form-methods';
 
 interface ExpenseFormProps {
   group: GetGroupById;
+  expense?: GetExpenseById;
 }
 
-export function ExpenseForm({ group }: ExpenseFormProps) {
+export function ExpenseForm({ group, expense }: ExpenseFormProps) {
   const router = useRouter();
   const { mutate: createExpense, isLoading: isLoadingCreateExpense } = useCreateExpense();
+  const { mutate: updateExpense, isLoading: isLoadingUpdateExpense } = useUpdateExpense();
+
+  const defaultValues = expense
+    ? {
+        name: expense.name || '',
+        description: expense.description || '',
+        amount: Number(expense.amount) || 0,
+        payer: expense.payerId || '',
+        debts: group.members.map((member) => ({
+          id: member.id,
+          name: member.name || '',
+          amount: Number(expense.debts.find((debt) => debt.debtorId === member.id)?.amount) || 0,
+        })),
+      }
+    : {
+        name: '',
+        description: '',
+        amount: 0,
+        payer: '',
+        debts: group.members.map((member) => ({
+          id: member.id,
+          name: member.name || '',
+          amount: 0,
+        })),
+      };
 
   const form = useForm({
-    defaultValues: {
-      name: '',
-      description: '',
-      amount: parseFloat('0').toFixed(2),
-      payer: '',
-      debts: group.members.map((member) => ({
-        id: member.id,
-        name: member.name || '',
-        amount: parseFloat('0').toFixed(2),
-      })),
-    },
+    defaultValues,
     resolver: zodResolver(expenseFormSchema),
   });
 
   const handleOnSubmit = (values: ExpenseFormSchema) => {
     const formattedDebts = values.debts
-      .filter((debt) => parseFloat(debt.amount) !== 0 || (values.payer === debt.id && parseFloat(debt.amount) !== 0))
+      .filter((debt) => debt.amount !== 0 || (values.payer === debt.id && debt.amount !== 0))
       .map((debt) => {
         const isPayer = values.payer === debt.id;
 
         return {
-          settled: isPayer ? parseFloat(debt.amount) : 0,
-          amount: values.amount ? parseFloat(debt.amount) : 0,
+          settled: isPayer ? debt.amount : 0,
+          amount: values.amount ? debt.amount : 0,
           debtorId: debt.id,
         };
       });
 
-    createExpense(
-      {
-        name: values.name,
-        description: values.description,
-        amount: parseFloat(values.amount),
-        payerId: values.payer,
-        debts: formattedDebts,
-      },
-      {
-        onSuccess() {
-          router.push('/');
+    if (expense) {
+      updateExpense(
+        {
+          expenseId: expense.id,
+          name: values.name,
+          description: values.description,
+          // amount: values.amount,
+          // payerId: values.payer,
+          // debts: formattedDebts,
         },
-      },
-    );
+        {
+          onSuccess() {
+            router.push('/');
+          },
+        },
+      );
+    } else {
+      createExpense(
+        {
+          name: values.name,
+          description: values.description,
+          amount: values.amount,
+          payerId: values.payer,
+          debts: formattedDebts,
+        },
+        {
+          onSuccess() {
+            router.push('/');
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -99,54 +134,60 @@ export function ExpenseForm({ group }: ExpenseFormProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Całkowita kwota wydatku</FormLabel>
-              <FormControl>
-                <CurrencyInput {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="payer"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kto zapłacił za wydatek?</FormLabel>
-              <Select onValueChange={field.onChange}>
+        {!expense && (
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Całkowita kwota wydatku</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Wybierz osobę" />
-                  </SelectTrigger>
+                  <NumberInput {...field} />
                 </FormControl>
-                <SelectContent>
-                  {group.members.map((member) => (
-                    <SelectItem key={member.id} value={member.id}>
-                      {member.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
-        <div className="flex flex-col gap-4">
-          <FormLabel>Kto uczestniczył w wydatku?</FormLabel>
-          <ExpenseFormMethods />
-        </div>
+        {!expense && (
+          <FormField
+            control={form.control}
+            name="payer"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Kto zapłacił za wydatek?</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Wybierz osobę" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {group.members.map((member) => (
+                      <SelectItem key={member.id} value={member.id}>
+                        {member.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {!expense && (
+          <div className="flex flex-col gap-4">
+            <FormLabel>Kto uczestniczył w wydatku?</FormLabel>
+            <ExpenseFormMethods />
+          </div>
+        )}
 
         <div className="mt-6 flex justify-end gap-4">
           <Button>
-            {isLoadingCreateExpense && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Potwierdź
+            {(isLoadingCreateExpense || isLoadingUpdateExpense) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {expense ? 'Edytuj' : 'Dodaj'}
           </Button>
         </div>
       </form>

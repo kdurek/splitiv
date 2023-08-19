@@ -5,7 +5,7 @@ import { Button } from 'components/ui/button';
 import { Checkbox } from 'components/ui/checkbox';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import Decimal from 'decimal.js';
-import { useSettleExpenseDebts } from 'hooks/use-update-expense-debts';
+import { useSettleExpenseDebts } from 'hooks/use-settle-expense-debts';
 import { ArrowUp, ChevronRight, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';

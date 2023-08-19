@@ -10,11 +10,11 @@ import { cn } from 'lib/utils';
 import { Loader2, Square, XSquare } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import type { GetExpensesByGroup } from 'utils/api';
+import type { GetInfiniteExpenses } from 'utils/api';
 import z from 'zod';
 
 interface ExpenseCardPaymentProps {
-  debt: GetExpensesByGroup[number]['debts'][number];
+  debt: GetInfiniteExpenses['items'][number]['debts'][number];
 }
 
 const expenseCardPaymentFormSchema = z.object({

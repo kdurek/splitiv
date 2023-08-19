@@ -7,8 +7,7 @@ export function useDeleteExpense() {
 
   return api.expense.delete.useMutation({
     async onSuccess() {
-      await utils.group.getById.invalidate();
-      await utils.expense.getAll.invalidate();
+      await utils.group.getCurrent.invalidate();
       await utils.expense.getInfinite.invalidate();
       router.refresh();
     },

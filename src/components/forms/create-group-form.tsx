@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import { Input } from 'components/ui/input';
-import { useChangeActiveGroup } from 'hooks/use-change-active-group';
+import { useChangeCurrentGroup } from 'hooks/use-change-current-group';
 import { useCreateGroup } from 'hooks/use-create-group';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -23,7 +23,7 @@ export function CreateGroupForm() {
     },
   });
   const { mutateAsync: createGroup } = useCreateGroup();
-  const { mutate: changeActiveGroup } = useChangeActiveGroup();
+  const { mutate: changeActiveGroup } = useChangeCurrentGroup();
 
   const handleCreateGroup = async (values: CreateGroupFormSchema) => {
     const createdGroup = await createGroup({ name: values.name });

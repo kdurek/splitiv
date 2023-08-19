@@ -12,7 +12,7 @@ interface ExpenseDetailsPageProps {
 
 export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
   const caller = await createTrpcCaller();
-  const user = await caller.user.getById({ id: params.userId });
+  const user = await caller.user.getById({ userId: params.userId });
 
   if (!user) {
     redirect('/');

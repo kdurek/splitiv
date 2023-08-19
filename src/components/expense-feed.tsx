@@ -18,13 +18,13 @@ import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import type { GetExpensesByGroup, GetInfiniteExpenses } from 'utils/api';
+import type { GetInfiniteExpenses } from 'utils/api';
 
 import { ExpensePayment } from './expense-payment';
 import { buttonVariants } from './ui/button';
 
 interface ExpenseCardProps {
-  expense: GetExpensesByGroup[number];
+  expense: GetInfiniteExpenses['items'][number];
 }
 
 export function ExpenseListItem({ expense }: ExpenseCardProps) {

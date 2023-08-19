@@ -11,7 +11,7 @@ interface ExpenseEditPageProps {
 
 export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) {
   const caller = await createTrpcCaller();
-  const group = await caller.group.getById();
+  const group = await caller.group.getCurrent();
   const expense = await caller.expense.getById({ id: params.expenseId });
 
   if (!expense) {

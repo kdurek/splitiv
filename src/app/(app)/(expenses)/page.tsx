@@ -10,7 +10,7 @@ export default async function ExpensesPage() {
   const infiniteExpense = await caller.expense.getInfinite({
     limit: 10,
   });
-  const group = await caller.group.getById();
+  const group = await caller.group.getCurrent();
 
   return (
     <Section title="Wydatki">

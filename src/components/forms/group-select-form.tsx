@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
-import { useChangeActiveGroup } from 'hooks/use-change-active-group';
+import { useChangeCurrentGroup } from 'hooks/use-change-current-group';
 import { useForm } from 'react-hook-form';
 import { type GetGroups } from 'utils/api';
 import { z } from 'zod';
@@ -24,7 +24,7 @@ export function GroupSelectForm({ groups }: GroupSelectFormProps) {
     resolver: zodResolver(groupSelectFormSchema),
   });
 
-  const { mutate: changeActiveGroup } = useChangeActiveGroup();
+  const { mutate: changeActiveGroup } = useChangeCurrentGroup();
 
   const handleGroupSelect = (values: GroupSelectFormSchema) => {
     changeActiveGroup({ groupId: values.groupId });

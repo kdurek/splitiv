@@ -5,12 +5,11 @@ export function useSettleExpenseDebts() {
   const router = useRouter();
   const utils = api.useContext();
 
-  return api.expense.settleDebts.useMutation({
+  return api.expenseDebt.settle.useMutation({
     async onSuccess() {
-      await utils.group.getById.invalidate();
-      await utils.expense.getAll.invalidate();
+      await utils.group.getCurrent.invalidate();
       await utils.expense.getInfinite.invalidate();
-      await utils.debt.getAll.invalidate();
+      await utils.expenseDebt.getAll.invalidate();
       router.refresh();
     },
   });

@@ -4,7 +4,7 @@ import { createTrpcCaller } from 'server/api/caller';
 
 export default async function ExpenseAddPage() {
   const caller = await createTrpcCaller();
-  const group = await caller.group.getById();
+  const group = await caller.group.getCurrent();
 
   return (
     <Section title="Dodaj wydatek">

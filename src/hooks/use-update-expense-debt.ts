@@ -5,10 +5,9 @@ export function useUpdateExpenseDebt() {
   const router = useRouter();
   const utils = api.useContext();
 
-  return api.expense.updateDebt.useMutation({
+  return api.expenseDebt.update.useMutation({
     async onSuccess() {
-      await utils.group.getById.invalidate();
-      await utils.expense.getAll.invalidate();
+      await utils.group.getCurrent.invalidate();
       await utils.expense.getInfinite.invalidate();
       router.refresh();
     },

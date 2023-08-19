@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'co
 import { cn, getInitials } from 'lib/utils';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import type { GetGroupById, GetUsers } from 'utils/api';
+import type { GetCurrentGroup, GetUsers } from 'utils/api';
 
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { buttonVariants } from './ui/button';
@@ -77,7 +77,7 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
 }
 
 interface UserBalanceProps {
-  group: GetGroupById;
+  group: GetCurrentGroup;
 }
 
 export function UserBalance({ group }: UserBalanceProps) {

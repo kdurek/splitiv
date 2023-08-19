@@ -17,9 +17,9 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
   }
 
   const caller = await createTrpcCaller();
-  const paramUser = await caller.user.getById({ id: params.userId });
+  const paramUser = await caller.user.getById({ userId: params.userId });
   const currentUser = await caller.user.getById({
-    id: session.user.id,
+    userId: session.user.id,
   });
 
   if (!paramUser) {

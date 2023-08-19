@@ -15,9 +15,9 @@ export default async function SettingsPage() {
   }
 
   const caller = await createTrpcCaller();
-  const users = await caller.user.getAllNotInGroup();
+  const users = await caller.user.getAllNotInCurrentGroup();
   const groups = await caller.group.getAll();
-  const group = await caller.group.getById();
+  const group = await caller.group.getCurrent();
 
   return (
     <Section title="Ustawienia">

@@ -6,29 +6,13 @@ import { generateDebts } from '../../utils/generateDebts';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const groupRouter = createTRPCRouter({
-  create: protectedProcedure.input(z.object({ name: z.string() })).mutation(({ input, ctx }) => {
-    return ctx.prisma.group.create({
-      data: {
-        name: input.name,
-        adminId: ctx.session.user.id,
-        members: {
-          create: [
-            {
-              userId: ctx.session.user.id,
-            },
-          ],
-        },
-      },
-    });
-  }),
-
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.group.findMany({
       where: { members: { some: { userId: ctx.session.user.id } } },
     });
   }),
 
-  getById: protectedProcedure.query(async ({ ctx }) => {
+  getCurrent: protectedProcedure.query(async ({ ctx }) => {
     const group = await ctx.prisma.group.findUniqueOrThrow({
       where: { id: ctx.session.activeGroupId },
       include: {
@@ -84,28 +68,36 @@ export const groupRouter = createTRPCRouter({
     };
   }),
 
-  deleteById: protectedProcedure.input(z.object({ groupId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.prisma.group.delete({
-      where: { id: input.groupId },
-    });
-  }),
-
-  addUserToGroup: protectedProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.prisma.userGroup.create({
+  create: protectedProcedure.input(z.object({ name: z.string() })).mutation(({ input, ctx }) => {
+    return ctx.prisma.group.create({
       data: {
-        groupId: ctx.session.activeGroupId,
-        userId: input.userId,
+        name: input.name,
+        adminId: ctx.session.user.id,
+        members: {
+          create: [
+            {
+              userId: ctx.session.user.id,
+            },
+          ],
+        },
       },
     });
   }),
 
-  deleteUserFromGroup: protectedProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.prisma.userGroup.delete({
-      where: {
-        userId_groupId: {
-          groupId: ctx.session.activeGroupId,
-          userId: input.userId,
-        },
+  changeCurrent: protectedProcedure.input(z.object({ groupId: z.string().cuid2() })).mutation(({ input, ctx }) => {
+    return ctx.prisma.user.update({
+      where: { id: ctx.session.user.id },
+      data: {
+        activeGroupId: input.groupId,
+      },
+    });
+  }),
+
+  addUser: protectedProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input, ctx }) => {
+    return ctx.prisma.userGroup.create({
+      data: {
+        groupId: ctx.session.activeGroupId,
+        userId: input.userId,
       },
     });
   }),

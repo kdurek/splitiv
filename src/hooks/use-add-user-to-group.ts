@@ -5,10 +5,10 @@ export function useAddUserToGroup() {
   const router = useRouter();
   const utils = api.useContext();
 
-  return api.group.addUserToGroup.useMutation({
+  return api.group.addUser.useMutation({
     async onSuccess() {
-      await utils.group.getById.invalidate();
-      await utils.user.getAllNotInGroup.invalidate();
+      await utils.group.getCurrent.invalidate();
+      await utils.user.getAllNotInCurrentGroup.invalidate();
       router.refresh();
     },
   });

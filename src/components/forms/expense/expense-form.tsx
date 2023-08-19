@@ -12,13 +12,13 @@ import { useUpdateExpense } from 'hooks/use-update-expense';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import type { GetExpenseById, GetGroupById } from 'utils/api';
+import type { GetCurrentGroup, GetExpenseById } from 'utils/api';
 
 import { type ExpenseFormSchema, expenseFormSchema } from './expense-form.schema';
 import { ExpenseFormMethods } from './expense-form-methods';
 
 interface ExpenseFormProps {
-  group: GetGroupById;
+  group: GetCurrentGroup;
   expense?: GetExpenseById;
 }
 

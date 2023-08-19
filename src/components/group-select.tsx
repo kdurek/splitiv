@@ -1,7 +1,7 @@
 'use client';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
-import { useChangeActiveGroup } from 'hooks/use-change-active-group';
+import { useChangeCurrentGroup } from 'hooks/use-change-current-group';
 import { useRouter } from 'next/navigation';
 import { type GetGroups } from 'utils/api';
 
@@ -13,7 +13,7 @@ interface GroupSelectProps {
 export function GroupSelect({ activeGroupId, groups }: GroupSelectProps) {
   const router = useRouter();
 
-  const { mutate: changeActiveGroup } = useChangeActiveGroup();
+  const { mutate: changeActiveGroup } = useChangeCurrentGroup();
 
   const handleGroupSelect = (value: string) => {
     changeActiveGroup({ groupId: value });

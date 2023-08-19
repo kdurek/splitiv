@@ -7,10 +7,10 @@ export const userRouter = createTRPCRouter({
     return ctx.prisma.user.findMany();
   }),
 
-  getById: publicProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
+  getById: publicProcedure.input(z.object({ userId: z.string().cuid2() })).query(({ input, ctx }) => {
     return ctx.prisma.user.findFirst({
       where: {
-        id: input.id,
+        id: input.userId,
       },
     });
   }),
@@ -132,7 +132,7 @@ export const userRouter = createTRPCRouter({
       return [...contextUserDebts, ...pageUserDebts];
     }),
 
-  getAllNotInGroup: protectedProcedure.query(({ ctx }) => {
+  getAllNotInCurrentGroup: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findMany({
       where: {
         groups: {
@@ -140,15 +140,6 @@ export const userRouter = createTRPCRouter({
             groupId: ctx.session.activeGroupId,
           },
         },
-      },
-    });
-  }),
-
-  changeActiveGroup: protectedProcedure.input(z.object({ groupId: z.string() })).mutation(({ input, ctx }) => {
-    return ctx.prisma.user.update({
-      where: { id: ctx.session.user.id },
-      data: {
-        activeGroupId: input.groupId,
       },
     });
   }),

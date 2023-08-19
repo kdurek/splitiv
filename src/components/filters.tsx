@@ -5,7 +5,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from 'lib/atoms';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import type { GetGroupById } from 'utils/api';
+import type { GetCurrentGroup } from 'utils/api';
 
 import { Button } from './ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
@@ -21,7 +21,7 @@ export interface ExpenseFilters {
 }
 
 interface ExpenseListFiltersProps {
-  group: GetGroupById;
+  group: GetCurrentGroup;
 }
 
 export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {

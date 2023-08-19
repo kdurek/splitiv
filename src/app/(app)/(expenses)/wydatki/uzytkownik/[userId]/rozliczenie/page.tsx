@@ -12,6 +12,7 @@ interface ExpenseDetailsPageProps {
 
 export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
   const session = await getServerAuthSession();
+
   if (!session) {
     return redirect('/logowanie');
   }
@@ -22,7 +23,7 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
     userId: session.user.id,
   });
 
-  if (!paramUser) {
+  if (!paramUser || !currentUser) {
     redirect('/');
   }
 

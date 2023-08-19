@@ -78,7 +78,7 @@ export const expenseRouter = createTRPCRouter({
     }),
 
   getById: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.prisma.expense.findFirst({
+    return ctx.prisma.expense.findUnique({
       where: {
         id: input.id,
       },

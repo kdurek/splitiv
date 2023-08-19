@@ -8,7 +8,7 @@ export const userRouter = createTRPCRouter({
   }),
 
   getById: publicProcedure.input(z.object({ userId: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.prisma.user.findFirst({
+    return ctx.prisma.user.findUnique({
       where: {
         id: input.userId,
       },
@@ -143,4 +143,22 @@ export const userRouter = createTRPCRouter({
       },
     });
   }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().cuid2(),
+        name: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.user.update({
+        where: {
+          id: input.userId,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+    }),
 });

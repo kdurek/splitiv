@@ -2,7 +2,11 @@ import { AddUserToGroupForm } from 'components/forms/add-user-to-group-form';
 import { GroupSelect } from 'components/group-select';
 import { LogoutButton } from 'components/logout-button';
 import { Section } from 'components/section';
+import { buttonVariants } from 'components/ui/button';
 import { Separator } from 'components/ui/separator';
+import { cn } from 'lib/utils';
+import { User2 } from 'lucide-react';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createTrpcCaller } from 'server/api/caller';
 import { getServerAuthSession } from 'server/auth';
@@ -22,7 +26,12 @@ export default async function SettingsPage() {
   return (
     <Section title="Ustawienia">
       <div className="flex flex-col gap-6">
-        <LogoutButton />
+        <div className="flex flex-col gap-4">
+          <Link href={'/ustawienia/profil'} className={cn(buttonVariants({ variant: 'outline' }))}>
+            <User2 className="mr-2" /> Profil
+          </Link>
+          <LogoutButton />
+        </div>
         <Separator />
         <div className="space-y-2">
           <h2 className="text-xl font-bold">Aktywna grupa</h2>

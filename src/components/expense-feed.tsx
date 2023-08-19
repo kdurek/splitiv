@@ -13,7 +13,7 @@ import {
 } from 'components/ui/dialog';
 import { format } from 'date-fns';
 import { useInfiniteExpenses } from 'hooks/use-infinite-expenses';
-import { cn } from 'lib/utils';
+import { cn, getFirstName } from 'lib/utils';
 import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -31,7 +31,7 @@ export function ExpenseListItem({ expense }: ExpenseCardProps) {
   const { data: session } = useSession();
   const descriptionParts = expense.description?.split('\n');
   const hasDescription = descriptionParts?.length;
-  const [payerFirstName] = expense.payer.name?.split(' ') ?? '';
+  const payerFirstName = getFirstName(expense.payer.name);
   const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM');
 
   const getSettledStateIcon = () => {

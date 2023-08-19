@@ -6,7 +6,7 @@ import { NumberInput } from 'components/ui/number-input';
 import { Separator } from 'components/ui/separator';
 import { useDisclosure } from 'hooks/use-disclosure';
 import { useUpdateExpenseDebt } from 'hooks/use-update-expense-debt';
-import { cn } from 'lib/utils';
+import { cn, getFirstName } from 'lib/utils';
 import { Loader2, Square, XSquare } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
@@ -39,7 +39,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
     resolver: zodResolver(expenseCardPaymentFormSchema),
   });
 
-  const [debtorFirstName] = debt.debtor.name?.split(' ') ?? '';
+  const debtorFirstName = getFirstName(debt.debtor.name);
 
   const notHavePermission = session?.user?.id !== debt.debtorId && session?.user?.id !== debt.expense.payerId;
 

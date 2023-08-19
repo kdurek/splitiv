@@ -15,25 +15,35 @@ export default async function SettingsPage() {
   }
 
   const caller = await createTrpcCaller();
-  const users = await caller.user.getAllNotInCurrentGroup();
+  const usersNotInCurrentGroup = await caller.user.getAllNotInCurrentGroup();
   const groups = await caller.group.getAll();
   const group = await caller.group.getCurrent();
 
   return (
     <Section title="Ustawienia">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <LogoutButton />
-        <GroupSelect activeGroupId={session.activeGroupId} groups={groups} />
         <Separator />
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">Członkowie</h2>
-          <div className="flex flex-col">
-            {group.members.map((user) => (
-              <span key={user.id}>{user.name}</span>
-            ))}
-          </div>
-          <AddUserToGroupForm users={users} />
+        <div className="space-y-2">
+          <h2 className="text-xl font-bold">Aktywna grupa</h2>
+          <GroupSelect activeGroupId={session.activeGroupId} groups={groups} />
         </div>
+        {session.user.id === group.adminId && (
+          <>
+            <Separator />
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold">Członkowie</h2>
+              <ol className="space-y-1">
+                {group.members.map((user) => (
+                  <li key={user.id} className="flex items-center gap-2">
+                    <div className="h-1 w-1 rounded-full bg-black" /> {user.name}
+                  </li>
+                ))}
+              </ol>
+            </div>
+            {!!usersNotInCurrentGroup.length && <AddUserToGroupForm users={usersNotInCurrentGroup} />}
+          </>
+        )}
       </div>
     </Section>
   );

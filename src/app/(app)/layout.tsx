@@ -1,7 +1,8 @@
 import { CreateGroupForm } from 'components/forms/create-group-form';
-import { GroupSelectForm } from 'components/forms/group-select-form';
+import { GroupSelect } from 'components/group-select';
 import { Logo } from 'components/logo';
 import { MobileNav } from 'components/mobile-nav';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'components/ui/collapsible';
 import { Separator } from 'components/ui/separator';
 import { redirect } from 'next/navigation';
 import { createTrpcCaller } from 'server/api/caller';
@@ -20,9 +21,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
     return (
       <div className="space-y-4 p-4">
-        <GroupSelectForm groups={groups} />
+        <GroupSelect groups={groups} />
         <Separator />
-        <CreateGroupForm />
+        <Collapsible>
+          <CollapsibleTrigger className="w-full text-center text-muted-foreground">Stwórz grupę</CollapsibleTrigger>
+          <CollapsibleContent>
+            <CreateGroupForm />
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     );
   }

@@ -85,6 +85,7 @@ export const groupRouter = createTRPCRouter({
   }),
 
   changeCurrent: protectedProcedure.input(z.object({ groupId: z.string().cuid2() })).mutation(({ input, ctx }) => {
+    console.log(input.groupId);
     return ctx.prisma.user.update({
       where: { id: ctx.session.user.id },
       data: {

@@ -7,7 +7,6 @@ export function useUpdateExpenseDebt() {
 
   return api.expenseDebt.update.useMutation({
     async onSuccess() {
-      await utils.group.getCurrent.invalidate();
       await utils.expense.getInfinite.invalidate();
       router.refresh();
     },

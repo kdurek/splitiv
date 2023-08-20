@@ -7,7 +7,6 @@ export function useCreateExpense() {
 
   return api.expense.create.useMutation({
     async onSuccess() {
-      await utils.group.getCurrent.invalidate();
       await utils.expense.getInfinite.invalidate();
       router.refresh();
     },

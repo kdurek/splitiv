@@ -113,7 +113,7 @@ export function ExpenseForm({ group, expense }: ExpenseFormProps) {
             <FormItem>
               <FormLabel>Czego dotyczy wydatek?</FormLabel>
               <FormControl>
-                <Input placeholder="Wprowadź nazwę" {...field} />
+                <Input placeholder="Krótka nazwa" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -127,7 +127,7 @@ export function ExpenseForm({ group, expense }: ExpenseFormProps) {
             <FormItem>
               <FormLabel>Opcjonalny opis</FormLabel>
               <FormControl>
-                <Textarea placeholder="Wprowadź szczegóły (opcjonalne)" {...field} />
+                <Textarea placeholder="Szczegóły takie jak lista zakupów" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -1,8 +1,7 @@
 // https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fieldReference"]
+  provider = "prisma-client-js"
 }
 
 datasource db {

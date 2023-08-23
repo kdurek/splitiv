@@ -15,7 +15,7 @@
     "lint:fix": "next lint --fix",
     "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev -p 37533\"",
     "typecheck": "tsc",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start -p 37533"
   },
   "dependencies": {

@@ -2,9 +2,9 @@
   "name": "splitiv",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@8.5.1",
+  "packageManager": "pnpm@8.6.12",
   "engines": {
-    "node": "18.x",
+    "node": "20.x",
     "npm": "9.x",
     "pnpm": "8.x"
   },
@@ -14,7 +14,6 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev -p 37533\"",
-    "postinstall": "pnpm dlx prisma generate",
     "typecheck": "tsc",
     "build": "next build",
     "start": "next start -p 37533"

@@ -5,10 +5,10 @@ on:
     branches: [main]
 
 env:
-  DATABASE_URL: "https://fake.com"
+  DATABASE_URL: 'https://fake.com'
   NODE_ENV: test
   NEXTAUTH_SECRET: fake
-  NEXTAUTH_URL: "https://fake.com"
+  NEXTAUTH_URL: 'https://fake.com'
   GOOGLE_CLIENT_ID: fake
   GOOGLE_CLIENT_SECRET: fake
 
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18]
+        node-version: [20]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,7 +29,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
+          cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
 

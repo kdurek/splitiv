@@ -13,6 +13,13 @@ export const groupRouter = createTRPCRouter({
   }),
 
   getCurrent: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.activeGroupId) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'activeGroupId is not set',
+      });
+    }
+
     const group = await ctx.prisma.group.findUniqueOrThrow({
       where: { id: ctx.session.activeGroupId },
       include: {

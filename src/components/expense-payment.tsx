@@ -1,4 +1,7 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Prisma } from '@prisma/client';
 import { Button } from 'components/ui/button';
 import { Collapsible, CollapsibleContent } from 'components/ui/collapsible';
 import { Form, FormControl, FormField, FormItem } from 'components/ui/form';
@@ -6,15 +9,19 @@ import { NumberInput } from 'components/ui/number-input';
 import { Separator } from 'components/ui/separator';
 import { useDisclosure } from 'hooks/use-disclosure';
 import { useUpdateExpenseDebt } from 'hooks/use-update-expense-debt';
-import { cn, getFirstName } from 'lib/utils';
+import { cn } from 'lib/utils';
 import { Loader2, Square, XSquare } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import type { GetInfiniteExpenses } from 'utils/api';
 import z from 'zod';
 
 interface ExpenseCardPaymentProps {
-  debt: GetInfiniteExpenses['items'][number]['debts'][number];
+  payerId: string;
+  debt: Prisma.ExpenseDebtGetPayload<{
+    include: {
+      debtor: true;
+    };
+  }>;
 }
 
 const expenseCardPaymentFormSchema = z.object({
@@ -23,7 +30,7 @@ const expenseCardPaymentFormSchema = z.object({
 
 type ExpenseCardPaymentFormSchema = z.infer<typeof expenseCardPaymentFormSchema>;
 
-export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
+export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
   const { data: session } = useSession();
 
   const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } = useUpdateExpenseDebt();
@@ -39,9 +46,7 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
     resolver: zodResolver(expenseCardPaymentFormSchema),
   });
 
-  const debtorFirstName = getFirstName(debt.debtor.name);
-
-  const notHavePermission = session?.user?.id !== debt.debtorId && session?.user?.id !== debt.expense.payerId;
+  const notHavePermission = session?.user?.id !== debt.debtorId && session?.user?.id !== payerId;
 
   const watchAmount = form.watch('amount');
 
@@ -93,23 +98,32 @@ export function ExpensePayment({ debt }: ExpenseCardPaymentProps) {
   return (
     <div className="rounded-md border p-2">
       <Collapsible open={isEditing}>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn('text-blue-500 hover:text-blue-500', {
-              'text-red-500 hover:text-red-500': isEditing,
-              'text-teal-500 hover:text-teal-500': !isEditing && isFullySettled,
-              'text-yellow-500 hover:text-yellow-500': !isEditing && isPartiallySettled,
-            })}
-            onClick={() => !isFullySettled && !notHavePermission && toggleIsEditing()}
-          >
-            {isEditing ? <XSquare /> : statusIcon}
-          </Button>
-          <div>
-            {isFullySettled
-              ? `${debtorFirstName} - ${Number(debt.amount).toFixed(2)} zł oddane`
-              : `${debtorFirstName} - ${maximumAmount.toFixed(2)} zł do oddania`}
+        <div className="flex items-center justify-between gap-4 overflow-hidden">
+          <div className="flex items-center gap-4 overflow-hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn('shrink-0', 'text-blue-500 hover:text-blue-500', {
+                'text-red-500 hover:text-red-500': isEditing,
+                'text-teal-500 hover:text-teal-500': !isEditing && isFullySettled,
+                'text-yellow-500 hover:text-yellow-500': !isEditing && isPartiallySettled,
+              })}
+              onClick={() => !isFullySettled && !notHavePermission && toggleIsEditing()}
+            >
+              {isEditing ? <XSquare /> : statusIcon}
+            </Button>
+            <div className="text-start">
+              <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">
+                {isFullySettled ? 'Oddane' : 'Do oddania'}
+              </div>
+              <div className="line-clamp-1">{debt.debtor.name}</div>
+            </div>
+          </div>
+          <div className="text-end">
+            <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Kwota</div>
+            <div className="whitespace-nowrap">
+              {isFullySettled ? Number(debt.amount).toFixed(2) : maximumAmount.toFixed(2)} zł
+            </div>
           </div>
         </div>
         <CollapsibleContent>

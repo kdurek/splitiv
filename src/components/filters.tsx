@@ -30,7 +30,7 @@ export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
 
   const setSearchText = useSetAtom(expenseFilterSearchTextAtom);
   const [payerId, setPayerId] = useAtom(expenseFilterPayerIdAtom);
-  const setDebtorId = useSetAtom(expenseFilterDebtorIdAtom);
+  const [debtorId, setDebtorId] = useAtom(expenseFilterDebtorIdAtom);
 
   useEffect(() => {
     setSearchText(searchTextDebounced);
@@ -72,7 +72,7 @@ export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
         </div>
         <div>
           <Label>Pożyczający</Label>
-          <Select onValueChange={(value) => setDebtorId(value)}>
+          <Select value={debtorId} onValueChange={(value) => setDebtorId(value)}>
             <SelectTrigger>
               <SelectValue placeholder="Brak" />
             </SelectTrigger>

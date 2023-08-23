@@ -182,7 +182,7 @@ export function ExpenseFormMethods() {
               <div key={debt.id} className="flex items-center justify-between">
                 <FormLabel>{debt.name}</FormLabel>
                 <div className="flex h-10 items-center gap-4">
-                  <FormLabel>{`${debt.amount} zł`}</FormLabel>
+                  <FormLabel>{`${debt.amount.toFixed(2)} zł`}</FormLabel>
                   <Checkbox
                     className="h-6 w-6"
                     checked={equalSplit.includes(debt.id)}
@@ -203,7 +203,7 @@ export function ExpenseFormMethods() {
               <div key={debt.id} className="flex flex-nowrap items-center justify-between gap-4">
                 <FormLabel>{debt.name}</FormLabel>
                 <div className="flex items-center gap-4">
-                  <FormLabel>{`${debt.amount} zł`}</FormLabel>
+                  <FormLabel>{`${debt.amount.toFixed(2)} zł`}</FormLabel>
                   <Select
                     value={String(ratioSplit[debt.id])}
                     onValueChange={(value) =>
@@ -219,7 +219,7 @@ export function ExpenseFormMethods() {
                     <SelectContent>
                       {[...Array(10).keys()].map((value) => (
                         <SelectItem key={String(value)} value={String(value)}>
-                          {value.toFixed(2)}
+                          {String(value)}
                         </SelectItem>
                       ))}
                     </SelectContent>

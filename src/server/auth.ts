@@ -20,6 +20,7 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
+        session.user.gender = user.gender;
       }
       if (user.activeGroupId) {
         session.activeGroupId = user.activeGroupId;

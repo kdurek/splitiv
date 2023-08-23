@@ -1,3 +1,4 @@
+import { Gender } from '@prisma/client';
 import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
@@ -148,7 +149,8 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string().cuid2(),
-        name: z.string(),
+        name: z.string().optional(),
+        gender: z.nativeEnum(Gender).optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -158,6 +160,7 @@ export const userRouter = createTRPCRouter({
         },
         data: {
           name: input.name,
+          gender: input.gender,
         },
       });
     }),

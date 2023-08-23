@@ -80,6 +80,11 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model User {
   id            String        @id @default(cuid())
   createdAt     DateTime      @default(now())
@@ -88,6 +93,7 @@ model User {
   email         String?       @unique
   emailVerified DateTime?
   image         String?
+  gender        Gender?
   activeGroupId String?
   accounts      Account[]
   sessions      Session[]

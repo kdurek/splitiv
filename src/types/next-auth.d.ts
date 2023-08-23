@@ -1,3 +1,4 @@
+import type { Gender } from '@prisma/client';
 import type { DefaultSession, DefaultUser } from 'next-auth';
 import type { GoogleProfile } from 'next-auth/providers/google';
 
@@ -6,11 +7,13 @@ declare module 'next-auth' {
     activeGroupId: string;
     user: {
       id: string;
+      gender?: Gender | null;
     } & DefaultSession['user'];
   }
 
   interface User extends DefaultUser {
-    activeGroupId: string;
+    gender?: Gender | null;
+    activeGroupId: string | null;
   }
 
   interface Profile extends GoogleProfile {

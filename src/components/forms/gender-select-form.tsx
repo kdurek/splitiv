@@ -38,7 +38,7 @@ export function GenderSelectForm({ userId }: GenderSelectFormProps) {
           name="gender"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Płeć</FormLabel>
+              <FormLabel>Wybierz płeć aby przejść dalej</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { Heading } from './ui/heading';
+
 interface SectionProps {
   children: ReactNode;
   title?: string | null;
@@ -8,8 +10,8 @@ interface SectionProps {
 export function Section({ title, children }: SectionProps) {
   return (
     <>
-      <h1 className="text-2xl font-bold">{title}</h1>
-      <div className="mt-4">{children}</div>
+      <Heading variant="h1">{title}</Heading>
+      <section className="mt-4">{children}</section>
     </>
   );
 }

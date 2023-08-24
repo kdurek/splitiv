@@ -1,6 +1,7 @@
 import { DeleteExpenseModal } from 'components/delete-expense-modal';
 import { ExpensePayment } from 'components/expense-payment';
 import { buttonVariants } from 'components/ui/button';
+import { Heading } from 'components/ui/heading';
 import { format } from 'date-fns';
 import { cn } from 'lib/utils';
 import { CircleDollarSign } from 'lucide-react';
@@ -31,13 +32,13 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
 
   const descriptionParts = expense.description?.split('\n');
   const hasDescription = descriptionParts?.length;
-  const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM');
+  const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM yyyy');
   const isPayer = session.user.id === expense.payerId;
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-2xl">{expense.name}</h1>
+        <Heading variant="h1">{expense.name}</Heading>
         {hasDescription && (
           <div className="text-sm text-muted-foreground">
             {descriptionParts?.map((part, index) => <div key={index}>{part}</div>)}

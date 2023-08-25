@@ -49,9 +49,6 @@ export const expenseRouter = createTRPCRouter({
         include: {
           payer: true,
           debts: {
-            orderBy: {
-              debtorId: 'desc',
-            },
             include: {
               expense: {
                 select: {
@@ -85,8 +82,21 @@ export const expenseRouter = createTRPCRouter({
       include: {
         payer: true,
         debts: {
+          orderBy: {
+            debtor: {
+              name: 'asc',
+            },
+          },
           include: {
             debtor: true,
+          },
+        },
+        notes: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          include: {
+            createdBy: true,
           },
         },
       },

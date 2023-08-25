@@ -1,4 +1,6 @@
+import { Gender } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import Decimal from 'decimal.js';
 import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
@@ -37,60 +39,6 @@ export const expenseDebtRouter = createTRPCRouter({
       });
     }),
 
-  update: protectedProcedure
-    .input(
-      z.object({
-        expenseDebtId: z.string(),
-        settled: z.number().default(0),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const expenseDebt = await ctx.prisma.expenseDebt.findUniqueOrThrow({
-        where: {
-          id: input.expenseDebtId,
-        },
-        select: {
-          amount: true,
-          debtorId: true,
-          expense: {
-            select: {
-              payerId: true,
-            },
-          },
-        },
-      });
-
-      if (ctx.session.user.id !== expenseDebt.debtorId && ctx.session.user.id !== expenseDebt.expense.payerId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Tylko osoba płacąca i oddająca dług może go edytować',
-        });
-      }
-
-      if (input.settled > Number(expenseDebt.amount)) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Kwota do oddania nie może być większa niż kwota do zapłaty',
-        });
-      }
-
-      if (expenseDebt?.expense.payerId === expenseDebt.debtorId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Nie można edytować kwoty do oddania osoby płacącej',
-        });
-      }
-
-      return ctx.prisma.expenseDebt.update({
-        where: {
-          id: input.expenseDebtId,
-        },
-        data: {
-          settled: input.settled,
-        },
-      });
-    }),
-
   settle: protectedProcedure
     .input(
       z.object({
@@ -105,16 +53,75 @@ export const expenseDebtRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.$transaction(async (tx) => {
         await Promise.all(
-          input.expenseDebts.map((expenseDebt) =>
-            tx.expenseDebt.update({
+          input.expenseDebts.map(async (expenseDebt) => {
+            const previousDebt = await tx.expenseDebt.findUniqueOrThrow({
+              where: {
+                id: expenseDebt.id,
+              },
+              select: {
+                amount: true,
+                settled: true,
+                debtorId: true,
+                expense: {
+                  select: {
+                    payerId: true,
+                  },
+                },
+              },
+            });
+
+            if (ctx.session.user.id !== previousDebt.debtorId && ctx.session.user.id !== previousDebt.expense.payerId) {
+              throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Tylko osoba płacąca i oddająca dług może go edytować',
+              });
+            }
+
+            if (expenseDebt.settled > Number(previousDebt.amount)) {
+              throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Kwota do oddania nie może być większa niż kwota do zapłaty',
+              });
+            }
+
+            if (previousDebt.expense.payerId === previousDebt.debtorId) {
+              throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Nie można edytować kwoty do oddania osoby płacącej',
+              });
+            }
+
+            const debt = await tx.expenseDebt.update({
               where: {
                 id: expenseDebt.id,
               },
               data: {
                 settled: expenseDebt.settled,
               },
-            }),
-          ),
+              select: {
+                settled: true,
+                debtor: {
+                  select: {
+                    name: true,
+                    gender: true,
+                  },
+                },
+                expense: {
+                  select: {
+                    id: true,
+                  },
+                },
+              },
+            });
+            await tx.expenseNote.create({
+              data: {
+                expenseId: debt.expense.id,
+                content: `${debt.debtor.name} ${
+                  debt.debtor.gender === Gender['MALE'] ? 'oddał' : 'oddała'
+                } ${Decimal.sub(debt.settled, previousDebt.settled).toFixed(2)} zł`,
+              },
+            });
+          }),
         );
       });
     }),

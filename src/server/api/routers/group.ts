@@ -24,6 +24,11 @@ export const groupRouter = createTRPCRouter({
       where: { id: ctx.session.activeGroupId },
       include: {
         members: {
+          orderBy: {
+            user: {
+              name: 'asc',
+            },
+          },
           select: { user: true },
         },
       },

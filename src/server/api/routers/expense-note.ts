@@ -1,0 +1,17 @@
+import { z } from 'zod';
+
+import { createTRPCRouter, protectedProcedure } from '../trpc';
+
+export const expenseNoteRouter = createTRPCRouter({
+  create: protectedProcedure
+    .input(z.object({ expenseId: z.string().cuid2(), content: z.string() }))
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.expenseNote.create({
+        data: {
+          expenseId: input.expenseId,
+          content: input.content,
+          createdById: ctx.session.user.id,
+        },
+      });
+    }),
+});

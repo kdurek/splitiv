@@ -1,13 +1,11 @@
 import { useRouter } from 'next/navigation';
 import { api } from 'utils/api';
 
-export function useUpdateExpenseDebt() {
+export function useCreateExpenseNote() {
   const router = useRouter();
-  const utils = api.useContext();
 
-  return api.expenseDebt.update.useMutation({
+  return api.expenseNote.create.useMutation({
     async onSuccess() {
-      await utils.expense.getInfinite.invalidate();
       router.refresh();
     },
   });

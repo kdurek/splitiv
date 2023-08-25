@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem } from 'components/ui/form';
 import { NumberInput } from 'components/ui/number-input';
 import { Separator } from 'components/ui/separator';
 import { useDisclosure } from 'hooks/use-disclosure';
-import { useUpdateExpenseDebt } from 'hooks/use-update-expense-debt';
+import { useSettleExpenseDebts } from 'hooks/use-settle-expense-debts';
 import { cn } from 'lib/utils';
 import { Loader2, Square, XSquare } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -33,7 +33,7 @@ type ExpenseCardPaymentFormSchema = z.infer<typeof expenseCardPaymentFormSchema>
 export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
   const { data: session } = useSession();
 
-  const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } = useUpdateExpenseDebt();
+  const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } = useSettleExpenseDebts();
 
   const [isEditing, { toggle: toggleIsEditing, close: closeIsEditing }] = useDisclosure(false);
 
@@ -59,10 +59,14 @@ export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
   const statusIcon = isFullySettled ? <XSquare /> : <Square />;
 
   const handlePayPartially = (values: ExpenseCardPaymentFormSchema) => {
-    updateExpenseDebt(
+    settleExpenseDebts(
       {
-        expenseDebtId: debt.id,
-        settled: Number(values.amount) + Number(debt.settled),
+        expenseDebts: [
+          {
+            id: debt.id,
+            settled: Number(values.amount) + Number(debt.settled),
+          },
+        ],
       },
       {
         onSuccess() {
@@ -71,17 +75,21 @@ export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
           form.reset();
         },
         onError(error) {
-          form.setError('amount', error);
+          form.setError('amount', { message: error.shape?.message });
         },
       },
     );
   };
 
   const handlePayFully = () => {
-    updateExpenseDebt(
+    settleExpenseDebts(
       {
-        expenseDebtId: debt.id,
-        settled: Number(debt.amount),
+        expenseDebts: [
+          {
+            id: debt.id,
+            settled: Number(debt.amount),
+          },
+        ],
       },
       {
         onSuccess() {
@@ -89,7 +97,7 @@ export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
           form.reset();
         },
         onError(error) {
-          form.setError('amount', error);
+          form.setError('amount', { message: error.shape?.message });
         },
       },
     );
@@ -157,7 +165,7 @@ export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
                   )}
                 />
                 <Button>
-                  {isLoadingUpdateExpenseDebt && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLoadingSettleExpenseDebts && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Oddaj
                 </Button>
               </div>

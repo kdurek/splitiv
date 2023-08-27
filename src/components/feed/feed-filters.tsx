@@ -5,27 +5,26 @@ import { useAtom, useSetAtom } from 'jotai';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from '@/lib/atoms';
 import type { GetCurrentGroup } from '@/utils/api';
 
-import { Button } from './ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-
-export interface ExpenseFilters {
+export interface FeedFilters {
   searchText?: string;
   payerId?: string;
   debtorId?: string;
   isSettled?: boolean;
 }
 
-interface ExpenseListFiltersProps {
+interface FeedFiltersProps {
   group: GetCurrentGroup;
 }
 
-export function ExpenseListFilters({ group }: ExpenseListFiltersProps) {
+export function FeedFilters({ group }: FeedFiltersProps) {
   const [open, setOpen] = useState(false);
   const [searchTextDebounced, setSearchTextDebounced] = useDebouncedState<string>('', 500);
 

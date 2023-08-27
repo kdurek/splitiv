@@ -16,7 +16,7 @@ import { useDisclosure } from '@/hooks/use-disclosure';
 import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
 import { cn } from '@/lib/utils';
 
-interface ExpenseCardPaymentProps {
+interface ExpensePaymentProps {
   payerId: string;
   debt: Prisma.ExpenseDebtGetPayload<{
     include: {
@@ -25,13 +25,13 @@ interface ExpenseCardPaymentProps {
   }>;
 }
 
-const expenseCardPaymentFormSchema = z.object({
+const expensePaymentFormSchema = z.object({
   amount: z.number({ required_error: 'Musisz wpisać kwotę' }).positive({ message: 'Kwota musi być większa niż zero' }),
 });
 
-type ExpenseCardPaymentFormSchema = z.infer<typeof expenseCardPaymentFormSchema>;
+type ExpensePaymentFormSchema = z.infer<typeof expensePaymentFormSchema>;
 
-export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
+export function ExpensePayment({ payerId, debt }: ExpensePaymentProps) {
   const { data: session } = useSession();
 
   const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } = useSettleExpenseDebts();
@@ -40,11 +40,11 @@ export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
 
   const [isPartialPay, { toggle: toggleIsPartialPay, close: closeIsPartialPay }] = useDisclosure(false);
 
-  const form = useForm<ExpenseCardPaymentFormSchema>({
+  const form = useForm<ExpensePaymentFormSchema>({
     defaultValues: {
       amount: 0,
     },
-    resolver: zodResolver(expenseCardPaymentFormSchema),
+    resolver: zodResolver(expensePaymentFormSchema),
   });
 
   const notHavePermission = session?.user?.id !== debt.debtorId && session?.user?.id !== payerId;
@@ -59,7 +59,7 @@ export function ExpensePayment({ payerId, debt }: ExpenseCardPaymentProps) {
 
   const statusIcon = isFullySettled ? <XSquare /> : <Square />;
 
-  const handlePayPartially = (values: ExpenseCardPaymentFormSchema) => {
+  const handlePayPartially = (values: ExpensePaymentFormSchema) => {
     settleExpenseDebts(
       {
         expenseDebts: [

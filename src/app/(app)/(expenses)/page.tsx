@@ -1,8 +1,8 @@
-import { ExpenseFeed } from '@/components/expense-feed';
-import { ExpenseLegend } from '@/components/expense-legend';
-import { ExpenseListFilters } from '@/components/filters';
-import { Section } from '@/components/section';
-import { UserBalance } from '@/components/user-balance';
+import { FeedExpenses } from '@/components/feed/feed-expenses';
+import { FeedFilters } from '@/components/feed/feed-filters';
+import { FeedLegend } from '@/components/feed/feed-legend';
+import { UserBalance } from '@/components/group/user-balance';
+import { Section } from '@/components/layout/section';
 import { createTrpcCaller } from '@/server/api/caller';
 
 export default async function ExpensesPage() {
@@ -16,9 +16,9 @@ export default async function ExpensesPage() {
     <Section title="Wydatki">
       <div className="flex flex-col gap-4">
         <UserBalance group={group} />
-        <ExpenseLegend />
-        <ExpenseListFilters group={group} />
-        <ExpenseFeed infiniteExpensesInitialData={infiniteExpense} />
+        <FeedLegend />
+        <FeedFilters group={group} />
+        <FeedExpenses infiniteExpensesInitialData={infiniteExpense} />
       </div>
     </Section>
   );

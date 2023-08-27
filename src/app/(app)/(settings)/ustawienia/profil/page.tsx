@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { UserForm } from '@/components/forms/user-form';
-import { Section } from '@/components/section';
+import { Section } from '@/components/layout/section';
 import { createTrpcCaller } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
 

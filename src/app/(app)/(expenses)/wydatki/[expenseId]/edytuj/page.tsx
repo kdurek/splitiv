@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { ExpenseForm } from '@/components/forms/expense/expense-form';
-import { Section } from '@/components/section';
+import { Section } from '@/components/layout/section';
 import { createTrpcCaller } from '@/server/api/caller';
 
 interface ExpenseEditPageProps {

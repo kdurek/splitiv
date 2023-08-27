@@ -2,9 +2,9 @@ import { redirect } from 'next/navigation';
 
 import { CreateGroupForm } from '@/components/forms/create-group-form';
 import { GenderSelectForm } from '@/components/forms/gender-select-form';
-import { GroupSelect } from '@/components/group-select';
-import { Logo } from '@/components/logo';
-import { MobileNav } from '@/components/mobile-nav';
+import { GroupSelect } from '@/components/group/group-select';
+import { Logo } from '@/components/layout/logo';
+import { MobileNav } from '@/components/layout/mobile-nav';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
 import { createTrpcCaller } from '@/server/api/caller';

@@ -5,6 +5,8 @@ import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
+import { type ExpenseFormSchema, expenseFormSchema } from '@/components/forms/expense/expense-form.schema';
+import { ExpenseFormMethods } from '@/components/forms/expense/expense-form-methods';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -14,9 +16,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCreateExpense } from '@/hooks/use-create-expense';
 import { useUpdateExpense } from '@/hooks/use-update-expense';
 import type { GetCurrentGroup, GetExpenseById } from '@/utils/api';
-
-import { type ExpenseFormSchema, expenseFormSchema } from './expense-form.schema';
-import { ExpenseFormMethods } from './expense-form-methods';
 
 interface ExpenseFormProps {
   group: GetCurrentGroup;

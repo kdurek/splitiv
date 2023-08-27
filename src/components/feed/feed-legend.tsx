@@ -2,7 +2,7 @@
 
 import { CircleDollarSign } from 'lucide-react';
 
-export function ExpenseLegend() {
+export function FeedLegend() {
   return (
     <div className="rounded-md border p-4">
       <div className="grid grid-cols-3">

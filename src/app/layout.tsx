@@ -6,7 +6,7 @@ import { pl } from 'date-fns/locale';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 
-import { TailwindIndicator } from '@/components/tailwind-indicator';
+import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
 
 import { NextAuthProvider, TrpcProvider } from './providers';
 

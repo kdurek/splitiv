@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { useInfiniteExpenses } from '@/hooks/use-infinite-expenses';
 import type { GetInfiniteExpenses } from '@/utils/api';
 
-interface ExpenseFeedItemProps {
+interface FeedExpensesItemProps {
   expense: GetInfiniteExpenses['items'][number];
 }
 
@@ -42,7 +42,7 @@ const getSettledStateIcon = (expense: GetInfiniteExpenses['items'][number]) => {
   );
 };
 
-export function ExpenseFeedItem({ expense }: ExpenseFeedItemProps) {
+export function FeedExpensesItem({ expense }: FeedExpensesItemProps) {
   const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM');
 
   return (
@@ -61,11 +61,11 @@ export function ExpenseFeedItem({ expense }: ExpenseFeedItemProps) {
   );
 }
 
-interface ExpenseFeedProps {
+interface FeedExpensesProps {
   infiniteExpensesInitialData: GetInfiniteExpenses;
 }
 
-export function ExpenseFeed({ infiniteExpensesInitialData }: ExpenseFeedProps) {
+export function FeedExpenses({ infiniteExpensesInitialData }: FeedExpensesProps) {
   const { ref, entry } = useIntersection();
 
   const {
@@ -92,7 +92,7 @@ export function ExpenseFeed({ infiniteExpensesInitialData }: ExpenseFeedProps) {
     <>
       <div className="flex flex-col gap-2">
         {expenses.length ? (
-          expenses.map((expense) => <ExpenseFeedItem key={expense.id} expense={expense} />)
+          expenses.map((expense) => <FeedExpensesItem key={expense.id} expense={expense} />)
         ) : (
           <div className="rounded-md border p-4">
             <div>Brak długów</div>

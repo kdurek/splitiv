@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { buttonVariants } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { cn, getInitials } from '@/lib/utils';
 import type { GetCurrentGroup, GetUsers } from '@/utils/api';
-
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { buttonVariants } from './ui/button';
-import { Separator } from './ui/separator';
 
 interface Debt {
   fromId: string;

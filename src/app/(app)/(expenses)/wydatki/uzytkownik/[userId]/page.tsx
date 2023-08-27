@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
-import { Section } from '@/components/section';
+import { Section } from '@/components/layout/section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { createTrpcCaller } from '@/server/api/caller';
 

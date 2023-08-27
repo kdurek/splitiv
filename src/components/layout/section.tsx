@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { Heading } from './ui/heading';
+import { Heading } from '@/components/ui/heading';
 
 interface SectionProps {
   children: ReactNode;

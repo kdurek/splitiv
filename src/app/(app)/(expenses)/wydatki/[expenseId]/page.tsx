@@ -3,8 +3,8 @@ import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { DeleteExpenseModal } from '@/components/delete-expense-modal';
-import { ExpensePayment } from '@/components/expense-payment';
+import { ExpenseDelete } from '@/components/expense/expense-delete';
+import { ExpensePayment } from '@/components/expense/expense-payment';
 import { ExpenseNoteForm } from '@/components/forms/expense-note-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
@@ -105,7 +105,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
             <Link href={`/wydatki/${expense.id}/edytuj`} className={cn(buttonVariants({ variant: 'outline' }))}>
               Edytuj
             </Link>
-            <DeleteExpenseModal expenseId={expense.id} />
+            <ExpenseDelete expenseId={expense.id} />
           </div>
         </div>
       )}

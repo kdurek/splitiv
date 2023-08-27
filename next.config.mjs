@@ -1,19 +1,19 @@
-import withPWA from "@imbios/next-pwa";
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
  */
-await import("./src/env.mjs");
+await import('./src/env.mjs');
 
-const withPWAConfig = withPWA({
-  buildExcludes: ["app-build-manifest.json"],
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
+import withPWAInit from '@ducanh2912/next-pwa';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
   register: true,
+  buildExcludes: ['app-build-manifest.json'],
 });
 
-/** @type {import("next").NextConfig} */
-const nextConfig = {
+export default withPWA({
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
@@ -21,16 +21,4 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  /**
-   * If you have the "experimental: { appDir: true }" setting enabled, then you
-   * must comment the below `i18n` config out.
-   *
-   * @see https://github.com/vercel/next.js/issues/41980
-   */
-  i18n: {
-    locales: ["pl"],
-    defaultLocale: "pl",
-  },
-};
-
-export default withPWAConfig(nextConfig);
+});

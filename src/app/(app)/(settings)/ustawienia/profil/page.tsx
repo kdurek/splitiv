@@ -1,8 +1,9 @@
-import { UserForm } from 'components/forms/user-form';
-import { Section } from 'components/section';
 import { redirect } from 'next/navigation';
-import { createTrpcCaller } from 'server/api/caller';
-import { getServerAuthSession } from 'server/auth';
+
+import { UserForm } from '@/components/forms/user-form';
+import { Section } from '@/components/section';
+import { createTrpcCaller } from '@/server/api/caller';
+import { getServerAuthSession } from '@/server/auth';
 
 export default async function ProfilePage() {
   const session = await getServerAuthSession();

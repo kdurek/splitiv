@@ -1,18 +1,19 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from 'components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-import { NumberInput } from 'components/ui/number-input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
-import { Textarea } from 'components/ui/textarea';
-import { useCreateExpense } from 'hooks/use-create-expense';
-import { useUpdateExpense } from 'hooks/use-update-expense';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import type { GetCurrentGroup, GetExpenseById } from 'utils/api';
+
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { NumberInput } from '@/components/ui/number-input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { useCreateExpense } from '@/hooks/use-create-expense';
+import { useUpdateExpense } from '@/hooks/use-update-expense';
+import type { GetCurrentGroup, GetExpenseById } from '@/utils/api';
 
 import { type ExpenseFormSchema, expenseFormSchema } from './expense-form.schema';
 import { ExpenseFormMethods } from './expense-form-methods';

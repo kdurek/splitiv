@@ -1,5 +1,6 @@
 import { useRouter } from 'next/navigation';
-import { api } from 'utils/api';
+
+import { api } from '@/utils/api';
 
 export function useCreateGroup() {
   const router = useRouter();

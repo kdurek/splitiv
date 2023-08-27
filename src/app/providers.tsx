@@ -9,7 +9,8 @@ import { pl } from 'date-fns/locale';
 import { SessionProvider } from 'next-auth/react';
 import { useState } from 'react';
 import superjson from 'superjson';
-import { api } from 'utils/api';
+
+import { api } from '@/utils/api';
 
 setDefaultOptions({
   locale: pl,

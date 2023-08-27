@@ -1,15 +1,16 @@
-import { DeleteExpenseModal } from 'components/delete-expense-modal';
-import { ExpensePayment } from 'components/expense-payment';
-import { ExpenseNoteForm } from 'components/forms/expense-note-form';
-import { buttonVariants } from 'components/ui/button';
-import { Heading } from 'components/ui/heading';
 import { format } from 'date-fns';
-import { cn } from 'lib/utils';
 import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { createTrpcCaller } from 'server/api/caller';
-import { getServerAuthSession } from 'server/auth';
+
+import { DeleteExpenseModal } from '@/components/delete-expense-modal';
+import { ExpensePayment } from '@/components/expense-payment';
+import { ExpenseNoteForm } from '@/components/forms/expense-note-form';
+import { buttonVariants } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { cn } from '@/lib/utils';
+import { createTrpcCaller } from '@/server/api/caller';
+import { getServerAuthSession } from '@/server/auth';
 
 interface ExpensePageProps {
   params: {

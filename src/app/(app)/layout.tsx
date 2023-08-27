@@ -1,13 +1,14 @@
-import { CreateGroupForm } from 'components/forms/create-group-form';
-import { GenderSelectForm } from 'components/forms/gender-select-form';
-import { GroupSelect } from 'components/group-select';
-import { Logo } from 'components/logo';
-import { MobileNav } from 'components/mobile-nav';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'components/ui/collapsible';
-import { Separator } from 'components/ui/separator';
 import { redirect } from 'next/navigation';
-import { createTrpcCaller } from 'server/api/caller';
-import { getServerAuthSession } from 'server/auth';
+
+import { CreateGroupForm } from '@/components/forms/create-group-form';
+import { GenderSelectForm } from '@/components/forms/gender-select-form';
+import { GroupSelect } from '@/components/group-select';
+import { Logo } from '@/components/logo';
+import { MobileNav } from '@/components/mobile-nav';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Separator } from '@/components/ui/separator';
+import { createTrpcCaller } from '@/server/api/caller';
+import { getServerAuthSession } from '@/server/auth';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerAuthSession();

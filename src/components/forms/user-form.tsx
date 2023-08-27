@@ -1,13 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from 'components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-import { useUpdateUser } from 'hooks/use-update-user';
 import { useForm } from 'react-hook-form';
-import { GetUserById } from 'utils/api';
 import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useUpdateUser } from '@/hooks/use-update-user';
+import { GetUserById } from '@/utils/api';
 
 const updateUserFormSchema = z.object({
   name: z

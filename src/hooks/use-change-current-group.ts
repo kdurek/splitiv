@@ -1,5 +1,6 @@
 import { useRouter } from 'next/navigation';
-import { api } from 'utils/api';
+
+import { api } from '@/utils/api';
 
 export function useChangeCurrentGroup() {
   const router = useRouter();

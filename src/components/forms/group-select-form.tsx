@@ -1,13 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from 'components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
-import { useChangeCurrentGroup } from 'hooks/use-change-current-group';
 import { useForm } from 'react-hook-form';
-import { type GetGroups } from 'utils/api';
 import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useChangeCurrentGroup } from '@/hooks/use-change-current-group';
+import { type GetGroups } from '@/utils/api';
 
 const groupSelectFormSchema = z.object({
   groupId: z.string({ required_error: 'Musisz wybrać grupę' }),

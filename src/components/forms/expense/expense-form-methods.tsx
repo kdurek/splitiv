@@ -1,15 +1,16 @@
 import { PLN } from '@dinero.js/currencies';
-import { Checkbox } from 'components/ui/checkbox';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
-import { NumberInput } from 'components/ui/number-input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import Decimal from 'decimal.js';
 import type { Dinero } from 'dinero.js';
 import { allocate, toUnit } from 'dinero.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { dineroFromString } from 'server/utils/dineroFromString';
+
+import { Checkbox } from '@/components/ui/checkbox';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { NumberInput } from '@/components/ui/number-input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { dineroFromString } from '@/server/utils/dineroFromString';
 
 import type { ExpenseFormSchema } from './expense-form.schema';
 

@@ -1,6 +1,6 @@
-import { ExpenseForm } from 'components/forms/expense/expense-form';
-import { Section } from 'components/section';
-import { createTrpcCaller } from 'server/api/caller';
+import { ExpenseForm } from '@/components/forms/expense/expense-form';
+import { Section } from '@/components/section';
+import { createTrpcCaller } from '@/server/api/caller';
 
 export default async function ExpenseAddPage() {
   const caller = await createTrpcCaller();

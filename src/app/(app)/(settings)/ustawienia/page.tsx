@@ -1,16 +1,17 @@
-import { AddUserToGroupForm } from 'components/forms/add-user-to-group-form';
-import { GroupSelect } from 'components/group-select';
-import { LogoutButton } from 'components/logout-button';
-import { Section } from 'components/section';
-import { buttonVariants } from 'components/ui/button';
-import { Heading } from 'components/ui/heading';
-import { Separator } from 'components/ui/separator';
-import { cn } from 'lib/utils';
 import { User2 } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { createTrpcCaller } from 'server/api/caller';
-import { getServerAuthSession } from 'server/auth';
+
+import { AddUserToGroupForm } from '@/components/forms/add-user-to-group-form';
+import { GroupSelect } from '@/components/group-select';
+import { LogoutButton } from '@/components/logout-button';
+import { Section } from '@/components/section';
+import { buttonVariants } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import { createTrpcCaller } from '@/server/api/caller';
+import { getServerAuthSession } from '@/server/auth';
 
 export default async function SettingsPage() {
   const session = await getServerAuthSession();

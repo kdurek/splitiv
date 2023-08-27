@@ -2,18 +2,19 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Prisma } from '@prisma/client';
-import { Button } from 'components/ui/button';
-import { Collapsible, CollapsibleContent } from 'components/ui/collapsible';
-import { Form, FormControl, FormField, FormItem } from 'components/ui/form';
-import { NumberInput } from 'components/ui/number-input';
-import { Separator } from 'components/ui/separator';
-import { useDisclosure } from 'hooks/use-disclosure';
-import { useSettleExpenseDebts } from 'hooks/use-settle-expense-debts';
-import { cn } from 'lib/utils';
 import { Loader2, Square, XSquare } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { NumberInput } from '@/components/ui/number-input';
+import { Separator } from '@/components/ui/separator';
+import { useDisclosure } from '@/hooks/use-disclosure';
+import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
+import { cn } from '@/lib/utils';
 
 interface ExpenseCardPaymentProps {
   payerId: string;

@@ -2,11 +2,12 @@
 
 import { useIntersection } from '@mantine/hooks';
 import { format } from 'date-fns';
-import { useInfiniteExpenses } from 'hooks/use-infinite-expenses';
 import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import type { GetInfiniteExpenses } from 'utils/api';
+
+import { useInfiniteExpenses } from '@/hooks/use-infinite-expenses';
+import type { GetInfiniteExpenses } from '@/utils/api';
 
 interface ExpenseFeedItemProps {
   expense: GetInfiniteExpenses['items'][number];

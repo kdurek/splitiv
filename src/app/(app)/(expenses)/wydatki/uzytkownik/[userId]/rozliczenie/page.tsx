@@ -1,8 +1,9 @@
-import { ExpensePaymentSettleForm } from 'components/forms/expense-payment-settle-form';
-import { Section } from 'components/section';
 import { redirect } from 'next/navigation';
-import { createTrpcCaller } from 'server/api/caller';
-import { getServerAuthSession } from 'server/auth';
+
+import { ExpensePaymentSettleForm } from '@/components/forms/expense-payment-settle-form';
+import { Section } from '@/components/section';
+import { createTrpcCaller } from '@/server/api/caller';
+import { getServerAuthSession } from '@/server/auth';
 
 interface ExpenseDetailsPageProps {
   params: {

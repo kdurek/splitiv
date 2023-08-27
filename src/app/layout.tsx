@@ -1,11 +1,12 @@
 /* eslint-disable import/no-duplicates */
 import './globals.css';
 
-import { TailwindIndicator } from 'components/tailwind-indicator';
 import { setDefaultOptions } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
+
+import { TailwindIndicator } from '@/components/tailwind-indicator';
 
 import { NextAuthProvider, TrpcProvider } from './providers';
 

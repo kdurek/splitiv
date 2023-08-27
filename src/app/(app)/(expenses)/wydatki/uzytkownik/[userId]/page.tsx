@@ -1,8 +1,9 @@
-import { Section } from 'components/section';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs';
 import { ChevronRight } from 'lucide-react';
 import { redirect } from 'next/navigation';
-import { createTrpcCaller } from 'server/api/caller';
+
+import { Section } from '@/components/section';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { createTrpcCaller } from '@/server/api/caller';
 
 interface ExpenseDetailsPageProps {
   params: {

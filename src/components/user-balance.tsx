@@ -1,10 +1,11 @@
 'use client';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'components/ui/accordion';
-import { cn, getInitials } from 'lib/utils';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import type { GetCurrentGroup, GetUsers } from 'utils/api';
+
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { cn, getInitials } from '@/lib/utils';
+import type { GetCurrentGroup, GetUsers } from '@/utils/api';
 
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { buttonVariants } from './ui/button';

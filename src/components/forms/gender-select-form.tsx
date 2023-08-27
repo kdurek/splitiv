@@ -2,12 +2,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender } from '@prisma/client';
-import { Button } from 'components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
-import { useUpdateUser } from 'hooks/use-update-user';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useUpdateUser } from '@/hooks/use-update-user';
 
 const genderSelectFormSchema = z.object({
   gender: z.nativeEnum(Gender, { required_error: 'Musisz wybrać płeć' }),

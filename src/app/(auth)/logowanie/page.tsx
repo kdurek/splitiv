@@ -1,6 +1,7 @@
-import { LoginButton } from 'components/login-button';
 import { redirect } from 'next/navigation';
-import { getServerAuthSession } from 'server/auth';
+
+import { LoginButton } from '@/components/login-button';
+import { getServerAuthSession } from '@/server/auth';
 
 export default async function LoginPage() {
   const session = await getServerAuthSession();

@@ -1,6 +1,6 @@
 'use client';
 
-import { useDeleteExpense } from 'hooks/use-delete-expense';
+import { useDeleteExpense } from '@/hooks/use-delete-expense';
 
 import {
   AlertDialog,

@@ -2,10 +2,11 @@
 
 import { useDebouncedState } from '@mantine/hooks';
 import { useAtom, useSetAtom } from 'jotai';
-import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from 'lib/atoms';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import type { GetCurrentGroup } from 'utils/api';
+
+import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from '@/lib/atoms';
+import type { GetCurrentGroup } from '@/utils/api';
 
 import { Button } from './ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';

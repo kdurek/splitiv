@@ -1,16 +1,17 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from 'components/ui/button';
-import { Checkbox } from 'components/ui/checkbox';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import Decimal from 'decimal.js';
-import { useSettleExpenseDebts } from 'hooks/use-settle-expense-debts';
 import { ArrowUp, ChevronRight, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import type { GetPaymentSettle, GetUserById } from 'utils/api';
 import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
+import type { GetPaymentSettle, GetUserById } from '@/utils/api';
 
 const expensePayListSchema = z.object({ debts: z.array(z.string()) }).refine((values) => values.debts.length !== 0, {
   message: 'Musisz wybrać przynajmniej jeden dług',

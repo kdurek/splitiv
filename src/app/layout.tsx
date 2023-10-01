@@ -5,6 +5,7 @@ import { setDefaultOptions } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
+import Script from 'next/script';
 
 import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
 
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </TrpcProvider>
         </NextAuthProvider>
       </body>
+      <Script async src="https://analytics.durek.pl/script.js" data-website-id="5b6221a6-86f7-4af7-be10-cab127922aad" />
     </html>
   );
 }

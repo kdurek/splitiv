@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { ExpensePaymentSettleForm } from '@/components/forms/expense-payment-settle-form';
 import { Section } from '@/components/layout/section';
-import { createTrpcCaller } from '@/server/api/caller';
+import { trpcServer } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
 
 interface ExpenseDetailsPageProps {
@@ -18,9 +18,8 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
     return redirect('/logowanie');
   }
 
-  const caller = await createTrpcCaller();
-  const paramUser = await caller.user.getById({ userId: params.userId });
-  const currentUser = await caller.user.getById({
+  const paramUser = await trpcServer.user.getById({ userId: params.userId });
+  const currentUser = await trpcServer.user.getById({
     userId: session.user.id,
   });
 
@@ -28,7 +27,7 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
     redirect('/');
   }
 
-  const debts = await caller.user.getPaymentSettle({
+  const debts = await trpcServer.user.getPaymentSettle({
     userId: params.userId,
   });
 

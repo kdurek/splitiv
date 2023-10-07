@@ -7,7 +7,7 @@ import { Logo } from '@/components/layout/logo';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
-import { createTrpcCaller } from '@/server/api/caller';
+import { trpcServer } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -26,8 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   if (!session?.activeGroupId) {
-    const caller = await createTrpcCaller();
-    const groups = await caller.group.getAll();
+    const groups = await trpcServer.group.getAll();
 
     return (
       <div className="space-y-4 p-4">

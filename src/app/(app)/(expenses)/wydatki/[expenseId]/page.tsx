@@ -9,7 +9,7 @@ import { ExpenseNoteForm } from '@/components/forms/expense-note-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import { createTrpcCaller } from '@/server/api/caller';
+import { trpcServer } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
 
 interface ExpensePageProps {
@@ -25,8 +25,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
     redirect('/logowanie');
   }
 
-  const caller = await createTrpcCaller();
-  const expense = await caller.expense.getById({ id: params.expenseId });
+  const expense = await trpcServer.expense.getById({ id: params.expenseId });
 
   if (!expense) {
     redirect('/');

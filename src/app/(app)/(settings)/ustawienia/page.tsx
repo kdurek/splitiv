@@ -10,7 +10,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { createTrpcCaller } from '@/server/api/caller';
+import { trpcServer } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function SettingsPage() {
@@ -20,10 +20,9 @@ export default async function SettingsPage() {
     redirect('/logowanie');
   }
 
-  const caller = await createTrpcCaller();
-  const usersNotInCurrentGroup = await caller.user.getAllNotInCurrentGroup();
-  const groups = await caller.group.getAll();
-  const group = await caller.group.getCurrent();
+  const usersNotInCurrentGroup = await trpcServer.user.getAllNotInCurrentGroup();
+  const groups = await trpcServer.group.getAll();
+  const group = await trpcServer.group.getCurrent();
 
   return (
     <Section title="Ustawienia">

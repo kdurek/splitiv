@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable no-param-reassign */
-import type { Dinero } from 'dinero.js';
-import { add } from 'dinero.js';
+import Decimal from 'decimal.js';
 
-export function upsert<T extends { amount: Dinero<number> }>(array: T[], element: T, elementProp: keyof T) {
+export function upsert<T extends { amount: string }>(array: T[], element: T, elementProp: keyof T) {
   const i = array.findIndex((_element) => _element[elementProp] === element[elementProp]);
 
   if (i > -1) {
-    array[i]!.amount = add(array[i]!.amount, element.amount);
-  } else array.push(element);
+    const currentAmount = new Decimal(array[i]!.amount);
+    const newAmount = new Decimal(element.amount);
+    array[i]!.amount = currentAmount.plus(newAmount).toFixed(2);
+  } else {
+    array.push(element);
+  }
 }

@@ -1,7 +1,4 @@
-import { PLN } from '@dinero.js/currencies';
 import Decimal from 'decimal.js';
-import type { Dinero } from 'dinero.js';
-import { allocate, toUnit } from 'dinero.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -11,7 +8,36 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { NumberInput } from '@/components/ui/number-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { dineroFromString } from '@/server/utils/dineroFromString';
+
+function allocate(totalAmount: number | string, userCounts: number[]) {
+  // Convert totalAmount to a Decimal object for precise calculations
+  const total = new Decimal(totalAmount);
+
+  // Convert userCounts to an array of Decimal objects
+  const users = userCounts.map((count: number) => new Decimal(count));
+
+  // Calculate the total number of users
+  const totalUsers = users.reduce((acc: Decimal, count: Decimal) => acc.plus(count), new Decimal(0));
+
+  // Calculate the even allocation for each user
+  const evenAllocation = total.dividedBy(totalUsers);
+
+  // Initialize an array to store the allocations
+  const allocations: string[] = [];
+
+  // Distribute the allocation as evenly as possible among the users
+  for (const user of users) {
+    allocations.push(evenAllocation.times(user).toFixed(2)); // Round to 2 decimal places
+  }
+
+  // Handle any remaining rounding error by adjusting the last allocation
+  const sumOfAllocations = new Decimal(allocations.reduce((acc: number, val: string) => acc + parseFloat(val), 0));
+  const roundingError = total.minus(sumOfAllocations).toFixed(2);
+
+  allocations[users.length - 1] = new Decimal(allocations[users.length - 1] || 0).plus(roundingError).toFixed(2);
+
+  return allocations.map(parseFloat); // Convert the Decimal objects back to numbers
+}
 
 export function ExpenseFormMethods() {
   const form = useFormContext<ExpenseFormSchema>();
@@ -39,22 +65,16 @@ export function ExpenseFormMethods() {
       return;
     }
 
-    const dineroAmount = dineroFromString({
-      amount: formAmount,
-      currency: PLN,
-      scale: 2,
-    });
-
     const debtors = Object.entries(ratioSplit).map((debt) => {
       return { id: debt[0], ratio: debt[1] };
     });
 
     const debtorRatios = debtors.map((debt) => debt.ratio);
-    const allocated = allocate(dineroAmount, debtorRatios);
+    const allocated = allocate(formAmount, debtorRatios);
     const allocatedRatio = allocated.map((a, index) => {
       return {
         id: debtors[index]?.id,
-        amount: toUnit(a),
+        amount: a,
       };
     });
 
@@ -85,19 +105,13 @@ export function ExpenseFormMethods() {
       return;
     }
 
-    const dineroAmount = dineroFromString({
-      amount: formAmount,
-      currency: PLN,
-      scale: 2,
-    });
-
     const usersToAllocate = getValues('debts').filter((user) => equalSplit.includes(user.id));
 
-    const allocated = allocate(dineroAmount, new Array(usersToAllocate.length).fill(1));
+    const allocated = allocate(formAmount, new Array(usersToAllocate.length).fill(1));
 
     const allocatedUsers = usersToAllocate.map((user, index) => ({
       id: user.id,
-      amount: equalSplit.includes(user.id) ? toUnit(allocated[index] as Dinero<number>) : 0,
+      amount: equalSplit.includes(user.id) ? allocated[index] : 0,
     }));
 
     const newDebts = getValues('debts').map((debtor) => {

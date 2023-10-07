@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { PLN } from '@dinero.js/currencies';
 import type { ExpenseDebt } from '@prisma/client';
-import { subtract, toUnit } from 'dinero.js';
-
-import { dineroFromString } from './dineroFromString';
+import Decimal from 'decimal.js';
 
 export interface IDebt {
   fromId: string;
@@ -30,17 +27,17 @@ function upsertDebt<T extends { amount: string }>(
 
   if (i > -1) {
     // eslint-disable-next-line no-param-reassign
-    array[i]!.amount = (parseFloat(array[i]!.amount) + parseFloat(element.amount)).toFixed(2);
+    array[i]!.amount = new Decimal(array[i]!.amount).plus(new Decimal(element.amount)).toFixed(2);
   } else array.push(element);
 }
 
 function reduceDebts(debts: IDebt[]) {
-  const debtMap: Record<string, Record<string, number>> = {};
+  const debtMap: Record<string, Record<string, Decimal>> = {};
 
   debts.forEach((debt) => {
     const { fromId } = debt;
     const { toId } = debt;
-    const amount = parseFloat(debt.amount);
+    const amount = new Decimal(debt.amount);
 
     if (!debtMap[fromId]) {
       debtMap[fromId] = {};
@@ -49,16 +46,16 @@ function reduceDebts(debts: IDebt[]) {
       debtMap[toId] = {};
     }
 
-    debtMap[fromId]![toId] = (debtMap[fromId]![toId] || 0) + amount;
-    debtMap[toId]![fromId] = (debtMap[toId]![fromId] || 0) - amount;
+    debtMap[fromId]![toId] = (debtMap[fromId]![toId] || new Decimal(0)).plus(amount);
+    debtMap[toId]![fromId] = (debtMap[toId]![fromId] || new Decimal(0)).minus(amount);
   });
 
   const reducedDebts: IDebt[] = [];
 
   Object.keys(debtMap).forEach((fromId) => {
-    Object.keys(debtMap[fromId] as Record<string, number>).forEach((toId) => {
+    Object.keys(debtMap[fromId] as Record<string, Decimal>).forEach((toId) => {
       const amount = debtMap[fromId]![toId];
-      if (amount && amount > 0) {
+      if (amount && amount.gt(0)) {
         reducedDebts.push({
           fromId,
           toId,
@@ -76,24 +73,16 @@ export function generateDebts(debts: DebtWithExpense[]) {
 
   debts.forEach((debt) => {
     if (debt.debtorId !== debt.expense.payerId) {
-      const dineroDebtAmount = dineroFromString({
-        amount: Number(debt.amount).toFixed(2),
-        currency: PLN,
-        scale: 2,
-      });
-      const dineroSettledAmount = dineroFromString({
-        amount: Number(debt.settled).toFixed(2),
-        currency: PLN,
-        scale: 2,
-      });
-      const netDineroAmount = subtract(dineroDebtAmount, dineroSettledAmount);
+      const debtAmount = new Decimal(debt.amount).toFixed(2);
+      const settledAmount = new Decimal(debt.settled).toFixed(2);
+      const netAmount = new Decimal(debtAmount).minus(settledAmount);
 
       upsertDebt(
         debtsArray,
         {
           fromId: debt.debtorId,
           toId: debt.expense.payerId,
-          amount: toUnit(netDineroAmount).toFixed(2),
+          amount: netAmount.toFixed(2),
         },
         'fromId',
         'toId',

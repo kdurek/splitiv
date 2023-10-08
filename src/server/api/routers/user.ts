@@ -1,6 +1,8 @@
 import { Gender } from '@prisma/client';
 import { z } from 'zod';
 
+import { generateBalances } from '@/server/utils/generateBalances';
+
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 export const userRouter = createTRPCRouter({
@@ -8,7 +10,28 @@ export const userRouter = createTRPCRouter({
     return ctx.prisma.user.findMany();
   }),
 
-  getById: publicProcedure.input(z.object({ userId: z.string().cuid2() })).query(({ input, ctx }) => {
+  getById: protectedProcedure.input(z.object({ userId: z.string().cuid2() })).query(async ({ input, ctx }) => {
+    const expenseDebts = await ctx.prisma.expenseDebt.findMany({
+      where: {
+        expense: {
+          groupId: ctx.session.activeGroupId,
+        },
+        settled: { lt: ctx.prisma.expenseDebt.fields.amount },
+      },
+      include: {
+        expense: {
+          select: {
+            amount: true,
+            payerId: true,
+          },
+        },
+      },
+    });
+
+    const generatedBalances = generateBalances(expenseDebts);
+    const userBalance = generatedBalances.find((balance) => balance.userId === input.userId);
+    console.log('🚀 > file: user.ts:33 > getById:protectedProcedure.input > userBalance:', userBalance);
+
     return ctx.prisma.user.findUnique({
       where: {
         id: input.userId,

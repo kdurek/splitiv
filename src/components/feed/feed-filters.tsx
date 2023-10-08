@@ -2,7 +2,7 @@
 
 import { useDebouncedState } from '@mantine/hooks';
 import { useAtom, useSetAtom } from 'jotai';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -46,8 +46,8 @@ export function FeedFilters({ group }: FeedFiltersProps) {
         />
         <div>
           <CollapsibleTrigger asChild>
-            <Button type="button" variant="outline" size="icon">
-              {open ? <ChevronUp /> : <ChevronDown />}
+            <Button type="button" variant="outline" size="icon" className="text-gray-500">
+              {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </Button>
           </CollapsibleTrigger>
         </div>
@@ -56,35 +56,47 @@ export function FeedFilters({ group }: FeedFiltersProps) {
       <CollapsibleContent className="mt-4 space-y-4 rounded-md border p-4">
         <div>
           <Label>Płacący</Label>
-          <Select value={payerId} onValueChange={(value) => setPayerId(value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Brak" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">Brak</SelectItem>
-              {group.members.map((member) => (
-                <SelectItem key={member.id} value={member.id}>
-                  {member.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="mt-2 flex items-center gap-2">
+            <Select value={payerId} onValueChange={(value) => setPayerId(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Brak" />
+              </SelectTrigger>
+              <SelectContent>
+                {group.members.map((member) => (
+                  <SelectItem key={member.id} value={member.id}>
+                    {member.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div>
+              <Button className="text-gray-500" variant="outline" size="icon" onClick={() => setPayerId('')}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
         <div>
           <Label>Pożyczający</Label>
-          <Select value={debtorId} onValueChange={(value) => setDebtorId(value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Brak" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">Brak</SelectItem>
-              {group.members.map((member) => (
-                <SelectItem key={member.id} value={member.id}>
-                  {member.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="mt-2 flex items-center gap-2">
+            <Select value={debtorId} onValueChange={(value) => setDebtorId(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Brak" />
+              </SelectTrigger>
+              <SelectContent>
+                {group.members.map((member) => (
+                  <SelectItem key={member.id} value={member.id}>
+                    {member.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div>
+              <Button className="text-gray-500" variant="outline" size="icon" onClick={() => setDebtorId('')}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
       </CollapsibleContent>
     </Collapsible>

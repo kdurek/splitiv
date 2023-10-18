@@ -1,6 +1,6 @@
 /**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
- * This is especially useful for Docker builds.
+ * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
+ * for Docker builds.
  */
 await import('./src/env.mjs');
 
@@ -13,7 +13,8 @@ const withPWA = withPWAInit({
   buildExcludes: ['app-build-manifest.json'],
 });
 
-export default withPWA({
+/** @type {import("next").NextConfig} */
+const config = {
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
@@ -21,4 +22,6 @@ export default withPWA({
   typescript: {
     ignoreBuildErrors: true,
   },
-});
+};
+
+export default withPWA(config);

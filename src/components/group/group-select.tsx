@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useChangeCurrentGroup } from '@/hooks/use-change-current-group';
-import { type GetGroups } from '@/utils/api';
+import { type GetGroups } from '@/trpc/shared';
 
 interface GroupSelectProps {
   activeGroupId?: string;

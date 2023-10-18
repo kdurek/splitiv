@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 
 import { Section } from '@/components/layout/section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { trpcServer } from '@/server/api/caller';
+import { api } from '@/trpc/server';
 
 interface ExpenseDetailsPageProps {
   params: {
@@ -12,14 +12,14 @@ interface ExpenseDetailsPageProps {
 }
 
 export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
-  const user = await trpcServer.user.getById({ userId: params.userId });
+  const user = await api.user.getById.query({ userId: params.userId });
 
   if (!user) {
     redirect('/');
   }
 
-  const debts = await trpcServer.user.getDebts({ userId: params.userId });
-  const credits = await trpcServer.user.getCredits({ userId: params.userId });
+  const debts = await api.user.getDebts.query({ userId: params.userId });
+  const credits = await api.user.getCredits.query({ userId: params.userId });
 
   return (
     <Section title={user.name}>

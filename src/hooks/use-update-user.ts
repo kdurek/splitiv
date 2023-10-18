@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 
-import { api } from '@/utils/api';
+import { api } from '@/trpc/react';
 
 export function useUpdateUser() {
   const router = useRouter();

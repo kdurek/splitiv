@@ -1,13 +1,13 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { generateBalances } from '../../utils/generateBalances';
-import { generateDebts } from '../../utils/generateDebts';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { generateBalances } from '@/server/utils/generateBalances';
+import { generateDebts } from '@/server/utils/generateDebts';
 
 export const groupRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.group.findMany({
+    return ctx.db.group.findMany({
       where: { members: { some: { userId: ctx.session.user.id } } },
     });
   }),
@@ -20,7 +20,7 @@ export const groupRouter = createTRPCRouter({
       });
     }
 
-    const group = await ctx.prisma.group.findUniqueOrThrow({
+    const group = await ctx.db.group.findUniqueOrThrow({
       where: { id: ctx.session.activeGroupId },
       include: {
         members: {
@@ -40,12 +40,12 @@ export const groupRouter = createTRPCRouter({
       });
     }
 
-    const expenseDebts = await ctx.prisma.expenseDebt.findMany({
+    const expenseDebts = await ctx.db.expenseDebt.findMany({
       where: {
         expense: {
           groupId: ctx.session.activeGroupId,
         },
-        settled: { lt: ctx.prisma.expenseDebt.fields.amount },
+        settled: { lt: ctx.db.expenseDebt.fields.amount },
       },
       include: {
         expense: {
@@ -81,7 +81,7 @@ export const groupRouter = createTRPCRouter({
   }),
 
   create: protectedProcedure.input(z.object({ name: z.string() })).mutation(({ input, ctx }) => {
-    return ctx.prisma.group.create({
+    return ctx.db.group.create({
       data: {
         name: input.name,
         adminId: ctx.session.user.id,
@@ -97,8 +97,7 @@ export const groupRouter = createTRPCRouter({
   }),
 
   changeCurrent: protectedProcedure.input(z.object({ groupId: z.string().cuid2() })).mutation(({ input, ctx }) => {
-    console.log(input.groupId);
-    return ctx.prisma.user.update({
+    return ctx.db.user.update({
       where: { id: ctx.session.user.id },
       data: {
         activeGroupId: input.groupId,
@@ -107,7 +106,7 @@ export const groupRouter = createTRPCRouter({
   }),
 
   addUser: protectedProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.prisma.userGroup.create({
+    return ctx.db.userGroup.create({
       data: {
         groupId: ctx.session.activeGroupId,
         userId: input.userId,

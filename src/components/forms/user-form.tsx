@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useUpdateUser } from '@/hooks/use-update-user';
-import { GetUserById } from '@/utils/api';
+import { GetUserById } from '@/trpc/shared';
 
 const updateUserFormSchema = z.object({
   name: z

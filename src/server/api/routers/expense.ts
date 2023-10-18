@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseRouter = createTRPCRouter({
   getInfinite: protectedProcedure
@@ -16,7 +16,7 @@ export const expenseRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const items = await ctx.prisma.expense.findMany({
+      const items = await ctx.db.expense.findMany({
         take: input.limit + 1,
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
@@ -40,8 +40,8 @@ export const expenseRouter = createTRPCRouter({
             some: {
               debtorId: input.debtorId || undefined,
               settled: {
-                lt: input.isSettled === false ? ctx.prisma.expenseDebt.fields.amount : undefined,
-                equals: input.isSettled === true ? ctx.prisma.expenseDebt.fields.amount : undefined,
+                lt: input.isSettled === false ? ctx.db.expenseDebt.fields.amount : undefined,
+                equals: input.isSettled === true ? ctx.db.expenseDebt.fields.amount : undefined,
               },
             },
           },
@@ -75,7 +75,7 @@ export const expenseRouter = createTRPCRouter({
     }),
 
   getById: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.prisma.expense.findUnique({
+    return ctx.db.expense.findUnique({
       where: {
         id: input.id,
       },
@@ -122,7 +122,7 @@ export const expenseRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.expense.create({
+      return ctx.db.expense.create({
         data: {
           group: {
             connect: {
@@ -167,7 +167,7 @@ export const expenseRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // const isAlreadyPaid = await ctx.prisma.expenseDebt.count({
+      // const isAlreadyPaid = await ctx.db.expenseDebt.count({
       //   where: {
       //     expenseId: input.expenseId,
       //     debtorId: {
@@ -183,7 +183,7 @@ export const expenseRouter = createTRPCRouter({
       //   return;
       // }
 
-      return ctx.prisma.expense.update({
+      return ctx.db.expense.update({
         where: {
           id: input.expenseId,
         },
@@ -209,7 +209,7 @@ export const expenseRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure.input(z.object({ expenseId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.prisma.expense.delete({
+    return ctx.db.expense.delete({
       where: {
         id: input.expenseId,
       },

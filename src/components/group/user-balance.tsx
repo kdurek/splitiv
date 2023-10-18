@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn, getInitials } from '@/lib/utils';
-import type { GetCurrentGroup, GetUsers } from '@/utils/api';
+import type { GetCurrentGroup, GetUsers } from '@/trpc/shared';
 
 interface Debt {
   fromId: string;
@@ -20,11 +20,10 @@ interface UserDebtsProps {
   member: GetUsers[number];
   members: GetUsers;
   debts: Debt[];
+  session: Session;
 }
 
-function UserDebts({ member, members, debts }: UserDebtsProps) {
-  const { data: session } = useSession();
-
+function UserDebts({ member, members, debts, session }: UserDebtsProps) {
   const userDebts = debts.filter((debt) => debt.fromId === member.id);
   const userGets = debts.filter((debt) => debt.toId === member.id);
   const getUserFirstName = (userId: string) => members.find((user) => user.id === userId)?.name?.split(' ')[0];
@@ -78,9 +77,10 @@ function UserDebts({ member, members, debts }: UserDebtsProps) {
 
 interface UserBalanceProps {
   group: GetCurrentGroup;
+  session: Session;
 }
 
-export function UserBalance({ group }: UserBalanceProps) {
+export function UserBalance({ group, session }: UserBalanceProps) {
   return (
     <Accordion type="single" collapsible className="w-full rounded-md border border-b-0">
       {group.members.map((member) => (
@@ -98,7 +98,7 @@ export function UserBalance({ group }: UserBalanceProps) {
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-4">
-            <UserDebts member={member} members={group.members} debts={group.debts} />
+            <UserDebts member={member} members={group.members} debts={group.debts} session={session} />
           </AccordionContent>
         </AccordionItem>
       ))}

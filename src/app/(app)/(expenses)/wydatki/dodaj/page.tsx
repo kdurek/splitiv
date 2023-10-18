@@ -1,9 +1,9 @@
 import { ExpenseForm } from '@/components/forms/expense/expense-form';
 import { Section } from '@/components/layout/section';
-import { trpcServer } from '@/server/api/caller';
+import { api } from '@/trpc/server';
 
 export default async function ExpenseAddPage() {
-  const group = await trpcServer.group.getCurrent();
+  const group = await api.group.getCurrent.query();
 
   return (
     <Section title="Dodaj wydatek">

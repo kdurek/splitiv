@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai';
 
 import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from '@/lib/atoms';
-import type { GetInfiniteExpenses } from '@/utils/api';
-import { api } from '@/utils/api';
+import { api } from '@/trpc/react';
+import type { GetInfiniteExpenses } from '@/trpc/shared';
 
 interface UseInfiniteExpensesProps {
   infiniteExpensesInitialData: GetInfiniteExpenses;

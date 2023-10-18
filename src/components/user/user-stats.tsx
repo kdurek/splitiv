@@ -5,7 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn, getInitials } from '@/lib/utils';
-import type { GetCurrentGroup } from '@/utils/api';
+import type { GetCurrentGroup } from '@/trpc/shared';
 
 interface UserDebtsProps {
   user: Session['user'];

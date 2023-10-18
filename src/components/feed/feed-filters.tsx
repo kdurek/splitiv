@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from '@/lib/atoms';
-import type { GetCurrentGroup } from '@/utils/api';
+import type { GetCurrentGroup } from '@/trpc/shared';
 
 export interface FeedFilters {
   searchText?: string;

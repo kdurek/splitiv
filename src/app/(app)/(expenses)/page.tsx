@@ -5,20 +5,20 @@ import { FeedFilters } from '@/components/feed/feed-filters';
 import { FeedLegend } from '@/components/feed/feed-legend';
 import { Section } from '@/components/layout/section';
 import { UserStats } from '@/components/user/user-stats';
-import { trpcServer } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 export default async function ExpensesPage() {
   const session = await getServerAuthSession();
 
   if (!session) {
-    redirect('/login');
+    redirect('/logowanie');
   }
 
-  const infiniteExpense = await trpcServer.expense.getInfinite({
+  const infiniteExpense = await api.expense.getInfinite.query({
     limit: 10,
   });
-  const group = await trpcServer.group.getCurrent();
+  const group = await api.group.getCurrent.query();
 
   return (
     <Section title="Wydatki">

@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Prisma } from '@prisma/client';
 import { Loader2, Square, XSquare } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 
@@ -23,6 +23,7 @@ interface ExpensePaymentProps {
       debtor: true;
     };
   }>;
+  session: Session;
 }
 
 const expensePaymentFormSchema = z.object({
@@ -31,9 +32,7 @@ const expensePaymentFormSchema = z.object({
 
 type ExpensePaymentFormSchema = z.infer<typeof expensePaymentFormSchema>;
 
-export function ExpensePayment({ payerId, debt }: ExpensePaymentProps) {
-  const { data: session } = useSession();
-
+export function ExpensePayment({ payerId, debt, session }: ExpensePaymentProps) {
   const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } = useSettleExpenseDebts();
 
   const [isEditing, { toggle: toggleIsEditing, close: closeIsEditing }] = useDisclosure(false);

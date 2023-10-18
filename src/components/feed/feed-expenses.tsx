@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 
 import { useInfiniteExpenses } from '@/hooks/use-infinite-expenses';
-import type { GetInfiniteExpenses } from '@/utils/api';
+import type { GetInfiniteExpenses } from '@/trpc/shared';
 
 interface FeedExpensesItemProps {
   expense: GetInfiniteExpenses['items'][number];

@@ -1,7 +1,7 @@
 import type { ExpenseDebt, Prisma } from '@prisma/client';
 import Decimal from 'decimal.js';
 
-import { upsert } from './upsert';
+import { upsert } from '@/server/utils/upsert';
 
 export interface IUserBalances {
   userId: string;

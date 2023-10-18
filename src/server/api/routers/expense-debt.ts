@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import Decimal from 'decimal.js';
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseDebtRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -15,7 +15,7 @@ export const expenseDebtRouter = createTRPCRouter({
       }),
     )
     .query(({ input, ctx }) => {
-      return ctx.prisma.expenseDebt.findMany({
+      return ctx.db.expenseDebt.findMany({
         where: {
           expense: {
             groupId: ctx.session.activeGroupId,
@@ -23,8 +23,8 @@ export const expenseDebtRouter = createTRPCRouter({
           },
           debtorId: input.debtorId || undefined,
           settled: {
-            lt: input.isSettled === false ? ctx.prisma.expenseDebt.fields.amount : undefined,
-            equals: input.isSettled === true ? ctx.prisma.expenseDebt.fields.amount : undefined,
+            lt: input.isSettled === false ? ctx.db.expenseDebt.fields.amount : undefined,
+            equals: input.isSettled === true ? ctx.db.expenseDebt.fields.amount : undefined,
           },
         },
         include: {
@@ -51,7 +51,7 @@ export const expenseDebtRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.$transaction(async (tx) => {
+      return ctx.db.$transaction(async (tx) => {
         await Promise.all(
           input.expenseDebts.map(async (expenseDebt) => {
             const previousDebt = await tx.expenseDebt.findUniqueOrThrow({

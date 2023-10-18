@@ -9,8 +9,8 @@ import { ExpenseNoteForm } from '@/components/forms/expense-note-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import { trpcServer } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 interface ExpensePageProps {
   params: {
@@ -25,7 +25,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
     redirect('/logowanie');
   }
 
-  const expense = await trpcServer.expense.getById({ id: params.expenseId });
+  const expense = await api.expense.getById.query({ id: params.expenseId });
 
   if (!expense) {
     redirect('/');
@@ -67,7 +67,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
           </div>
         </div>
         {expense.debts.map((debt) => (
-          <ExpensePayment key={debt.id} payerId={expense.payerId} debt={debt} />
+          <ExpensePayment key={debt.id} payerId={expense.payerId} debt={debt} session={session} />
         ))}
       </div>
 

@@ -1,15 +1,15 @@
 /* eslint-disable import/no-duplicates */
-import './globals.css';
+import '@/styles/globals.css';
 
 import { setDefaultOptions } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
+import { headers } from 'next/headers';
 import Script from 'next/script';
 
 import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
-
-import { NextAuthProvider, TrpcProvider } from './providers';
+import { TRPCReactProvider } from '@/trpc/react';
 
 setDefaultOptions({
   locale: pl,
@@ -33,20 +33,18 @@ export const metadata: Metadata = {
 
 const poppins = Poppins({
   subsets: ['latin-ext'],
-  weight: ['400', '500', '700'],
-  preload: true,
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
 });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl" className={poppins.className}>
+    <html lang="pl" className={`font-sans ${poppins.variable}`}>
       <body>
-        <NextAuthProvider>
-          <TrpcProvider>
-            {children}
-            <TailwindIndicator />
-          </TrpcProvider>
-        </NextAuthProvider>
+        <TRPCReactProvider headers={headers()}>
+          {children}
+          <TailwindIndicator />
+        </TRPCReactProvider>
       </body>
       <Script async src="https://analytics.durek.pl/script.js" data-website-id="5b6221a6-86f7-4af7-be10-cab127922aad" />
     </html>

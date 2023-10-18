@@ -1,38 +1,15 @@
 import { Gender } from '@prisma/client';
 import { z } from 'zod';
 
-import { generateBalances } from '@/server/utils/generateBalances';
-
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 
 export const userRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findMany();
+    return ctx.db.user.findMany();
   }),
 
   getById: protectedProcedure.input(z.object({ userId: z.string().cuid2() })).query(async ({ input, ctx }) => {
-    const expenseDebts = await ctx.prisma.expenseDebt.findMany({
-      where: {
-        expense: {
-          groupId: ctx.session.activeGroupId,
-        },
-        settled: { lt: ctx.prisma.expenseDebt.fields.amount },
-      },
-      include: {
-        expense: {
-          select: {
-            amount: true,
-            payerId: true,
-          },
-        },
-      },
-    });
-
-    const generatedBalances = generateBalances(expenseDebts);
-    const userBalance = generatedBalances.find((balance) => balance.userId === input.userId);
-    console.log('🚀 > file: user.ts:33 > getById:protectedProcedure.input > userBalance:', userBalance);
-
-    return ctx.prisma.user.findUnique({
+    return ctx.db.user.findUnique({
       where: {
         id: input.userId,
       },
@@ -40,10 +17,10 @@ export const userRouter = createTRPCRouter({
   }),
 
   getCredits: protectedProcedure.input(z.object({ userId: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.prisma.expenseDebt.findMany({
+    return ctx.db.expenseDebt.findMany({
       where: {
         settled: {
-          lt: ctx.prisma.expenseDebt.fields.amount,
+          lt: ctx.db.expenseDebt.fields.amount,
         },
         expense: {
           payer: {
@@ -64,11 +41,11 @@ export const userRouter = createTRPCRouter({
   }),
 
   getDebts: protectedProcedure.input(z.object({ userId: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.prisma.expenseDebt.findMany({
+    return ctx.db.expenseDebt.findMany({
       where: {
         debtorId: input.userId,
         settled: {
-          lt: ctx.prisma.expenseDebt.fields.amount,
+          lt: ctx.db.expenseDebt.fields.amount,
         },
         expense: {
           payer: {
@@ -97,11 +74,11 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const contextUserDebts = await ctx.prisma.expenseDebt.findMany({
+      const contextUserDebts = await ctx.db.expenseDebt.findMany({
         where: {
           debtorId: ctx.session.user.id,
           settled: {
-            lt: ctx.prisma.expenseDebt.fields.amount,
+            lt: ctx.db.expenseDebt.fields.amount,
           },
           expense: {
             payer: {
@@ -125,11 +102,11 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      const pageUserDebts = await ctx.prisma.expenseDebt.findMany({
+      const pageUserDebts = await ctx.db.expenseDebt.findMany({
         where: {
           debtorId: input.userId,
           settled: {
-            lt: ctx.prisma.expenseDebt.fields.amount,
+            lt: ctx.db.expenseDebt.fields.amount,
           },
           expense: {
             payer: {
@@ -157,7 +134,7 @@ export const userRouter = createTRPCRouter({
     }),
 
   getAllNotInCurrentGroup: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findMany({
+    return ctx.db.user.findMany({
       where: {
         groups: {
           none: {
@@ -177,7 +154,7 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.user.update({
+      return ctx.db.user.update({
         where: {
           id: input.userId,
         },

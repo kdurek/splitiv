@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useCreateExpense } from '@/hooks/use-create-expense';
 import { useUpdateExpense } from '@/hooks/use-update-expense';
-import type { GetCurrentGroup, GetExpenseById } from '@/utils/api';
+import type { GetCurrentGroup, GetExpenseById } from '@/trpc/shared';
 
 interface ExpenseFormProps {
   group: GetCurrentGroup;

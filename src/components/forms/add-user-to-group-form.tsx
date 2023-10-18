@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAddUserToGroup } from '@/hooks/use-add-user-to-group';
-import type { GetUsers } from '@/utils/api';
+import type { GetUsers } from '@/trpc/shared';
 
 const addUserToGroupFormSchema = z.object({
   userId: z.string({ required_error: 'Musisz wybrać użytkownika' }),

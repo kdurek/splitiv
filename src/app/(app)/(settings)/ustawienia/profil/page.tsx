@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation';
 
 import { UserForm } from '@/components/forms/user-form';
 import { Section } from '@/components/layout/section';
-import { trpcServer } from '@/server/api/caller';
 import { getServerAuthSession } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 export default async function ProfilePage() {
   const session = await getServerAuthSession();
@@ -12,7 +12,7 @@ export default async function ProfilePage() {
     redirect('/logowanie');
   }
 
-  const user = await trpcServer.user.getById({
+  const user = await api.user.getById.query({
     userId: session.user.id,
   });
 

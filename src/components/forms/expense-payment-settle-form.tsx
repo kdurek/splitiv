@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
-import type { GetPaymentSettle, GetUserById } from '@/utils/api';
+import type { GetPaymentSettle, GetUserById } from '@/trpc/shared';
 
 const expensePayListSchema = z.object({ debts: z.array(z.string()) }).refine((values) => values.debts.length !== 0, {
   message: 'Musisz wybrać przynajmniej jeden dług',

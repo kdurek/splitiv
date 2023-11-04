@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TailwindIndicator />
         </TRPCReactProvider>
       </body>
-      <Script async src="https://analytics.durek.pl/script.js" data-website-id="5b6221a6-86f7-4af7-be10-cab127922aad" />
+      <Script async src="https://analytics.durek.pl/script.js" data-website-id="225083f2-01a5-456e-afa3-f3ed5fd391fe" />
     </html>
   );
 }

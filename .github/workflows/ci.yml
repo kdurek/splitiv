@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  ENV SKIP_ENV_VALIDATION: 1
+  SKIP_ENV_VALIDATION: 1
 
 jobs:
   build:

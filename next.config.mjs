@@ -15,6 +15,7 @@ const withPWA = withPWAInit({
 
 /** @type {import("next").NextConfig} */
 const config = {
+  output: 'standalone',
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,

@@ -1,4 +1,23 @@
 services:
+  app:
+    container_name: splitiv-app
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    ports:
+      - '37533:37533'
+    restart: unless-stopped
+    networks:
+      - splitiv
+
   postgres:
     container_name: splitiv-postgres
     image: postgres:alpine

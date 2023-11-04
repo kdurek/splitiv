@@ -5,31 +5,45 @@ on:
     branches: [main]
 
 env:
-  DATABASE_URL: 'https://fake.com'
-  NODE_ENV: test
-  NEXTAUTH_SECRET: fake
-  NEXTAUTH_URL: 'https://fake.com'
-  GOOGLE_CLIENT_ID: fake
-  GOOGLE_CLIENT_SECRET: fake
+  ENV SKIP_ENV_VALIDATION: 1
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        node-version: [20]
+        node-version: [21]
+
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
         run: pnpm install
 
@@ -42,9 +56,15 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Push to dokku
-        uses: dokku/github-action@master
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          branch: main
-          git_remote_url: ${{ secrets.GIT_REMOTE_URL }}
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish docker image
+        run: |
+          docker build . --tag ghcr.io/kdurek/splitiv:latest
+          docker run ghcr.io/kdurek/splitiv:latest
+          docker push ghcr.io/kdurek/splitiv:latest

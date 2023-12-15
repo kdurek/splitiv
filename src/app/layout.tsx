@@ -3,7 +3,7 @@ import '@/styles/globals.css';
 
 import { setDefaultOptions } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Poppins } from 'next/font/google';
 import { headers } from 'next/headers';
 import Script from 'next/script';
@@ -15,20 +15,31 @@ setDefaultOptions({
   locale: pl,
 });
 
+const APP_NAME = 'Splitiv';
+
 export const metadata: Metadata = {
-  title: 'Splitiv',
+  applicationName: APP_NAME,
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
   description: 'Expense management',
-  applicationName: 'Splitiv',
   manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: APP_NAME,
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
     { media: '(prefers-color-scheme: dark)', color: '#1A1B1E' },
   ],
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
 };
 
 const poppins = Poppins({
@@ -46,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TailwindIndicator />
         </TRPCReactProvider>
       </body>
-      <Script async src="https://analytics.durek.pl/script.js" data-website-id="225083f2-01a5-456e-afa3-f3ed5fd391fe" />
+      <Script async src="https://analytics.durek.pl/script.js" data-website-id="26894ae9-08bc-45e4-8d5d-f01b65062952" />
     </html>
   );
 }

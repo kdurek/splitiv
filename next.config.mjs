@@ -4,17 +4,18 @@
  */
 await import('./src/env.mjs');
 
-import withPWAInit from '@ducanh2912/next-pwa';
+import withSerwistInit from '@serwist/next';
 
-const withPWA = withPWAInit({
-  dest: 'public',
+const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV === 'development',
   register: true,
-  buildExcludes: ['app-build-manifest.json'],
+  cacheOnFrontEndNav: true,
+  swSrc: 'src/app/sw.ts',
+  swDest: 'public/sw.js',
 });
 
 /** @type {import("next").NextConfig} */
-const config = {
+const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   eslint: {
@@ -25,4 +26,4 @@ const config = {
   },
 };
 
-export default withPWA(config);
+export default withSerwist(nextConfig);

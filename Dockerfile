@@ -46,4 +46,4 @@ EXPOSE 37533
 ENV PORT 37533
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["/bin/sh", "-c", "echo npx -y prisma migrate deploy;echo node server.js"]
+CMD ["/bin/sh", "-c", "npx -y prisma migrate deploy;node server.js"]

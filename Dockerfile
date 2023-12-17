@@ -37,6 +37,7 @@ RUN chown nextjs:nodejs .next
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --chown=nextjs:nodejs prisma ./prisma
 
 USER nextjs
 
@@ -45,5 +46,4 @@ EXPOSE 37533
 ENV PORT 37533
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "server.js"]
-
+CMD ["npm", "-y", "prisma", "migrate", "deploy", "&&", "node", "server.js"]

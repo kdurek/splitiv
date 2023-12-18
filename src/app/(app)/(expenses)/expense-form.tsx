@@ -5,8 +5,8 @@ import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-import { type ExpenseFormSchema, expenseFormSchema } from '@/components/forms/expense/expense-form.schema';
-import { ExpenseFormMethods } from '@/components/forms/expense/expense-form-methods';
+import { type ExpenseFormSchema, expenseFormSchema } from '@/app/(app)/(expenses)/expense-form.schema';
+import { ExpenseFormMethods } from '@/app/(app)/(expenses)/expense-form-methods';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';

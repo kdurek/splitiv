@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 
-import { CreateGroupForm } from '@/components/forms/create-group-form';
-import { GenderSelectForm } from '@/components/forms/gender-select-form';
-import { GroupSelect } from '@/components/group/group-select';
+import { GroupSelect } from '@/app/(app)/(settings)/ustawienia/group-select';
+import { CreateGroupForm } from '@/app/(app)/create-group-form';
+import { GenderSelectForm } from '@/app/(app)/gender-select-form';
 import { Logo } from '@/components/layout/logo';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';

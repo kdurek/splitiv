@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { LoginButton } from '@/components/auth/login-button';
+import { LoginButton } from '@/app/(auth)/logowanie/login-button';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function LoginPage() {

@@ -3,9 +3,9 @@ import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { ExpenseDelete } from '@/components/expense/expense-delete';
-import { ExpensePayment } from '@/components/expense/expense-payment';
-import { ExpenseNoteForm } from '@/components/forms/expense-note-form';
+import { ExpenseDelete } from '@/app/(app)/(expenses)/wydatki/[expenseId]/expense-delete';
+import { ExpenseNoteForm } from '@/app/(app)/(expenses)/wydatki/[expenseId]/expense-note-form';
+import { ExpensePayment } from '@/app/(app)/(expenses)/wydatki/[expenseId]/expense-payment';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';

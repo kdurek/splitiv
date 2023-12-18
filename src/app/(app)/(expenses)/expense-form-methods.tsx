@@ -2,7 +2,7 @@ import Decimal from 'decimal.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import type { ExpenseFormSchema } from '@/components/forms/expense/expense-form.schema';
+import type { ExpenseFormSchema } from '@/app/(app)/(expenses)/expense-form.schema';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { NumberInput } from '@/components/ui/number-input';

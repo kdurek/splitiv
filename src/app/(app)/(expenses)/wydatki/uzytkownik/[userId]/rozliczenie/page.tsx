@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { ExpensePaymentSettleForm } from '@/components/forms/expense-payment-settle-form';
+import { ExpensePaymentSettleForm } from '@/app/(app)/(expenses)/wydatki/uzytkownik/[userId]/rozliczenie/expense-payment-settle-form';
 import { Section } from '@/components/layout/section';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';

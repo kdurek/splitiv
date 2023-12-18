@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation';
 
-import { FeedExpenses } from '@/components/feed/feed-expenses';
-import { FeedFilters } from '@/components/feed/feed-filters';
-import { FeedLegend } from '@/components/feed/feed-legend';
+import { FeedExpenses } from '@/app/(app)/(expenses)/feed-expenses';
+import { FeedFilters } from '@/app/(app)/(expenses)/feed-filters';
+import { FeedLegend } from '@/app/(app)/(expenses)/feed-legend';
+import { UserStats } from '@/app/(app)/(expenses)/user-stats';
 import { Section } from '@/components/layout/section';
-import { UserStats } from '@/components/user/user-stats';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

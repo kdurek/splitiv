@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { UserForm } from '@/components/forms/user-form';
+import { UserForm } from '@/app/(app)/(settings)/ustawienia/profil/user-form';
 import { Section } from '@/components/layout/section';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';

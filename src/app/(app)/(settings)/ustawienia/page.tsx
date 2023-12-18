@@ -2,9 +2,9 @@ import { User2 } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { LogoutButton } from '@/components/auth/logout-button';
-import { AddUserToGroupForm } from '@/components/forms/add-user-to-group-form';
-import { GroupSelect } from '@/components/group/group-select';
+import { AddUserToGroupForm } from '@/app/(app)/(settings)/ustawienia/add-user-to-group-form';
+import { GroupSelect } from '@/app/(app)/(settings)/ustawienia/group-select';
+import { LogoutButton } from '@/app/(app)/(settings)/ustawienia/logout-button';
 import { Section } from '@/components/layout/section';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';

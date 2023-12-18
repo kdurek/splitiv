@@ -9,10 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUpdateUser } from '@/hooks/use-update-user';
-
-const genderSelectFormSchema = z.object({
-  gender: z.nativeEnum(Gender, { required_error: 'Musisz wybrać płeć' }),
-});
+import { genderSelectFormSchema } from '@/lib/validations/user';
 
 type GenderSelectFormSchema = z.infer<typeof genderSelectFormSchema>;
 

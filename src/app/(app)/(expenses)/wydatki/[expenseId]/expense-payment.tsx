@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
 import { cn } from '@/lib/utils';
+import { expensePaymentFormSchema } from '@/lib/validations/expense-payment';
 
 interface ExpensePaymentProps {
   payerId: string;
@@ -25,10 +26,6 @@ interface ExpensePaymentProps {
   }>;
   session: Session;
 }
-
-const expensePaymentFormSchema = z.object({
-  amount: z.number({ required_error: 'Musisz wpisać kwotę' }).positive({ message: 'Kwota musi być większa niż zero' }),
-});
 
 type ExpensePaymentFormSchema = z.infer<typeof expensePaymentFormSchema>;
 

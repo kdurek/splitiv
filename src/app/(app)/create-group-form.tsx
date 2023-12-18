@@ -9,10 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useChangeCurrentGroup } from '@/hooks/use-change-current-group';
 import { useCreateGroup } from '@/hooks/use-create-group';
-
-const createGroupFormSchema = z.object({
-  name: z.string({ required_error: 'Musisz podać nazwę grupy' }).min(3, 'Minimalna długość to 3 znaki'),
-});
+import { createGroupFormSchema } from '@/lib/validations/group';
 
 type CreateGroupFormSchema = z.infer<typeof createGroupFormSchema>;
 

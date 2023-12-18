@@ -8,14 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useUpdateUser } from '@/hooks/use-update-user';
+import { updateUserFormSchema } from '@/lib/validations/user';
 import { GetUserById } from '@/trpc/shared';
-
-const updateUserFormSchema = z.object({
-  name: z
-    .string({ required_error: 'Musisz podać imię i nazwisko' })
-    .min(3, 'Minimalna długość to 3 znaki')
-    .refine((value) => value.split(' ').length === 2, { message: 'Musisz podać imię i nazwisko' }),
-});
 
 type UpdateUserFormSchema = z.infer<typeof updateUserFormSchema>;
 

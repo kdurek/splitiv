@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { type ExpenseFormSchema, expenseFormSchema } from '@/app/(app)/(expenses)/expense-form.schema';
 import { ExpenseFormMethods } from '@/app/(app)/(expenses)/expense-form-methods';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -15,7 +15,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useCreateExpense } from '@/hooks/use-create-expense';
 import { useUpdateExpense } from '@/hooks/use-update-expense';
+import { expenseFormSchema } from '@/lib/validations/expense';
 import type { GetCurrentGroup, GetExpenseById } from '@/trpc/shared';
+
+export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 interface ExpenseFormProps {
   group: GetCurrentGroup;

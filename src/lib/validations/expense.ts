@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { Decimal } from '@prisma/client/runtime/library';
 import { z } from 'zod';
 
 export const expenseFormSchema = z
@@ -44,5 +44,3 @@ export const expenseFormSchema = z
       path: ['debts'],
     },
   );
-
-export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;

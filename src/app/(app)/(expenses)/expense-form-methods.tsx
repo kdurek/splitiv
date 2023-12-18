@@ -1,13 +1,14 @@
 import Decimal from 'decimal.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { z } from 'zod';
 
-import type { ExpenseFormSchema } from '@/app/(app)/(expenses)/expense-form.schema';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { NumberInput } from '@/components/ui/number-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { expenseFormSchema } from '@/lib/validations/expense';
 
 function allocate(totalAmount: number | string, userCounts: number[]) {
   // Convert totalAmount to a Decimal object for precise calculations
@@ -38,6 +39,8 @@ function allocate(totalAmount: number | string, userCounts: number[]) {
 
   return allocations.map(parseFloat); // Convert the Decimal objects back to numbers
 }
+
+export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 export function ExpenseFormMethods() {
   const form = useFormContext<ExpenseFormSchema>();

@@ -8,10 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useCreateExpenseNote } from '@/hooks/use-create-expense-note';
-
-const expenseNoteFormSchema = z.object({
-  content: z.string().min(3, { message: 'Minimalna długość to 3 znaki' }),
-});
+import { expenseNoteFormSchema } from '@/lib/validations/expense-note';
 
 type ExpenseNoteFormSchema = z.infer<typeof expenseNoteFormSchema>;
 

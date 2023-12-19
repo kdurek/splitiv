@@ -18,15 +18,15 @@ export function TRPCReactProvider(props: { children: React.ReactNode; headers: H
       transformer,
       links: [
         loggerLink({
-          enabled: (op) =>
-            process.env.NODE_ENV === 'development' || (op.direction === 'down' && op.result instanceof Error),
+          enabled: (opts) =>
+            process.env.NODE_ENV === 'development' || (opts.direction === 'down' && opts.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
           url: getUrl(),
           headers() {
-            const heads = new Map(props.headers);
-            heads.set('x-trpc-source', 'react');
-            return Object.fromEntries(heads);
+            const headers = new Map(props.headers);
+            headers.set('x-trpc-source', 'nextjs-react');
+            return Object.fromEntries(headers);
           },
         }),
       ],

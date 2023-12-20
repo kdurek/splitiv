@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client/runtime/library';
+import Decimal from 'decimal.js';
 import { z } from 'zod';
 
 export const expenseFormSchema = z

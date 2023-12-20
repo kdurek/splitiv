@@ -55,6 +55,11 @@ const poppins = Poppins({
  */
 export const dynamic = 'force-dynamic';
 
+const dataWebsiteId =
+  process.env.NODE_ENV === 'production'
+    ? '225083f2-01a5-456e-afa3-f3ed5fd391fe'
+    : '26894ae9-08bc-45e4-8d5d-f01b65062952';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" className={`font-sans ${poppins.variable}`}>
@@ -64,7 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TailwindIndicator />
         </TRPCReactProvider>
       </body>
-      <Script async src="https://analytics.durek.pl/script.js" data-website-id="26894ae9-08bc-45e4-8d5d-f01b65062952" />
+      <Script async src="https://analytics.durek.pl/script.js" data-website-id={dataWebsiteId} />
     </html>
   );
 }

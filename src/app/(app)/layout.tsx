@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import { GroupSelect } from '@/app/(app)/(settings)/ustawienia/group-select';
 import { CreateGroupForm } from '@/app/(app)/create-group-form';
 import { GenderSelectForm } from '@/app/(app)/gender-select-form';
-import { Logo } from '@/components/layout/logo';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
@@ -44,11 +43,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background shadow-md md:hidden">
-        <div className="flex h-16 items-center justify-between px-4">
-          <Logo />
-        </div>
-      </header>
       <div className="flex-1 p-4">{children}</div>
       <div className="sticky bottom-0 z-40 border-t bg-background md:hidden">
         <MobileNav />

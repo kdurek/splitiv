@@ -19,10 +19,12 @@ function UserDebts({ user, group: { members, debts } }: UserDebtsProps) {
         const memberDebt = debts.find((debt) => debt.fromId === member.id && debt.toId === user.id);
         const memberGet = debts.find((debt) => debt.fromId === user.id && debt.toId === member.id);
 
-        if (!memberDebt && !memberGet) return null;
+        if (!memberDebt && !memberGet) {
+          return null;
+        }
 
         return (
-          <div key={member.id} className="border-t pt-4 font-medium">
+          <div key={member.id} className="pt-4 font-medium">
             <div className="flex items-center gap-4">
               <Avatar>
                 <AvatarImage src={member.image ?? undefined} />
@@ -66,9 +68,9 @@ export function UserStats({ user, group }: UserStatsProps) {
   const userBalance = group.members.find((member) => member.id === user.id)?.balance;
 
   return (
-    <Accordion type="single" collapsible className="w-full rounded-md border border-b-0">
-      <AccordionItem key={user.id} value={user.id}>
-        <AccordionTrigger className="px-4">
+    <Accordion type="single" collapsible className="w-full rounded-md">
+      <AccordionItem key={user.id} value={user.id} className="pb-4">
+        <AccordionTrigger className="p-0">
           <div className="flex items-center gap-4">
             <Avatar>
               <AvatarImage src={user.image ?? undefined} />
@@ -80,7 +82,7 @@ export function UserStats({ user, group }: UserStatsProps) {
             </div>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="px-4">
+        <AccordionContent className="p-0">
           <UserDebts user={user} group={group} />
         </AccordionContent>
       </AccordionItem>

@@ -16,57 +16,6 @@ export const userRouter = createTRPCRouter({
     });
   }),
 
-  getCredits: protectedProcedure.input(z.object({ userId: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.db.expenseDebt.findMany({
-      where: {
-        settled: {
-          lt: ctx.db.expenseDebt.fields.amount,
-        },
-        expense: {
-          payer: {
-            id: input.userId,
-          },
-          groupId: ctx.session.activeGroupId,
-        },
-      },
-      include: {
-        debtor: true,
-        expense: {
-          include: {
-            payer: true,
-          },
-        },
-      },
-    });
-  }),
-
-  getDebts: protectedProcedure.input(z.object({ userId: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.db.expenseDebt.findMany({
-      where: {
-        debtorId: input.userId,
-        settled: {
-          lt: ctx.db.expenseDebt.fields.amount,
-        },
-        expense: {
-          payer: {
-            isNot: {
-              id: input.userId,
-            },
-          },
-          groupId: ctx.session.activeGroupId,
-        },
-      },
-      include: {
-        debtor: true,
-        expense: {
-          include: {
-            payer: true,
-          },
-        },
-      },
-    });
-  }),
-
   getPaymentSettle: protectedProcedure
     .input(
       z.object({

@@ -48,12 +48,14 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
         <div>{formattedDate}</div>
       </div>
 
-      <div className="space-y-2">
-        <div className="w-full rounded-md border p-2">
+      <div className="divide-y">
+        <div className="w-full pb-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 overflow-hidden">
-              <div className="grid h-10 w-10 shrink-0 place-content-center rounded-md bg-slate-100">
-                <CircleDollarSign className="text-slate-500" />
+              <div className="grid h-10 w-10 shrink-0 place-content-center">
+                <div className="grid h-[32px] w-[32px] place-content-center rounded-md bg-slate-100">
+                  <CircleDollarSign strokeWidth={1} className="text-slate-500" />
+                </div>
               </div>
               <div className="overflow-hidden text-start">
                 <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Zapłacone</div>

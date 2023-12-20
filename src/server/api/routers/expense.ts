@@ -3,6 +3,30 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseRouter = createTRPCRouter({
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        payerId: z.string().optional(),
+        debtorId: z.string().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.expense.findMany({
+        where: {
+          groupId: ctx.session.activeGroupId,
+          payerId: input.payerId ?? undefined,
+          debts: {
+            some: {
+              debtorId: input.debtorId ?? undefined,
+            },
+          },
+        },
+        include: {
+          debts: true,
+        },
+      });
+    }),
+
   getInfinite: protectedProcedure
     .input(
       z.object({

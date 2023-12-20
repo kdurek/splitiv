@@ -53,7 +53,7 @@ export function ExpensePayment({ payerId, debt, session }: ExpensePaymentProps) 
 
   const maximumAmount = Number(debt.amount) - Number(debt.settled);
 
-  const statusIcon = isFullySettled ? <XSquare /> : <Square />;
+  const statusIcon = isFullySettled ? <XSquare size={40} strokeWidth={1} /> : <Square size={40} strokeWidth={1} />;
 
   const handlePayPartially = (values: ExpensePaymentFormSchema) => {
     settleExpenseDebts(
@@ -101,7 +101,7 @@ export function ExpensePayment({ payerId, debt, session }: ExpensePaymentProps) 
   };
 
   return (
-    <div className="rounded-md border p-2">
+    <div className="py-4 last:pb-0">
       <Collapsible open={isEditing}>
         <div className="flex items-center justify-between gap-4 overflow-hidden">
           <div className="flex items-center gap-4 overflow-hidden">
@@ -115,7 +115,7 @@ export function ExpensePayment({ payerId, debt, session }: ExpensePaymentProps) 
               })}
               onClick={() => !isFullySettled && !notHavePermission && toggleIsEditing()}
             >
-              {isEditing ? <XSquare /> : statusIcon}
+              {isEditing ? <XSquare size={40} strokeWidth={1} /> : statusIcon}
             </Button>
             <div className="text-start">
               <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">

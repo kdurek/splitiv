@@ -68,9 +68,9 @@ export function UserStats({ user, group }: UserStatsProps) {
   const userBalance = group.members.find((member) => member.id === user.id)?.balance;
 
   return (
-    <Accordion type="single" collapsible className="w-full rounded-md">
-      <AccordionItem key={user.id} value={user.id} className="pb-4">
-        <AccordionTrigger className="p-0">
+    <Accordion type="single" collapsible className="w-full">
+      <AccordionItem key={user.id} value={user.id} className="data-[state=open]:pb-4">
+        <AccordionTrigger className="p-0 pb-4">
           <div className="flex items-center gap-4">
             <Avatar>
               <AvatarImage src={user.image ?? undefined} />

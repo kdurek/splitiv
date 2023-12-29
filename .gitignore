@@ -22,8 +22,12 @@ next-env.d.ts
 /build
 
 # pwa
-**/public/serwist-*.js
-**/public/sw.js
+**/public/serwist**
+**/public/sw**
+**/public/worker**
+**/public/fallback**
+**/public/precache**
+s
 
 # misc
 .DS_Store

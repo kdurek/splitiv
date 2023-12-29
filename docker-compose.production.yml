@@ -30,6 +30,20 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
 
+  pgadmin:
+    container_name: splitiv-pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - 5050:80
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    networks:
+      - splitiv
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@pgadmin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+
   pgbackups3:
     container_name: splitiv-pgbackups3
     image: eeshugerman/postgres-backup-s3:15
@@ -53,6 +67,7 @@ services:
 
 volumes:
   postgres:
+  pgadmin:
 
 networks:
   splitiv:

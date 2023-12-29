@@ -35,6 +35,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
   const hasDescription = descriptionParts?.length;
   const formattedDate = format(expense.createdAt, 'EEEEEEE, d MMMM yyyy');
   const isPayer = session.user.id === expense.payerId;
+  const isAdmin = session.user.id === expense.group.adminId;
 
   return (
     <div className="space-y-6">
@@ -99,7 +100,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
         </div>
       </div>
 
-      {isPayer && (
+      {(isPayer || isAdmin) && (
         <div className="space-y-2">
           <Heading variant="h2">Ustawienia</Heading>
           <div className="flex gap-2">

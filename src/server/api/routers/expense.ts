@@ -107,6 +107,7 @@ export const expenseRouter = createTRPCRouter({
         id: input.id,
       },
       include: {
+        group: true,
         payer: true,
         debts: {
           orderBy: {

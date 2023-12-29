@@ -4,7 +4,7 @@ import { api } from '@/trpc/react';
 
 export function useSettleExpenseDebts() {
   const router = useRouter();
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   return api.expenseDebt.settle.useMutation({
     async onSuccess() {

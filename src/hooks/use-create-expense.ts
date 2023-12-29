@@ -4,7 +4,7 @@ import { api } from '@/trpc/react';
 
 export function useCreateExpense() {
   const router = useRouter();
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   return api.expense.create.useMutation({
     async onSuccess() {

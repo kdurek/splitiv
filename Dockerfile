@@ -5,7 +5,9 @@ RUN corepack enable
 FROM base AS deps
 WORKDIR /app
 
+COPY prisma ./
 COPY package.json pnpm-lock.yaml* ./
+
 RUN pnpm i --frozen-lockfile
 
 # Build
@@ -30,20 +32,14 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
-
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --chown=nextjs:nodejs prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/start.sh ./start.sh
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 USER nextjs
-
-EXPOSE 37533
-
-ENV PORT 37533
+EXPOSE 3000
+ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["/bin/sh", "-c", "npx -y prisma migrate deploy;node server.js"]
+CMD ["./start.sh"]

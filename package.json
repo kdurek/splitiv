@@ -13,10 +13,10 @@
     "format:write": "prettier --write \"**/*.{css,json,md,js,jsx,ts,tsx}\"",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev -p 37533\"",
+    "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev -p 3000\"",
     "typecheck": "tsc",
-    "build": "prisma generate && next build",
-    "start": "next start -p 37533"
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

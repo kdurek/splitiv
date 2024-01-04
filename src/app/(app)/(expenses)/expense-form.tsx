@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -22,10 +23,11 @@ export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 interface ExpenseFormProps {
   group: GetCurrentGroup;
+  session: Session;
   expense?: GetExpenseById;
 }
 
-export function ExpenseForm({ group, expense }: ExpenseFormProps) {
+export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
   const router = useRouter();
   const { mutate: createExpense, isLoading: isLoadingCreateExpense } = useCreateExpense();
   const { mutate: updateExpense, isLoading: isLoadingUpdateExpense } = useUpdateExpense();
@@ -46,7 +48,7 @@ export function ExpenseForm({ group, expense }: ExpenseFormProps) {
         name: '',
         description: '',
         amount: 0,
-        payer: '',
+        payer: session.user.id,
         debts: group.members.map((member) => ({
           id: member.id,
           name: member.name || '',

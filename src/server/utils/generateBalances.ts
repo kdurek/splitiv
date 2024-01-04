@@ -3,12 +3,12 @@ import Decimal from 'decimal.js';
 
 import { upsert } from '@/server/utils/upsert';
 
-export interface IUserBalances {
+export interface UserBalance {
   userId: string;
   amount: string;
 }
 
-interface DebtWithExpense extends ExpenseDebt {
+export interface DebtWithExpense extends Pick<ExpenseDebt, 'amount' | 'settled' | 'debtorId'> {
   expense: {
     amount: Prisma.Decimal;
     payerId: string;
@@ -16,7 +16,7 @@ interface DebtWithExpense extends ExpenseDebt {
 }
 
 export function generateBalances(debts: DebtWithExpense[]) {
-  const usersBalanceArray: IUserBalances[] = [];
+  const usersBalanceArray: UserBalance[] = [];
 
   debts.forEach((debt) => {
     const debtAmount = new Decimal(debt.amount);

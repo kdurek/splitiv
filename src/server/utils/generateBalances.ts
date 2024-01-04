@@ -1,8 +1,6 @@
 import type { ExpenseDebt, Prisma } from '@prisma/client';
 import Decimal from 'decimal.js';
 
-import { upsert } from '@/server/utils/upsert';
-
 export interface UserBalance {
   userId: string;
   amount: string;
@@ -24,23 +22,25 @@ export function generateBalances(debts: DebtWithExpense[]) {
     const netAmount = debtAmount.minus(settledAmount);
 
     if (debt.expense.payerId !== debt.debtorId) {
-      upsert(
-        usersBalanceArray,
-        {
+      const debtorBalance = usersBalanceArray.find((userBalance) => userBalance.userId === debt.debtorId);
+      if (debtorBalance) {
+        debtorBalance.amount = new Decimal(debtorBalance.amount).minus(netAmount).toFixed(2);
+      } else {
+        usersBalanceArray.push({
           userId: debt.debtorId,
           amount: netAmount.negated().toFixed(2),
-        },
-        'userId',
-      );
+        });
+      }
 
-      upsert(
-        usersBalanceArray,
-        {
+      const payerBalance = usersBalanceArray.find((userBalance) => userBalance.userId === debt.expense.payerId);
+      if (payerBalance) {
+        payerBalance.amount = new Decimal(payerBalance.amount).plus(netAmount).toFixed(2);
+      } else {
+        usersBalanceArray.push({
           userId: debt.expense.payerId,
           amount: netAmount.toFixed(2),
-        },
-        'userId',
-      );
+        });
+      }
     }
   });
 

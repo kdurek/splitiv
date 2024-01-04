@@ -92,11 +92,12 @@
     "pre-commit": "pnpm lint-staged --concurrent false && pnpm tsc"
   },
   "lint-staged": {
-    "*.{,js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ],
     "*.{css,json,md,js,jsx,ts,tsx}": [
       "prettier --write"
+    ],
+    "*.{,js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "vitest related --run"
     ]
   }
 }

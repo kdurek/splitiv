@@ -1,17 +1,17 @@
 'use client';
 
-import { ExpenseCard, getExpenseStatus } from '@/app/(app)/(expenses)/expense-card';
+import { ExpensesListCard, getExpenseStatus } from '@/components/expense/expenses-list-card';
 import { GetAllExpenses } from '@/trpc/shared';
 
 interface ExpenseListProps {
   expenses: GetAllExpenses;
 }
 
-export function ExpenseList({ expenses }: ExpenseListProps) {
+export function ExpensesList({ expenses }: ExpenseListProps) {
   return (
     <div className="divide-y">
       {expenses.map((expense) => (
-        <ExpenseCard
+        <ExpensesListCard
           key={expense.id}
           id={expense.id}
           status={getExpenseStatus(expense)}

@@ -24,11 +24,11 @@ export function getExpenseStatus(expense: ExpenseWithDebts) {
   return 'unsettled';
 }
 
-interface ExpenseCardIconProps {
+interface ExpensesListCardIconProps {
   status: ReturnType<typeof getExpenseStatus>;
 }
 
-function ExpenseCardIcon({ status }: ExpenseCardIconProps) {
+function ExpensesListCardIcon({ status }: ExpensesListCardIconProps) {
   return (
     <div
       className={cn('grid h-10 w-10 place-content-center rounded-md', {
@@ -48,7 +48,7 @@ function ExpenseCardIcon({ status }: ExpenseCardIconProps) {
   );
 }
 
-interface ExpenseCardProps {
+interface ExpensesListCardProps {
   id: string;
   status: ReturnType<typeof getExpenseStatus>;
   name: string;
@@ -56,7 +56,7 @@ interface ExpenseCardProps {
   date: Date;
 }
 
-export function ExpenseCard({ id, status, name, amount, date }: ExpenseCardProps) {
+export function ExpensesListCard({ id, status, name, amount, date }: ExpensesListCardProps) {
   const router = useRouter();
 
   const formattedDate = format(date, 'EEEEEE, d MMMM');
@@ -69,7 +69,7 @@ export function ExpenseCard({ id, status, name, amount, date }: ExpenseCardProps
     <button onClick={handleClick} className="w-full py-4">
       <div className="flex items-center justify-between overflow-hidden">
         <div className="flex items-center gap-4">
-          <ExpenseCardIcon status={status} />
+          <ExpensesListCardIcon status={status} />
           <div className="overflow-hidden text-start">
             <div className="line-clamp-1">{name}</div>
             <div className="line-clamp-1 text-sm text-muted-foreground">{formattedDate}</div>

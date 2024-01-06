@@ -3,7 +3,7 @@
 import { useIntersection } from '@mantine/hooks';
 import { useEffect } from 'react';
 
-import { ExpenseList } from '@/app/(app)/(expenses)/expense-list';
+import { ExpensesList } from '@/components/expense/expenses-list';
 import { useInfiniteExpenses } from '@/hooks/use-infinite-expenses';
 import type { GetInfiniteExpenses } from '@/trpc/shared';
 
@@ -40,7 +40,7 @@ export function FeedExpenses({ infiniteExpensesInitialData }: FeedExpensesProps)
 
   return (
     <>
-      <ExpenseList expenses={expenses} />
+      <ExpensesList expenses={expenses} />
       <div ref={ref} />
     </>
   );

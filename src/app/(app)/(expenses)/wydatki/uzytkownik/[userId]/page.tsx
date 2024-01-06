@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js';
 import { redirect } from 'next/navigation';
 
-import { ExpenseList } from '@/app/(app)/(expenses)/expense-list';
+import { ExpensesList } from '@/components/expense/expenses-list';
 import { Section } from '@/components/layout/section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/trpc/server';
@@ -48,10 +48,10 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
           <TabsTrigger value="credits">Pożyczka</TabsTrigger>
         </TabsList>
         <TabsContent value="debts">
-          <ExpenseList expenses={debts} />
+          <ExpensesList expenses={debts} />
         </TabsContent>
         <TabsContent value="credits">
-          <ExpenseList expenses={credits} />
+          <ExpensesList expenses={credits} />
         </TabsContent>
       </Tabs>
     </Section>

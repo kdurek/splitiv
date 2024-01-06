@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js';
 import { redirect } from 'next/navigation';
 
-import { ExpenseCard } from '@/app/(app)/(expenses)/expense-card';
+import { ExpenseList } from '@/app/(app)/(expenses)/expense-list';
 import { Section } from '@/components/layout/section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/trpc/server';
@@ -20,11 +20,25 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
   }
 
   const debts = await api.expense.getAll.query({
-    payerId: params.userId,
+    payerId: user.id,
   });
-  const credits = await api.expense.getAll.query({
-    debtorId: params.userId,
-  });
+
+  const credits = await api.expense.getAll
+    .query({
+      debtorId: user.id,
+    })
+    .then((credits) =>
+      credits
+        .filter((expense) => expense.payerId !== user.id)
+        .map((expense) => {
+          const expenseDebt = expense.debts.find((expenseDebt) => expenseDebt.debtorId === user.id);
+          const expenseAmount =
+            expenseDebt?.amount === expenseDebt?.settled
+              ? expenseDebt?.amount
+              : Decimal.sub(expenseDebt?.amount ?? 0, expenseDebt?.settled ?? 0);
+          return { ...expense, amount: expenseAmount ?? new Decimal(0) };
+        }),
+    );
 
   return (
     <Section title={user.name}>
@@ -34,33 +48,10 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
           <TabsTrigger value="credits">Pożyczka</TabsTrigger>
         </TabsList>
         <TabsContent value="debts">
-          <div className="divide-y">
-            {debts.map((expense) => (
-              <ExpenseCard key={expense.id} expense={expense} />
-            ))}
-          </div>
+          <ExpenseList expenses={debts} />
         </TabsContent>
         <TabsContent value="credits">
-          <div className="divide-y">
-            {credits
-              .filter((expense) => expense.payerId !== params.userId)
-              .map((expense) => {
-                const expenseDebt = expense.debts.find((expenseDebt) => expenseDebt.debtorId === user.id);
-                const expenseAmount =
-                  expenseDebt?.amount === expenseDebt?.settled
-                    ? expenseDebt?.amount
-                    : Decimal.sub(expenseDebt?.amount ?? 0, expenseDebt?.settled ?? 0);
-                return (
-                  <ExpenseCard
-                    key={expense.id}
-                    expense={{
-                      ...expense,
-                      amount: expenseAmount ?? new Decimal(0),
-                    }}
-                  />
-                );
-              })}
-          </div>
+          <ExpenseList expenses={credits} />
         </TabsContent>
       </Tabs>
     </Section>

@@ -14,11 +14,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { useDeleteExpense } from '@/hooks/use-delete-expense';
 
-interface ExpenseDeleteProps {
+interface ExpenseDeleteModalProps {
   expenseId: string;
 }
 
-export function ExpenseDelete({ expenseId }: ExpenseDeleteProps) {
+export function ExpenseDeleteModal({ expenseId }: ExpenseDeleteModalProps) {
   const { mutate: deleteExpense } = useDeleteExpense();
 
   const handleExpenseDelete = () => {

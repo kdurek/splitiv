@@ -46,7 +46,7 @@ export function ExpenseNoteForm({ expenseId }: ExpenseNoteFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} placeholder="O czym chcesz wspomnieć?" />
               </FormControl>
               <FormMessage />
             </FormItem>

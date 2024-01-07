@@ -1,11 +1,12 @@
 import { format } from 'date-fns';
-import { CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { ExpenseDelete } from '@/app/(app)/(expenses)/wydatki/[expenseId]/expense-delete';
-import { ExpenseNoteForm } from '@/app/(app)/(expenses)/wydatki/[expenseId]/expense-note-form';
-import { ExpensePayment } from '@/app/(app)/(expenses)/wydatki/[expenseId]/expense-payment';
+import { ExpenseDebtorCard, ExpensePayerCard } from '@/components/expense/expense-debts';
+import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
+import { ExpenseDescriptionCard } from '@/components/expense/expense-description-card';
+import { ExpenseNoteCard } from '@/components/expense/expense-note-card';
+import { ExpenseNoteForm } from '@/components/expense/expense-note-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
@@ -31,8 +32,6 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
     redirect('/');
   }
 
-  const descriptionParts = expense.description?.split('\n');
-  const hasDescription = descriptionParts?.length;
   const formattedDate = format(expense.createdAt, 'EEEEEEE, d MMMM yyyy');
   const isPayer = session.user.id === expense.payerId;
   const isAdmin = session.user.id === expense.group.adminId;
@@ -41,61 +40,41 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
     <div className="space-y-6">
       <div className="space-y-2">
         <Heading variant="h1">{expense.name}</Heading>
-        {hasDescription && (
-          <div className="text-sm text-muted-foreground">
-            {descriptionParts?.map((part, index) => <div key={index}>{part}</div>)}
-          </div>
-        )}
+        <ExpenseDescriptionCard description={expense.description} />
         <div>{formattedDate}</div>
       </div>
 
       <div className="divide-y">
-        <div className="w-full pb-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4 overflow-hidden">
-              <div className="grid h-10 w-10 shrink-0 place-content-center">
-                <div className="grid h-[32px] w-[32px] place-content-center rounded-md bg-slate-100">
-                  <CircleDollarSign strokeWidth={1} className="text-slate-500" />
-                </div>
-              </div>
-              <div className="overflow-hidden text-start">
-                <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Zapłacone</div>
-                <div className="line-clamp-1">{expense.payer.name}</div>
-              </div>
-            </div>
-            <div className="text-end">
-              <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Kwota</div>
-              <div className="whitespace-nowrap">{Number(expense.amount).toFixed(2)} zł</div>
-            </div>
-          </div>
-        </div>
+        <ExpensePayerCard name={expense.payer.name} amount={Number(expense.amount)} />
         {expense.debts.map((debt) => (
-          <ExpensePayment key={debt.id} payerId={expense.payerId} debt={debt} session={session} />
+          <ExpenseDebtorCard
+            key={debt.id}
+            debtId={debt.id}
+            name={debt.debtor.name}
+            amount={Number(debt.amount)}
+            settled={Number(debt.settled)}
+            canSettle={
+              debt.amount !== debt.settled && (isAdmin || isPayer || (session.user.id === debt.debtorId && !isPayer))
+            }
+          />
         ))}
       </div>
 
       <div className="space-y-2">
-        <Heading variant="h2">Nowa notatka</Heading>
-        <ExpenseNoteForm expenseId={expense.id} />
-      </div>
-
-      <div className="space-y-2">
         <Heading variant="h2">Notatki</Heading>
+        <ExpenseNoteForm expenseId={expense.id} />
         <div className="divide-y">
           {expense.notes.length !== 0 ? (
             expense.notes.map((note) => (
-              <div key={note.id} className="space-y-2 py-2">
-                <div>{note.content}</div>
-                <div className="flex justify-between gap-4">
-                  <div className="text-start text-sm text-muted-foreground">{note.createdBy?.name}</div>
-                  <div className="text-end text-sm text-muted-foreground">
-                    {format(note.createdAt, 'HH:mm dd.MM.yyyy')}
-                  </div>
-                </div>
-              </div>
+              <ExpenseNoteCard
+                key={note.id}
+                content={note.content}
+                createdByName={note.createdBy?.name}
+                createdAt={note.createdAt}
+              />
             ))
           ) : (
-            <div className="py-2">Nie dodano jeszcze żadnej notatki</div>
+            <div className="py-4">Nie dodano jeszcze żadnej notatki</div>
           )}
         </div>
       </div>
@@ -107,7 +86,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
             <Link href={`/wydatki/${expense.id}/edytuj`} className={cn(buttonVariants({ variant: 'outline' }))}>
               Edytuj
             </Link>
-            <ExpenseDelete expenseId={expense.id} />
+            <ExpenseDeleteModal expenseId={expense.id} />
           </div>
         </div>
       )}

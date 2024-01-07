@@ -13,7 +13,7 @@
     "format:write": "prettier --write \"**/*.{css,json,md,js,jsx,ts,tsx}\"",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev -p 3000\"",
+    "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev --turbo\"",
     "typecheck": "tsc",
     "test": "vitest",
     "build": "next build",

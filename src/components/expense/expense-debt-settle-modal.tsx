@@ -18,7 +18,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { NumberInput } from '@/components/ui/number-input';
 import { useDisclosure } from '@/hooks/use-disclosure';
-import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
+import { useUpdateExpenseDebt } from '@/hooks/use-update-expense-debt';
 import { expensePaymentFormSchema } from '@/lib/validations/expense-payment';
 
 type ExpensePaymentFormSchema = z.infer<typeof expensePaymentFormSchema>;
@@ -33,7 +33,7 @@ interface ExpenseDebtSettleModalProps {
 export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: ExpenseDebtSettleModalProps) {
   const [open, { toggle, close }] = useDisclosure(false);
 
-  const { mutate: settleExpenseDebts, isLoading: isLoadingSettleExpenseDebts } = useSettleExpenseDebts();
+  const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } = useUpdateExpenseDebt();
 
   const form = useForm<ExpensePaymentFormSchema>({
     defaultValues: {
@@ -45,14 +45,10 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
   const maximumAmount = amount - settled;
 
   const handleSettleExpenseDebt = (values: ExpensePaymentFormSchema) => {
-    settleExpenseDebts(
+    updateExpenseDebt(
       {
-        expenseDebts: [
-          {
-            id: debtId,
-            settled: values.amount + settled,
-          },
-        ],
+        id: debtId,
+        settled: values.amount + settled,
       },
       {
         onSuccess() {
@@ -92,7 +88,7 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
         </Form>
         <DialogFooter>
           <Button form="expense-payment-form">
-            {isLoadingSettleExpenseDebts && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoadingUpdateExpenseDebt && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Oddaj
           </Button>
         </DialogFooter>

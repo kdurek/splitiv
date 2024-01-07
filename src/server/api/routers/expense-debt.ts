@@ -39,6 +39,24 @@ export const expenseDebtRouter = createTRPCRouter({
       });
     }),
 
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid2(),
+        settled: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.expenseDebt.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          settled: input.settled,
+        },
+      });
+    }),
+
   settle: protectedProcedure
     .input(
       z.object({

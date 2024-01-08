@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { ExpensePaymentSettleForm } from '@/app/(app)/(expenses)/wydatki/uzytkownik/[userId]/rozliczenie/expense-payment-settle-form';
+import { ExpenseSettlementForm } from '@/app/(app)/(expenses)/wydatki/uzytkownik/[userId]/rozliczenie/expense-settlement-form';
 import { Section } from '@/components/layout/section';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
@@ -27,13 +27,29 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
     redirect('/');
   }
 
-  const debts = await api.user.getPaymentSettle.query({
-    userId: params.userId,
+  const paramUserDebts = await api.expenseDebt.getAll.query({
+    payerId: currentUser.id,
+    debtorId: paramUser.id,
+    isSettled: false,
+  });
+  const currentUserDebts = await api.expenseDebt.getAll.query({
+    payerId: paramUser.id,
+    debtorId: currentUser.id,
+    isSettled: false,
   });
 
+  if (!paramUserDebts.length && !currentUserDebts.length) {
+    redirect('/');
+  }
+
   return (
-    <Section title={paramUser.name}>
-      <ExpensePaymentSettleForm paramUser={paramUser} currentUser={currentUser} debts={debts} />
+    <Section title="Rozliczenie">
+      <ExpenseSettlementForm
+        paramUser={paramUser}
+        currentUser={currentUser}
+        paramUserDebts={paramUserDebts}
+        currentUserDebts={currentUserDebts}
+      />
     </Section>
   );
 }

@@ -9,6 +9,7 @@ export function useSettleExpenseDebts() {
   return api.expenseDebt.settle.useMutation({
     async onSuccess() {
       await utils.expense.getInfinite.invalidate();
+      await utils.expense.getAll.invalidate();
       router.refresh();
     },
   });

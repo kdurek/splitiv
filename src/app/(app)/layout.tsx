@@ -42,9 +42,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col">
-      <div className="flex-1 p-4">{children}</div>
-      <div className="sticky bottom-0 z-40 bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+    <div>
+      <div className="min-h-dvh p-4 pb-24">{children}</div>
+      <div className="fixed inset-x-0 bottom-0 z-40 h-20 bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
         <MobileNav />
       </div>
     </div>

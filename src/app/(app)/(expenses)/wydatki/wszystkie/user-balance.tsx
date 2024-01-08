@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn, getInitials } from '@/lib/utils';
-import type { GetCurrentGroup, GetUsers } from '@/trpc/shared';
+import type { GroupCurrent, UserList } from '@/trpc/shared';
 
 interface Debt {
   fromId: string;
@@ -17,8 +17,8 @@ interface Debt {
 }
 
 interface UserDebtsProps {
-  member: GetUsers[number];
-  members: GetUsers;
+  member: UserList[number];
+  members: UserList;
   debts: Debt[];
   session: Session;
 }
@@ -76,7 +76,7 @@ function UserDebts({ member, members, debts, session }: UserDebtsProps) {
 }
 
 interface UserBalanceProps {
-  group: GetCurrentGroup;
+  group: GroupCurrent;
   session: Session;
 }
 

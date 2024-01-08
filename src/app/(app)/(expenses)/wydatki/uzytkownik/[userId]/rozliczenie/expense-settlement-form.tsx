@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Heading } from '@/components/ui/heading';
 import { Label } from '@/components/ui/label';
 import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
-import type { GetAllExpenseDebts, GetUserById } from '@/trpc/shared';
+import type { ExpenseDebtList, UserById } from '@/trpc/shared';
 
 const expenseSettlementFormSchema = z.object({
   debts: z.array(
@@ -33,10 +33,10 @@ const expenseSettlementFormSchema = z.object({
 type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
 
 interface ExpenseSettlementFormProps {
-  paramUser: GetUserById;
-  currentUser: GetUserById;
-  paramUserDebts: GetAllExpenseDebts;
-  currentUserDebts: GetAllExpenseDebts;
+  paramUser: UserById;
+  currentUser: UserById;
+  paramUserDebts: ExpenseDebtList;
+  currentUserDebts: ExpenseDebtList;
 }
 
 export function ExpenseSettlementForm({

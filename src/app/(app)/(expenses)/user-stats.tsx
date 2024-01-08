@@ -5,11 +5,11 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn, getInitials } from '@/lib/utils';
-import type { GetCurrentGroup } from '@/trpc/shared';
+import type { GroupCurrent } from '@/trpc/shared';
 
 interface UserDebtsProps {
   user: Session['user'];
-  group: GetCurrentGroup;
+  group: GroupCurrent;
 }
 
 function UserDebts({ user, group: { members, debts } }: UserDebtsProps) {
@@ -61,7 +61,7 @@ function UserDebts({ user, group: { members, debts } }: UserDebtsProps) {
 
 interface UserStatsProps {
   user: Session['user'];
-  group: GetCurrentGroup;
+  group: GroupCurrent;
 }
 
 export function UserStats({ user, group }: UserStatsProps) {

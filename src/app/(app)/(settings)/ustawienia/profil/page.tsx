@@ -12,7 +12,7 @@ export default async function ProfilePage() {
     redirect('/logowanie');
   }
 
-  const user = await api.user.getById.query({
+  const user = await api.user.byId.query({
     userId: session.user.id,
   });
 

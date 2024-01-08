@@ -12,10 +12,10 @@ export default async function ExpensesPage() {
     redirect('/logowanie');
   }
 
-  const infiniteExpense = await api.expense.getInfinite.query({
+  const infiniteExpense = await api.expense.listInfinite.query({
     limit: 10,
   });
-  const group = await api.group.getCurrent.query();
+  const group = await api.group.current.query();
 
   return (
     <>

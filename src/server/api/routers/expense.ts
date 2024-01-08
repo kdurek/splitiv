@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  list: protectedProcedure
     .input(
       z.object({
         payerId: z.string().optional(),
@@ -30,7 +30,7 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  getInfinite: protectedProcedure
+  listInfinite: protectedProcedure
     .input(
       z.object({
         limit: z.number(),
@@ -101,7 +101,7 @@ export const expenseRouter = createTRPCRouter({
       };
     }),
 
-  getById: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
+  byId: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
     return ctx.db.expense.findUnique({
       where: {
         id: input.id,

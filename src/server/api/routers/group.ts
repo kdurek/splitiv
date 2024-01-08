@@ -6,13 +6,13 @@ import { generateBalances } from '@/server/utils/generateBalances';
 import { generateDebts } from '@/server/utils/generateDebts';
 
 export const groupRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(({ ctx }) => {
+  list: protectedProcedure.query(({ ctx }) => {
     return ctx.db.group.findMany({
       where: { members: { some: { userId: ctx.session.user.id } } },
     });
   }),
 
-  getCurrent: protectedProcedure.query(async ({ ctx }) => {
+  current: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.activeGroupId) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',

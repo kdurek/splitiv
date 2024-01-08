@@ -3,11 +3,11 @@
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useChangeCurrentGroup } from '@/hooks/use-change-current-group';
-import { type GetGroups } from '@/trpc/shared';
+import { type GroupList } from '@/trpc/shared';
 
 interface GroupSelectProps {
   activeGroupId?: string;
-  groups: GetGroups;
+  groups: GroupList;
 }
 
 export function GroupSelect({ activeGroupId, groups }: GroupSelectProps) {

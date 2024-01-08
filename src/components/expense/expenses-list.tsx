@@ -1,10 +1,10 @@
 'use client';
 
 import { ExpensesListCard, getExpenseStatus } from '@/components/expense/expenses-list-card';
-import { GetAllExpenses } from '@/trpc/shared';
+import { ExpenseList } from '@/trpc/shared';
 
 interface ExpenseListProps {
-  expenses: GetAllExpenses;
+  expenses: ExpenseList;
 }
 
 export function ExpensesList({ expenses }: ExpenseListProps) {

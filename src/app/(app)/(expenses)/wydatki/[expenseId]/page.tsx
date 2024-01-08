@@ -26,7 +26,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
     redirect('/logowanie');
   }
 
-  const expense = await api.expense.getById.query({ id: params.expenseId });
+  const expense = await api.expense.byId.query({ id: params.expenseId });
 
   if (!expense) {
     redirect('/');

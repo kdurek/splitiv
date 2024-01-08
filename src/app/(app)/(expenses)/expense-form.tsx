@@ -17,14 +17,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCreateExpense } from '@/hooks/use-create-expense';
 import { useUpdateExpense } from '@/hooks/use-update-expense';
 import { expenseFormSchema } from '@/lib/validations/expense';
-import type { GetCurrentGroup, GetExpenseById } from '@/trpc/shared';
+import type { ExpenseById,GroupCurrent } from '@/trpc/shared';
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 interface ExpenseFormProps {
-  group: GetCurrentGroup;
+  group: GroupCurrent;
   session: Session;
-  expense?: GetExpenseById;
+  expense?: ExpenseById;
 }
 
 export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {

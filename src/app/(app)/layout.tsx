@@ -25,7 +25,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   if (!session?.activeGroupId) {
-    const groups = await api.group.getAll.query();
+    const groups = await api.group.list.query();
 
     return (
       <div className="space-y-4 p-4">

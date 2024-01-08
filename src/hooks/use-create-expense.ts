@@ -8,7 +8,7 @@ export function useCreateExpense() {
 
   return api.expense.create.useMutation({
     async onSuccess() {
-      await utils.expense.getInfinite.invalidate();
+      await utils.expense.listInfinite.invalidate();
       router.refresh();
     },
   });

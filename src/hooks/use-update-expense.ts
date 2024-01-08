@@ -8,7 +8,7 @@ export function useUpdateExpense() {
 
   return api.expense.update.useMutation({
     async onSuccess() {
-      await utils.expense.getInfinite.invalidate();
+      await utils.expense.listInfinite.invalidate();
       router.refresh();
     },
   });

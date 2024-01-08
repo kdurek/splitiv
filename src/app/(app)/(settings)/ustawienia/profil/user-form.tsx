@@ -9,12 +9,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useUpdateUser } from '@/hooks/use-update-user';
 import { updateUserFormSchema } from '@/lib/validations/user';
-import { GetUserById } from '@/trpc/shared';
+import { UserById } from '@/trpc/shared';
 
 type UpdateUserFormSchema = z.infer<typeof updateUserFormSchema>;
 
 interface UserFormProps {
-  user: GetUserById;
+  user: UserById;
 }
 
 export function UserForm({ user }: UserFormProps) {

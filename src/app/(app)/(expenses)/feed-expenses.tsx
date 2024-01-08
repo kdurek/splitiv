@@ -5,10 +5,10 @@ import { useEffect } from 'react';
 
 import { ExpensesList } from '@/components/expense/expenses-list';
 import { useInfiniteExpenses } from '@/hooks/use-infinite-expenses';
-import type { GetInfiniteExpenses } from '@/trpc/shared';
+import type { ExpenseListInfinite } from '@/trpc/shared';
 
 interface FeedExpensesProps {
-  infiniteExpensesInitialData: GetInfiniteExpenses;
+  infiniteExpensesInitialData: ExpenseListInfinite;
 }
 
 export function FeedExpenses({ infiniteExpensesInitialData }: FeedExpensesProps) {

@@ -12,7 +12,7 @@ export default async function ExpenseAddPage() {
     redirect('/logowanie');
   }
 
-  const group = await api.group.getCurrent.query();
+  const group = await api.group.current.query();
 
   return (
     <Section title="Dodaj wydatek">

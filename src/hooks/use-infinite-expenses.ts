@@ -2,10 +2,10 @@ import { useAtomValue } from 'jotai';
 
 import { expenseFilterDebtorIdAtom, expenseFilterPayerIdAtom, expenseFilterSearchTextAtom } from '@/lib/atoms';
 import { api } from '@/trpc/react';
-import type { GetInfiniteExpenses } from '@/trpc/shared';
+import type { ExpenseListInfinite } from '@/trpc/shared';
 
 interface UseInfiniteExpensesProps {
-  infiniteExpensesInitialData: GetInfiniteExpenses;
+  infiniteExpensesInitialData: ExpenseListInfinite;
 }
 
 export function useInfiniteExpenses({ infiniteExpensesInitialData }: UseInfiniteExpensesProps) {
@@ -13,7 +13,7 @@ export function useInfiniteExpenses({ infiniteExpensesInitialData }: UseInfinite
   const payerId = useAtomValue(expenseFilterPayerIdAtom);
   const debtorId = useAtomValue(expenseFilterDebtorIdAtom);
 
-  return api.expense.getInfinite.useInfiniteQuery(
+  return api.expense.listInfinite.useInfiniteQuery(
     {
       limit: 10,
       name: searchText,

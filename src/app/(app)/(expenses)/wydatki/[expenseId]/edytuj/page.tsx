@@ -18,8 +18,8 @@ export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) 
     redirect('/logowanie');
   }
 
-  const group = await api.group.getCurrent.query();
-  const expense = await api.expense.getById.query({ id: params.expenseId });
+  const group = await api.group.current.query();
+  const expense = await api.expense.byId.query({ id: params.expenseId });
 
   if (!expense) {
     redirect('/');

@@ -8,7 +8,7 @@ export function useUpdateExpenseDebt() {
 
   return api.expenseDebt.update.useMutation({
     async onSuccess() {
-      await utils.expense.getInfinite.invalidate();
+      await utils.expense.listInfinite.invalidate();
       router.refresh();
     },
   });

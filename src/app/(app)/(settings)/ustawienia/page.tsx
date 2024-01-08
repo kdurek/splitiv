@@ -20,9 +20,9 @@ export default async function SettingsPage() {
     redirect('/logowanie');
   }
 
-  const usersNotInCurrentGroup = await api.user.getAllNotInCurrentGroup.query();
-  const groups = await api.group.getAll.query();
-  const group = await api.group.getCurrent.query();
+  const usersNotInCurrentGroup = await api.user.listNotInCurrentGroup.query();
+  const groups = await api.group.list.query();
+  const group = await api.group.current.query();
 
   return (
     <Section title="Ustawienia">

@@ -29,11 +29,11 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export type GetInfiniteExpenses = RouterOutputs['expense']['getInfinite'];
-export type GetAllExpenses = RouterOutputs['expense']['getAll'];
-export type GetExpenseById = RouterOutputs['expense']['getById'];
-export type GetAllExpenseDebts = RouterOutputs['expenseDebt']['getAll'];
-export type GetGroups = RouterOutputs['group']['getAll'];
-export type GetCurrentGroup = RouterOutputs['group']['getCurrent'];
-export type GetUsers = RouterOutputs['user']['getAll'];
-export type GetUserById = RouterOutputs['user']['getById'];
+export type ExpenseListInfinite = RouterOutputs['expense']['listInfinite'];
+export type ExpenseList = RouterOutputs['expense']['list'];
+export type ExpenseById = RouterOutputs['expense']['byId'];
+export type ExpenseDebtList = RouterOutputs['expenseDebt']['list'];
+export type GroupList = RouterOutputs['group']['list'];
+export type GroupCurrent = RouterOutputs['group']['current'];
+export type UserList = RouterOutputs['user']['list'];
+export type UserById = RouterOutputs['user']['byId'];

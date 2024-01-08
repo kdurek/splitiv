@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseDebtRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  list: protectedProcedure
     .input(
       z.object({
         payerId: z.string().cuid2().optional(),

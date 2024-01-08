@@ -18,8 +18,8 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
     return redirect('/logowanie');
   }
 
-  const paramUser = await api.user.getById.query({ userId: params.userId });
-  const currentUser = await api.user.getById.query({
+  const paramUser = await api.user.byId.query({ userId: params.userId });
+  const currentUser = await api.user.byId.query({
     userId: session.user.id,
   });
 
@@ -27,12 +27,12 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
     redirect('/');
   }
 
-  const paramUserDebts = await api.expenseDebt.getAll.query({
+  const paramUserDebts = await api.expenseDebt.list.query({
     payerId: currentUser.id,
     debtorId: paramUser.id,
     isSettled: false,
   });
-  const currentUserDebts = await api.expenseDebt.getAll.query({
+  const currentUserDebts = await api.expenseDebt.list.query({
     payerId: paramUser.id,
     debtorId: currentUser.id,
     isSettled: false,

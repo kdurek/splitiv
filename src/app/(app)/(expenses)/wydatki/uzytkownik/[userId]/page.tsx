@@ -13,17 +13,17 @@ interface ExpenseDetailsPageProps {
 }
 
 export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
-  const user = await api.user.getById.query({ userId: params.userId });
+  const user = await api.user.byId.query({ userId: params.userId });
 
   if (!user) {
     redirect('/');
   }
 
-  const debts = await api.expense.getAll.query({
+  const debts = await api.expense.list.query({
     payerId: user.id,
   });
 
-  const credits = await api.expense.getAll
+  const credits = await api.expense.list
     .query({
       debtorId: user.id,
     })

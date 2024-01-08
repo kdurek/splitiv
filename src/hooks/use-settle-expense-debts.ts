@@ -8,8 +8,8 @@ export function useSettleExpenseDebts() {
 
   return api.expenseDebt.settle.useMutation({
     async onSuccess() {
-      await utils.expense.getInfinite.invalidate();
-      await utils.expense.getAll.invalidate();
+      await utils.expense.listInfinite.invalidate();
+      await utils.expense.list.invalidate();
       router.refresh();
     },
   });

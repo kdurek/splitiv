@@ -6,9 +6,10 @@ import type { ExpenseListInfinite } from '@/trpc/shared';
 
 interface UseInfiniteExpensesProps {
   infiniteExpensesInitialData: ExpenseListInfinite;
+  isSettled?: 'fully' | 'partially';
 }
 
-export function useInfiniteExpenses({ infiniteExpensesInitialData }: UseInfiniteExpensesProps) {
+export function useInfiniteExpenses({ infiniteExpensesInitialData, isSettled }: UseInfiniteExpensesProps) {
   const searchText = useAtomValue(expenseFilterSearchTextAtom);
   const payerId = useAtomValue(expenseFilterPayerIdAtom);
   const debtorId = useAtomValue(expenseFilterDebtorIdAtom);
@@ -20,6 +21,7 @@ export function useInfiniteExpenses({ infiniteExpensesInitialData }: UseInfinite
       description: searchText,
       payerId,
       debtorId,
+      isSettled,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

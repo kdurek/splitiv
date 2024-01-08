@@ -17,7 +17,7 @@ export interface FeedFilters {
   searchText?: string;
   payerId?: string;
   debtorId?: string;
-  isSettled?: boolean;
+  isSettled?: 'fully' | 'partially';
 }
 
 interface FeedFiltersProps {

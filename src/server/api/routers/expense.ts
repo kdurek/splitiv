@@ -39,7 +39,7 @@ export const expenseRouter = createTRPCRouter({
         description: z.string().optional(),
         payerId: z.string().optional(),
         debtorId: z.string().optional(),
-        isSettled: z.boolean().optional(),
+        isSettled: z.enum(['fully', 'partially']).optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -67,8 +67,12 @@ export const expenseRouter = createTRPCRouter({
             some: {
               debtorId: input.debtorId || undefined,
               settled: {
-                lt: input.isSettled === false ? ctx.db.expenseDebt.fields.amount : undefined,
-                equals: input.isSettled === true ? ctx.db.expenseDebt.fields.amount : undefined,
+                lt: input.isSettled === 'partially' ? ctx.db.expenseDebt.fields.amount : undefined,
+              },
+            },
+            every: {
+              settled: {
+                equals: input.isSettled === 'fully' ? ctx.db.expenseDebt.fields.amount : undefined,
               },
             },
           },

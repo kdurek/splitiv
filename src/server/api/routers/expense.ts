@@ -105,6 +105,38 @@ export const expenseRouter = createTRPCRouter({
       };
     }),
 
+  between: protectedProcedure
+    .input(
+      z.object({
+        payerId: z.string().optional(),
+        debtorId: z.string().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.expense.findMany({
+        where: {
+          groupId: ctx.session.activeGroupId,
+          payerId: input.payerId ?? undefined,
+          debts: {
+            some: {
+              debtorId: input.debtorId ?? undefined,
+              settled: {
+                not: {
+                  equals: ctx.db.expenseDebt.fields.amount,
+                },
+              },
+            },
+          },
+        },
+        include: {
+          debts: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    }),
+
   byId: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
     return ctx.db.expense.findUnique({
       where: {

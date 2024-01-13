@@ -17,7 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCreateExpense } from '@/hooks/use-create-expense';
 import { useUpdateExpense } from '@/hooks/use-update-expense';
 import { expenseFormSchema } from '@/lib/validations/expense';
-import type { ExpenseById,GroupCurrent } from '@/trpc/shared';
+import type { ExpenseById, GroupCurrent } from '@/trpc/shared';
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
@@ -29,8 +29,8 @@ interface ExpenseFormProps {
 
 export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
   const router = useRouter();
-  const { mutate: createExpense, isLoading: isLoadingCreateExpense } = useCreateExpense();
-  const { mutate: updateExpense, isLoading: isLoadingUpdateExpense } = useUpdateExpense();
+  const { mutate: createExpense, isPending: isPendingCreateExpense } = useCreateExpense();
+  const { mutate: updateExpense, isPending: isPendingUpdateExpense } = useUpdateExpense();
 
   const defaultValues = expense
     ? {
@@ -191,7 +191,7 @@ export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
 
         <div className="mt-6 flex justify-end gap-4">
           <Button>
-            {(isLoadingCreateExpense || isLoadingUpdateExpense) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {(isPendingCreateExpense || isPendingUpdateExpense) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {expense ? 'Edytuj' : 'Dodaj'}
           </Button>
         </div>

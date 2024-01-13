@@ -20,7 +20,7 @@ export function FeedExpenses({ infiniteExpensesInitialData, isSettled }: FeedExp
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
-    isLoading: isLoadingExpenses,
+    isPending: isPendingExpenses,
     isError: isErrorExpenses,
   } = useInfiniteExpenses({ infiniteExpensesInitialData, isSettled });
 
@@ -30,7 +30,7 @@ export function FeedExpenses({ infiniteExpensesInitialData, isSettled }: FeedExp
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (isLoadingExpenses) return null;
+  if (isPendingExpenses) return null;
   if (isErrorExpenses) return null;
 
   const expenses = data?.pages.flatMap((page) => page.items);

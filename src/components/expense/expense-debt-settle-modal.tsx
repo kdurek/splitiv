@@ -33,7 +33,7 @@ interface ExpenseDebtSettleModalProps {
 export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: ExpenseDebtSettleModalProps) {
   const [open, { toggle, close }] = useDisclosure(false);
 
-  const { mutate: updateExpenseDebt, isLoading: isLoadingUpdateExpenseDebt } = useUpdateExpenseDebt();
+  const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = useUpdateExpenseDebt();
 
   const form = useForm<ExpensePaymentFormSchema>({
     defaultValues: {
@@ -88,7 +88,7 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
         </Form>
         <DialogFooter>
           <Button form="expense-payment-form">
-            {isLoadingUpdateExpenseDebt && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isPendingUpdateExpenseDebt && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Oddaj
           </Button>
         </DialogFooter>

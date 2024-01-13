@@ -45,7 +45,7 @@ export function ExpenseSettlementForm({
   paramUserDebts,
   currentUserDebts,
 }: ExpenseSettlementFormProps) {
-  const { mutate: settlement, isLoading: isLoadingSettleExpenseDebts } = useSettleExpenseDebts();
+  const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = useSettleExpenseDebts();
 
   const form = useForm<ExpenseSettlementFormSchema>({
     values: {
@@ -122,7 +122,7 @@ export function ExpenseSettlementForm({
           </div>
           <div className="flex items-center justify-end gap-4">
             <Button>
-              {isLoadingSettleExpenseDebts && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isPendingSettleExpenseDebts && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Rozlicz
             </Button>
           </div>

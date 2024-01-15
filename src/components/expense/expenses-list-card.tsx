@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { CircleDollarSign } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
@@ -78,5 +79,22 @@ export function ExpensesListCard({ id, status, name, amount, date }: ExpensesLis
         <div className="whitespace-nowrap text-sm text-muted-foreground">{amount.toFixed(2)} zł</div>
       </div>
     </button>
+  );
+}
+
+export function ExpensesListCardSkeleton() {
+  return (
+    <div className="w-full py-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-10 w-10 rounded-md" />
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-[150px]" />
+            <Skeleton className="h-4 w-[100px]" />
+          </div>
+        </div>
+        <Skeleton className="h-4 w-[50px]" />
+      </div>
+    </div>
   );
 }

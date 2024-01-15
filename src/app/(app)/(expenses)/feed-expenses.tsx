@@ -3,35 +3,25 @@
 import { useIntersection } from '@mantine/hooks';
 import { useEffect } from 'react';
 
-import { ExpensesList } from '@/components/expense/expenses-list';
+import { ExpensesList, ExpensesListSkeleton } from '@/components/expense/expenses-list';
 import { useInfiniteExpenses } from '@/hooks/use-infinite-expenses';
-import type { ExpenseListInfinite } from '@/trpc/shared';
 
 interface FeedExpensesProps {
-  infiniteExpensesInitialData: ExpenseListInfinite;
   isSettled?: 'fully' | 'partially';
 }
 
-export function FeedExpenses({ infiniteExpensesInitialData, isSettled }: FeedExpensesProps) {
+export function FeedExpenses({ isSettled }: FeedExpensesProps) {
   const { ref, entry } = useIntersection();
 
-  const {
-    data,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    isPending: isPendingExpenses,
-    isError: isErrorExpenses,
-  } = useInfiniteExpenses({ infiniteExpensesInitialData, isSettled });
+  const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = useInfiniteExpenses({
+    isSettled,
+  });
 
   useEffect(() => {
     if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  if (isPendingExpenses) return null;
-  if (isErrorExpenses) return null;
 
   const expenses = data?.pages.flatMap((page) => page.items);
 
@@ -45,4 +35,8 @@ export function FeedExpenses({ infiniteExpensesInitialData, isSettled }: FeedExp
       <div ref={ref} />
     </>
   );
+}
+
+export function FeedExpensesSkeleton() {
+  return <ExpensesListSkeleton count={10} />;
 }

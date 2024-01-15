@@ -1,6 +1,6 @@
 'use client';
 
-import { ExpensesListCard, getExpenseStatus } from '@/components/expense/expenses-list-card';
+import { ExpensesListCard, ExpensesListCardSkeleton, getExpenseStatus } from '@/components/expense/expenses-list-card';
 import { ExpenseList } from '@/trpc/shared';
 
 interface ExpenseListProps {
@@ -19,6 +19,16 @@ export function ExpensesList({ expenses }: ExpenseListProps) {
           amount={Number(expense.amount)}
           date={expense.createdAt}
         />
+      ))}
+    </div>
+  );
+}
+
+export function ExpensesListSkeleton({ count = 10 }) {
+  return (
+    <div className="divide-y">
+      {Array.from({ length: count }).map((_, idx) => (
+        <ExpensesListCardSkeleton key={idx} />
       ))}
     </div>
   );

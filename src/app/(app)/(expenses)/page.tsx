@@ -1,8 +1,9 @@
 import { Archive } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
-import { FeedExpenses } from '@/app/(app)/(expenses)/feed-expenses';
+import { FeedExpenses, FeedExpensesSkeleton } from '@/app/(app)/(expenses)/feed-expenses';
 import { UserStats } from '@/app/(app)/(expenses)/user-stats';
 import { Section } from '@/components/layout/section';
 import { buttonVariants } from '@/components/ui/button';
@@ -17,16 +18,14 @@ export default async function ExpensesPage() {
     redirect('/logowanie');
   }
 
-  const infiniteExpense = await api.expense.listInfinite.query({
-    limit: 10,
-    isSettled: 'partially',
-  });
   const group = await api.group.current.query();
 
   return (
     <Section title="Wydatki">
       <UserStats user={session.user} group={group} />
-      <FeedExpenses infiniteExpensesInitialData={infiniteExpense} isSettled="partially" />
+      <Suspense fallback={<FeedExpensesSkeleton />}>
+        <FeedExpenses isSettled="partially" />
+      </Suspense>
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
         <Archive className="mr-2 h-4 w-4" />
         Archiwum

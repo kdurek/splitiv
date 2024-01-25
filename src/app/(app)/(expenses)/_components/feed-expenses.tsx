@@ -3,8 +3,8 @@
 import { useIntersection } from '@mantine/hooks';
 import { useEffect } from 'react';
 
-import { ExpensesList, ExpensesListSkeleton } from '@/components/expense/expenses-list';
-import { useInfiniteExpenses } from '@/hooks/use-infinite-expenses';
+import { useInfiniteExpenses } from '@/app/_components/hooks/use-infinite-expenses';
+import { ExpensesList, ExpensesListSkeleton } from '@/app/(app)/(expenses)/_components/expenses-list';
 
 interface FeedExpensesProps {
   isSettled?: 'fully' | 'partially';

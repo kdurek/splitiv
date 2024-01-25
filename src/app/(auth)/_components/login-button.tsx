@@ -3,7 +3,7 @@
 import { LogIn } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/_components/ui/button';
 
 export function LoginButton() {
   return (

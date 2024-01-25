@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useChangeCurrentGroup } from '@/hooks/use-change-current-group';
-import { useCreateGroup } from '@/hooks/use-create-group';
+import { useChangeCurrentGroup } from '@/app/_components/hooks/use-change-current-group';
+import { useCreateGroup } from '@/app/_components/hooks/use-create-group';
+import { Button } from '@/app/_components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
+import { Input } from '@/app/_components/ui/input';
 import { createGroupFormSchema } from '@/lib/validations/group';
 
 type CreateGroupFormSchema = z.infer<typeof createGroupFormSchema>;

@@ -1,5 +1,6 @@
 'use client';
 
+import { useDeleteExpense } from '@/app/_components/hooks/use-delete-expense';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,9 +11,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { useDeleteExpense } from '@/hooks/use-delete-expense';
+} from '@/app/_components/ui/alert-dialog';
+import { Button } from '@/app/_components/ui/button';
 
 interface ExpenseDeleteModalProps {
   expenseId: string;

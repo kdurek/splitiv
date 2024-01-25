@@ -1,9 +1,9 @@
 import Decimal from 'decimal.js';
 import { redirect } from 'next/navigation';
 
-import { ExpensesList } from '@/components/expense/expenses-list';
-import { Section } from '@/components/layout/section';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Section } from '@/app/_components/layout/section';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/_components/ui/tabs';
+import { ExpensesList } from '@/app/(app)/(expenses)/_components/expenses-list';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

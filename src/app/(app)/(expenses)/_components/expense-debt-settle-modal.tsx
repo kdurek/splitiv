@@ -5,7 +5,9 @@ import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
+import { useDisclosure } from '@/app/_components/hooks/use-disclosure';
+import { useUpdateExpenseDebt } from '@/app/_components/hooks/use-update-expense-debt';
+import { Button } from '@/app/_components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -14,11 +16,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { NumberInput } from '@/components/ui/number-input';
-import { useDisclosure } from '@/hooks/use-disclosure';
-import { useUpdateExpenseDebt } from '@/hooks/use-update-expense-debt';
+} from '@/app/_components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/app/_components/ui/form';
+import { NumberInput } from '@/app/_components/ui/number-input';
 import { expensePaymentFormSchema } from '@/lib/validations/expense-payment';
 
 type ExpensePaymentFormSchema = z.infer<typeof expensePaymentFormSchema>;

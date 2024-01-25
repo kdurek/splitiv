@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { CircleDollarSign } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/app/_components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{

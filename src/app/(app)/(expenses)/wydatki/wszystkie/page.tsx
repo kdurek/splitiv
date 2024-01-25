@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import { UserBalance } from '@/app/(app)/(expenses)/wydatki/wszystkie/user-balance';
-import { Section } from '@/components/layout/section';
+import { Section } from '@/app/_components/layout/section';
+import { UserBalance } from '@/app/(app)/(expenses)/_components/user-balance';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

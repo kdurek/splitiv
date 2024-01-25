@@ -6,12 +6,12 @@ import { ChevronRight, Loader2 } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Heading } from '@/components/ui/heading';
-import { Label } from '@/components/ui/label';
-import { useSettleExpenseDebts } from '@/hooks/use-settle-expense-debts';
+import { useSettleExpenseDebts } from '@/app/_components/hooks/use-settle-expense-debts';
+import { Button } from '@/app/_components/ui/button';
+import { Checkbox } from '@/app/_components/ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
+import { Heading } from '@/app/_components/ui/heading';
+import { Label } from '@/app/_components/ui/label';
 import type { ExpenseDebtList, UserById } from '@/trpc/shared';
 
 const expenseSettlementFormSchema = z.object({

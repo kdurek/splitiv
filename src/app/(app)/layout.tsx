@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation';
 
-import { GroupSelect } from '@/app/(app)/(settings)/ustawienia/group-select';
-import { CreateGroupForm } from '@/app/(app)/create-group-form';
-import { GenderSelectForm } from '@/app/(app)/gender-select-form';
-import { MobileNav } from '@/components/layout/mobile-nav';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Separator } from '@/components/ui/separator';
+import { MobileNav } from '@/app/_components/layout/mobile-nav';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/app/_components/ui/collapsible';
+import { Separator } from '@/app/_components/ui/separator';
+import { CreateGroupForm } from '@/app/(app)/(settings)/_components/create-group-form';
+import { GenderSelectForm } from '@/app/(app)/(settings)/_components/gender-select-form';
+import { GroupSelect } from '@/app/(app)/(settings)/_components/group-select';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

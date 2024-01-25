@@ -7,15 +7,15 @@ import { Session } from 'next-auth';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { ExpenseFormMethods } from '@/app/(app)/(expenses)/expense-form-methods';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { NumberInput } from '@/components/ui/number-input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { useCreateExpense } from '@/hooks/use-create-expense';
-import { useUpdateExpense } from '@/hooks/use-update-expense';
+import { useCreateExpense } from '@/app/_components/hooks/use-create-expense';
+import { useUpdateExpense } from '@/app/_components/hooks/use-update-expense';
+import { Button } from '@/app/_components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
+import { Input } from '@/app/_components/ui/input';
+import { NumberInput } from '@/app/_components/ui/number-input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
+import { Textarea } from '@/app/_components/ui/textarea';
+import { ExpenseFormMethods } from '@/app/(app)/(expenses)/_components/expense-form-methods';
 import { expenseFormSchema } from '@/lib/validations/expense';
 import type { ExpenseById, GroupCurrent } from '@/trpc/shared';
 

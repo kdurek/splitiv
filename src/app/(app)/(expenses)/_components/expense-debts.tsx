@@ -1,7 +1,7 @@
 import { Square, XSquare } from 'lucide-react';
 
-import { ExpenseDebtSettleModal } from '@/components/expense/expense-debt-settle-modal';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/_components/ui/button';
+import { ExpenseDebtSettleModal } from '@/app/(app)/(expenses)/_components/expense-debt-settle-modal';
 import { cn } from '@/lib/utils';
 
 interface ExpensePayerCardProps {

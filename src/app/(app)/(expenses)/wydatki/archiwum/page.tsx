@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { FeedExpenses, FeedExpensesSkeleton } from '@/app/(app)/(expenses)/feed-expenses';
-import { Section } from '@/components/layout/section';
+import { Section } from '@/app/_components/layout/section';
+import { FeedExpenses, FeedExpensesSkeleton } from '@/app/(app)/(expenses)/_components/feed-expenses';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function ArchivePage() {

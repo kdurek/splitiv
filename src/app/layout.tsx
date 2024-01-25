@@ -8,7 +8,7 @@ import { Poppins } from 'next/font/google';
 import { headers } from 'next/headers';
 import Script from 'next/script';
 
-import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
+import { TailwindIndicator } from '@/app/_components/layout/tailwind-indicator';
 import { TRPCReactProvider } from '@/trpc/react';
 
 setDefaultOptions({

@@ -4,10 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useCreateExpenseNote } from '@/hooks/use-create-expense-note';
+import { useCreateExpenseNote } from '@/app/_components/hooks/use-create-expense-note';
+import { Button } from '@/app/_components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/app/_components/ui/form';
+import { Input } from '@/app/_components/ui/input';
 import { expenseNoteFormSchema } from '@/lib/validations/expense-note';
 
 type ExpenseNoteFormSchema = z.infer<typeof expenseNoteFormSchema>;

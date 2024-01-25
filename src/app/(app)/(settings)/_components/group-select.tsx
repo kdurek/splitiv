@@ -1,8 +1,8 @@
 'use client';
 
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useChangeCurrentGroup } from '@/hooks/use-change-current-group';
+import { useChangeCurrentGroup } from '@/app/_components/hooks/use-change-current-group';
+import { Label } from '@/app/_components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
 import { type GroupList } from '@/trpc/shared';
 
 interface GroupSelectProps {

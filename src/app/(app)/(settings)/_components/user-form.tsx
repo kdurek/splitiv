@@ -4,10 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useUpdateUser } from '@/hooks/use-update-user';
+import { useUpdateUser } from '@/app/_components/hooks/use-update-user';
+import { Button } from '@/app/_components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
+import { Input } from '@/app/_components/ui/input';
 import { updateUserFormSchema } from '@/lib/validations/user';
 import { UserById } from '@/trpc/shared';
 

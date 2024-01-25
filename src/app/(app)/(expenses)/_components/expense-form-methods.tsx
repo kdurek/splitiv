@@ -3,11 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { NumberInput } from '@/components/ui/number-input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/app/_components/ui/checkbox';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
+import { NumberInput } from '@/app/_components/ui/number-input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/_components/ui/tabs';
 import { expenseFormSchema } from '@/lib/validations/expense';
 
 function allocate(totalAmount: number | string, userCounts: number[]) {

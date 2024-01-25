@@ -3,10 +3,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { FeedExpenses, FeedExpensesSkeleton } from '@/app/(app)/(expenses)/feed-expenses';
-import { UserStats } from '@/app/(app)/(expenses)/user-stats';
-import { Section } from '@/components/layout/section';
-import { buttonVariants } from '@/components/ui/button';
+import { Section } from '@/app/_components/layout/section';
+import { buttonVariants } from '@/app/_components/ui/button';
+import { FeedExpenses, FeedExpensesSkeleton } from '@/app/(app)/(expenses)/_components/feed-expenses';
+import { UserStats } from '@/app/(app)/(expenses)/_components/user-stats';
 import { cn } from '@/lib/utils';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';

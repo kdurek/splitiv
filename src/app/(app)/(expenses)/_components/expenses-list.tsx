@@ -1,6 +1,10 @@
 'use client';
 
-import { ExpensesListCard, ExpensesListCardSkeleton, getExpenseStatus } from '@/components/expense/expenses-list-card';
+import {
+  ExpensesListCard,
+  ExpensesListCardSkeleton,
+  getExpenseStatus,
+} from '@/app/(app)/(expenses)/_components/expenses-list-card';
 import { ExpenseList } from '@/trpc/shared';
 
 interface ExpenseListProps {

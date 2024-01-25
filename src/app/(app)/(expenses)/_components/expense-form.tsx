@@ -3,9 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Session } from 'next-auth';
+import { type Session } from 'next-auth';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import { useCreateExpense } from '@/app/_components/hooks/use-create-expense';
 import { useUpdateExpense } from '@/app/_components/hooks/use-update-expense';
@@ -191,7 +191,7 @@ export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
 
         <div className="mt-6 flex justify-end gap-4">
           <Button>
-            {(isPendingCreateExpense || isPendingUpdateExpense) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {(isPendingCreateExpense || isPendingUpdateExpense) && <Loader2 className="mr-2 size-4 animate-spin" />}
             {expense ? 'Edytuj' : 'Dodaj'}
           </Button>
         </div>

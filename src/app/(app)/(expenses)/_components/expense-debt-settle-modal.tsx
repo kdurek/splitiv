@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import { useDisclosure } from '@/app/_components/hooks/use-disclosure';
 import { useUpdateExpenseDebt } from '@/app/_components/hooks/use-update-expense-debt';
@@ -88,7 +88,7 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
         </Form>
         <DialogFooter>
           <Button form="expense-payment-form">
-            {isPendingUpdateExpenseDebt && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isPendingUpdateExpenseDebt && <Loader2 className="mr-2 size-4 animate-spin" />}
             Oddaj
           </Button>
         </DialogFooter>

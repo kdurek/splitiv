@@ -27,7 +27,7 @@ export default async function ExpensesPage() {
         <FeedExpenses isSettled="partially" />
       </Suspense>
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
-        <Archive className="mr-2 h-4 w-4" />
+        <Archive className="mr-2 size-4" />
         Archiwum
       </Link>
     </Section>

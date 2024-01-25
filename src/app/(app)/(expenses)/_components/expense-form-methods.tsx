@@ -1,14 +1,14 @@
 import Decimal from 'decimal.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import { Checkbox } from '@/app/_components/ui/checkbox';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
 import { NumberInput } from '@/app/_components/ui/number-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/_components/ui/tabs';
-import { expenseFormSchema } from '@/lib/validations/expense';
+import { type expenseFormSchema } from '@/lib/validations/expense';
 
 function allocate(totalAmount: number | string, userCounts: number[]) {
   // Convert totalAmount to a Decimal object for precise calculations
@@ -201,7 +201,7 @@ export function ExpenseFormMethods() {
                 <div className="flex h-10 items-center gap-4">
                   <FormLabel>{`${debt.amount.toFixed(2)} zł`}</FormLabel>
                   <Checkbox
-                    className="h-6 w-6"
+                    className="size-6"
                     checked={equalSplit.includes(debt.id)}
                     onCheckedChange={(checked) => {
                       return checked

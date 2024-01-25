@@ -122,7 +122,7 @@ export function ExpenseSettlementForm({
           </div>
           <div className="flex items-center justify-end gap-4">
             <Button>
-              {isPendingSettleExpenseDebts && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isPendingSettleExpenseDebts && <Loader2 className="mr-2 size-4 animate-spin" />}
               Rozlicz
             </Button>
           </div>
@@ -144,7 +144,7 @@ export function ExpenseSettlementForm({
                       </FormLabel>
                       <FormControl>
                         <Checkbox
-                          className="h-6 w-6"
+                          className="size-6"
                           checked={field.value}
                           onCheckedChange={(checked) => field.onChange(!!checked)}
                         />

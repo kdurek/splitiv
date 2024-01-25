@@ -1,6 +1,6 @@
 'use client';
 
-import { Prisma } from '@prisma/client';
+import { type Prisma } from '@prisma/client';
 import { format } from 'date-fns';
 import { CircleDollarSign } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -87,7 +87,7 @@ export function ExpensesListCardSkeleton() {
     <div className="w-full py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Skeleton className="h-10 w-10 rounded-md" />
+          <Skeleton className="size-10 rounded-md" />
           <div className="space-y-3">
             <Skeleton className="h-4 w-[150px]" />
             <Skeleton className="h-4 w-[100px]" />

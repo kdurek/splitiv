@@ -47,7 +47,7 @@ export function FeedFilters({ group }: FeedFiltersProps) {
         <div>
           <CollapsibleTrigger asChild>
             <Button type="button" variant="outline" size="icon" className="text-gray-500">
-              {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              {open ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
             </Button>
           </CollapsibleTrigger>
         </div>
@@ -71,7 +71,7 @@ export function FeedFilters({ group }: FeedFiltersProps) {
             </Select>
             <div>
               <Button className="text-gray-500" variant="outline" size="icon" onClick={() => setPayerId('')}>
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             </div>
           </div>
@@ -93,7 +93,7 @@ export function FeedFilters({ group }: FeedFiltersProps) {
             </Select>
             <div>
               <Button className="text-gray-500" variant="outline" size="icon" onClick={() => setDebtorId('')}>
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             </div>
           </div>

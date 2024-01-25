@@ -57,7 +57,7 @@ export function ExpenseFormMethods() {
   const remainingAmount = Decimal.sub(form.watch('amount') || 0, usedAmount || 0);
 
   const divideByRatio = useCallback(() => {
-    trigger('debts');
+    void trigger('debts');
 
     const formAmount = getValues('amount').toFixed(2);
 
@@ -96,8 +96,8 @@ export function ExpenseFormMethods() {
     });
   }, [ratioSplit, getValues, setValue, trigger]);
 
-  const divideEqually = useCallback(() => {
-    trigger('debts');
+  const divideEqually = useCallback(async () => {
+    void trigger('debts');
 
     const formAmount = getValues('amount').toFixed(2);
 
@@ -110,7 +110,7 @@ export function ExpenseFormMethods() {
 
     const usersToAllocate = getValues('debts').filter((user) => equalSplit.includes(user.id));
 
-    const allocated = allocate(formAmount, new Array(usersToAllocate.length).fill(1));
+    const allocated = allocate(formAmount, new Array(usersToAllocate.length).fill(1).map(Number));
 
     const allocatedUsers = usersToAllocate.map((user, index) => ({
       id: user.id,
@@ -132,18 +132,18 @@ export function ExpenseFormMethods() {
       setValue(`debts.${index}.amount`, debt.amount);
     });
 
-    trigger('debts');
+    void trigger('debts');
   }, [equalSplit, getValues, setValue, trigger]);
 
   useEffect(() => {
     if (activeTab === 'equal') {
-      divideEqually();
+      void divideEqually();
     }
   }, [activeTab, divideEqually, equalSplit]);
 
   useEffect(() => {
     if (activeTab === 'ratio') {
-      divideByRatio();
+      void divideByRatio();
     }
   }, [activeTab, divideByRatio, ratioSplit]);
 
@@ -154,10 +154,10 @@ export function ExpenseFormMethods() {
       return;
     }
     if (activeTab === 'equal') {
-      divideEqually();
+      void divideEqually();
     }
     if (activeTab === 'ratio') {
-      divideByRatio();
+      void divideByRatio();
     }
   }, [activeTab, divideByRatio, divideEqually, amountWatch]);
 

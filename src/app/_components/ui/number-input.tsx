@@ -29,15 +29,15 @@ const noClampOnBlur = false;
 const decimalSeparator = ',';
 const removeTrailingZeros = false;
 
-const formatter = (value: string | ''): string => value || '';
-const parser = (value: string | ''): string => {
+const formatter = (value: string): string => value || '';
+const parser = (value: string): string => {
   if (value === '-') {
     return value;
   }
 
   let tempNum = value;
 
-  if (tempNum[0] === '.') {
+  if (tempNum.startsWith('.')) {
     tempNum = `0${value}`;
   }
 
@@ -76,7 +76,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       return formatter(parsedStr);
     };
 
-    const parseNum = (val: string): string | '' => {
+    const parseNum = (val: string): string => {
       let num = val;
 
       if (decimalSeparator) {
@@ -135,7 +135,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
      */
     const processInputValue = (newInputValue: string) => {
       let normalizedInputValue = newInputValue;
-      if (normalizedInputValue[0] === `${decimalSeparator}` || normalizedInputValue[0] === '.') {
+      if (normalizedInputValue.startsWith(`${decimalSeparator}`) || normalizedInputValue.startsWith('.')) {
         normalizedInputValue = `0${normalizedInputValue}`;
       }
 

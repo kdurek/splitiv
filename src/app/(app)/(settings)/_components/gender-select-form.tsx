@@ -44,8 +44,8 @@ export function GenderSelectForm({ userId }: GenderSelectFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={Gender['MALE']}>Mężczyzna</SelectItem>
-                  <SelectItem value={Gender['FEMALE']}>Kobieta</SelectItem>
+                  <SelectItem value={Gender.MALE}>Mężczyzna</SelectItem>
+                  <SelectItem value={Gender.FEMALE}>Kobieta</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

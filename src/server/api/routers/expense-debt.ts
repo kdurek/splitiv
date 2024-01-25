@@ -139,7 +139,7 @@ export const expenseDebtRouter = createTRPCRouter({
               data: {
                 expenseId: debt.expense.id,
                 content: `${debt.debtor.name} ${
-                  debt.debtor.gender === Gender['MALE'] ? 'oddał' : 'oddała'
+                  debt.debtor.gender === Gender.MALE ? 'oddał' : 'oddała'
                 } ${Decimal.sub(debt.settled, previousDebt.settled).toFixed(2)} zł`,
               },
             });

@@ -2,10 +2,10 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
-import { useDisclosure } from '@/app/_components/hooks/use-disclosure';
 import { useUpdateExpenseDebt } from '@/app/_components/hooks/use-update-expense-debt';
 import { Button } from '@/app/_components/ui/button';
 import {
@@ -31,7 +31,7 @@ interface ExpenseDebtSettleModalProps {
 }
 
 export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: ExpenseDebtSettleModalProps) {
-  const [open, { toggle, close }] = useDisclosure(false);
+  const [open, setOpen] = useState(false);
 
   const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = useUpdateExpenseDebt();
 
@@ -52,7 +52,7 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
       },
       {
         onSuccess() {
-          close();
+          setOpen(false);
           form.reset();
         },
         onError(error) {
@@ -63,7 +63,7 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
   };
 
   return (
-    <Dialog open={open} onOpenChange={toggle}>
+    <Dialog open={open} onOpenChange={(open) => setOpen(!open)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

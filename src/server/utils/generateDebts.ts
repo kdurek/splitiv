@@ -53,7 +53,7 @@ function reduceDebts(debts: IDebt[]) {
   const reducedDebts: IDebt[] = [];
 
   Object.keys(debtMap).forEach((fromId) => {
-    Object.keys(debtMap[fromId] as Record<string, Decimal>).forEach((toId) => {
+    Object.keys(debtMap[fromId]!).forEach((toId) => {
       const amount = debtMap[fromId]![toId];
       if (amount && amount.gt(0)) {
         reducedDebts.push({

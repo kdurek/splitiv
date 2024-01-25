@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js';
 import { expect, test } from 'vitest';
 
-import { DebtWithExpense, generateBalances, UserBalance } from './generateBalances';
+import { type DebtWithExpense, generateBalances, type UserBalance } from './generateBalances';
 
 test('simple generateBalances', () => {
   const debts: DebtWithExpense[] = [

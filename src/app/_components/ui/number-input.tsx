@@ -5,7 +5,7 @@
 import { clamp } from '@mantine/hooks';
 import * as React from 'react';
 
-import { Input, InputProps } from '@/app/_components/ui/input';
+import { Input, type InputProps } from '@/app/_components/ui/input';
 
 export interface NumberInputProps extends Omit<InputProps, 'onChange' | 'value'> {
   /** Called when value changes */

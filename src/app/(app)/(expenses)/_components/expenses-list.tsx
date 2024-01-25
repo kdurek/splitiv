@@ -5,7 +5,7 @@ import {
   ExpensesListCardSkeleton,
   getExpenseStatus,
 } from '@/app/(app)/(expenses)/_components/expenses-list-card';
-import { ExpenseList } from '@/trpc/shared';
+import { type ExpenseList } from '@/trpc/shared';
 
 interface ExpenseListProps {
   expenses: ExpenseList;

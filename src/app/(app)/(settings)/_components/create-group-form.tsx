@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import { useChangeCurrentGroup } from '@/app/_components/hooks/use-change-current-group';
 import { useCreateGroup } from '@/app/_components/hooks/use-create-group';

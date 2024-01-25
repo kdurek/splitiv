@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import { useCreateExpenseNote } from '@/app/_components/hooks/use-create-expense-note';
 import { Button } from '@/app/_components/ui/button';

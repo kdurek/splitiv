@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Session } from 'next-auth';
+import { type Session } from 'next-auth';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/app/_components/ui/accordion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/_components/ui/avatar';

@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender } from '@prisma/client';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import { useUpdateUser } from '@/app/_components/hooks/use-update-user';
 import { Button } from '@/app/_components/ui/button';

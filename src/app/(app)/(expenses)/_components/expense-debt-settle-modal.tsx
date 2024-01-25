@@ -63,7 +63,7 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => setOpen(!open)}>
+    <Dialog open={open} onOpenChange={() => setOpen(!open)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

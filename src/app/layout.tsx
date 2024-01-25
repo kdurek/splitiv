@@ -59,8 +59,8 @@ const dataWebsiteId =
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl" className={`font-sans ${poppins.variable}`}>
-      <body>
+    <html lang="pl">
+      <body className={`font-sans ${poppins.variable}`}>
         <TRPCReactProvider headers={headers()}>
           {children}
           <TailwindIndicator />

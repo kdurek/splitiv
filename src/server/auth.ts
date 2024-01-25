@@ -3,7 +3,7 @@ import type { Gender } from '@prisma/client';
 import { type DefaultSession, type DefaultUser, getServerSession, type NextAuthOptions } from 'next-auth';
 import GoogleProvider, { type GoogleProfile } from 'next-auth/providers/google';
 
-import { env } from '@/env.mjs';
+import { env } from '@/env';
 import { db } from '@/server/db';
 
 /**

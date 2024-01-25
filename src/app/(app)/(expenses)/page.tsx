@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 
 import { Section } from '@/app/_components/layout/section';
 import { buttonVariants } from '@/app/_components/ui/button';
-import { FeedExpenses, FeedExpensesSkeleton } from '@/app/(app)/(expenses)/_components/feed-expenses';
+import { ExpensesDashboard, ExpensesDashboardSkeleton } from '@/app/(app)/(expenses)/_components/expenses-dashboard';
 import { UserStats } from '@/app/(app)/(expenses)/_components/user-stats';
 import { cn } from '@/lib/utils';
 import { getServerAuthSession } from '@/server/auth';
@@ -23,8 +23,8 @@ export default async function ExpensesPage() {
   return (
     <Section title="Wydatki">
       <UserStats user={session.user} group={group} />
-      <Suspense fallback={<FeedExpensesSkeleton />}>
-        <FeedExpenses isSettled="partially" />
+      <Suspense fallback={<ExpensesDashboardSkeleton />}>
+        <ExpensesDashboard />
       </Suspense>
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
         <Archive className="mr-2 size-4" />

@@ -1,14 +1,20 @@
 'use client';
 
+import { type Prisma } from '@prisma/client';
+
 import {
   ExpensesListCard,
   ExpensesListCardSkeleton,
   getExpenseStatus,
 } from '@/app/(app)/(expenses)/_components/expenses-list-card';
-import { type ExpenseList } from '@/trpc/shared';
 
+type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
+  include: {
+    debts: true;
+  };
+}>;
 interface ExpenseListProps {
-  expenses: ExpenseList;
+  expenses: ExpenseWithDebts[];
 }
 
 export function ExpensesList({ expenses }: ExpenseListProps) {

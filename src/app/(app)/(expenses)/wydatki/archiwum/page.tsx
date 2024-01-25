@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { Section } from '@/app/_components/layout/section';
-import { FeedExpenses, FeedExpensesSkeleton } from '@/app/(app)/(expenses)/_components/feed-expenses';
+import { ExpensesArchive, ExpensesArchiveSkeleton } from '@/app/(app)/(expenses)/_components/expenses-archive';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function ArchivePage() {
@@ -14,8 +14,8 @@ export default async function ArchivePage() {
 
   return (
     <Section title="Archiwum">
-      <Suspense fallback={<FeedExpensesSkeleton />}>
-        <FeedExpenses isSettled="fully" />
+      <Suspense fallback={<ExpensesArchiveSkeleton />}>
+        <ExpensesArchive />
       </Suspense>
     </Section>
   );

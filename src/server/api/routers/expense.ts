@@ -3,43 +3,11 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseRouter = createTRPCRouter({
-  list: protectedProcedure
-    .input(
-      z.object({
-        payerId: z.string().optional(),
-        debtorId: z.string().optional(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      return ctx.db.expense.findMany({
-        where: {
-          groupId: ctx.session.activeGroupId,
-          payerId: input.payerId ?? undefined,
-          debts: {
-            some: {
-              debtorId: input.debtorId ?? undefined,
-            },
-          },
-        },
-        include: {
-          debts: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-    }),
-
-  listInfinite: protectedProcedure
+  getDashboard: protectedProcedure
     .input(
       z.object({
         limit: z.number(),
         cursor: z.string().nullish(),
-        name: z.string().optional(),
-        description: z.string().optional(),
-        payerId: z.string().optional(),
-        debtorId: z.string().optional(),
-        isSettled: z.enum(['fully', 'partially']).optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -50,29 +18,81 @@ export const expenseRouter = createTRPCRouter({
           groupId: ctx.session.activeGroupId,
           OR: [
             {
-              name: {
-                contains: input.name || '',
-                mode: 'insensitive',
-              },
+              payerId: ctx.session.user.id,
             },
             {
-              description: {
-                contains: input.description || '',
-                mode: 'insensitive',
+              debts: {
+                some: {
+                  debtorId: ctx.session.user.id,
+                },
               },
             },
           ],
-          payerId: input.payerId || undefined,
           debts: {
             some: {
-              debtorId: input.debtorId || undefined,
               settled: {
-                lt: input.isSettled === 'partially' ? ctx.db.expenseDebt.fields.amount : undefined,
+                lt: ctx.db.expenseDebt.fields.amount,
               },
             },
+          },
+        },
+        include: {
+          payer: true,
+          debts: {
+            include: {
+              expense: {
+                select: {
+                  payerId: true,
+                },
+              },
+              debtor: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+      let nextCursor: typeof input.cursor | undefined;
+      if (items.length > input.limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+
+  getArchived: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const items = await ctx.db.expense.findMany({
+        take: input.limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        where: {
+          groupId: ctx.session.activeGroupId,
+          OR: [
+            {
+              payerId: ctx.session.user.id,
+            },
+            {
+              debts: {
+                some: {
+                  debtorId: ctx.session.user.id,
+                },
+              },
+            },
+          ],
+          debts: {
             every: {
               settled: {
-                equals: input.isSettled === 'fully' ? ctx.db.expenseDebt.fields.amount : undefined,
+                equals: ctx.db.expenseDebt.fields.amount,
               },
             },
           },

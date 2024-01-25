@@ -3,19 +3,20 @@
 import { useIntersection } from '@mantine/hooks';
 import { useEffect } from 'react';
 
-import { useInfiniteExpenses } from '@/app/_components/hooks/use-infinite-expenses';
 import { ExpensesList, ExpensesListSkeleton } from '@/app/(app)/(expenses)/_components/expenses-list';
+import { api } from '@/trpc/react';
 
-interface FeedExpensesProps {
-  isSettled?: 'fully' | 'partially';
-}
-
-export function FeedExpenses({ isSettled }: FeedExpensesProps) {
+export function ExpensesDashboard() {
   const { ref, entry } = useIntersection();
 
-  const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = useInfiniteExpenses({
-    isSettled,
-  });
+  const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.getDashboard.useSuspenseInfiniteQuery(
+    {
+      limit: 10,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
 
   useEffect(() => {
     if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -37,6 +38,6 @@ export function FeedExpenses({ isSettled }: FeedExpensesProps) {
   );
 }
 
-export function FeedExpensesSkeleton() {
+export function ExpensesDashboardSkeleton() {
   return <ExpensesListSkeleton count={10} />;
 }

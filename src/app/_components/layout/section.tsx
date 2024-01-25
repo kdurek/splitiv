@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 
+import FullScreenLoading from '@/app/_components/layout/loading';
 import { Heading } from '@/app/_components/ui/heading';
 
 interface SectionProps {
@@ -9,9 +10,13 @@ interface SectionProps {
 
 export function Section({ title, children }: SectionProps) {
   return (
-    <>
-      <Heading variant="h1">{title}</Heading>
-      <section className="mt-4">{children}</section>
-    </>
+    <div>
+      <Heading variant="h1" className="p-4">
+        {title}
+      </Heading>
+      <section className="p-4 pt-0">
+        <Suspense fallback={<FullScreenLoading />}>{children}</Suspense>
+      </section>
+    </div>
   );
 }

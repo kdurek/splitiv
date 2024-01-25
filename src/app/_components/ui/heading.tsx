@@ -17,13 +17,11 @@ const headingVariants = cva('', {
   },
 });
 
-export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement>, VariantProps<typeof headingVariants> {
-  variant?: 'h1' | 'h2' | 'h3' | 'p';
-}
+export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement>, VariantProps<typeof headingVariants> {}
 
-const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(({ className, variant = 'p', ...props }, ref) => {
-  const Element = variant;
-  return <Element className={cn(headingVariants({ variant }), className)} ref={ref} {...props} />;
+const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(({ className, variant, ...props }, ref) => {
+  const Comp = variant ?? 'p';
+  return <Comp className={cn(headingVariants({ variant, className }))} ref={ref} {...props} />;
 });
 Heading.displayName = 'Heading';
 

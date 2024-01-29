@@ -9,7 +9,9 @@ const NumberInput = React.forwardRef<HTMLInputElement, InputNumberProps>(({ onCl
     onClick?.(e);
   };
 
-  return <InputNumber ref={ref} precision={2} decimalSeparator="," onClick={handleClick} {...props} />;
+  return (
+    <InputNumber ref={ref} inputMode="decimal" precision={2} decimalSeparator="," onClick={handleClick} {...props} />
+  );
 });
 NumberInput.displayName = 'NumberInput';
 

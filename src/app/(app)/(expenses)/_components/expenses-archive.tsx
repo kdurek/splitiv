@@ -1,13 +1,18 @@
 'use client';
 
-import { useIntersection } from '@mantine/hooks';
-import { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useIntersection } from 'react-use';
 
 import { ExpensesList, ExpensesListSkeleton } from '@/app/(app)/(expenses)/_components/expenses-list';
 import { api } from '@/trpc/react';
 
 export function ExpensesArchive() {
-  const { ref, entry } = useIntersection();
+  const intersectionRef = useRef(null);
+  const intersection = useIntersection(intersectionRef, {
+    root: null,
+    rootMargin: '0px',
+    threshold: 1,
+  });
 
   const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.getArchived.useSuspenseInfiniteQuery(
     {
@@ -19,10 +24,10 @@ export function ExpensesArchive() {
   );
 
   useEffect(() => {
-    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+    if (intersection?.isIntersecting && hasNextPage && !isFetchingNextPage) {
       void fetchNextPage();
     }
-  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [intersection?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const expenses = data?.pages.flatMap((page) => page.items);
 
@@ -33,7 +38,7 @@ export function ExpensesArchive() {
   return (
     <>
       <ExpensesList expenses={expenses} />
-      <div ref={ref} />
+      <div ref={intersectionRef} />
     </>
   );
 }

@@ -2,10 +2,10 @@
 
 'use client';
 
-import { clamp } from '@mantine/hooks';
 import * as React from 'react';
 
 import { Input, type InputProps } from '@/app/_components/ui/input';
+import { clamp } from '@/lib/utils';
 
 export interface NumberInputProps extends Omit<InputProps, 'onChange' | 'value'> {
   /** Called when value changes */

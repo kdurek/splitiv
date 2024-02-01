@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { type z } from 'zod';
 
 import { useUpdateExpenseDebt } from '@/app/_components/hooks/use-update-expense-debt';
@@ -52,11 +53,13 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
       },
       {
         onSuccess() {
+          toast.success('Pomyślnie oddano kwotę');
           setOpen(false);
           form.reset();
         },
         onError(error) {
           form.setError('amount', { message: error.shape?.message });
+          toast.error('Nie udało się oddać kwoty');
         },
       },
     );

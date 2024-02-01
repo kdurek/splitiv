@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { type Session } from 'next-auth';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { type z } from 'zod';
 
 import { useCreateExpense } from '@/app/_components/hooks/use-create-expense';
@@ -86,6 +87,7 @@ export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
         },
         {
           onSuccess() {
+            toast.success('Pomyślnie zaktualizowano wydatek');
             router.push('/');
           },
         },
@@ -101,6 +103,7 @@ export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
         },
         {
           onSuccess() {
+            toast.success('Pomyślnie dodano wydatek');
             router.push('/');
           },
         },

@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { type z } from 'zod';
 
 import { useCreateExpenseNote } from '@/app/_components/hooks/use-create-expense-note';
@@ -31,6 +32,7 @@ export function ExpenseNoteForm({ expenseId }: ExpenseNoteFormProps) {
       { expenseId, content: values.content },
       {
         onSuccess() {
+          toast.success('Pomyślnie dodano notatkę');
           form.reset();
         },
       },

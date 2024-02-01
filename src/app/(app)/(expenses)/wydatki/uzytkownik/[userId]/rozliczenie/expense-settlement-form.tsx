@@ -3,15 +3,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Decimal from 'decimal.js';
 import { ChevronRight, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { useSettleExpenseDebts } from '@/app/_components/hooks/use-settle-expense-debts';
 import { Button } from '@/app/_components/ui/button';
 import { Checkbox } from '@/app/_components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
 import { Heading } from '@/app/_components/ui/heading';
 import { Label } from '@/app/_components/ui/label';
+import { api } from '@/trpc/react';
 import type { ExpenseDebtList, UserById } from '@/trpc/shared';
 
 const expenseSettlementFormSchema = z.object({
@@ -45,7 +47,8 @@ export function ExpenseSettlementForm({
   paramUserDebts,
   currentUserDebts,
 }: ExpenseSettlementFormProps) {
-  const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = useSettleExpenseDebts();
+  const router = useRouter();
+  const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = api.expenseDebt.settle.useMutation();
 
   const form = useForm<ExpenseSettlementFormSchema>({
     values: {
@@ -101,9 +104,17 @@ export function ExpenseSettlementForm({
         };
       });
 
-    settlement({
-      expenseDebts,
-    });
+    settlement(
+      {
+        expenseDebts,
+      },
+      {
+        onSuccess() {
+          toast.success('Pomyślnie rozliczono długi');
+          router.refresh();
+        },
+      },
+    );
   };
 
   return (

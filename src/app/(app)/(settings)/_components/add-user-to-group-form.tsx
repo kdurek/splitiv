@@ -1,13 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useAddUserToGroup } from '@/app/_components/hooks/use-add-user-to-group';
 import { Button } from '@/app/_components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/app/_components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
+import { api } from '@/trpc/react';
 import type { UserList } from '@/trpc/shared';
 
 const addUserToGroupFormSchema = z.object({
@@ -21,14 +22,22 @@ interface AddUserToGroupFormProps {
 }
 
 export function AddUserToGroupForm({ users }: AddUserToGroupFormProps) {
-  const { mutate: addUserToGroup } = useAddUserToGroup();
+  const router = useRouter();
+  const { mutate: addUserToGroup } = api.group.addUser.useMutation();
 
   const form = useForm<AddUserToGroupFormSchema>({
     resolver: zodResolver(addUserToGroupFormSchema),
   });
 
   const handleAddUserToGroup = (values: AddUserToGroupFormSchema) => {
-    addUserToGroup({ userId: values.userId });
+    addUserToGroup(
+      { userId: values.userId },
+      {
+        onSuccess() {
+          router.refresh();
+        },
+      },
+    );
   };
 
   return (

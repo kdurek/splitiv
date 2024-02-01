@@ -28,8 +28,8 @@ function UserDebts({ member, members, debts, session }: UserDebtsProps) {
   const userGets = debts.filter((debt) => debt.toId === member.id);
   const getUserFirstName = (userId: string) => members.find((user) => user.id === userId)?.name?.split(' ')[0];
 
-  const hasDebts = userDebts.some((debt) => debt.toId === session?.user.id);
-  const hasGets = userGets.some((debt) => debt.fromId === session?.user.id);
+  const hasDebts = userDebts.some((debt) => debt.toId === session.user.id);
+  const hasGets = userGets.some((debt) => debt.fromId === session.user.id);
 
   if (!session) {
     return null;

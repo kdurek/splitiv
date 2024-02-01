@@ -1,20 +1,32 @@
 'use client';
 
-import { useChangeCurrentGroup } from '@/app/_components/hooks/use-change-current-group';
+import { useRouter } from 'next/navigation';
+import { type Session } from 'next-auth';
+import { toast } from 'sonner';
+
 import { Label } from '@/app/_components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
-import { type GroupList } from '@/trpc/shared';
+import { api } from '@/trpc/react';
 
 interface GroupSelectProps {
-  activeGroupId?: string;
-  groups: GroupList;
+  session: Session;
 }
 
-export function GroupSelect({ activeGroupId, groups }: GroupSelectProps) {
-  const { mutate: changeActiveGroup } = useChangeCurrentGroup();
+export function GroupSelect({ session }: GroupSelectProps) {
+  const router = useRouter();
+  const [groups] = api.group.list.useSuspenseQuery();
+  const { mutate: changeActiveGroup } = api.group.changeCurrent.useMutation();
 
   const handleGroupSelect = (value: string) => {
-    changeActiveGroup({ groupId: value });
+    changeActiveGroup(
+      { groupId: value },
+      {
+        onSuccess() {
+          toast.success('Pomyślnie wybrano grupę');
+          router.refresh();
+        },
+      },
+    );
   };
 
   if (groups.length === 0) {
@@ -29,7 +41,7 @@ export function GroupSelect({ activeGroupId, groups }: GroupSelectProps) {
   return (
     <div className="space-y-2">
       <Label>Wybierz grupę aby przejść dalej</Label>
-      <Select defaultValue={activeGroupId} onValueChange={handleGroupSelect}>
+      <Select defaultValue={session.activeGroupId} onValueChange={handleGroupSelect}>
         <SelectTrigger>
           <SelectValue placeholder="Wybierz grupę" />
         </SelectTrigger>

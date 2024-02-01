@@ -9,7 +9,6 @@ import { ExpensesDashboard, ExpensesDashboardSkeleton } from '@/app/(app)/(expen
 import { UserStats } from '@/app/(app)/(expenses)/_components/user-stats';
 import { cn } from '@/lib/utils';
 import { getServerAuthSession } from '@/server/auth';
-import { api } from '@/trpc/server';
 
 export default async function ExpensesPage() {
   const session = await getServerAuthSession();
@@ -18,11 +17,9 @@ export default async function ExpensesPage() {
     redirect('/logowanie');
   }
 
-  const group = await api.group.current.query();
-
   return (
     <Section title="Wydatki">
-      <UserStats user={session.user} group={group} />
+      <UserStats session={session} />
       <Suspense fallback={<ExpensesDashboardSkeleton />}>
         <ExpensesDashboard />
       </Suspense>

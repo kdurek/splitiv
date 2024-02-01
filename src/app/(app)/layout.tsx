@@ -7,7 +7,6 @@ import { CreateGroupForm } from '@/app/(app)/(settings)/_components/create-group
 import { GenderSelectForm } from '@/app/(app)/(settings)/_components/gender-select-form';
 import { GroupSelect } from '@/app/(app)/(settings)/_components/group-select';
 import { getServerAuthSession } from '@/server/auth';
-import { api } from '@/trpc/server';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerAuthSession();
@@ -24,12 +23,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     );
   }
 
-  if (!session?.activeGroupId) {
-    const groups = await api.group.list.query();
-
+  if (!session.activeGroupId) {
     return (
       <div className="space-y-4 p-4">
-        <GroupSelect groups={groups} />
+        <GroupSelect session={session} />
         <Separator />
         <Collapsible>
           <CollapsibleTrigger className="w-full text-center text-muted-foreground">Stwórz grupę</CollapsibleTrigger>

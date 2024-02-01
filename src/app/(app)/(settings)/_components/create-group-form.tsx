@@ -1,31 +1,50 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { type z } from 'zod';
 
-import { useChangeCurrentGroup } from '@/app/_components/hooks/use-change-current-group';
-import { useCreateGroup } from '@/app/_components/hooks/use-create-group';
 import { Button } from '@/app/_components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
 import { Input } from '@/app/_components/ui/input';
 import { createGroupFormSchema } from '@/lib/validations/group';
+import { api } from '@/trpc/react';
 
 type CreateGroupFormSchema = z.infer<typeof createGroupFormSchema>;
 
 export function CreateGroupForm() {
+  const router = useRouter();
+  const { mutateAsync: createGroup } = api.group.create.useMutation();
+  const { mutate: changeActiveGroup } = api.group.changeCurrent.useMutation();
+
   const form = useForm<CreateGroupFormSchema>({
     resolver: zodResolver(createGroupFormSchema),
     defaultValues: {
       name: '',
     },
   });
-  const { mutateAsync: createGroup } = useCreateGroup();
-  const { mutate: changeActiveGroup } = useChangeCurrentGroup();
 
   const handleCreateGroup = async (values: CreateGroupFormSchema) => {
-    const createdGroup = await createGroup({ name: values.name });
-    changeActiveGroup({ groupId: createdGroup.id });
+    const createdGroup = await createGroup(
+      { name: values.name },
+      {
+        onSuccess() {
+          toast.success('Pomyślnie utworzono grupę');
+          router.refresh();
+        },
+      },
+    );
+    changeActiveGroup(
+      { groupId: createdGroup.id },
+      {
+        onSuccess() {
+          toast.success('Pomyślnie zmieniono grupę');
+          router.refresh();
+        },
+      },
+    );
   };
 
   return (

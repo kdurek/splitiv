@@ -18,7 +18,6 @@ export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) 
     redirect('/logowanie');
   }
 
-  const group = await api.group.current.query();
   const expense = await api.expense.byId.query({ id: params.expenseId });
 
   if (!expense) {
@@ -27,7 +26,7 @@ export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) 
 
   return (
     <Section title="Edytuj wydatek">
-      <ExpenseForm group={group} session={session} expense={expense} />
+      <ExpenseForm session={session} expense={expense} />
     </Section>
   );
 }

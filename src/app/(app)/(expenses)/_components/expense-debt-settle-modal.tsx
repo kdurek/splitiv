@@ -2,12 +2,12 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
 
-import { useUpdateExpenseDebt } from '@/app/_components/hooks/use-update-expense-debt';
 import { Button } from '@/app/_components/ui/button';
 import {
   Dialog,
@@ -21,6 +21,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/app/_components/ui/form';
 import { NumberInput } from '@/app/_components/ui/number-input';
 import { expensePaymentFormSchema } from '@/lib/validations/expense-payment';
+import { api } from '@/trpc/react';
 
 type ExpensePaymentFormSchema = z.infer<typeof expensePaymentFormSchema>;
 
@@ -32,9 +33,10 @@ interface ExpenseDebtSettleModalProps {
 }
 
 export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: ExpenseDebtSettleModalProps) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = api.expenseDebt.update.useMutation();
 
-  const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = useUpdateExpenseDebt();
+  const [open, setOpen] = useState(false);
 
   const form = useForm<ExpensePaymentFormSchema>({
     defaultValues: {
@@ -56,6 +58,7 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
           toast.success('Pomyślnie oddano kwotę');
           setOpen(false);
           form.reset();
+          router.refresh();
         },
         onError(error) {
           form.setError('amount', { message: error.shape?.message });

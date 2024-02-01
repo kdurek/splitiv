@@ -8,8 +8,6 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
 
-import { useCreateExpense } from '@/app/_components/hooks/use-create-expense';
-import { useUpdateExpense } from '@/app/_components/hooks/use-update-expense';
 import { Button } from '@/app/_components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
 import { Input } from '@/app/_components/ui/input';
@@ -18,47 +16,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/app/_components/ui/textarea';
 import { ExpenseFormMethods } from '@/app/(app)/(expenses)/_components/expense-form-methods';
 import { expenseFormSchema } from '@/lib/validations/expense';
-import type { ExpenseById, GroupCurrent } from '@/trpc/shared';
+import { api } from '@/trpc/react';
+import type { ExpenseById } from '@/trpc/shared';
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 interface ExpenseFormProps {
-  group: GroupCurrent;
   session: Session;
   expense?: ExpenseById;
 }
 
-export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
+export function ExpenseForm({ session, expense }: ExpenseFormProps) {
   const router = useRouter();
-  const { mutate: createExpense, isPending: isPendingCreateExpense } = useCreateExpense();
-  const { mutate: updateExpense, isPending: isPendingUpdateExpense } = useUpdateExpense();
-
-  const defaultValues = expense
-    ? {
-        name: expense.name || '',
-        description: expense.description || '',
-        amount: Number(expense.amount) || 0,
-        payer: expense.payerId || '',
-        debts: group.members.map((member) => ({
-          id: member.id,
-          name: member.name || '',
-          amount: Number(expense.debts.find((debt) => debt.debtorId === member.id)?.amount) || 0,
-        })),
-      }
-    : {
-        name: '',
-        description: '',
-        amount: 0,
-        payer: session.user.id,
-        debts: group.members.map((member) => ({
-          id: member.id,
-          name: member.name || '',
-          amount: 0,
-        })),
-      };
+  const [group] = api.group.current.useSuspenseQuery();
+  const { mutate: createExpense, isPending: isPendingCreateExpense } = api.expense.create.useMutation();
+  const { mutate: updateExpense, isPending: isPendingUpdateExpense } = api.expense.update.useMutation();
 
   const form = useForm({
-    defaultValues,
+    defaultValues: {
+      name: expense?.name ?? '',
+      description: expense?.description ?? '',
+      amount: Number(expense?.amount) || 0,
+      payer: expense?.payerId ?? session.user.id ?? '',
+      debts: group.members.map((member) => ({
+        id: member.id,
+        name: member.name ?? '',
+        amount: Number(expense?.debts.find((debt) => debt.debtorId === member.id)?.amount) || 0,
+      })),
+    },
     resolver: zodResolver(expenseFormSchema),
   });
 
@@ -86,9 +71,10 @@ export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
           // debts: formattedDebts,
         },
         {
-          onSuccess() {
+          onSuccess(data) {
             toast.success('Pomyślnie zaktualizowano wydatek');
-            router.push('/');
+            router.push(`/wydatki/${data.id}`);
+            router.refresh();
           },
         },
       );
@@ -105,6 +91,7 @@ export function ExpenseForm({ group, session, expense }: ExpenseFormProps) {
           onSuccess() {
             toast.success('Pomyślnie dodano wydatek');
             router.push('/');
+            router.refresh();
           },
         },
       );

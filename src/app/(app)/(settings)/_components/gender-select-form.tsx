@@ -2,14 +2,16 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { type z } from 'zod';
 
-import { useUpdateUser } from '@/app/_components/hooks/use-update-user';
 import { Button } from '@/app/_components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
 import { genderSelectFormSchema } from '@/lib/validations/user';
+import { api } from '@/trpc/react';
 
 type GenderSelectFormSchema = z.infer<typeof genderSelectFormSchema>;
 
@@ -18,14 +20,24 @@ interface GenderSelectFormProps {
 }
 
 export function GenderSelectForm({ userId }: GenderSelectFormProps) {
+  const router = useRouter();
+
   const form = useForm<GenderSelectFormSchema>({
     resolver: zodResolver(genderSelectFormSchema),
   });
 
-  const { mutate: updateUser } = useUpdateUser();
+  const { mutate: updateUser } = api.user.update.useMutation();
 
   const handleUpdateGender = (values: GenderSelectFormSchema) => {
-    updateUser({ userId: userId, gender: values.gender });
+    updateUser(
+      { userId: userId, gender: values.gender },
+      {
+        onSuccess() {
+          toast.success('Pomyślnie zaktualizowano');
+          router.refresh();
+        },
+      },
+    );
   };
 
   return (

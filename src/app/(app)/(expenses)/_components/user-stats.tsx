@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { type Session } from 'next-auth';
 
@@ -5,19 +7,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/_components/ui/avatar';
 import { buttonVariants } from '@/app/_components/ui/button';
 import { cn, getInitials } from '@/lib/utils';
-import type { GroupCurrent } from '@/trpc/shared';
+import { api } from '@/trpc/react';
 
 interface UserDebtsProps {
-  user: Session['user'];
-  group: GroupCurrent;
+  session: Session;
 }
 
-function UserDebts({ user, group: { members, debts } }: UserDebtsProps) {
+function UserDebts({ session }: UserDebtsProps) {
+  const [{ members, debts }] = api.group.current.useSuspenseQuery();
+
   return (
     <div className="flex flex-col gap-4">
       {members.map((member) => {
-        const memberDebt = debts.find((debt) => debt.fromId === member.id && debt.toId === user.id);
-        const memberGet = debts.find((debt) => debt.fromId === user.id && debt.toId === member.id);
+        const memberDebt = debts.find((debt) => debt.fromId === member.id && debt.toId === session.user.id);
+        const memberGet = debts.find((debt) => debt.fromId === session.user.id && debt.toId === member.id);
 
         if (!memberDebt && !memberGet) {
           return null;
@@ -60,30 +63,31 @@ function UserDebts({ user, group: { members, debts } }: UserDebtsProps) {
 }
 
 interface UserStatsProps {
-  user: Session['user'];
-  group: GroupCurrent;
+  session: Session;
 }
 
-export function UserStats({ user, group }: UserStatsProps) {
-  const userBalance = group.members.find((member) => member.id === user.id)?.balance;
+export function UserStats({ session }: UserStatsProps) {
+  const [group] = api.group.current.useSuspenseQuery();
+
+  const userBalance = group.members.find((member) => member.id === session.user.id)?.balance;
 
   return (
     <Accordion type="single" collapsible className="w-full">
-      <AccordionItem key={user.id} value={user.id} className="data-[state=open]:pb-4">
+      <AccordionItem key={session.user.id} value={session.user.id} className="data-[state=open]:pb-4">
         <AccordionTrigger className="p-0 pb-4">
           <div className="flex items-center gap-4">
             <Avatar>
-              <AvatarImage src={user.image ?? undefined} />
-              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+              <AvatarImage src={session.user.image ?? undefined} />
+              <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
             </Avatar>
             <div className="text-start">
-              <div className="font-medium">{user.name}</div>
+              <div className="font-medium">{session.user.name}</div>
               <div className="text-sm font-medium text-muted-foreground">{userBalance} zł</div>
             </div>
           </div>
         </AccordionTrigger>
         <AccordionContent className="p-0">
-          <UserDebts user={user} group={group} />
+          <UserDebts session={session} />
         </AccordionContent>
       </AccordionItem>
     </Accordion>

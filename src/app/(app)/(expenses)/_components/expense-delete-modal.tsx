@@ -1,6 +1,8 @@
 'use client';
 
-import { useDeleteExpense } from '@/app/_components/hooks/use-delete-expense';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,16 +15,26 @@ import {
   AlertDialogTrigger,
 } from '@/app/_components/ui/alert-dialog';
 import { Button } from '@/app/_components/ui/button';
+import { api } from '@/trpc/react';
 
 interface ExpenseDeleteModalProps {
   expenseId: string;
 }
 
 export function ExpenseDeleteModal({ expenseId }: ExpenseDeleteModalProps) {
-  const { mutate: deleteExpense } = useDeleteExpense();
+  const router = useRouter();
+  const { mutate: deleteExpense } = api.expense.delete.useMutation();
 
   const handleExpenseDelete = () => {
-    deleteExpense({ expenseId });
+    deleteExpense(
+      { expenseId },
+      {
+        onSuccess() {
+          toast.success('Pomyślnie usunięto wydatek');
+          router.refresh();
+        },
+      },
+    );
   };
 
   return (

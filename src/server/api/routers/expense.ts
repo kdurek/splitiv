@@ -157,7 +157,7 @@ export const expenseRouter = createTRPCRouter({
       });
     }),
 
-  byId: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
+  byId: protectedProcedure.input(z.object({ id: z.string().cuid2().optional() })).query(({ input, ctx }) => {
     return ctx.db.expense.findUnique({
       where: {
         id: input.id,

@@ -2,7 +2,7 @@
 
 import type { Session } from 'next-auth';
 
-import { ExpensesListCard, ExpensesListCardSkeleton } from '@/app/(app)/(expenses)/_components/expenses-list-card';
+import { ExpensesListCard, ExpensesListCardSkeleton } from '@/components/expense/expenses-list-card';
 import type { ExpensesGetArchived, ExpensesGetDashboard } from '@/trpc/shared';
 
 interface ExpenseListProps {

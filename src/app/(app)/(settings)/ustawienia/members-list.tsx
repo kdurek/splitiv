@@ -1,6 +1,6 @@
 'use client';
 
-import { AddUserToGroupForm } from '@/app/(app)/(settings)/_components/add-user-to-group-form';
+import { AddUserToGroupForm } from '@/components/group/add-user-to-group-form';
 import { api } from '@/trpc/react';
 
 export function MembersList() {

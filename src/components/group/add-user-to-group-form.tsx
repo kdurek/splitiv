@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/app/_components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/app/_components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/trpc/react';
 import type { UserList } from '@/trpc/shared';
 

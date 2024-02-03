@@ -5,9 +5,9 @@ import { format } from 'date-fns';
 import { CircleDollarSign } from 'lucide-react';
 import type { Session } from 'next-auth';
 
-import { Drawer, DrawerContent, DrawerTrigger } from '@/app/_components/ui/drawer';
-import { Skeleton } from '@/app/_components/ui/skeleton';
-import { ExpenseDetail } from '@/app/(app)/(expenses)/_components/expense-detail';
+import { ExpenseDetail } from '@/components/expense/expense-detail';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { ExpensesGetArchived, ExpensesGetDashboard } from '@/trpc/shared';
 

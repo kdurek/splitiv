@@ -3,10 +3,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { Section } from '@/app/_components/layout/section';
-import { buttonVariants } from '@/app/_components/ui/button';
-import { ExpensesDashboard, ExpensesDashboardSkeleton } from '@/app/(app)/(expenses)/_components/expenses-dashboard';
-import { UserStats } from '@/app/(app)/(expenses)/_components/user-stats';
+import { ExpensesDashboard, ExpensesDashboardSkeleton } from '@/components/expense/expenses-dashboard';
+import { UserStats } from '@/components/expense/user-stats';
+import { Section } from '@/components/layout/section';
+import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { getServerAuthSession } from '@/server/auth';
 

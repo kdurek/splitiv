@@ -1,7 +1,7 @@
 import { type ReactNode, Suspense } from 'react';
 
-import FullScreenLoading from '@/app/_components/layout/loading';
-import { Heading } from '@/app/_components/ui/heading';
+import FullScreenLoading from '@/components/layout/loading';
+import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
 
 interface SectionProps {

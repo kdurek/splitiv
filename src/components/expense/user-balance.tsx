@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { type Session } from 'next-auth';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/app/_components/ui/accordion';
-import { Avatar, AvatarFallback, AvatarImage } from '@/app/_components/ui/avatar';
-import { buttonVariants } from '@/app/_components/ui/button';
-import { Separator } from '@/app/_components/ui/separator';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { buttonVariants } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { cn, getInitials } from '@/lib/utils';
 import type { GroupCurrent, UserList } from '@/trpc/shared';
 

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import { Section } from '@/app/_components/layout/section';
-import { ExpenseForm } from '@/app/(app)/(expenses)/_components/expense-form';
+import { ExpenseForm } from '@/components/expense/expense-form';
+import { Section } from '@/components/layout/section';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function ExpenseAddPage() {

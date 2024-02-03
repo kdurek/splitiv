@@ -13,8 +13,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/app/_components/ui/alert-dialog';
-import { Button } from '@/app/_components/ui/button';
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import { api } from '@/trpc/react';
 
 interface ExpenseDeleteModalProps {

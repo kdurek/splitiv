@@ -4,14 +4,14 @@ import type { Session } from 'next-auth';
 import { useEffect, useRef } from 'react';
 import { useIntersection } from 'react-use';
 
-import { ExpensesList, ExpensesListSkeleton } from '@/app/(app)/(expenses)/_components/expenses-list';
+import { ExpensesList, ExpensesListSkeleton } from '@/components/expense/expenses-list';
 import { api } from '@/trpc/react';
 
-interface ExpensesDashboardProps {
+interface ExpensesArchiveProps {
   session: Session;
 }
 
-export function ExpensesDashboard({ session }: ExpensesDashboardProps) {
+export function ExpensesArchive({ session }: ExpensesArchiveProps) {
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
     root: null,
@@ -19,7 +19,7 @@ export function ExpensesDashboard({ session }: ExpensesDashboardProps) {
     threshold: 1,
   });
 
-  const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.getDashboard.useSuspenseInfiniteQuery(
+  const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.getArchived.useSuspenseInfiniteQuery(
     {
       limit: 10,
     },
@@ -48,6 +48,6 @@ export function ExpensesDashboard({ session }: ExpensesDashboardProps) {
   );
 }
 
-export function ExpensesDashboardSkeleton() {
+export function ExpensesArchiveSkeleton() {
   return <ExpensesListSkeleton count={10} />;
 }

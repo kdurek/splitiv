@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import { Section } from '@/app/_components/layout/section';
-import { ExpenseSettlementForm } from '@/app/(app)/(expenses)/wydatki/uzytkownik/[userId]/rozliczenie/expense-settlement-form';
+import { ExpenseSettlementForm } from '@/components/expense/expense-settlement-form';
+import { Section } from '@/components/layout/section';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

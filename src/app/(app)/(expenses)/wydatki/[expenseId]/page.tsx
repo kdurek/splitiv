@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import { Section } from '@/app/_components/layout/section';
-import { ExpenseDetail } from '@/app/(app)/(expenses)/_components/expense-detail';
+import { ExpenseDetail } from '@/components/expense/expense-detail';
+import { Section } from '@/components/layout/section';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

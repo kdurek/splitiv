@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { type Session } from 'next-auth';
 import { toast } from 'sonner';
 
-import { Label } from '@/app/_components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/trpc/react';
 
 interface GroupSelectProps {

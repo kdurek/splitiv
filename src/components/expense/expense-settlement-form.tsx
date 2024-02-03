@@ -8,11 +8,11 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { Button } from '@/app/_components/ui/button';
-import { Checkbox } from '@/app/_components/ui/checkbox';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form';
-import { Heading } from '@/app/_components/ui/heading';
-import { Label } from '@/app/_components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Heading } from '@/components/ui/heading';
+import { Label } from '@/components/ui/label';
 import { api } from '@/trpc/react';
 import type { ExpenseDebtList, UserById } from '@/trpc/shared';
 

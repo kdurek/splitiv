@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { Section } from '@/app/_components/layout/section';
-import { ExpensesArchive, ExpensesArchiveSkeleton } from '@/app/(app)/(expenses)/_components/expenses-archive';
+import { ExpensesArchive, ExpensesArchiveSkeleton } from '@/components/expense/expenses-archive';
+import { Section } from '@/components/layout/section';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function ArchivePage() {

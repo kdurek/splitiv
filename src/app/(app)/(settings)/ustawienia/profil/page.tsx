@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import { Section } from '@/app/_components/layout/section';
-import { UserForm } from '@/app/(app)/(settings)/_components/user-form';
+import { Section } from '@/components/layout/section';
+import { UserForm } from '@/components/user/user-form';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

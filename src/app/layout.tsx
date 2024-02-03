@@ -8,8 +8,8 @@ import { Poppins } from 'next/font/google';
 import { headers } from 'next/headers';
 import Script from 'next/script';
 
-import { TailwindIndicator } from '@/app/_components/layout/tailwind-indicator';
-import { Toaster } from '@/app/_components/ui/sonner';
+import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
+import { Toaster } from '@/components/ui/sonner';
 import { TRPCReactProvider } from '@/trpc/react';
 
 setDefaultOptions({

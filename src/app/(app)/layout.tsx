@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation';
 
-import { MobileNav } from '@/app/_components/layout/mobile-nav';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/app/_components/ui/collapsible';
-import { Separator } from '@/app/_components/ui/separator';
-import { CreateGroupForm } from '@/app/(app)/(settings)/_components/create-group-form';
-import { GenderSelectForm } from '@/app/(app)/(settings)/_components/gender-select-form';
-import { GroupSelect } from '@/app/(app)/(settings)/_components/group-select';
+import { CreateGroupForm } from '@/components/group/create-group-form';
+import { GroupSelect } from '@/components/group/group-select';
+import { MobileNav } from '@/components/layout/mobile-nav';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Separator } from '@/components/ui/separator';
+import { GenderSelectForm } from '@/components/user/gender-select-form';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {

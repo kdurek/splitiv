@@ -63,7 +63,7 @@ export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <button className="w-full py-4">
+        <button className="w-full py-4 outline-none">
           <div className="flex items-center justify-between overflow-hidden">
             <div className="flex items-center gap-4">
               <ExpensesListCardIcon status={getExpenseStatus(expense)} />

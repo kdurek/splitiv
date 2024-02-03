@@ -21,7 +21,7 @@ export default async function ExpensesPage() {
     <Section title="Wydatki">
       <UserStats session={session} />
       <Suspense fallback={<ExpensesDashboardSkeleton />}>
-        <ExpensesDashboard />
+        <ExpensesDashboard session={session} />
       </Suspense>
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
         <Archive className="mr-2 size-4" />

@@ -15,7 +15,7 @@ export default async function ArchivePage() {
   return (
     <Section title="Archiwum">
       <Suspense fallback={<ExpensesArchiveSkeleton />}>
-        <ExpensesArchive />
+        <ExpensesArchive session={session} />
       </Suspense>
     </Section>
   );

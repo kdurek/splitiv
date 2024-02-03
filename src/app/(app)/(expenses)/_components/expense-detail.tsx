@@ -42,6 +42,7 @@ export function ExpenseDetail({ expense, session }: ExpenseDetailProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
+        <Heading variant="h1">{expense.name}</Heading>
         <ExpenseDescriptionCard description={expense.description} />
         <div>{formattedDate}</div>
       </div>
@@ -85,7 +86,10 @@ export function ExpenseDetail({ expense, session }: ExpenseDetailProps) {
         <div className="space-y-2">
           <Heading variant="h2">Ustawienia</Heading>
           <div className="flex gap-2">
-            <Link href={`/wydatki/${expense.id}/edytuj`} className={cn(buttonVariants({ variant: 'outline' }))}>
+            <Link
+              href={`/wydatki/${expense.id}/edytuj`}
+              className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
+            >
               Edytuj
             </Link>
             <ExpenseDeleteModal expenseId={expense.id} />

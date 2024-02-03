@@ -3,10 +3,13 @@
 import { type Prisma } from '@prisma/client';
 import { format } from 'date-fns';
 import { CircleDollarSign } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import type { Session } from 'next-auth';
 
+import { Drawer, DrawerContent, DrawerTrigger } from '@/app/_components/ui/drawer';
 import { Skeleton } from '@/app/_components/ui/skeleton';
+import { ExpenseDetail } from '@/app/(app)/(expenses)/_components/expense-detail';
 import { cn } from '@/lib/utils';
+import type { ExpensesGetArchived, ExpensesGetDashboard } from '@/trpc/shared';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
   include: {
@@ -50,35 +53,37 @@ function ExpensesListCardIcon({ status }: ExpensesListCardIconProps) {
 }
 
 interface ExpensesListCardProps {
-  id: string;
-  status: ReturnType<typeof getExpenseStatus>;
-  name: string;
-  amount: number;
-  date: Date;
+  expense: ExpensesGetDashboard['items'][number] | ExpensesGetArchived['items'][number];
+  session: Session;
 }
 
-export function ExpensesListCard({ id, status, name, amount, date }: ExpensesListCardProps) {
-  const router = useRouter();
-
-  const formattedDate = format(date, 'EEEEEE, d MMMM');
-
-  function handleClick() {
-    router.push(`/wydatki/${id}`);
-  }
+export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
+  const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM');
 
   return (
-    <button onClick={handleClick} className="w-full py-4">
-      <div className="flex items-center justify-between overflow-hidden">
-        <div className="flex items-center gap-4">
-          <ExpensesListCardIcon status={status} />
-          <div className="overflow-hidden text-start">
-            <div className="line-clamp-1">{name}</div>
-            <div className="line-clamp-1 text-sm text-muted-foreground">{formattedDate}</div>
+    <Drawer>
+      <DrawerTrigger asChild>
+        <button className="w-full py-4">
+          <div className="flex items-center justify-between overflow-hidden">
+            <div className="flex items-center gap-4">
+              <ExpensesListCardIcon status={getExpenseStatus(expense)} />
+              <div className="overflow-hidden text-start">
+                <div className="line-clamp-1">{expense.name}</div>
+                <div className="line-clamp-1 text-sm text-muted-foreground">{formattedDate}</div>
+              </div>
+            </div>
+            <div className="whitespace-nowrap text-sm text-muted-foreground">
+              {Number(expense.amount).toFixed(2)} zł
+            </div>
           </div>
+        </button>
+      </DrawerTrigger>
+      <DrawerContent className="max-h-[96%]">
+        <div className="overflow-auto p-4">
+          <ExpenseDetail expense={expense} session={session} />
         </div>
-        <div className="whitespace-nowrap text-sm text-muted-foreground">{amount.toFixed(2)} zł</div>
-      </div>
-    </button>
+      </DrawerContent>
+    </Drawer>
   );
 }
 

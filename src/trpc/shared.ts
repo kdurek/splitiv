@@ -29,6 +29,8 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
+export type ExpensesGetDashboard = RouterOutputs['expense']['getDashboard'];
+export type ExpensesGetArchived = RouterOutputs['expense']['getArchived'];
 export type ExpenseById = RouterOutputs['expense']['byId'];
 export type ExpenseDebtList = RouterOutputs['expenseDebt']['list'];
 export type GroupList = RouterOutputs['group']['list'];

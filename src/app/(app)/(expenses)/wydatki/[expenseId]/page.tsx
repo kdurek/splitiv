@@ -25,7 +25,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
   }
 
   return (
-    <Section title={expense.name}>
+    <Section>
       <ExpenseDetail expense={expense} session={session} />
     </Section>
   );

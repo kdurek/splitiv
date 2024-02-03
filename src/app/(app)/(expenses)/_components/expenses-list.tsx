@@ -1,34 +1,20 @@
 'use client';
 
-import { type Prisma } from '@prisma/client';
+import type { Session } from 'next-auth';
 
-import {
-  ExpensesListCard,
-  ExpensesListCardSkeleton,
-  getExpenseStatus,
-} from '@/app/(app)/(expenses)/_components/expenses-list-card';
+import { ExpensesListCard, ExpensesListCardSkeleton } from '@/app/(app)/(expenses)/_components/expenses-list-card';
+import type { ExpensesGetArchived, ExpensesGetDashboard } from '@/trpc/shared';
 
-type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
-  include: {
-    debts: true;
-  };
-}>;
 interface ExpenseListProps {
-  expenses: ExpenseWithDebts[];
+  expenses: ExpensesGetDashboard['items'] | ExpensesGetArchived['items'];
+  session: Session;
 }
 
-export function ExpensesList({ expenses }: ExpenseListProps) {
+export function ExpensesList({ expenses, session }: ExpenseListProps) {
   return (
     <div className="divide-y">
       {expenses.map((expense) => (
-        <ExpensesListCard
-          key={expense.id}
-          id={expense.id}
-          status={getExpenseStatus(expense)}
-          name={expense.name}
-          amount={Number(expense.amount)}
-          date={expense.createdAt}
-        />
+        <ExpensesListCard key={expense.id} expense={expense} session={session} />
       ))}
     </div>
   );

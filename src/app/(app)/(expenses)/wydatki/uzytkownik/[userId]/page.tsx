@@ -65,10 +65,10 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
           <TabsTrigger value="debts">Pożyczyłeś</TabsTrigger>
         </TabsList>
         <TabsContent value="credits">
-          <ExpensesList expenses={credits} />
+          <ExpensesList expenses={credits} session={session} />
         </TabsContent>
         <TabsContent value="debts">
-          <ExpensesList expenses={debts} />
+          <ExpensesList expenses={debts} session={session} />
         </TabsContent>
       </Tabs>
     </Section>

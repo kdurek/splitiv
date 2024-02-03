@@ -1,12 +1,17 @@
 'use client';
 
+import type { Session } from 'next-auth';
 import { useEffect, useRef } from 'react';
 import { useIntersection } from 'react-use';
 
 import { ExpensesList, ExpensesListSkeleton } from '@/app/(app)/(expenses)/_components/expenses-list';
 import { api } from '@/trpc/react';
 
-export function ExpensesDashboard() {
+interface ExpensesDashboardProps {
+  session: Session;
+}
+
+export function ExpensesDashboard({ session }: ExpensesDashboardProps) {
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
     root: null,
@@ -37,7 +42,7 @@ export function ExpensesDashboard() {
 
   return (
     <>
-      <ExpensesList expenses={expenses} />
+      <ExpensesList expenses={expenses} session={session} />
       <div ref={intersectionRef} />
     </>
   );

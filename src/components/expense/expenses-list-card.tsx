@@ -79,7 +79,7 @@ export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
         </button>
       </DrawerTrigger>
       <DrawerContent className="max-h-[96%]">
-        <div className="overflow-auto p-4">
+        <div className="overflow-auto overscroll-none p-4">
           <ExpenseDetail expense={expense} session={session} />
         </div>
       </DrawerContent>

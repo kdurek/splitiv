@@ -27,12 +27,12 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
     redirect('/');
   }
 
-  const paramUserDebts = await api.expenseDebt.list.query({
+  const paramUserDebts = await api.expense.debt.list.query({
     payerId: currentUser.id,
     debtorId: paramUser.id,
     isSettled: false,
   });
-  const currentUserDebts = await api.expenseDebt.list.query({
+  const currentUserDebts = await api.expense.debt.list.query({
     payerId: paramUser.id,
     debtorId: currentUser.id,
     isSettled: false,

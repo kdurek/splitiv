@@ -31,7 +31,7 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 export type ExpensesList = RouterOutputs['expense']['list'];
 export type ExpenseById = RouterOutputs['expense']['byId'];
-export type ExpenseDebtList = RouterOutputs['expenseDebt']['list'];
+export type ExpenseDebtList = RouterOutputs['expense']['debt']['list'];
 export type GroupList = RouterOutputs['group']['list'];
 export type GroupCurrent = RouterOutputs['group']['current'];
 export type UserList = RouterOutputs['user']['list'];

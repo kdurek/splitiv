@@ -1,9 +1,15 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
+import { expenseDebtRouter } from '@/server/api/routers/expense/debt';
+import { expenseLogRouter } from '@/server/api/routers/expense/log';
+import { expenseNoteRouter } from '@/server/api/routers/expense/note';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseRouter = createTRPCRouter({
+  debt: expenseDebtRouter,
+  log: expenseLogRouter,
+  note: expenseNoteRouter,
   list: protectedProcedure
     .input(
       z.object({

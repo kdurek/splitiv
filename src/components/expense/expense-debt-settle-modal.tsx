@@ -32,7 +32,7 @@ interface ExpenseDebtSettleModalProps {
 }
 
 export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: ExpenseDebtSettleModalProps) {
-  const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = api.expenseDebt.update.useMutation();
+  const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = api.expense.debt.update.useMutation();
 
   const [open, setOpen] = useState(false);
 

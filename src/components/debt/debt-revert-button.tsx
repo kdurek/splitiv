@@ -13,7 +13,7 @@ interface DebtRevertButtonProps {
 
 export function DebtRevertButton({ id }: DebtRevertButtonProps) {
   const router = useRouter();
-  const { mutate: revert } = api.expenseLog.revert.useMutation();
+  const { mutate: revert } = api.expense.log.revert.useMutation();
 
   const handleRevert = () => {
     revert(

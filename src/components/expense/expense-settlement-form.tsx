@@ -48,7 +48,7 @@ export function ExpenseSettlementForm({
   currentUserDebts,
 }: ExpenseSettlementFormProps) {
   const router = useRouter();
-  const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = api.expenseDebt.settle.useMutation();
+  const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = api.expense.debt.settle.useMutation();
 
   const form = useForm<ExpenseSettlementFormSchema>({
     values: {

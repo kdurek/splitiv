@@ -20,7 +20,7 @@ interface ExpenseNoteFormProps {
 
 export function ExpenseNoteForm({ expenseId }: ExpenseNoteFormProps) {
   const router = useRouter();
-  const { mutate: createExpenseNote } = api.expenseNote.create.useMutation();
+  const { mutate: createExpenseNote } = api.expense.note.create.useMutation();
 
   const form = useForm<ExpenseNoteFormSchema>({
     defaultValues: {

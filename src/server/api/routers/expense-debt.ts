@@ -1,4 +1,3 @@
-import { Gender } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import Decimal from 'decimal.js';
 import { z } from 'zod';
@@ -51,13 +50,28 @@ export const expenseDebtRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.expenseDebt.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          settled: input.settled,
-        },
+      return ctx.db.$transaction(async (tx) => {
+        const debt = await tx.expenseDebt.findUniqueOrThrow({
+          where: {
+            id: input.id,
+          },
+        });
+
+        await tx.expenseLog.create({
+          data: {
+            debtId: debt.id,
+            amount: Decimal.sub(input.settled, debt.settled),
+          },
+        });
+
+        return tx.expenseDebt.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            settled: input.settled,
+          },
+        });
       });
     }),
 
@@ -80,15 +94,8 @@ export const expenseDebtRouter = createTRPCRouter({
               where: {
                 id: expenseDebt.id,
               },
-              select: {
-                amount: true,
-                settled: true,
-                debtorId: true,
-                expense: {
-                  select: {
-                    payerId: true,
-                  },
-                },
+              include: {
+                expense: true,
               },
             });
 
@@ -120,27 +127,12 @@ export const expenseDebtRouter = createTRPCRouter({
               data: {
                 settled: expenseDebt.settled,
               },
-              select: {
-                settled: true,
-                debtor: {
-                  select: {
-                    name: true,
-                    gender: true,
-                  },
-                },
-                expense: {
-                  select: {
-                    id: true,
-                  },
-                },
-              },
             });
-            await tx.expenseNote.create({
+
+            await tx.expenseLog.create({
               data: {
-                expenseId: debt.expense.id,
-                content: `${debt.debtor.name} ${
-                  debt.debtor.gender === Gender.MALE ? 'oddał' : 'oddała'
-                } ${Decimal.sub(debt.settled, previousDebt.settled).toFixed(2)} zł`,
+                debtId: previousDebt.id,
+                amount: Decimal.sub(debt.settled, previousDebt.settled),
               },
             });
           }),

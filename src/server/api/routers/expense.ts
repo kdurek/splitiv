@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
@@ -53,6 +54,19 @@ export const expenseRouter = createTRPCRouter({
             },
             include: {
               debtor: true,
+              logs: {
+                include: {
+                  debt: {
+                    select: {
+                      debtor: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
           notes: {
@@ -113,6 +127,19 @@ export const expenseRouter = createTRPCRouter({
             },
             include: {
               debtor: true,
+              logs: {
+                include: {
+                  debt: {
+                    select: {
+                      debtor: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
           notes: {
@@ -146,6 +173,19 @@ export const expenseRouter = createTRPCRouter({
           },
           include: {
             debtor: true,
+            logs: {
+              include: {
+                debt: {
+                  select: {
+                    debtor: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
         notes: {
@@ -224,52 +264,80 @@ export const expenseRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // const isAlreadyPaid = await ctx.db.expenseDebt.count({
-      //   where: {
-      //     expenseId: input.expenseId,
-      //     debtorId: {
-      //       not: input.payerId,
-      //     },
-      //     settled: {
-      //       gt: 0,
-      //     },
-      //   },
-      // });
+      return ctx.db.$transaction(async (tx) => {
+        // const isAlreadyPaid = await ctx.db.expenseDebt.count({
+        //   where: {
+        //     expenseId: input.expenseId,
+        //     debtorId: {
+        //       not: input.payerId,
+        //     },
+        //     settled: {
+        //       gt: 0,
+        //     },
+        //   },
+        // });
 
-      // if (!!isAlreadyPaid) {
-      //   return;
-      // }
+        // if (!!isAlreadyPaid) {
+        //   return;
+        // }
 
-      return ctx.db.expense.update({
-        where: {
-          id: input.expenseId,
-        },
-        data: {
-          name: input.name,
-          description: input.description ?? null,
-          // amount: input.amount,
-          // payer: {
-          //   connect: {
-          //     id: input.payerId,
-          //   },
-          // },
-          // debts: {
-          //   deleteMany: {
-          //     expenseId: input.expenseId,
-          //   },
-          //   createMany: {
-          //     data: input.debts,
-          //   },
-          // },
-        },
+        const expense = await tx.expense.update({
+          where: {
+            id: input.expenseId,
+          },
+          data: {
+            name: input.name,
+            description: input.description ?? null,
+            // amount: input.amount,
+            // payer: {
+            //   connect: {
+            //     id: input.payerId,
+            //   },
+            // },
+            // debts: {
+            //   deleteMany: {
+            //     expenseId: input.expenseId,
+            //   },
+            //   createMany: {
+            //     data: input.debts,
+            //   },
+            // },
+          },
+          include: {
+            payer: true,
+            group: true,
+          },
+        });
+
+        if (expense.group.adminId !== ctx.session.user.id && expense.payerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: `Tylko ${expense.payer.name} może edytować ten wydatek`,
+          });
+        }
+
+        return expense;
       });
     }),
 
   delete: protectedProcedure.input(z.object({ expenseId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.db.expense.delete({
-      where: {
-        id: input.expenseId,
-      },
+    return ctx.db.$transaction(async (tx) => {
+      const expense = await tx.expense.delete({
+        where: {
+          id: input.expenseId,
+        },
+        include: {
+          payer: true,
+          group: true,
+        },
+      });
+
+      if (expense.group.adminId !== ctx.session.user.id && expense.payerId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: `Tylko ${expense.payer.name} może usunąć ten wydatek`,
+        });
+      }
     });
   }),
 });

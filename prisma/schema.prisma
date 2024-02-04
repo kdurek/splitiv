@@ -39,16 +39,26 @@ model ExpenseNote {
   expenseId   String
 }
 
-model ExpenseDebt {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model ExpenseLog {
+  id        String      @id @default(cuid())
   amount    Decimal
-  settled   Decimal  @default(0)
-  expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  debt      ExpenseDebt @relation(fields: [debtId], references: [id], onDelete: Cascade)
+  debtId    String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model ExpenseDebt {
+  id        String       @id @default(cuid())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  amount    Decimal
+  settled   Decimal      @default(0)
+  expense   Expense      @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   expenseId String
-  debtor    User     @relation(fields: [debtorId], references: [id])
+  debtor    User         @relation(fields: [debtorId], references: [id])
   debtorId  String
+  logs      ExpenseLog[]
 }
 
 model Expense {

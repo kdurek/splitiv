@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -33,7 +32,6 @@ interface ExpenseDebtSettleModalProps {
 }
 
 export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: ExpenseDebtSettleModalProps) {
-  const router = useRouter();
   const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = api.expenseDebt.update.useMutation();
 
   const [open, setOpen] = useState(false);
@@ -58,7 +56,6 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
           toast.success('Pomyślnie oddano kwotę');
           setOpen(false);
           form.reset();
-          router.refresh();
         },
         onError(error) {
           form.setError('amount', { message: error.shape?.message });

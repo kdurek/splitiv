@@ -76,6 +76,9 @@ export function ExpenseForm({ session, expense }: ExpenseFormProps) {
             router.push(`/wydatki/${data.id}`);
             router.refresh();
           },
+          onError(err) {
+            toast.error(err.message);
+          },
         },
       );
     } else {
@@ -92,6 +95,9 @@ export function ExpenseForm({ session, expense }: ExpenseFormProps) {
             toast.success('Pomyślnie dodano wydatek');
             router.push('/');
             router.refresh();
+          },
+          onError(err) {
+            toast.error(err.message);
           },
         },
       );

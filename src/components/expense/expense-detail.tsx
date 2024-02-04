@@ -1,10 +1,10 @@
 'use client';
 
-import { type Prisma } from '@prisma/client';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import type { Session } from 'next-auth';
 
+import { DebtRevertButton } from '@/components/debt/debt-revert-button';
 import { ExpenseDebtorCard, ExpensePayerCard } from '@/components/expense/expense-debts';
 import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
 import { ExpenseDescriptionCard } from '@/components/expense/expense-description-card';
@@ -13,28 +13,15 @@ import { ExpenseNoteForm } from '@/components/expense/expense-note-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
+import type { ExpensesList } from '@/trpc/shared';
 
 interface ExpenseDetailProps {
-  expense: Prisma.ExpenseGetPayload<{
-    include: {
-      debts: {
-        include: {
-          debtor: true;
-        };
-      };
-      group: true;
-      payer: true;
-      notes: {
-        include: {
-          createdBy: true;
-        };
-      };
-    };
-  }>;
+  expense: ExpensesList['items'][number];
   session: Session;
 }
 
 export function ExpenseDetail({ expense, session }: ExpenseDetailProps) {
+  const logs = expense.debts.flatMap((debt) => debt.logs);
   const formattedDate = format(expense.createdAt, 'EEEEEEE, d MMMM yyyy');
   const isPayer = session.user.id === expense.payerId;
   const isAdmin = session.user.id === expense.group.adminId;
@@ -62,6 +49,28 @@ export function ExpenseDetail({ expense, session }: ExpenseDetailProps) {
           />
         ))}
       </div>
+
+      {logs.length !== 0 && (
+        <div className="space-y-2">
+          <Heading variant="h2">Historia</Heading>
+          <div className="divide-y">
+            {logs.map((log) => (
+              <div key={log.id} className="py-4">
+                <div className="flex justify-between gap-4">
+                  <div className="text-start text-sm text-muted-foreground">
+                    <div>{log.debt.debtor.name}</div>
+                    <div>{format(log.createdAt, 'HH:mm dd.MM.yyyy')}</div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div>{Number(log.amount).toFixed(2)} zł</div>
+                    <DebtRevertButton id={log.id} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2">
         <Heading variant="h2">Notatki</Heading>

@@ -33,6 +33,9 @@ export function ExpenseDeleteModal({ expenseId }: ExpenseDeleteModalProps) {
           toast.success('Pomyślnie usunięto wydatek');
           router.refresh();
         },
+        onError(err) {
+          toast.error(err.message);
+        },
       },
     );
   };

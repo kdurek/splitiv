@@ -3,10 +3,10 @@
 import type { Session } from 'next-auth';
 
 import { ExpensesListCard, ExpensesListCardSkeleton } from '@/components/expense/expenses-list-card';
-import type { ExpensesGetArchived, ExpensesGetDashboard } from '@/trpc/shared';
+import type { ExpensesList } from '@/trpc/shared';
 
 interface ExpenseListProps {
-  expenses: ExpensesGetDashboard['items'] | ExpensesGetArchived['items'];
+  expenses: ExpensesList['items'];
   session: Session;
 }
 

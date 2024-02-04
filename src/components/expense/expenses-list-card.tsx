@@ -9,7 +9,7 @@ import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { ExpensesGetArchived, ExpensesGetDashboard } from '@/trpc/shared';
+import type { ExpensesList } from '@/trpc/shared';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
   include: {
@@ -53,7 +53,7 @@ function ExpensesListCardIcon({ status }: ExpensesListCardIconProps) {
 }
 
 interface ExpensesListCardProps {
-  expense: ExpensesGetDashboard['items'][number] | ExpensesGetArchived['items'][number];
+  expense: ExpensesList['items'][number];
   session: Session;
 }
 

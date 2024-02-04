@@ -3,11 +3,12 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseRouter = createTRPCRouter({
-  getDashboard: protectedProcedure
+  list: protectedProcedure
     .input(
       z.object({
         limit: z.number(),
         cursor: z.string().nullish(),
+        type: z.enum(['dashboard', 'archived']),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -31,77 +32,12 @@ export const expenseRouter = createTRPCRouter({
           debts: {
             some: {
               settled: {
-                lt: ctx.db.expenseDebt.fields.amount,
+                lt: input.type === 'dashboard' ? ctx.db.expenseDebt.fields.amount : undefined,
               },
             },
-          },
-        },
-        include: {
-          group: true,
-          payer: true,
-          debts: {
-            orderBy: {
-              debtor: {
-                name: 'asc',
-              },
-            },
-            include: {
-              debtor: true,
-            },
-          },
-          notes: {
-            orderBy: {
-              createdAt: 'desc',
-            },
-            include: {
-              createdBy: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-      let nextCursor: typeof input.cursor | undefined;
-      if (items.length > input.limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem?.id;
-      }
-      return {
-        items,
-        nextCursor,
-      };
-    }),
-
-  getArchived: protectedProcedure
-    .input(
-      z.object({
-        limit: z.number(),
-        cursor: z.string().nullish(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const items = await ctx.db.expense.findMany({
-        take: input.limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        where: {
-          groupId: ctx.session.activeGroupId,
-          OR: [
-            {
-              payerId: ctx.session.user.id,
-            },
-            {
-              debts: {
-                some: {
-                  debtorId: ctx.session.user.id,
-                },
-              },
-            },
-          ],
-          debts: {
             every: {
               settled: {
-                equals: ctx.db.expenseDebt.fields.amount,
+                equals: input.type === 'archived' ? ctx.db.expenseDebt.fields.amount : undefined,
               },
             },
           },

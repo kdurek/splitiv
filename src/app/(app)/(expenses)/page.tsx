@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { ExpensesDashboard, ExpensesDashboardSkeleton } from '@/components/expense/expenses-dashboard';
+import { ExpensesFeed, ExpensesFeedSkeleton } from '@/components/expense/expenses-feed';
 import { UserStats } from '@/components/expense/user-stats';
 import { Section } from '@/components/layout/section';
 import { buttonVariants } from '@/components/ui/button';
@@ -20,8 +20,8 @@ export default async function ExpensesPage() {
   return (
     <Section title="Wydatki">
       <UserStats session={session} />
-      <Suspense fallback={<ExpensesDashboardSkeleton />}>
-        <ExpensesDashboard session={session} />
+      <Suspense fallback={<ExpensesFeedSkeleton />}>
+        <ExpensesFeed type="dashboard" session={session} />
       </Suspense>
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
         <Archive className="mr-2 size-4" />

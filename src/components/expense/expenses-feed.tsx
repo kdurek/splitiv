@@ -7,11 +7,12 @@ import { useIntersection } from 'react-use';
 import { ExpensesList, ExpensesListSkeleton } from '@/components/expense/expenses-list';
 import { api } from '@/trpc/react';
 
-interface ExpensesDashboardProps {
+interface ExpensesFeedProps {
+  type: 'dashboard' | 'archived';
   session: Session;
 }
 
-export function ExpensesDashboard({ session }: ExpensesDashboardProps) {
+export function ExpensesFeed({ type, session }: ExpensesFeedProps) {
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
     root: null,
@@ -19,9 +20,10 @@ export function ExpensesDashboard({ session }: ExpensesDashboardProps) {
     threshold: 1,
   });
 
-  const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.getDashboard.useSuspenseInfiniteQuery(
+  const [data, { fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.list.useSuspenseInfiniteQuery(
     {
       limit: 10,
+      type,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -48,6 +50,6 @@ export function ExpensesDashboard({ session }: ExpensesDashboardProps) {
   );
 }
 
-export function ExpensesDashboardSkeleton() {
+export function ExpensesFeedSkeleton() {
   return <ExpensesListSkeleton count={10} />;
 }

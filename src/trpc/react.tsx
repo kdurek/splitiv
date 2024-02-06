@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { loggerLink, unstable_httpBatchStreamLink } from '@trpc/client';
+import { httpBatchLink, loggerLink, unstable_httpBatchStreamLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
 import { useState } from 'react';
 
@@ -41,13 +41,13 @@ export function TRPCReactProvider(props: { children: React.ReactNode; headers: H
 
   const [trpcClient] = useState(() =>
     api.createClient({
-      transformer,
       links: [
         loggerLink({
           enabled: (opts) =>
             process.env.NODE_ENV === 'development' || (opts.direction === 'down' && opts.result instanceof Error),
         }),
-        unstable_httpBatchStreamLink({
+        httpBatchLink({
+          transformer,
           url: getUrl(),
           headers() {
             const headers = new Map(props.headers);

@@ -63,8 +63,8 @@ export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <button className="w-full py-4 outline-none">
-          <div className="flex items-center justify-between overflow-hidden">
+        <button className="w-full bg-white p-4 outline-none">
+          <div className="flex items-start justify-between overflow-hidden">
             <div className="flex items-center gap-4">
               <ExpensesListCardIcon status={getExpenseStatus(expense)} />
               <div className="overflow-hidden text-start">
@@ -72,9 +72,7 @@ export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
                 <div className="line-clamp-1 text-sm text-muted-foreground">{formattedDate}</div>
               </div>
             </div>
-            <div className="whitespace-nowrap text-sm text-muted-foreground">
-              {Number(expense.amount).toFixed(2)} zł
-            </div>
+            <div className="whitespace-nowrap text-sm">{Number(expense.amount).toFixed(2)} zł</div>
           </div>
         </button>
       </DrawerTrigger>
@@ -89,7 +87,7 @@ export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
 
 export function ExpensesListCardSkeleton() {
   return (
-    <div className="w-full py-4">
+    <div className="w-full bg-white p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Skeleton className="size-10 rounded-md" />

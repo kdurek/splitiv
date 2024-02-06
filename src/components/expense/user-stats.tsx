@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { type Session } from 'next-auth';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn, getInitials } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
@@ -17,7 +17,7 @@ function UserDebts({ session }: UserDebtsProps) {
   const [{ members, debts }] = api.group.current.useSuspenseQuery();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="space-y-6">
       {members.map((member) => {
         const memberDebt = debts.find((debt) => debt.fromId === member.id && debt.toId === session.user.id);
         const memberGet = debts.find((debt) => debt.fromId === session.user.id && debt.toId === member.id);
@@ -27,7 +27,7 @@ function UserDebts({ session }: UserDebtsProps) {
         }
 
         return (
-          <div key={member.id} className="pt-4 font-medium">
+          <div key={member.id} className="font-medium">
             <div className="flex items-center gap-4">
               <Avatar>
                 <AvatarImage src={member.image ?? undefined} />
@@ -72,24 +72,24 @@ export function UserStats({ session }: UserStatsProps) {
   const userBalance = group.members.find((member) => member.id === session.user.id)?.balance;
 
   return (
-    <Accordion type="single" collapsible className="w-full">
-      <AccordionItem key={session.user.id} value={session.user.id} className="data-[state=open]:pb-4">
-        <AccordionTrigger className="p-0 pb-4">
-          <div className="flex items-center gap-4">
-            <Avatar>
-              <AvatarImage src={session.user.image ?? undefined} />
-              <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
-            </Avatar>
-            <div className="text-start">
-              <div className="font-medium">{session.user.name}</div>
-              <div className="text-sm font-medium text-muted-foreground">{userBalance} zł</div>
-            </div>
+    <Drawer>
+      <DrawerTrigger asChild>
+        <div className="flex items-center gap-4 rounded-md bg-white p-4">
+          <Avatar>
+            <AvatarImage src={session.user.image ?? undefined} />
+            <AvatarFallback>{getInitials(session.user.name)}</AvatarFallback>
+          </Avatar>
+          <div className="text-start">
+            <div className="font-medium">{session.user.name}</div>
+            <div className="text-sm font-medium text-muted-foreground">{userBalance} zł</div>
           </div>
-        </AccordionTrigger>
-        <AccordionContent className="p-0">
+        </div>
+      </DrawerTrigger>
+      <DrawerContent className="max-h-[96%]">
+        <div className="overflow-auto overscroll-none p-4">
           <UserDebts session={session} />
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 }

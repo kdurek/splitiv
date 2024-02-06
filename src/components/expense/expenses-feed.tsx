@@ -39,7 +39,7 @@ export function ExpensesFeed({ type, session }: ExpensesFeedProps) {
   const expenses = data?.pages.flatMap((page) => page.items);
 
   if (!expenses.length) {
-    return <div className="rounded-md border p-4 text-center">Brak długów</div>;
+    return <div className="rounded-md bg-white p-4 text-center">Brak długów</div>;
   }
 
   return (

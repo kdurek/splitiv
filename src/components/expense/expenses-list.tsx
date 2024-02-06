@@ -12,7 +12,7 @@ interface ExpenseListProps {
 
 export function ExpensesList({ expenses, session }: ExpenseListProps) {
   return (
-    <div className="divide-y">
+    <div className="overflow-hidden rounded-md">
       {expenses.map((expense) => (
         <ExpensesListCard key={expense.id} expense={expense} session={session} />
       ))}
@@ -22,7 +22,7 @@ export function ExpensesList({ expenses, session }: ExpenseListProps) {
 
 export function ExpensesListSkeleton({ count = 10 }) {
   return (
-    <div className="divide-y">
+    <div className="overflow-hidden rounded-md">
       {Array.from({ length: count }).map((_, idx) => (
         <ExpensesListCardSkeleton key={idx} />
       ))}

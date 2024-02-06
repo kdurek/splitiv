@@ -122,9 +122,9 @@ export function ExpenseSettlementForm({
       <form className="space-y-6" onSubmit={form.handleSubmit(handleSettlement)}>
         <Heading variant="h2">{paramUser?.name}</Heading>
 
-        <div className="space-y-2">
+        <div className="space-y-4">
           <Label className="text-base">Podsumowanie</Label>
-          <div className="grid grid-cols-5 place-items-center rounded-md border p-4">
+          <div className="grid grid-cols-5 place-items-center rounded-md bg-white p-4">
             <div className="text-sm text-muted-foreground">{debtor?.name}</div>
             <ChevronRight />
             <div className="text-sm text-muted-foreground">{totalDiff} zł</div>
@@ -139,7 +139,7 @@ export function ExpenseSettlementForm({
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-4">
           <Label className="text-base">Wydatki</Label>
           {debtsFields.map((item, index) => (
             <FormField
@@ -148,7 +148,7 @@ export function ExpenseSettlementForm({
               name={`debts.${index}.selected`}
               render={({ field }) => {
                 return (
-                  <FormItem className="space-y-2 rounded-md border p-4">
+                  <FormItem className="space-y-2 rounded-md bg-white p-4">
                     <div className="flex items-center justify-between gap-4">
                       <FormLabel className="font-normal">
                         <div className="line-clamp-1">{item.name}</div>

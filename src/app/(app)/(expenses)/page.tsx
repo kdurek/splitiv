@@ -18,15 +18,17 @@ export default async function ExpensesPage() {
   }
 
   return (
-    <Section title="Wydatki">
-      <UserStats session={session} />
-      <Suspense fallback={<ExpensesFeedSkeleton />}>
-        <ExpensesFeed type="dashboard" session={session} />
-      </Suspense>
-      <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
-        <Archive className="mr-2 size-4" />
-        Archiwum
-      </Link>
+    <Section>
+      <div className="space-y-4">
+        <UserStats session={session} />
+        <Suspense fallback={<ExpensesFeedSkeleton />}>
+          <ExpensesFeed type="dashboard" session={session} />
+        </Suspense>
+        <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'ghost' }), 'w-full flex')}>
+          <Archive className="mr-2 size-4" />
+          Archiwum
+        </Link>
+      </div>
     </Section>
   );
 }

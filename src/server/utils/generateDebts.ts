@@ -1,20 +1,27 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import type { ExpenseDebt } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import Decimal from 'decimal.js';
 
 export interface IDebt {
   fromId: string;
   toId: string;
-  amount: string;
+  amount: Decimal;
 }
 
-interface DebtWithExpense extends ExpenseDebt {
-  expense: {
-    payerId: string;
+export type DebtWithExpense = Prisma.ExpenseDebtGetPayload<{
+  select: {
+    amount: true;
+    settled: true;
+    debtorId: true;
+    expense: {
+      select: {
+        payerId: true;
+      };
+    };
   };
-}
+}>;
 
-function upsertDebt<T extends { amount: string }>(
+function upsertDebt<T extends { amount: Decimal }>(
   array: T[],
   element: T,
   elementProp: keyof T,
@@ -27,7 +34,7 @@ function upsertDebt<T extends { amount: string }>(
 
   if (i > -1) {
     // eslint-disable-next-line no-param-reassign
-    array[i]!.amount = new Decimal(array[i]!.amount).plus(new Decimal(element.amount)).toFixed(2);
+    array[i]!.amount = new Decimal(array[i]!.amount).plus(new Decimal(element.amount));
   } else array.push(element);
 }
 
@@ -59,7 +66,7 @@ function reduceDebts(debts: IDebt[]) {
         reducedDebts.push({
           fromId,
           toId,
-          amount: amount.toFixed(2),
+          amount,
         });
       }
     });
@@ -82,7 +89,7 @@ export function generateDebts(debts: DebtWithExpense[]) {
         {
           fromId: debt.debtorId,
           toId: debt.expense.payerId,
-          amount: netAmount.toFixed(2),
+          amount: netAmount,
         },
         'fromId',
         'toId',

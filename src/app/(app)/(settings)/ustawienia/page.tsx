@@ -9,14 +9,13 @@ import { Section } from '@/components/layout/section';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 import { api } from '@/trpc/server';
 
 export default async function SettingsPage() {
-  const session = await getServerAuthSession();
-
-  if (!session) {
-    redirect('/logowanie');
+  const { user } = await validateRequest();
+  if (!user) {
+    return redirect('/logowanie');
   }
 
   const group = await api.group.current.query();
@@ -33,10 +32,10 @@ export default async function SettingsPage() {
 
         <div className="space-y-2 rounded-md bg-white p-4">
           <Heading variant="h2">Aktywna grupa</Heading>
-          <GroupSelect session={session} />
+          <GroupSelect user={user} />
         </div>
 
-        {session.user.id === group.adminId && (
+        {user.id === group.adminId && (
           <div className="rounded-md bg-white p-4">
             <Heading variant="h2">Członkowie</Heading>
             <MembersList />

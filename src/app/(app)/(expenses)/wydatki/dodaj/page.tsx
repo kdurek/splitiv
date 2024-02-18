@@ -2,18 +2,17 @@ import { redirect } from 'next/navigation';
 
 import { ExpenseForm } from '@/components/expense/expense-form';
 import { Section } from '@/components/layout/section';
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 
 export default async function ExpenseAddPage() {
-  const session = await getServerAuthSession();
-
-  if (!session) {
-    redirect('/logowanie');
+  const { user } = await validateRequest();
+  if (!user) {
+    return redirect('/logowanie');
   }
 
   return (
     <Section title="Dodaj wydatek">
-      <ExpenseForm session={session} />
+      <ExpenseForm user={user} />
     </Section>
   );
 }

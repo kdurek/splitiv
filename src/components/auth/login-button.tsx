@@ -1,14 +1,13 @@
-'use client';
-
 import { LogIn } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export function LoginButton() {
   return (
-    <Button onClick={() => signIn('google', { callbackUrl: '/' })}>
+    <Link href="/api/auth/google" className={cn(buttonVariants(), 'w-full')}>
       <LogIn className="mr-2" /> Zaloguj
-    </Button>
+    </Link>
   );
 }

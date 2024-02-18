@@ -23,15 +23,15 @@ export const expenseRouter = createTRPCRouter({
         take: input.limit + 1,
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
-          groupId: ctx.session.activeGroupId,
+          groupId: ctx.user.activeGroupId,
           OR: [
             {
-              payerId: ctx.session.user.id,
+              payerId: ctx.user.id,
             },
             {
               debts: {
                 some: {
-                  debtorId: ctx.session.user.id,
+                  debtorId: ctx.user.id,
                 },
               },
             },
@@ -109,7 +109,7 @@ export const expenseRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.expense.findMany({
         where: {
-          groupId: ctx.session.activeGroupId,
+          groupId: ctx.user.activeGroupId,
           payerId: input.payerId ?? undefined,
           debts: {
             some: {
@@ -229,7 +229,7 @@ export const expenseRouter = createTRPCRouter({
         data: {
           group: {
             connect: {
-              id: ctx.session.activeGroupId,
+              id: ctx.user.activeGroupId,
             },
           },
           name: input.name,
@@ -315,7 +315,7 @@ export const expenseRouter = createTRPCRouter({
           },
         });
 
-        if (expense.group.adminId !== ctx.session.user.id && expense.payerId !== ctx.session.user.id) {
+        if (expense.group.adminId !== ctx.user.id && expense.payerId !== ctx.user.id) {
           throw new TRPCError({
             code: 'FORBIDDEN',
             message: `Tylko ${expense.payer.name} może edytować ten wydatek`,
@@ -338,7 +338,7 @@ export const expenseRouter = createTRPCRouter({
         },
       });
 
-      if (expense.group.adminId !== ctx.session.user.id && expense.payerId !== ctx.session.user.id) {
+      if (expense.group.adminId !== ctx.user.id && expense.payerId !== ctx.user.id) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: `Tylko ${expense.payer.name} może usunąć ten wydatek`,

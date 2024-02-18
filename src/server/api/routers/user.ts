@@ -21,7 +21,7 @@ export const userRouter = createTRPCRouter({
       where: {
         groups: {
           none: {
-            groupId: ctx.session.activeGroupId,
+            groupId: ctx.user.activeGroupId,
           },
         },
       },

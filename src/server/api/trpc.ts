@@ -12,7 +12,7 @@ import { type NextRequest } from 'next/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 import { db } from '@/server/db';
 
 /**
@@ -38,11 +38,12 @@ interface CreateContextOptions {
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
 export const createInnerTRPCContext = async (opts: CreateContextOptions) => {
-  const session = await getServerAuthSession();
+  const { session, user } = await validateRequest();
 
   return {
-    session,
     headers: opts.headers,
+    session,
+    user,
     db,
   };
 };
@@ -107,13 +108,13 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session?.user) {
+  if (!ctx.session || !ctx.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   return next({
     ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: ctx.session,
+      user: ctx.user,
     },
   });
 });

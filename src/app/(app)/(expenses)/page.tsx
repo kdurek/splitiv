@@ -8,21 +8,20 @@ import { UserStats } from '@/components/expense/user-stats';
 import { Section } from '@/components/layout/section';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 
 export default async function ExpensesPage() {
-  const session = await getServerAuthSession();
-
-  if (!session) {
-    redirect('/logowanie');
+  const { user } = await validateRequest();
+  if (!user) {
+    return redirect('/logowanie');
   }
 
   return (
     <Section>
       <div className="space-y-4">
-        <UserStats session={session} />
+        <UserStats user={user} />
         <Suspense fallback={<ExpensesFeedSkeleton />}>
-          <ExpensesFeed type="dashboard" session={session} />
+          <ExpensesFeed type="dashboard" user={user} />
         </Suspense>
         <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'ghost' }), 'w-full flex')}>
           <Archive className="mr-2 size-4" />

@@ -33,10 +33,7 @@ export const expenseLogRouter = createTRPCRouter({
           },
         });
 
-        if (
-          expenseDebt.expense.group.adminId !== ctx.session.user.id &&
-          expenseDebt.expense.payerId !== ctx.session.user.id
-        ) {
+        if (expenseDebt.expense.group.adminId !== ctx.user.id && expenseDebt.expense.payerId !== ctx.user.id) {
           throw new TRPCError({
             code: 'FORBIDDEN',
             message: `Tylko ${expenseDebt.expense.payer.name} może cofnąć spłatę tego długu`,

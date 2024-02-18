@@ -1,76 +1,78 @@
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
 import type { Gender } from '@prisma/client';
-import { type DefaultSession, type DefaultUser, getServerSession, type NextAuthOptions } from 'next-auth';
-import GoogleProvider, { type GoogleProfile } from 'next-auth/providers/google';
+import { Google } from 'arctic';
+import { Lucia, type Session, type User } from 'lucia';
+import { cookies } from 'next/headers';
+import { cache } from 'react';
 
 import { env } from '@/env';
 import { db } from '@/server/db';
 
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
-
-declare module 'next-auth' {
-  interface Session extends DefaultSession {
-    activeGroupId: string;
-    user: {
-      id: string;
-      gender?: Gender | null;
-    } & DefaultSession['user'];
-  }
-
-  interface User extends DefaultUser {
-    gender?: Gender | null;
-    activeGroupId: string | null;
-  }
-
-  interface Profile extends GoogleProfile {
-    id: string;
+declare module 'lucia' {
+  interface Register {
+    Lucia: typeof lucia;
+    DatabaseUserAttributes: DatabaseUserAttributes;
   }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
-export const authOptions: NextAuthOptions = {
-  callbacks: {
-    async signIn({ user, profile }) {
-      if (!user.image && profile?.picture) {
-        await db.user.update({
-          where: { id: user.id },
-          data: { image: profile.picture },
-        });
-      }
-      return true;
-    },
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        session.user.gender = user.gender;
-      }
-      if (user.activeGroupId) {
-        session.activeGroupId = user.activeGroupId;
-      }
-      return session;
+interface DatabaseUserAttributes {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  gender: Gender;
+  activeGroupId: string;
+}
+
+export const google = new Google(
+  env.GOOGLE_CLIENT_ID,
+  env.GOOGLE_CLIENT_SECRET,
+  env.BASE_URL + '/api/auth/google/callback',
+);
+
+const adapter = new PrismaAdapter(db.session, db.user);
+
+export const lucia = new Lucia(adapter, {
+  sessionCookie: {
+    expires: false,
+    attributes: {
+      secure: process.env.NODE_ENV === 'production',
     },
   },
-  adapter: PrismaAdapter(db),
-  providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-    }),
-  ],
-};
+  getUserAttributes: (attributes) => {
+    return {
+      id: attributes.id,
+      name: attributes.name,
+      email: attributes.email,
+      image: attributes.image,
+      gender: attributes.gender,
+      activeGroupId: attributes.activeGroupId,
+    };
+  },
+});
 
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
-export const getServerAuthSession = () => getServerSession(authOptions);
+export const validateRequest = cache(
+  async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
+    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    if (!sessionId) {
+      return {
+        user: null,
+        session: null,
+      };
+    }
+
+    const result = await lucia.validateSession(sessionId);
+    // next.js throws when you attempt to set cookie when rendering page
+    try {
+      if (result.session && result.session.fresh) {
+        const sessionCookie = lucia.createSessionCookie(result.session.id);
+        cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+      }
+      if (!result.session) {
+        const sessionCookie = lucia.createBlankSessionCookie();
+        cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+      }
+    } catch {}
+    return result;
+  },
+);

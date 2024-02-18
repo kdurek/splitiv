@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Section } from '@/components/layout/section';
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 import { api } from '@/trpc/server';
 
 interface ExpensePageProps {
@@ -12,10 +12,9 @@ interface ExpensePageProps {
 }
 
 export default async function ExpensePage({ params }: ExpensePageProps) {
-  const session = await getServerAuthSession();
-
-  if (!session) {
-    redirect('/logowanie');
+  const { user } = await validateRequest();
+  if (!user) {
+    return redirect('/logowanie');
   }
 
   const expense = await api.expense.byId.query({ id: params.expenseId });
@@ -26,7 +25,7 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
 
   return (
     <Section>
-      <ExpenseDetail expense={expense} session={session} />
+      <ExpenseDetail expense={expense} user={user} />
     </Section>
   );
 }

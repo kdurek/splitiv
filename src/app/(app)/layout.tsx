@@ -6,27 +6,26 @@ import { MobileNav } from '@/components/layout/mobile-nav';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
 import { GenderSelectForm } from '@/components/user/gender-select-form';
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerAuthSession();
-
-  if (!session) {
-    redirect('/logowanie');
+  const { user } = await validateRequest();
+  if (!user) {
+    return redirect('/logowanie');
   }
 
-  if (!session.user.gender) {
+  if (!user.gender) {
     return (
       <div className="p-4">
-        <GenderSelectForm userId={session.user.id} />
+        <GenderSelectForm userId={user.id} />
       </div>
     );
   }
 
-  if (!session.activeGroupId) {
+  if (!user.activeGroupId) {
     return (
       <div className="space-y-4 p-4">
-        <GroupSelect session={session} />
+        <GroupSelect user={user} />
         <Separator />
         <Collapsible>
           <CollapsibleTrigger className="w-full text-center text-muted-foreground">Stwórz grupę</CollapsibleTrigger>

@@ -2,8 +2,8 @@
 
 import { type Prisma } from '@prisma/client';
 import { format } from 'date-fns';
+import type { User } from 'lucia';
 import { CircleDollarSign } from 'lucide-react';
-import type { Session } from 'next-auth';
 
 import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
@@ -54,10 +54,10 @@ function ExpensesListCardIcon({ status }: ExpensesListCardIconProps) {
 
 interface ExpensesListCardProps {
   expense: ExpensesList['items'][number];
-  session: Session;
+  user: User;
 }
 
-export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
+export function ExpensesListCard({ expense, user }: ExpensesListCardProps) {
   const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM');
 
   return (
@@ -78,7 +78,7 @@ export function ExpensesListCard({ expense, session }: ExpensesListCardProps) {
       </DrawerTrigger>
       <DrawerContent className="max-h-[96%]">
         <div className="overflow-auto overscroll-none p-4">
-          <ExpenseDetail expense={expense} session={session} />
+          <ExpenseDetail expense={expense} user={user} />
         </div>
       </DrawerContent>
     </Drawer>

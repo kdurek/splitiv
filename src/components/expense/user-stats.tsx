@@ -1,8 +1,8 @@
 'use client';
 
 import Decimal from 'decimal.js';
+import type { User } from 'lucia';
 import Link from 'next/link';
-import { type Session } from 'next-auth';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
@@ -36,17 +36,17 @@ function UserCard({ image, name, credit, debt }: UserCardProps) {
 }
 
 interface OtherUsersStatsProps {
-  session: Session;
+  user: User;
 }
 
-function OtherUsersStats({ session }: OtherUsersStatsProps) {
+function OtherUsersStats({ user }: OtherUsersStatsProps) {
   const [{ members, debts }] = api.group.current.useSuspenseQuery();
 
   return (
     <div className="space-y-6">
       {members.map((member) => {
-        const memberCredit = debts.find((debt) => debt.fromId === member.id && debt.toId === session.user.id)?.amount;
-        const memberDebt = debts.find((debt) => debt.fromId === session.user.id && debt.toId === member.id)?.amount;
+        const memberCredit = debts.find((debt) => debt.fromId === member.id && debt.toId === user.id)?.amount;
+        const memberDebt = debts.find((debt) => debt.fromId === user.id && debt.toId === member.id)?.amount;
 
         if (!memberCredit && !memberDebt) {
           return null;
@@ -77,18 +77,18 @@ function OtherUsersStats({ session }: OtherUsersStatsProps) {
 }
 
 interface UserStatsProps {
-  session: Session;
+  user: User;
 }
 
-export function UserStats({ session }: UserStatsProps) {
+export function UserStats({ user }: UserStatsProps) {
   const [group] = api.group.current.useSuspenseQuery();
 
   const userCredit = group.debts.reduce(
-    (acc, debt) => (debt.toId === session.user.id ? Decimal.add(acc, debt.amount) : acc),
+    (acc, debt) => (debt.toId === user.id ? Decimal.add(acc, debt.amount) : acc),
     new Decimal(0),
   );
   const userDebt = group.debts.reduce(
-    (acc, debt) => (debt.fromId === session.user.id ? Decimal.add(acc, debt.amount) : acc),
+    (acc, debt) => (debt.fromId === user.id ? Decimal.add(acc, debt.amount) : acc),
     new Decimal(0),
   );
 
@@ -96,17 +96,12 @@ export function UserStats({ session }: UserStatsProps) {
     <Drawer>
       <DrawerTrigger asChild>
         <div className="flex items-center gap-4 rounded-md bg-white p-4">
-          <UserCard
-            image={session.user.image}
-            name={session.user.name}
-            credit={Number(userCredit)}
-            debt={Number(userDebt)}
-          />
+          <UserCard image={user.image} name={user.name} credit={Number(userCredit)} debt={Number(userDebt)} />
         </div>
       </DrawerTrigger>
       <DrawerContent className="max-h-[96%]">
         <div className="overflow-auto overscroll-none p-4">
-          <OtherUsersStats session={session} />
+          <OtherUsersStats user={user} />
         </div>
       </DrawerContent>
     </Drawer>

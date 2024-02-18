@@ -10,7 +10,7 @@ export const expenseNoteRouter = createTRPCRouter({
         data: {
           expenseId: input.expenseId,
           content: input.content,
-          createdById: ctx.session.user.id,
+          createdById: ctx.user.id,
         },
       });
     }),

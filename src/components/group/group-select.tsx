@@ -1,7 +1,7 @@
 'use client';
 
+import type { User } from 'lucia';
 import { useRouter } from 'next/navigation';
-import { type Session } from 'next-auth';
 import { toast } from 'sonner';
 
 import { Label } from '@/components/ui/label';
@@ -9,10 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { api } from '@/trpc/react';
 
 interface GroupSelectProps {
-  session: Session;
+  user: User;
 }
 
-export function GroupSelect({ session }: GroupSelectProps) {
+export function GroupSelect({ user }: GroupSelectProps) {
   const router = useRouter();
   const [groups] = api.group.list.useSuspenseQuery();
   const { mutate: changeActiveGroup } = api.group.changeCurrent.useMutation();
@@ -41,7 +41,7 @@ export function GroupSelect({ session }: GroupSelectProps) {
   return (
     <div className="space-y-2">
       <Label>Wybierz grupę aby przejść dalej</Label>
-      <Select defaultValue={session.activeGroupId} onValueChange={handleGroupSelect}>
+      <Select defaultValue={user.activeGroupId} onValueChange={handleGroupSelect}>
         <SelectTrigger>
           <SelectValue placeholder="Wybierz grupę" />
         </SelectTrigger>

@@ -1,13 +1,12 @@
 import { redirect } from 'next/navigation';
 
 import { LoginButton } from '@/components/auth/login-button';
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 
 export default async function LoginPage() {
-  const session = await getServerAuthSession();
-
-  if (session) {
-    redirect('/');
+  const { user } = await validateRequest();
+  if (user) {
+    return redirect('/');
   }
 
   return (

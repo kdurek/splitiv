@@ -8,12 +8,12 @@ import { generateDebts } from '@/server/utils/generateDebts';
 export const groupRouter = createTRPCRouter({
   list: protectedProcedure.query(({ ctx }) => {
     return ctx.db.group.findMany({
-      where: { members: { some: { userId: ctx.session.user.id } } },
+      where: { members: { some: { userId: ctx.user.id } } },
     });
   }),
 
   current: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.activeGroupId) {
+    if (!ctx.user.activeGroupId) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'activeGroupId is not set',
@@ -21,7 +21,7 @@ export const groupRouter = createTRPCRouter({
     }
 
     const group = await ctx.db.group.findUniqueOrThrow({
-      where: { id: ctx.session.activeGroupId },
+      where: { id: ctx.user.activeGroupId },
       include: {
         members: {
           orderBy: {
@@ -34,7 +34,7 @@ export const groupRouter = createTRPCRouter({
       },
     });
 
-    if (!group.members.find((member) => member.user.id === ctx.session.user.id)) {
+    if (!group.members.find((member) => member.user.id === ctx.user.id)) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
       });
@@ -43,7 +43,7 @@ export const groupRouter = createTRPCRouter({
     const expenseDebts = await ctx.db.expenseDebt.findMany({
       where: {
         expense: {
-          groupId: ctx.session.activeGroupId,
+          groupId: ctx.user.activeGroupId,
         },
         settled: { lt: ctx.db.expenseDebt.fields.amount },
       },
@@ -84,11 +84,11 @@ export const groupRouter = createTRPCRouter({
     return ctx.db.group.create({
       data: {
         name: input.name,
-        adminId: ctx.session.user.id,
+        adminId: ctx.user.id,
         members: {
           create: [
             {
-              userId: ctx.session.user.id,
+              userId: ctx.user.id,
             },
           ],
         },
@@ -98,7 +98,7 @@ export const groupRouter = createTRPCRouter({
 
   changeCurrent: protectedProcedure.input(z.object({ groupId: z.string().cuid2() })).mutation(({ input, ctx }) => {
     return ctx.db.user.update({
-      where: { id: ctx.session.user.id },
+      where: { id: ctx.user.id },
       data: {
         activeGroupId: input.groupId,
       },
@@ -108,7 +108,7 @@ export const groupRouter = createTRPCRouter({
   addUser: protectedProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input, ctx }) => {
     return ctx.db.userGroup.create({
       data: {
-        groupId: ctx.session.activeGroupId,
+        groupId: ctx.user.activeGroupId,
         userId: input.userId,
       },
     });

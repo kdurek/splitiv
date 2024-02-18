@@ -1,6 +1,6 @@
 'use client';
 
-import type { Session } from 'next-auth';
+import type { User } from 'lucia';
 import { useEffect, useRef } from 'react';
 import { useIntersection } from 'react-use';
 
@@ -9,10 +9,10 @@ import { api } from '@/trpc/react';
 
 interface ExpensesFeedProps {
   type: 'dashboard' | 'archived';
-  session: Session;
+  user: User;
 }
 
-export function ExpensesFeed({ type, session }: ExpensesFeedProps) {
+export function ExpensesFeed({ type, user }: ExpensesFeedProps) {
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
     root: null,
@@ -44,7 +44,7 @@ export function ExpensesFeed({ type, session }: ExpensesFeedProps) {
 
   return (
     <>
-      <ExpensesList expenses={expenses} session={session} />
+      <ExpensesList expenses={expenses} user={user} />
       <div ref={intersectionRef} />
     </>
   );

@@ -1,9 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { User } from 'lucia';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { type Session } from 'next-auth';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -22,11 +22,11 @@ import type { ExpenseById } from '@/trpc/shared';
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 interface ExpenseFormProps {
-  session: Session;
+  user: User;
   expense?: ExpenseById;
 }
 
-export function ExpenseForm({ session, expense }: ExpenseFormProps) {
+export function ExpenseForm({ user, expense }: ExpenseFormProps) {
   const router = useRouter();
   const [group] = api.group.current.useSuspenseQuery();
   const { mutate: createExpense, isPending: isPendingCreateExpense } = api.expense.create.useMutation();
@@ -37,7 +37,7 @@ export function ExpenseForm({ session, expense }: ExpenseFormProps) {
       name: expense?.name ?? '',
       description: expense?.description ?? '',
       amount: Number(expense?.amount) || 0,
-      payer: expense?.payerId ?? session.user.id ?? '',
+      payer: expense?.payerId ?? user.id ?? '',
       debts: group.members.map((member) => ({
         id: member.id,
         name: member.name ?? '',

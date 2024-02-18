@@ -1,20 +1,20 @@
 'use client';
 
-import type { Session } from 'next-auth';
+import type { User } from 'lucia';
 
 import { ExpensesListCard, ExpensesListCardSkeleton } from '@/components/expense/expenses-list-card';
 import type { ExpensesList } from '@/trpc/shared';
 
 interface ExpenseListProps {
   expenses: ExpensesList['items'];
-  session: Session;
+  user: User;
 }
 
-export function ExpensesList({ expenses, session }: ExpenseListProps) {
+export function ExpensesList({ expenses, user }: ExpenseListProps) {
   return (
     <div className="overflow-hidden rounded-md">
       {expenses.map((expense) => (
-        <ExpensesListCard key={expense.id} expense={expense} session={session} />
+        <ExpensesListCard key={expense.id} expense={expense} user={user} />
       ))}
     </div>
   );

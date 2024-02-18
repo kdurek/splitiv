@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { ExpenseForm } from '@/components/expense/expense-form';
 import { Section } from '@/components/layout/section';
-import { getServerAuthSession } from '@/server/auth';
+import { validateRequest } from '@/server/auth';
 import { api } from '@/trpc/server';
 
 interface ExpenseEditPageProps {
@@ -12,10 +12,9 @@ interface ExpenseEditPageProps {
 }
 
 export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) {
-  const session = await getServerAuthSession();
-
-  if (!session) {
-    redirect('/logowanie');
+  const { user } = await validateRequest();
+  if (!user) {
+    return redirect('/logowanie');
   }
 
   const expense = await api.expense.byId.query({ id: params.expenseId });
@@ -26,7 +25,7 @@ export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) 
 
   return (
     <Section title="Edytuj wydatek">
-      <ExpenseForm session={session} expense={expense} />
+      <ExpenseForm user={user} expense={expense} />
     </Section>
   );
 }

@@ -17,7 +17,7 @@ export const expenseDebtRouter = createTRPCRouter({
       return ctx.db.expenseDebt.findMany({
         where: {
           expense: {
-            groupId: ctx.session.activeGroupId,
+            groupId: ctx.user.activeGroupId,
             payerId: input.payerId || undefined,
           },
           debtorId: input.debtorId || undefined,
@@ -99,7 +99,7 @@ export const expenseDebtRouter = createTRPCRouter({
               },
             });
 
-            if (ctx.session.user.id !== previousDebt.debtorId && ctx.session.user.id !== previousDebt.expense.payerId) {
+            if (ctx.user.id !== previousDebt.debtorId && ctx.user.id !== previousDebt.expense.payerId) {
               throw new TRPCError({
                 code: 'BAD_REQUEST',
                 message: 'Tylko osoba płacąca i oddająca dług może go edytować',

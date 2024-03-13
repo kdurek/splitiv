@@ -53,6 +53,9 @@ dependencies:
   '@serwist/next':
     specifier: ^8.4.4
     version: 8.4.4(next@14.1.3)(webpack@5.90.3)
+  '@serwist/precaching':
+    specifier: ^8.4.4
+    version: 8.4.4
   '@serwist/sw':
     specifier: ^8.4.4
     version: 8.4.4
@@ -142,9 +145,6 @@ dependencies:
     version: 3.22.4
 
 devDependencies:
-  '@serwist/precaching':
-    specifier: ^8.4.4
-    version: 8.4.4
   '@tanstack/eslint-plugin-query':
     specifier: ^5.27.7
     version: 5.27.7(eslint@8.57.0)(typescript@5.4.2)
@@ -2444,6 +2444,7 @@ packages:
 
   /@serwist/core@8.4.4:
     resolution: {integrity: sha512-mB3XFoUFbfgxkqWUhn9khqZP9c+K3qsuY1WQazl7S00hd+JUH2We/FmNMoOpei5ydVK61rIX690ScfXO0FbjXw==}
+    dev: false
 
   /@serwist/expiration@8.4.4:
     resolution: {integrity: sha512-zn5Q3qkE2827RUDwta198QTeIWzQx+EtWikQog9LZZvXSDOuOogzYeyiuskrfvrGFLk11myOJLtpVbXpeNCHeA==}
@@ -2488,6 +2489,7 @@ packages:
       '@serwist/core': 8.4.4
       '@serwist/routing': 8.4.4
       '@serwist/strategies': 8.4.4
+    dev: false
 
   /@serwist/range-requests@8.4.4:
     resolution: {integrity: sha512-1VVhL42XnjFJKszAhgwkCUjcK4j28eudWhfGaYey5NYBk0xNqXNGTOuPBjvr5mLMo/NkmapiwDI/htAqOuK7Wg==}
@@ -2499,11 +2501,13 @@ packages:
     resolution: {integrity: sha512-TimZ54n5UpQoJMjGdLIXQ1VJlQ669yfJ8scdfZKwRjggILJ3f1rI13N8vicetwZMGqveTz2Q9sVYIXaeQuFmQg==}
     dependencies:
       '@serwist/core': 8.4.4
+    dev: false
 
   /@serwist/strategies@8.4.4:
     resolution: {integrity: sha512-Yr/wKD16vXUqVbyfHhLM25qRWTtWgNJnY8Bot0yjCV/BvHM81cOIkG3sE76FIjcUntCvfemhaN9Zx53fbRzLPQ==}
     dependencies:
       '@serwist/core': 8.4.4
+    dev: false
 
   /@serwist/sw@8.4.4:
     resolution: {integrity: sha512-TyFlhoJpo/S1hj7+j1iiELwoU4idKvqvITBYFzpYEUK3h/qXJ+eiNiGT1hl2R0znz8p35Hp3hxbyGYFt4BYpKw==}

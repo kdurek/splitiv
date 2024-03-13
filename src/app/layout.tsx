@@ -25,7 +25,6 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description: 'Expense management',
-  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -37,7 +36,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#FFFFFF',
+  themeColor: '#F5F5F5',
 };
 
 const poppins = Poppins({

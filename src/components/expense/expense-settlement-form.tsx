@@ -2,12 +2,25 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Decimal from 'decimal.js';
+import type { User } from 'lucia';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -36,7 +49,7 @@ type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
 
 interface ExpenseSettlementFormProps {
   paramUser: UserById;
-  currentUser: UserById;
+  currentUser: User;
   paramUserDebts: ExpenseDebtList;
   currentUserDebts: ExpenseDebtList;
 }
@@ -48,6 +61,7 @@ export function ExpenseSettlementForm({
   currentUserDebts,
 }: ExpenseSettlementFormProps) {
   const router = useRouter();
+
   const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = api.expense.debt.settle.useMutation();
 
   const form = useForm<ExpenseSettlementFormSchema>({
@@ -72,6 +86,12 @@ export function ExpenseSettlementForm({
     name: 'debts',
     keyName: 'fieldId',
   });
+
+  useEffect(() => {
+    if (!paramUserDebts.length && !currentUserDebts.length) {
+      router.push('/');
+    }
+  }, [currentUserDebts.length, paramUserDebts.length, router]);
 
   const selectedDebts = form.watch('debts').filter((debt) => debt.selected);
 
@@ -111,7 +131,6 @@ export function ExpenseSettlementForm({
       {
         onSuccess() {
           toast.success('Pomyślnie rozliczono długi');
-          router.refresh();
         },
       },
     );
@@ -119,7 +138,7 @@ export function ExpenseSettlementForm({
 
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(handleSettlement)}>
+      <form id="expense-settlement-form" className="space-y-6" onSubmit={form.handleSubmit(handleSettlement)}>
         <Heading variant="h2">{paramUser?.name}</Heading>
 
         <div className="space-y-4">
@@ -132,10 +151,24 @@ export function ExpenseSettlementForm({
             <div className="text-sm text-muted-foreground">{payer?.name}</div>
           </div>
           <div className="flex items-center justify-end gap-4">
-            <Button>
-              {isPendingSettleExpenseDebts && <Loader2 className="mr-2 size-4 animate-spin" />}
-              Rozlicz
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button>Rozlicz</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Rozliczenie</AlertDialogTitle>
+                  <AlertDialogDescription>Czy na pewno chcesz się rozliczyć?</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Nie</AlertDialogCancel>
+                  <AlertDialogAction type="submit" form="expense-settlement-form">
+                    {isPendingSettleExpenseDebts && <Loader2 className="mr-2 size-4 animate-spin" />}
+                    Tak
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
 

@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation';
 
-import { ExpenseForm } from '@/components/expense/expense-form';
+import { ExpenseEdit } from '@/components/expense/expense-edit';
 import { Section } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
-import { api } from '@/trpc/server';
 
 interface ExpenseEditPageProps {
   params: {
@@ -17,15 +16,9 @@ export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) 
     return redirect('/logowanie');
   }
 
-  const expense = await api.expense.byId.query({ id: params.expenseId });
-
-  if (!expense) {
-    redirect('/');
-  }
-
   return (
     <Section title="Edytuj wydatek">
-      <ExpenseForm user={user} expense={expense} />
+      <ExpenseEdit user={user} expenseId={params.expenseId} />
     </Section>
   );
 }

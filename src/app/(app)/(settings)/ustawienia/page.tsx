@@ -2,10 +2,10 @@ import { User2 } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { MembersList } from '@/app/(app)/(settings)/ustawienia/members-list';
 import { LogoutButton } from '@/components/auth/logout-button';
 import { GroupSelect } from '@/components/group/group-select';
 import { Section } from '@/components/layout/section';
+import { MembersList } from '@/components/settings/members-list';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';

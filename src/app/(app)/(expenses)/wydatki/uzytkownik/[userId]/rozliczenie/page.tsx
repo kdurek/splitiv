@@ -1,54 +1,24 @@
 import { redirect } from 'next/navigation';
 
-import { ExpenseSettlementForm } from '@/components/expense/expense-settlement-form';
+import { ExpenseSettlement } from '@/components/expense/expense-settlement';
 import { Section } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
-import { api } from '@/trpc/server';
 
-interface ExpenseDetailsPageProps {
+interface ExpenseSettlementPageProps {
   params: {
     userId: string;
   };
 }
 
-export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
+export default async function ExpenseSettlementPage({ params }: ExpenseSettlementPageProps) {
   const { user } = await validateRequest();
   if (!user) {
     return redirect('/logowanie');
   }
 
-  const paramUser = await api.user.byId.query({ userId: params.userId });
-  const currentUser = await api.user.byId.query({
-    userId: user.id,
-  });
-
-  if (!paramUser || !currentUser) {
-    redirect('/');
-  }
-
-  const paramUserDebts = await api.expense.debt.list.query({
-    payerId: currentUser.id,
-    debtorId: paramUser.id,
-    isSettled: false,
-  });
-  const currentUserDebts = await api.expense.debt.list.query({
-    payerId: paramUser.id,
-    debtorId: currentUser.id,
-    isSettled: false,
-  });
-
-  if (!paramUserDebts.length && !currentUserDebts.length) {
-    redirect('/');
-  }
-
   return (
     <Section title="Rozliczenie">
-      <ExpenseSettlementForm
-        paramUser={paramUser}
-        currentUser={currentUser}
-        paramUserDebts={paramUserDebts}
-        currentUserDebts={currentUserDebts}
-      />
+      <ExpenseSettlement user={user} paramsUserId={params.userId} />
     </Section>
   );
 }

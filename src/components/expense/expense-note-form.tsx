@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -19,7 +18,6 @@ interface ExpenseNoteFormProps {
 }
 
 export function ExpenseNoteForm({ expenseId }: ExpenseNoteFormProps) {
-  const router = useRouter();
   const { mutate: createExpenseNote } = api.expense.note.create.useMutation();
 
   const form = useForm<ExpenseNoteFormSchema>({
@@ -36,7 +34,6 @@ export function ExpenseNoteForm({ expenseId }: ExpenseNoteFormProps) {
         onSuccess() {
           toast.success('Pomyślnie dodano notatkę');
           form.reset();
-          router.refresh();
         },
       },
     );

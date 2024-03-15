@@ -1,9 +1,15 @@
-import { Loader2 } from 'lucide-react';
+import { Loader2Icon } from 'lucide-react';
 
-export default function FullScreenLoading() {
+import { cn } from '@/lib/utils';
+
+export function Loader({ className }: { className?: string }) {
+  return <Loader2Icon className={cn('size-16 animate-spin text-muted-foreground', className)} />;
+}
+
+export function FullScreenLoading({ className }: { className?: string }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
-      <Loader2 className="size-16 animate-spin text-muted-foreground" />
+    <div className={cn('fixed inset-0 flex items-center justify-center', className)}>
+      <Loader />
     </div>
   );
 }

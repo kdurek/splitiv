@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import {
@@ -22,7 +21,6 @@ interface ExpenseDeleteModalProps {
 }
 
 export function ExpenseDeleteModal({ expenseId }: ExpenseDeleteModalProps) {
-  const router = useRouter();
   const { mutate: deleteExpense } = api.expense.delete.useMutation();
 
   const handleExpenseDelete = () => {
@@ -31,7 +29,6 @@ export function ExpenseDeleteModal({ expenseId }: ExpenseDeleteModalProps) {
       {
         onSuccess() {
           toast.success('Pomyślnie usunięto wydatek');
-          router.refresh();
         },
         onError(err) {
           toast.error(err.message);

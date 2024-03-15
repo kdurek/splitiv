@@ -1,6 +1,6 @@
 import { type ReactNode, Suspense } from 'react';
 
-import FullScreenLoading from '@/components/layout/loading';
+import { FullScreenLoading } from '@/components/layout/loading';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
 

@@ -1,7 +1,6 @@
 'use client';
 
 import { Undo2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,6 @@ interface DebtRevertButtonProps {
 }
 
 export function DebtRevertButton({ id }: DebtRevertButtonProps) {
-  const router = useRouter();
   const { mutate: revert } = api.expense.log.revert.useMutation();
 
   const handleRevert = () => {
@@ -23,7 +21,6 @@ export function DebtRevertButton({ id }: DebtRevertButtonProps) {
       {
         onSuccess() {
           toast.success('Pomyślnie cofnięto spłatę długu');
-          router.refresh();
         },
         onError(err) {
           toast.error(err.message);

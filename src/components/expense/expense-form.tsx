@@ -71,10 +71,9 @@ export function ExpenseForm({ user, expense }: ExpenseFormProps) {
           // debts: formattedDebts,
         },
         {
-          onSuccess(data) {
+          onSuccess() {
             toast.success('Pomyślnie zaktualizowano wydatek');
-            router.push(`/wydatki/${data.id}`);
-            router.refresh();
+            router.push(`/`);
           },
           onError(err) {
             toast.error(err.message);
@@ -94,7 +93,6 @@ export function ExpenseForm({ user, expense }: ExpenseFormProps) {
           onSuccess() {
             toast.success('Pomyślnie dodano wydatek');
             router.push('/');
-            router.refresh();
           },
           onError(err) {
             toast.error(err.message);

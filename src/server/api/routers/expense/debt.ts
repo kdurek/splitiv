@@ -5,12 +5,10 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseDebtRouter = createTRPCRouter({
-  list: protectedProcedure
+  settlement: protectedProcedure
     .input(
       z.object({
-        payerId: z.string().cuid2().optional(),
-        debtorId: z.string().cuid2().optional(),
-        isSettled: z.boolean().optional(),
+        userId: z.string().cuid2(),
       }),
     )
     .query(({ input, ctx }) => {
@@ -18,13 +16,27 @@ export const expenseDebtRouter = createTRPCRouter({
         where: {
           expense: {
             groupId: ctx.user.activeGroupId,
-            payerId: input.payerId || undefined,
           },
-          debtorId: input.debtorId || undefined,
-          settled: {
-            lt: input.isSettled === false ? ctx.db.expenseDebt.fields.amount : undefined,
-            equals: input.isSettled === true ? ctx.db.expenseDebt.fields.amount : undefined,
-          },
+          OR: [
+            {
+              expense: {
+                payerId: input.userId,
+              },
+              debtorId: ctx.user.id,
+              settled: {
+                lt: ctx.db.expenseDebt.fields.amount,
+              },
+            },
+            {
+              expense: {
+                payerId: ctx.user.id,
+              },
+              debtorId: input.userId,
+              settled: {
+                lt: ctx.db.expenseDebt.fields.amount,
+              },
+            },
+          ],
         },
         include: {
           expense: {

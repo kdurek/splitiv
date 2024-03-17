@@ -13,34 +13,18 @@ interface ExpenseSettlementProps {
 }
 
 export function ExpenseSettlement({ user, paramsUserId }: ExpenseSettlementProps) {
-  const { data: paramUser, status: paramUserStatus } = api.user.byId.useQuery({ userId: paramsUserId });
-
-  const { data: paramUserDebts, status: paramUserDebtsStatus } = api.expense.debt.list.useQuery({
-    payerId: user.id,
-    debtorId: paramsUserId,
-    isSettled: false,
+  const { data: paramsUser, status: paramsUserStatus } = api.user.byId.useQuery({ userId: paramsUserId });
+  const { data: usersDebts, status: usersDebtsStatus } = api.expense.debt.settlement.useQuery({
+    userId: paramsUserId,
   });
 
-  const { data: currentUserDebts, status: currentUserDebtsStatus } = api.expense.debt.list.useQuery({
-    payerId: paramsUserId,
-    debtorId: user.id,
-    isSettled: false,
-  });
-
-  if (paramUserStatus === 'pending' || paramUserDebtsStatus === 'pending' || currentUserDebtsStatus === 'pending') {
+  if (paramsUserStatus === 'pending' || usersDebtsStatus === 'pending') {
     return <FullScreenLoading />;
   }
 
-  if (paramUserStatus === 'error' || paramUserDebtsStatus === 'error' || currentUserDebtsStatus === 'error') {
+  if (paramsUserStatus === 'error' || usersDebtsStatus === 'error') {
     return <FullScreenError />;
   }
 
-  return (
-    <ExpenseSettlementForm
-      paramUser={paramUser}
-      currentUser={user}
-      paramUserDebts={paramUserDebts}
-      currentUserDebts={currentUserDebts}
-    />
-  );
+  return <ExpenseSettlementForm paramsUser={paramsUser} currentUser={user} usersDebts={usersDebts} />;
 }

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
+import { type z } from 'zod';
 
 import {
   AlertDialog,
@@ -26,47 +26,26 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Heading } from '@/components/ui/heading';
 import { Label } from '@/components/ui/label';
+import { expenseSettlementFormSchema } from '@/lib/validations/expense-settlement';
 import { api } from '@/trpc/react';
-import type { ExpenseDebtList, UserById } from '@/trpc/shared';
-
-const expenseSettlementFormSchema = z.object({
-  debts: z.array(
-    z.object({
-      id: z.string(),
-      selected: z.boolean(),
-      name: z.string(),
-      amount: z.number(),
-      settled: z.number(),
-      payerId: z.string(),
-      payerName: z.string().nullable(),
-      debtorId: z.string(),
-      debtorName: z.string().nullable(),
-    }),
-  ),
-});
+import type { ExpenseDebtSettlement, UserById } from '@/trpc/shared';
 
 type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
 
 interface ExpenseSettlementFormProps {
-  paramUser: UserById;
+  paramsUser: UserById;
   currentUser: User;
-  paramUserDebts: ExpenseDebtList;
-  currentUserDebts: ExpenseDebtList;
+  usersDebts: ExpenseDebtSettlement;
 }
 
-export function ExpenseSettlementForm({
-  paramUser,
-  currentUser,
-  paramUserDebts,
-  currentUserDebts,
-}: ExpenseSettlementFormProps) {
+export function ExpenseSettlementForm({ paramsUser, currentUser, usersDebts }: ExpenseSettlementFormProps) {
   const router = useRouter();
 
   const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = api.expense.debt.settle.useMutation();
 
   const form = useForm<ExpenseSettlementFormSchema>({
     values: {
-      debts: [...paramUserDebts, ...currentUserDebts].flatMap((debt) => ({
+      debts: usersDebts.flatMap((debt) => ({
         id: debt.id,
         selected: true,
         name: debt.expense.name,
@@ -88,14 +67,14 @@ export function ExpenseSettlementForm({
   });
 
   useEffect(() => {
-    if (!paramUserDebts.length && !currentUserDebts.length) {
+    if (!usersDebts.length) {
       router.push('/');
     }
-  }, [currentUserDebts.length, paramUserDebts.length, router]);
+  }, [router, usersDebts.length]);
 
   const selectedDebts = form.watch('debts').filter((debt) => debt.selected);
 
-  const filteredParamUserDebts = selectedDebts.filter((debt) => debt.debtorId === paramUser?.id);
+  const filteredParamUserDebts = selectedDebts.filter((debt) => debt.debtorId === paramsUser?.id);
   const filteredCurrentUserDebts = selectedDebts.filter((debt) => debt.debtorId === currentUser?.id);
 
   const paramUserTotalAmount = filteredParamUserDebts.reduce(
@@ -111,8 +90,8 @@ export function ExpenseSettlementForm({
     ? Decimal.sub(currentUserTotalAmount, paramUserTotalAmount).toFixed(2)
     : Decimal.sub(paramUserTotalAmount, currentUserTotalAmount).toFixed(2);
 
-  const payer = currentUserTotalAmount.greaterThan(paramUserTotalAmount) ? paramUser : currentUser;
-  const debtor = currentUserTotalAmount.greaterThan(paramUserTotalAmount) ? currentUser : paramUser;
+  const payer = currentUserTotalAmount.greaterThan(paramUserTotalAmount) ? paramsUser : currentUser;
+  const debtor = currentUserTotalAmount.greaterThan(paramUserTotalAmount) ? currentUser : paramsUser;
 
   const handleSettlement = (values: ExpenseSettlementFormSchema) => {
     const expenseDebts = values.debts
@@ -139,7 +118,7 @@ export function ExpenseSettlementForm({
   return (
     <Form {...form}>
       <form id="expense-settlement-form" className="space-y-6" onSubmit={form.handleSubmit(handleSettlement)}>
-        <Heading variant="h2">{paramUser?.name}</Heading>
+        <Heading variant="h2">{paramsUser?.name}</Heading>
 
         <div className="space-y-4">
           <Label className="text-base">Podsumowanie</Label>

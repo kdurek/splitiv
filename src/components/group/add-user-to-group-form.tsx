@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -22,7 +21,6 @@ interface AddUserToGroupFormProps {
 }
 
 export function AddUserToGroupForm({ users }: AddUserToGroupFormProps) {
-  const router = useRouter();
   const { mutate: addUserToGroup } = api.group.addUser.useMutation();
 
   const form = useForm<AddUserToGroupFormSchema>({
@@ -30,14 +28,7 @@ export function AddUserToGroupForm({ users }: AddUserToGroupFormProps) {
   });
 
   const handleAddUserToGroup = (values: AddUserToGroupFormSchema) => {
-    addUserToGroup(
-      { userId: values.userId },
-      {
-        onSuccess() {
-          router.refresh();
-        },
-      },
-    );
+    addUserToGroup({ userId: values.userId });
   };
 
   return (

@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender } from '@prisma/client';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -20,8 +19,6 @@ interface GenderSelectFormProps {
 }
 
 export function GenderSelectForm({ userId }: GenderSelectFormProps) {
-  const router = useRouter();
-
   const form = useForm<GenderSelectFormSchema>({
     resolver: zodResolver(genderSelectFormSchema),
   });
@@ -34,7 +31,6 @@ export function GenderSelectForm({ userId }: GenderSelectFormProps) {
       {
         onSuccess() {
           toast.success('Pomyślnie zaktualizowano');
-          router.refresh();
         },
       },
     );

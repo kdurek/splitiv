@@ -6,17 +6,19 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { ExpensesListCard, ExpensesListCardSkeleton } from '@/components/expense/expenses-list-card';
+import { ExpensesList } from '@/components/expense/expenses-list';
+import { UserStats } from '@/components/expense/user-stats';
 import { FullScreenError } from '@/components/layout/error';
+import { FullScreenLoading } from '@/components/layout/loading';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
-interface ExpensesActiveProps {
+interface ExpensesProps {
   user: User;
 }
 
-export function ExpensesActive({ user }: ExpensesActiveProps) {
+export function Expenses({ user }: ExpensesProps) {
   const { ref, inView } = useInView({
     root: null,
     rootMargin: '0px',
@@ -31,6 +33,7 @@ export function ExpensesActive({ user }: ExpensesActiveProps) {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
+  const { data: group, status: groupStatus } = api.group.current.useQuery();
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -38,38 +41,25 @@ export function ExpensesActive({ user }: ExpensesActiveProps) {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (status === 'pending') {
-    return (
-      <div className="overflow-hidden rounded-md">
-        {Array.from({ length: 10 }).map((_, idx) => (
-          <ExpensesListCardSkeleton key={idx} />
-        ))}
-      </div>
-    );
+  if (status === 'pending' || groupStatus === 'pending') {
+    return <FullScreenLoading />;
   }
 
-  if (status === 'error') {
+  if (status === 'error' || groupStatus === 'error') {
     return <FullScreenError />;
   }
 
   const expenses = data.pages.flatMap((page) => page.items);
 
-  if (!expenses.length) {
-    return <div className="rounded-md bg-white p-4 text-center">Brak długów</div>;
-  }
-
   return (
-    <>
-      <div className="overflow-hidden rounded-md">
-        {expenses.map((expense) => (
-          <ExpensesListCard key={expense.id} expense={expense} user={user} />
-        ))}
-      </div>
+    <div className="space-y-4">
+      <UserStats user={user} group={group} />
+      <ExpensesList user={user} expenses={expenses} />
       <div ref={ref} />
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'ghost' }), 'w-full flex')}>
         <ArchiveIcon className="mr-2 size-4" />
         Archiwum
       </Link>
-    </>
+    </div>
   );
 }

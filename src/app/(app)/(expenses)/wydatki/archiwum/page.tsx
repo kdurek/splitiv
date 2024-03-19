@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { ExpensesArchive } from '@/components/expense/expenses-archive';
+import { Archive } from '@/components/expense/archive';
 import { Section } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
 
@@ -12,7 +12,7 @@ export default async function ArchivePage() {
 
   return (
     <Section title="Archiwum">
-      <ExpensesArchive user={user} />
+      <Archive user={user} />
     </Section>
   );
 }

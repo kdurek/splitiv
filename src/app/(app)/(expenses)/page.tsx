@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { ExpensesActive } from '@/components/expense/expenses-active';
-import { UserStats } from '@/components/expense/user-stats';
+import { Expenses } from '@/components/expense/expenses';
 import { Section } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
 
@@ -13,10 +12,7 @@ export default async function ExpensesPage() {
 
   return (
     <Section>
-      <div className="space-y-4">
-        <UserStats user={user} />
-        <ExpensesActive user={user} />
-      </div>
+      <Expenses user={user} />
     </Section>
   );
 }

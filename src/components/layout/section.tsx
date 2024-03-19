@@ -1,6 +1,5 @@
-import { type ReactNode, Suspense } from 'react';
+import { type ReactNode } from 'react';
 
-import { FullScreenLoading } from '@/components/layout/loading';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
 
@@ -17,9 +16,7 @@ export function Section({ title, children }: SectionProps) {
           {title}
         </Heading>
       )}
-      <section className={cn('p-4', title && 'pt-0')}>
-        <Suspense fallback={<FullScreenLoading />}>{children}</Suspense>
-      </section>
+      <section className={cn('p-4', title && 'pt-0')}>{children}</section>
     </div>
   );
 }

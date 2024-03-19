@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -15,7 +14,6 @@ import { api } from '@/trpc/react';
 type CreateGroupFormSchema = z.infer<typeof createGroupFormSchema>;
 
 export function CreateGroupForm() {
-  const router = useRouter();
   const { mutateAsync: createGroup } = api.group.create.useMutation();
   const { mutate: changeActiveGroup } = api.group.changeCurrent.useMutation();
 
@@ -32,7 +30,6 @@ export function CreateGroupForm() {
       {
         onSuccess() {
           toast.success('Pomyślnie utworzono grupę');
-          router.refresh();
         },
       },
     );
@@ -41,7 +38,6 @@ export function CreateGroupForm() {
       {
         onSuccess() {
           toast.success('Pomyślnie zmieniono grupę');
-          router.refresh();
         },
       },
     );

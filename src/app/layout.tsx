@@ -5,7 +5,6 @@ import { setDefaultOptions } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import type { Metadata, Viewport } from 'next';
 import { Poppins } from 'next/font/google';
-import { headers } from 'next/headers';
 import Script from 'next/script';
 
 import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
@@ -45,13 +44,6 @@ const poppins = Poppins({
   variable: '--font-sans',
 });
 
-/**
- * Since we're passing `headers()` to the `TRPCReactProvider` we need to
- * make the entire app dynamic. You can move the `TRPCReactProvider` further
- * down the tree (e.g. /dashboard and onwards) to make part of the app statically rendered.
- */
-export const dynamic = 'force-dynamic';
-
 const dataWebsiteId =
   process.env.NODE_ENV === 'production'
     ? '225083f2-01a5-456e-afa3-f3ed5fd391fe'
@@ -61,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl">
       <body className={`font-sans ${poppins.variable}`}>
-        <TRPCReactProvider headers={headers()}>
+        <TRPCReactProvider>
           {children}
           <Toaster />
           <TailwindIndicator />

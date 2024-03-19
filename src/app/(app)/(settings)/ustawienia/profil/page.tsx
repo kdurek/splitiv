@@ -11,7 +11,7 @@ export default async function ProfilePage() {
     redirect('/logowanie');
   }
 
-  const selectedUser = await api.user.byId.query({
+  const selectedUser = await api.user.byId({
     userId: user.id,
   });
   if (!selectedUser) {

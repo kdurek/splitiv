@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn, getInitials } from '@/lib/utils';
-import { api } from '@/trpc/react';
+import type { GroupCurrent } from '@/trpc/shared';
 
 interface UserCardProps {
   image?: string | null;
@@ -37,16 +37,15 @@ function UserCard({ image, name, credit, debt }: UserCardProps) {
 
 interface OtherUsersStatsProps {
   user: User;
+  group: GroupCurrent;
 }
 
-function OtherUsersStats({ user }: OtherUsersStatsProps) {
-  const [{ members, debts }] = api.group.current.useSuspenseQuery();
-
+function OtherUsersStats({ user, group }: OtherUsersStatsProps) {
   return (
     <div className="space-y-6">
-      {members.map((member) => {
-        const memberCredit = debts.find((debt) => debt.fromId === member.id && debt.toId === user.id)?.amount;
-        const memberDebt = debts.find((debt) => debt.fromId === user.id && debt.toId === member.id)?.amount;
+      {group.members.map((member) => {
+        const memberCredit = group.debts.find((debt) => debt.fromId === member.id && debt.toId === user.id)?.amount;
+        const memberDebt = group.debts.find((debt) => debt.fromId === user.id && debt.toId === member.id)?.amount;
 
         if (!memberCredit && !memberDebt) {
           return null;
@@ -78,11 +77,10 @@ function OtherUsersStats({ user }: OtherUsersStatsProps) {
 
 interface UserStatsProps {
   user: User;
+  group: GroupCurrent;
 }
 
-export function UserStats({ user }: UserStatsProps) {
-  const [group] = api.group.current.useSuspenseQuery();
-
+export function UserStats({ user, group }: UserStatsProps) {
   const userCredit = group.debts.reduce(
     (acc, debt) => (debt.toId === user.id ? Decimal.add(acc, debt.amount) : acc),
     new Decimal(0),
@@ -101,7 +99,7 @@ export function UserStats({ user }: UserStatsProps) {
       </DrawerTrigger>
       <DrawerContent className="max-h-[96%]">
         <div className="overflow-auto overscroll-none p-4">
-          <OtherUsersStats user={user} />
+          <OtherUsersStats user={user} group={group} />
         </div>
       </DrawerContent>
     </Drawer>

@@ -18,7 +18,7 @@ export default async function SettingsPage() {
     return redirect('/logowanie');
   }
 
-  const group = await api.group.current.query();
+  const group = await api.group.current();
 
   return (
     <Section title="Ustawienia">

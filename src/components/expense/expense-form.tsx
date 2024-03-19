@@ -17,18 +17,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { expenseFormSchema } from '@/lib/validations/expense';
 import { api } from '@/trpc/react';
-import type { ExpenseById } from '@/trpc/shared';
+import type { ExpenseById, GroupCurrent } from '@/trpc/shared';
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 interface ExpenseFormProps {
   user: User;
+  group: GroupCurrent;
   expense?: ExpenseById;
 }
 
-export function ExpenseForm({ user, expense }: ExpenseFormProps) {
+export function ExpenseForm({ user, group, expense }: ExpenseFormProps) {
   const router = useRouter();
-  const [group] = api.group.current.useSuspenseQuery();
   const { mutate: createExpense, isPending: isPendingCreateExpense } = api.expense.create.useMutation();
   const { mutate: updateExpense, isPending: isPendingUpdateExpense } = api.expense.update.useMutation();
 

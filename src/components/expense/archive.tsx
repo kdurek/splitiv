@@ -4,15 +4,16 @@ import type { User } from 'lucia';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { ExpensesListCard, ExpensesListCardSkeleton } from '@/components/expense/expenses-list-card';
+import { ExpensesList } from '@/components/expense/expenses-list';
 import { FullScreenError } from '@/components/layout/error';
+import { FullScreenLoading } from '@/components/layout/loading';
 import { api } from '@/trpc/react';
 
-interface ExpensesArchiveProps {
+interface ArchiveProps {
   user: User;
 }
 
-export function ExpensesArchive({ user }: ExpensesArchiveProps) {
+export function Archive({ user }: ArchiveProps) {
   const { ref, inView } = useInView({
     root: null,
     rootMargin: '0px',
@@ -35,13 +36,7 @@ export function ExpensesArchive({ user }: ExpensesArchiveProps) {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (status === 'pending') {
-    return (
-      <div className="overflow-hidden rounded-md">
-        {Array.from({ length: 10 }).map((_, idx) => (
-          <ExpensesListCardSkeleton key={idx} />
-        ))}
-      </div>
-    );
+    return <FullScreenLoading />;
   }
 
   if (status === 'error') {
@@ -50,17 +45,9 @@ export function ExpensesArchive({ user }: ExpensesArchiveProps) {
 
   const expenses = data.pages.flatMap((page) => page.items);
 
-  if (!expenses.length) {
-    return <div className="rounded-md bg-white p-4 text-center">Brak długów</div>;
-  }
-
   return (
     <>
-      <div className="overflow-hidden rounded-md">
-        {expenses.map((expense) => (
-          <ExpensesListCard key={expense.id} expense={expense} user={user} />
-        ))}
-      </div>
+      <ExpensesList user={user} expenses={expenses} />
       <div ref={ref} />
     </>
   );

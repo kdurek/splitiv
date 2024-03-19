@@ -14,12 +14,13 @@ interface ExpenseEditProps {
 
 export function ExpenseEdit({ user, expenseId }: ExpenseEditProps) {
   const { data: expense, status: expenseStatus } = api.expense.byId.useQuery({ id: expenseId });
+  const { data: group, status: groupStatus } = api.group.current.useQuery();
 
-  if (expenseStatus === 'pending') {
+  if (expenseStatus === 'pending' || groupStatus === 'pending') {
     return <FullScreenLoading />;
   }
 
-  if (expenseStatus === 'error') {
+  if (expenseStatus === 'error' || groupStatus === 'error') {
     return <FullScreenError />;
   }
 
@@ -27,5 +28,5 @@ export function ExpenseEdit({ user, expenseId }: ExpenseEditProps) {
     return 'Nie znaleziono wydatku';
   }
 
-  return <ExpenseForm user={user} expense={expense} />;
+  return <ExpenseForm user={user} group={group} expense={expense} />;
 }

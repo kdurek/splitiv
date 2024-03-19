@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { ExpenseForm } from '@/components/expense/expense-form';
+import { ExpenseAdd } from '@/components/expense/expense-add';
 import { Section } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
 
@@ -12,7 +12,7 @@ export default async function ExpenseAddPage() {
 
   return (
     <Section title="Dodaj wydatek">
-      <ExpenseForm user={user} />
+      <ExpenseAdd user={user} />
     </Section>
   );
 }

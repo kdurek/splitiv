@@ -1,11 +1,22 @@
 'use client';
 
 import { AddUserToGroupForm } from '@/components/group/add-user-to-group-form';
+import { FullScreenError } from '@/components/layout/error';
+import { FullScreenLoading } from '@/components/layout/loading';
 import { api } from '@/trpc/react';
 
 export function MembersList() {
-  const [group] = api.group.current.useSuspenseQuery();
-  const [usersNotInCurrentGroup] = api.user.listNotInCurrentGroup.useSuspenseQuery();
+  const { data: group, status: groupStatus } = api.group.current.useQuery();
+  const { data: usersNotInCurrentGroup, status: usersNotInCurrentGroupStatus } =
+    api.user.listNotInCurrentGroup.useQuery();
+
+  if (groupStatus === 'pending' || usersNotInCurrentGroupStatus === 'pending') {
+    return <FullScreenLoading />;
+  }
+
+  if (groupStatus === 'error' || usersNotInCurrentGroupStatus === 'error') {
+    return <FullScreenError />;
+  }
 
   return (
     <div className="space-y-4">

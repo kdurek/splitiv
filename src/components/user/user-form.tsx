@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -20,8 +19,6 @@ interface UserFormProps {
 }
 
 export function UserForm({ user }: UserFormProps) {
-  const router = useRouter();
-
   const form = useForm<UpdateUserFormSchema>({
     resolver: zodResolver(updateUserFormSchema),
     defaultValues: {
@@ -38,7 +35,6 @@ export function UserForm({ user }: UserFormProps) {
         {
           onSuccess() {
             toast.success('Pomyślnie zaktualizowano użytkownika');
-            router.refresh();
           },
         },
       );

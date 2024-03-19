@@ -13,10 +13,10 @@ import { ExpenseNoteForm } from '@/components/expense/expense-note-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import type { ExpensesList } from '@/trpc/shared';
+import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/shared';
 
 interface ExpenseDetailProps {
-  expense: ExpensesList['items'][number];
+  expense: ExpensesListActive['items'][number] | ExpensesListArchive['items'][number];
   user: User;
 }
 

@@ -3,7 +3,7 @@
 import Decimal from 'decimal.js';
 import type { User } from 'lucia';
 
-import { ExpensesList } from '@/components/expense/expenses-list';
+import { ExpensesListCard } from '@/components/expense/expenses-list-card';
 import { FullScreenError } from '@/components/layout/error';
 import { FullScreenLoading } from '@/components/layout/loading';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -73,11 +73,15 @@ export function ExpenseDetails({ user, paramsUserId }: ExpenseDetailsProps) {
           <TabsTrigger value="credits">Zapłaciłeś</TabsTrigger>
           <TabsTrigger value="debts">Pożyczyłeś</TabsTrigger>
         </TabsList>
-        <TabsContent value="credits">
-          <ExpensesList expenses={credits} user={user} />
+        <TabsContent value="credits" className="overflow-hidden rounded-md">
+          {credits.map((credit) => (
+            <ExpensesListCard key={credit.id} expense={credit} user={user} />
+          ))}
         </TabsContent>
-        <TabsContent value="debts">
-          <ExpensesList expenses={debts} user={user} />
+        <TabsContent value="debts" className="overflow-hidden rounded-md">
+          {debts.map((debt) => (
+            <ExpensesListCard key={debt.id} expense={debt} user={user} />
+          ))}
         </TabsContent>
       </Tabs>
     </div>

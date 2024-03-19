@@ -10,12 +10,12 @@ export const expenseRouter = createTRPCRouter({
   debt: expenseDebtRouter,
   log: expenseLogRouter,
   note: expenseNoteRouter,
-  list: protectedProcedure
+
+  listActive: protectedProcedure
     .input(
       z.object({
         limit: z.number(),
         cursor: z.string().nullish(),
-        type: z.enum(['dashboard', 'archived']),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -27,27 +27,126 @@ export const expenseRouter = createTRPCRouter({
           OR: [
             {
               payerId: ctx.user.id,
+              debts: {
+                some: {
+                  settled: {
+                    not: {
+                      equals: ctx.db.expenseDebt.fields.amount,
+                    },
+                  },
+                },
+              },
             },
             {
               debts: {
                 some: {
                   debtorId: ctx.user.id,
+                  settled: {
+                    lt: ctx.db.expenseDebt.fields.amount,
+                  },
                 },
               },
             },
           ],
+        },
+        include: {
+          group: true,
+          payer: true,
           debts: {
-            some: {
-              settled: {
-                lt: input.type === 'dashboard' ? ctx.db.expenseDebt.fields.amount : undefined,
+            orderBy: {
+              debtor: {
+                name: 'asc',
               },
             },
-            every: {
-              settled: {
-                equals: input.type === 'archived' ? ctx.db.expenseDebt.fields.amount : undefined,
+            include: {
+              debtor: true,
+              logs: {
+                include: {
+                  debt: {
+                    select: {
+                      debtor: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
+          notes: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            include: {
+              createdBy: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+      let nextCursor: typeof input.cursor | undefined;
+      if (items.length > input.limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+
+  listArchive: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.string().nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const items = await ctx.db.expense.findMany({
+        take: input.limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        where: {
+          groupId: ctx.user.activeGroupId,
+          OR: [
+            {
+              payerId: ctx.user.id,
+              debts: {
+                every: {
+                  settled: {
+                    equals: ctx.db.expenseDebt.fields.amount,
+                  },
+                },
+              },
+            },
+            {
+              payerId: ctx.user.id,
+              debts: {
+                every: {
+                  settled: {
+                    equals: ctx.db.expenseDebt.fields.amount,
+                  },
+                },
+              },
+            },
+            {
+              payerId: {
+                not: ctx.user.id,
+              },
+              debts: {
+                some: {
+                  debtorId: ctx.user.id,
+                  settled: {
+                    equals: ctx.db.expenseDebt.fields.amount,
+                  },
+                },
+              },
+            },
+          ],
         },
         include: {
           group: true,

@@ -3,13 +3,12 @@
 import { type Prisma } from '@prisma/client';
 import { format } from 'date-fns';
 import type { User } from 'lucia';
-import { CircleDollarSign } from 'lucide-react';
 
 import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { ExpensesList } from '@/trpc/shared';
+import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/shared';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
   include: {
@@ -28,32 +27,8 @@ export function getExpenseStatus(expense: ExpenseWithDebts) {
   return 'unsettled';
 }
 
-interface ExpensesListCardIconProps {
-  status: ReturnType<typeof getExpenseStatus>;
-}
-
-function ExpensesListCardIcon({ status }: ExpensesListCardIconProps) {
-  return (
-    <div
-      className={cn('grid h-10 w-10 place-content-center rounded-md', {
-        'bg-blue-100': status === 'unsettled',
-        'bg-yellow-100': status === 'partially-settled',
-        'bg-teal-100': status === 'fully-settled',
-      })}
-    >
-      <CircleDollarSign
-        className={cn({
-          'text-blue-500': status === 'unsettled',
-          'text-yellow-500': status === 'partially-settled',
-          'text-teal-500': status === 'fully-settled',
-        })}
-      />
-    </div>
-  );
-}
-
 interface ExpensesListCardProps {
-  expense: ExpensesList['items'][number];
+  expense: ExpensesListActive['items'][number] | ExpensesListArchive['items'][number];
   user: User;
 }
 
@@ -66,13 +41,19 @@ export function ExpensesListCard({ expense, user }: ExpensesListCardProps) {
         <button className="w-full bg-white p-4 outline-none">
           <div className="flex items-start justify-between overflow-hidden">
             <div className="flex items-center gap-4">
-              <ExpensesListCardIcon status={getExpenseStatus(expense)} />
               <div className="overflow-hidden text-start">
                 <div className="line-clamp-1">{expense.name}</div>
                 <div className="line-clamp-1 text-sm text-muted-foreground">{formattedDate}</div>
               </div>
             </div>
-            <div className="whitespace-nowrap text-sm">{Number(expense.amount).toFixed(2)} zł</div>
+            <div
+              className={cn(
+                'whitespace-nowrap text-sm',
+                expense.payerId === user.id ? 'text-green-500' : 'text-red-500',
+              )}
+            >
+              {Number(expense.amount).toFixed(2)} zł
+            </div>
           </div>
         </button>
       </DrawerTrigger>

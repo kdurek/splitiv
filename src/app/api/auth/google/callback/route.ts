@@ -77,7 +77,7 @@ export async function GET(request: Request): Promise<Response> {
       },
     });
   } catch (e) {
-    if (e instanceof OAuth2RequestError) {
+    if (e instanceof OAuth2RequestError && e.message === 'bad_verification_code') {
       return new Response(null, {
         status: 400,
       });

@@ -1,3 +1,5 @@
+'use client';
+
 import type { User } from 'lucia';
 
 import { ExpenseForm } from '@/components/expense/expense-form';

@@ -1,3 +1,5 @@
+'use client';
+
 import { Square, XSquare } from 'lucide-react';
 
 import { ExpenseDebtSettleModal } from '@/components/expense/expense-debt-settle-modal';

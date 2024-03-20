@@ -1,3 +1,5 @@
+'use client';
+
 import Decimal from 'decimal.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';

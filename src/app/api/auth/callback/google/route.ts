@@ -16,21 +16,14 @@ interface GoogleUser {
 }
 
 export async function GET(request: Request): Promise<Response> {
-  console.log('🚀 > _____START_CALLBACK_____:');
-  console.log('🚀 > _____PARAMS_____:');
   const url = new URL(request.url);
-  console.log('🚀 > url:', url);
-  const code = url.searchParams.get('code');
-  console.log('🚀 > code:', code);
-  const state = url.searchParams.get('state');
-  console.log('🚀 > state:', state);
-  console.log('🚀 > _____STORED_____:');
-  const storedState = cookies().get('google_oauth_state')?.value ?? null;
-  console.log('🚀 > storedState:', storedState);
-  const storedCodeVerifier = cookies().get('google_oauth_code_verifier')?.value ?? null;
-  console.log('🚀 > storedCodeVerifier:', storedCodeVerifier);
 
-  console.log('🚀 > _____END_CALLBACK_____:');
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+
+  const storedState = cookies().get('google_oauth_state')?.value ?? null;
+  const storedCodeVerifier = cookies().get('google_oauth_code_verifier')?.value ?? null;
+
   if (!code || !state || !storedState || !storedCodeVerifier || state !== storedState) {
     return new Response(null, {
       status: 400,

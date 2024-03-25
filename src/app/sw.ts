@@ -1,6 +1,8 @@
 import type { SerwistGlobalConfig } from '@serwist/core';
+import { ExpirationPlugin } from '@serwist/expiration';
 import { defaultCache } from '@serwist/next/worker';
 import type { PrecacheEntry } from '@serwist/precaching';
+import { NetworkOnly } from '@serwist/strategies';
 import { installSerwist } from '@serwist/sw';
 
 declare global {
@@ -22,7 +24,21 @@ installSerwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    {
+      matcher: /\/api\/auth\/.*/,
+      handler: new NetworkOnly({
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 16,
+            maxAgeSeconds: 24 * 60 * 60, // 24 hours
+          }),
+        ],
+        networkTimeoutSeconds: 10, // fallback to cache if API does not response within 10 seconds
+      }),
+    },
+    ...defaultCache,
+  ],
   fallbacks: {
     entries: [
       {

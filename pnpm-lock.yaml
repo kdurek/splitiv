@@ -50,9 +50,15 @@ dependencies:
   '@radix-ui/react-tabs':
     specifier: ^1.0.4
     version: 1.0.4(@types/react-dom@18.2.22)(@types/react@18.2.67)(react-dom@18.2.0)(react@18.2.0)
+  '@serwist/expiration':
+    specifier: ^8.4.4
+    version: 8.4.4
   '@serwist/next':
     specifier: preview
     version: 9.0.0-preview.14(@serwist/sw@9.0.0-preview.14)(next@14.1.4)(typescript@5.4.3)
+  '@serwist/strategies':
+    specifier: ^8.4.4
+    version: 8.4.4
   '@serwist/sw':
     specifier: preview
     version: 9.0.0-preview.14(typescript@5.4.3)
@@ -2282,6 +2288,10 @@ packages:
       typescript: 5.4.3
     dev: false
 
+  /@serwist/core@8.4.4:
+    resolution: {integrity: sha512-mB3XFoUFbfgxkqWUhn9khqZP9c+K3qsuY1WQazl7S00hd+JUH2We/FmNMoOpei5ydVK61rIX690ScfXO0FbjXw==}
+    dev: false
+
   /@serwist/core@9.0.0-preview.14(typescript@5.4.3):
     resolution: {integrity: sha512-WppYCS8e2eTJ5+SPmSuiVL6QUYClkFYISUJQGN6JaTItmXQAyoqKuKknm1Tk6DqiO4A36U4SEG3p4Pmhn8tzsw==}
     peerDependencies:
@@ -2291,6 +2301,13 @@ packages:
         optional: true
     dependencies:
       typescript: 5.4.3
+
+  /@serwist/expiration@8.4.4:
+    resolution: {integrity: sha512-zn5Q3qkE2827RUDwta198QTeIWzQx+EtWikQog9LZZvXSDOuOogzYeyiuskrfvrGFLk11myOJLtpVbXpeNCHeA==}
+    dependencies:
+      '@serwist/core': 8.4.4
+      idb: 8.0.0
+    dev: false
 
   /@serwist/expiration@9.0.0-preview.14(typescript@5.4.3):
     resolution: {integrity: sha512-+qv29m8P4FQ3k2fvJlZ8CdL5hYXfgqXUaF0RmnjSFQGHx7gpa9ZAxd1wxhhRSi6FFvLIXftQhI9i5J36PRz7YQ==}
@@ -2397,6 +2414,12 @@ packages:
     dependencies:
       '@serwist/core': 9.0.0-preview.14(typescript@5.4.3)
       typescript: 5.4.3
+
+  /@serwist/strategies@8.4.4:
+    resolution: {integrity: sha512-Yr/wKD16vXUqVbyfHhLM25qRWTtWgNJnY8Bot0yjCV/BvHM81cOIkG3sE76FIjcUntCvfemhaN9Zx53fbRzLPQ==}
+    dependencies:
+      '@serwist/core': 8.4.4
+    dev: false
 
   /@serwist/strategies@9.0.0-preview.14(typescript@5.4.3):
     resolution: {integrity: sha512-yY7pZJSi3UZDRjG9/9loDO3Cek513YEXK7rWj5f6xnV77zcirzVmkEvGDpWJnWw1t5vKkDZfOrCG1W6fqih3Mg==}

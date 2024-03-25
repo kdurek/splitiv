@@ -27,7 +27,7 @@ interface DatabaseUserAttributes {
 export const google = new Google(
   env.GOOGLE_CLIENT_ID,
   env.GOOGLE_CLIENT_SECRET,
-  env.BASE_URL + '/api/auth/google/callback',
+  env.BASE_URL + '/api/auth/callback/google',
 );
 
 const adapter = new PrismaAdapter(db.session, db.user);

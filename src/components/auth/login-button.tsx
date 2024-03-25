@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 export function LoginButton() {
   return (
-    <Link href="/api/auth/google" className={cn(buttonVariants(), 'w-full')}>
+    <Link href="/api/auth" className={cn(buttonVariants(), 'w-full')}>
       <LogIn className="mr-2" /> Zaloguj
     </Link>
   );

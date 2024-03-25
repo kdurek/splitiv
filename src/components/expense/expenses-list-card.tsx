@@ -2,6 +2,7 @@
 
 import { type Prisma } from '@prisma/client';
 import { format } from 'date-fns';
+import Decimal from 'decimal.js';
 import type { User } from 'lucia';
 
 import { ExpenseDetail } from '@/components/expense/expense-detail';
@@ -33,26 +34,45 @@ interface ExpensesListCardProps {
 }
 
 export function ExpensesListCard({ expense, user }: ExpensesListCardProps) {
-  const formattedDate = format(expense.createdAt, 'EEEEEE, d MMMM');
+  const isPayer = expense.payerId === user.id;
+  const userDebt = expense.debts.find((debt) => debt.debtorId === user.id);
+
+  const debtorsWithoutPayerLeft = expense.debts.reduce((acc, debt) => {
+    if (debt.debtorId !== expense.payerId && debt.settled !== debt.amount) {
+      return Decimal.add(acc, Decimal.sub(debt.amount, debt.settled));
+    }
+    return acc;
+  }, new Decimal(0));
+
+  const payerDisplayAmount = debtorsWithoutPayerLeft.isZero()
+    ? userDebt
+      ? Decimal.sub(expense.amount, userDebt.amount)
+      : Decimal.sub(expense.amount, debtorsWithoutPayerLeft)
+    : debtorsWithoutPayerLeft;
+  const debtorDisplayAmount = userDebt
+    ? userDebt.amount === userDebt.settled
+      ? userDebt.amount
+      : Decimal.sub(userDebt.amount, userDebt.settled)
+    : new Decimal(0);
 
   return (
     <Drawer>
       <DrawerTrigger asChild>
         <button className="w-full bg-white p-4 outline-none">
           <div className="flex items-start justify-between overflow-hidden">
-            <div className="flex items-center gap-4">
-              <div className="overflow-hidden text-start">
-                <div className="line-clamp-1">{expense.name}</div>
-                <div className="line-clamp-1 text-sm text-muted-foreground">{formattedDate}</div>
+            <div className="overflow-hidden text-start">
+              <div className="line-clamp-1">{expense.name}</div>
+              <div className="line-clamp-1 text-sm text-muted-foreground">
+                {format(expense.createdAt, 'EEEEEE, d MMMM')}
               </div>
             </div>
-            <div
-              className={cn(
-                'whitespace-nowrap text-sm',
-                expense.payerId === user.id ? 'text-green-500' : 'text-red-500',
-              )}
-            >
-              {Number(expense.amount).toFixed(2)} zł
+            <div className="overflow-hidden text-end">
+              <div className={cn('whitespace-nowrap', isPayer ? 'text-green-500' : 'text-red-500')}>
+                {Number(isPayer ? payerDisplayAmount : debtorDisplayAmount).toFixed(2)} zł
+              </div>
+              <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
+                {Number(expense.amount).toFixed(2)} zł
+              </div>
             </div>
           </div>
         </button>
@@ -63,22 +83,5 @@ export function ExpensesListCard({ expense, user }: ExpensesListCardProps) {
         </div>
       </DrawerContent>
     </Drawer>
-  );
-}
-
-export function ExpensesListCardSkeleton() {
-  return (
-    <div className="w-full bg-white p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Skeleton className="size-10 rounded-md" />
-          <div className="space-y-3">
-            <Skeleton className="h-4 w-[150px]" />
-            <Skeleton className="h-4 w-[100px]" />
-          </div>
-        </div>
-        <Skeleton className="h-4 w-[50px]" />
-      </div>
-    </div>
   );
 }

@@ -11,7 +11,7 @@ export default async function ExpensesPage() {
   }
 
   return (
-    <Section>
+    <Section title="Wydatki">
       <Expenses user={user} />
     </Section>
   );

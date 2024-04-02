@@ -16,7 +16,7 @@ export function ExpensesList({ user, expenses }: ExpensesListProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-md">
+    <div className="divide-y divide-muted overflow-hidden rounded-md">
       {expenses.map((expense) => (
         <ExpensesListCard key={expense.id} expense={expense} user={user} />
       ))}

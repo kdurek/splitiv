@@ -1,23 +1,14 @@
 'use client';
 
 import { AddUserToGroupForm } from '@/components/group/add-user-to-group-form';
-import { FullScreenError } from '@/components/layout/error';
-import { FullScreenLoading } from '@/components/layout/loading';
-import { api } from '@/trpc/react';
+import type { GroupCurrent, UserListNotInCurrentGroup } from '@/trpc/shared';
 
-export function MembersList() {
-  const { data: group, status: groupStatus } = api.group.current.useQuery();
-  const { data: usersNotInCurrentGroup, status: usersNotInCurrentGroupStatus } =
-    api.user.listNotInCurrentGroup.useQuery();
+interface MembersListProps {
+  group: GroupCurrent;
+  usersNotInCurrentGroup: UserListNotInCurrentGroup;
+}
 
-  if (groupStatus === 'pending' || usersNotInCurrentGroupStatus === 'pending') {
-    return <FullScreenLoading />;
-  }
-
-  if (groupStatus === 'error' || usersNotInCurrentGroupStatus === 'error') {
-    return <FullScreenError />;
-  }
-
+export function MembersList({ group, usersNotInCurrentGroup }: MembersListProps) {
   return (
     <div className="space-y-4">
       <ol className="space-y-1">

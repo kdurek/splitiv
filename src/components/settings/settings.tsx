@@ -19,13 +19,16 @@ interface SettingsProps {
 }
 
 export function Settings({ user }: SettingsProps) {
+  const { data: groups, status: groupsStatus } = api.group.list.useQuery();
   const { data: group, status: groupStatus } = api.group.current.useQuery();
+  const { data: usersNotInCurrentGroup, status: usersNotInCurrentGroupStatus } =
+    api.user.listNotInCurrentGroup.useQuery();
 
-  if (groupStatus === 'pending') {
+  if (groupsStatus === 'pending' || groupStatus === 'pending' || usersNotInCurrentGroupStatus === 'pending') {
     return <FullScreenLoading />;
   }
 
-  if (groupStatus === 'error') {
+  if (groupsStatus === 'error' || groupStatus === 'error' || usersNotInCurrentGroupStatus === 'error') {
     return <FullScreenError />;
   }
 
@@ -40,13 +43,13 @@ export function Settings({ user }: SettingsProps) {
 
       <div className="space-y-2 rounded-md bg-white p-4">
         <Heading variant="h2">Aktywna grupa</Heading>
-        <GroupSelect user={user} />
+        <GroupSelect user={user} groups={groups} />
       </div>
 
       {user.id === group.adminId && (
         <div className="rounded-md bg-white p-4">
           <Heading variant="h2">Członkowie</Heading>
-          <MembersList />
+          <MembersList group={group} usersNotInCurrentGroup={usersNotInCurrentGroup} />
         </div>
       )}
     </div>

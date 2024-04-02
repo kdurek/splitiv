@@ -35,5 +35,6 @@ export type ExpenseById = RouterOutputs['expense']['byId'];
 export type ExpenseDebtSettlement = RouterOutputs['expense']['debt']['settlement'];
 export type GroupList = RouterOutputs['group']['list'];
 export type GroupCurrent = RouterOutputs['group']['current'];
+export type UserListNotInCurrentGroup = RouterOutputs['user']['listNotInCurrentGroup'];
 export type UserList = RouterOutputs['user']['list'];
 export type UserById = RouterOutputs['user']['byId'];

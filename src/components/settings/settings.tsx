@@ -4,6 +4,7 @@ import type { User } from 'lucia';
 import { User2 } from 'lucide-react';
 import Link from 'next/link';
 
+import { Notification } from '@/app/(app)/(expenses)/notification';
 import { LogoutButton } from '@/components/auth/logout-button';
 import { GroupSelect } from '@/components/group/group-select';
 import { FullScreenError } from '@/components/layout/error';
@@ -50,6 +51,12 @@ export function Settings({ user }: SettingsProps) {
         <div className="rounded-md bg-white p-4">
           <Heading variant="h2">Członkowie</Heading>
           <MembersList group={group} usersNotInCurrentGroup={usersNotInCurrentGroup} />
+        </div>
+      )}
+
+      {user.id === group.adminId && (
+        <div className="rounded-md bg-white p-4">
+          <Notification />
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import { authRouter } from '@/server/api/routers/auth';
 import { expenseRouter } from '@/server/api/routers/expense';
 import { groupRouter } from '@/server/api/routers/group';
+import { pushSubscriptionRouter } from '@/server/api/routers/push-subscription';
 import { userRouter } from '@/server/api/routers/user';
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc';
 
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   expense: expenseRouter,
   group: groupRouter,
+  pushSubscription: pushSubscriptionRouter,
   user: userRouter,
 });
 

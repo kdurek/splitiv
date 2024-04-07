@@ -7,6 +7,7 @@ await import('./src/env.js');
 import withSerwistInit from '@serwist/next';
 
 const withSerwist = withSerwistInit({
+  cacheOnNavigation: true,
   swSrc: 'src/app/sw.ts',
   swDest: 'public/sw.js',
 });

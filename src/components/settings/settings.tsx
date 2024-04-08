@@ -4,12 +4,12 @@ import type { User } from 'lucia';
 import { User2 } from 'lucide-react';
 import Link from 'next/link';
 
-import { Notification } from '@/app/(app)/(expenses)/notification';
 import { LogoutButton } from '@/components/auth/logout-button';
 import { GroupSelect } from '@/components/group/group-select';
 import { FullScreenError } from '@/components/layout/error';
 import { FullScreenLoading } from '@/components/layout/loading';
 import { MembersList } from '@/components/settings/members-list';
+import { Notification } from '@/components/settings/notification';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';

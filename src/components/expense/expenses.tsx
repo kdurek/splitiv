@@ -10,6 +10,7 @@ import { ExpensesList } from '@/components/expense/expenses-list';
 import { UserStats } from '@/components/expense/user-stats';
 import { FullScreenError } from '@/components/layout/error';
 import { FullScreenLoading } from '@/components/layout/loading';
+import { NotificationPrompt } from '@/components/settings/notification-prompt';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/trpc/react';
@@ -53,6 +54,7 @@ export function Expenses({ user }: ExpensesProps) {
 
   return (
     <div className="space-y-4">
+      <NotificationPrompt />
       <UserStats user={user} group={group} />
       <ExpensesList user={user} expenses={expenses} />
       <div ref={ref} />

@@ -1,9 +1,8 @@
 import { TRPCClientError } from '@trpc/client';
-import webPush from 'web-push';
 import { z } from 'zod';
 
-import { env } from '@/env';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { sendPush } from '@/server/utils/push';
 
 export const pushSubscriptionRouter = createTRPCRouter({
   create: protectedProcedure
@@ -56,44 +55,6 @@ export const pushSubscriptionRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      webPush.setVapidDetails(
-        `mailto:${env.WEB_PUSH_EMAIL}`,
-        env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
-        env.WEB_PUSH_PRIVATE_KEY,
-      );
-      const subscriptions = await ctx.db.pushSubscription.findMany({
-        where: {
-          userId: ctx.session.userId,
-        },
-      });
-      await Promise.all(
-        subscriptions.map(async (subscription) => {
-          try {
-            await webPush.sendNotification(
-              {
-                endpoint: subscription.endpoint,
-                keys: {
-                  auth: subscription.auth,
-                  p256dh: subscription.p256dh,
-                },
-              },
-              JSON.stringify({
-                title: input.title,
-                body: input.body,
-              }),
-            );
-          } catch (err) {
-            if (err instanceof webPush.WebPushError) {
-              if (err.statusCode === 410) {
-                await ctx.db.pushSubscription.delete({
-                  where: {
-                    endpoint: subscription.endpoint,
-                  },
-                });
-              }
-            }
-          }
-        }),
-      );
+      return sendPush(ctx.session.userId, input.title, input.body);
     }),
 });

@@ -5,6 +5,7 @@ import { expenseDebtRouter } from '@/server/api/routers/expense/debt';
 import { expenseLogRouter } from '@/server/api/routers/expense/log';
 import { expenseNoteRouter } from '@/server/api/routers/expense/note';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { sendPush } from '@/server/utils/push';
 
 export const expenseRouter = createTRPCRouter({
   debt: expenseDebtRouter,
@@ -324,7 +325,7 @@ export const expenseRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.db.expense.create({
+      const expense = await ctx.db.expense.create({
         data: {
           group: {
             connect: {
@@ -347,6 +348,14 @@ export const expenseRouter = createTRPCRouter({
           debts: true,
         },
       });
+
+      const userIdsToPush = [...expense.debts.map((debtor) => debtor.debtorId), expense.payerId].filter(
+        (userId) => userId !== ctx.user.id,
+      );
+
+      await sendPush(userIdsToPush, 'Nowy wydatek', expense.name);
+
+      return expense;
     }),
 
   update: protectedProcedure

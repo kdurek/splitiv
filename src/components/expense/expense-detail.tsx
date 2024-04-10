@@ -7,9 +7,6 @@ import Link from 'next/link';
 import { DebtRevertButton } from '@/components/debt/debt-revert-button';
 import { ExpenseDebtorCard, ExpensePayerCard } from '@/components/expense/expense-debts';
 import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
-import { ExpenseDescriptionCard } from '@/components/expense/expense-description-card';
-import { ExpenseNoteCard } from '@/components/expense/expense-note-card';
-import { ExpenseNoteForm } from '@/components/expense/expense-note-form';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
@@ -27,15 +24,20 @@ export function ExpenseDetail({ expense, user }: ExpenseDetailProps) {
   const isAdmin = user.id === expense.group.adminId;
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
+    <div className="divide-y">
+      <div className="pb-4">
         <Heading variant="h1">{expense.name}</Heading>
-        <ExpenseDescriptionCard description={expense.description} />
-        <div>{formattedDate}</div>
+        <div className="text-sm text-muted-foreground">{formattedDate}</div>
+        {expense.description && (
+          <div className="mt-4 whitespace-pre-wrap text-muted-foreground">{expense.description}</div>
+        )}
       </div>
 
-      <div className="divide-y">
+      <div className="py-4">
         <ExpensePayerCard name={expense.payer.name} amount={Number(expense.amount)} />
+      </div>
+
+      <div className="flex flex-col gap-4 py-4">
         {expense.debts.map((debt) => (
           <ExpenseDebtorCard
             key={debt.id}
@@ -49,58 +51,32 @@ export function ExpenseDetail({ expense, user }: ExpenseDetailProps) {
       </div>
 
       {logs.length !== 0 && (
-        <div className="space-y-2">
-          <Heading variant="h2">Historia</Heading>
-          <div className="divide-y">
-            {logs.map((log) => (
-              <div key={log.id} className="py-4">
-                <div className="flex justify-between gap-4">
-                  <div className="text-start text-sm text-muted-foreground">
-                    <div>{log.debt.debtor.name}</div>
-                    <div>{format(log.createdAt, 'HH:mm dd.MM.yyyy')}</div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div>{Number(log.amount).toFixed(2)} zł</div>
-                    <DebtRevertButton id={log.id} />
-                  </div>
-                </div>
+        <div
+          className={cn('flex flex-col gap-4 pt-4', {
+            'pb-4': isPayer || isAdmin,
+          })}
+        >
+          {logs.map((log) => (
+            <div key={log.id} className="flex justify-between gap-4">
+              <div className="text-start text-sm text-muted-foreground">
+                <div>{log.debt.debtor.name}</div>
+                <div>{format(log.createdAt, 'HH:mm dd.MM.yyyy')}</div>
               </div>
-            ))}
-          </div>
+              <div className="flex items-center gap-4">
+                <div>{Number(log.amount).toFixed(2)} zł</div>
+                <DebtRevertButton id={log.id} />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      <div className="space-y-2">
-        <Heading variant="h2">Notatki</Heading>
-        <ExpenseNoteForm expenseId={expense.id} />
-        <div className="divide-y">
-          {expense.notes.length !== 0 ? (
-            expense.notes.map((note) => (
-              <ExpenseNoteCard
-                key={note.id}
-                content={note.content}
-                createdByName={note.createdBy?.name}
-                createdAt={note.createdAt}
-              />
-            ))
-          ) : (
-            <div className="py-4">Nie dodano jeszcze żadnej notatki</div>
-          )}
-        </div>
-      </div>
-
       {(isPayer || isAdmin) && (
-        <div className="space-y-2">
-          <Heading variant="h2">Ustawienia</Heading>
-          <div className="flex gap-2">
-            <Link
-              href={`/wydatki/${expense.id}/edytuj`}
-              className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
-            >
-              Edytuj
-            </Link>
-            <ExpenseDeleteModal expenseId={expense.id} />
-          </div>
+        <div className="flex gap-2 pt-4">
+          <Link href={`/wydatki/${expense.id}/edytuj`} className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
+            Edytuj
+          </Link>
+          <ExpenseDeleteModal expenseId={expense.id} />
         </div>
       )}
     </div>

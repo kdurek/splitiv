@@ -13,7 +13,7 @@ interface ExpensePayerCardProps {
 
 export function ExpensePayerCard({ name, amount }: ExpensePayerCardProps) {
   return (
-    <div className="flex items-center justify-between gap-4 py-4">
+    <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-4 overflow-hidden">
         <div className="overflow-hidden text-start">
           <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Zapłacone przez</div>
@@ -45,7 +45,7 @@ export function ExpenseDebtorCard({ debtId, name, amount, settled, canSettle }: 
   const statusIcon = isFullySettled ? <XSquare size={40} strokeWidth={1} /> : <Square size={40} strokeWidth={1} />;
 
   return (
-    <div className="flex items-center justify-between gap-4 overflow-hidden py-4">
+    <div className="flex items-center justify-between gap-4 overflow-hidden">
       <div className="flex items-center gap-4 overflow-hidden">
         <ExpenseDebtSettleModal debtId={debtId} amount={amount} settled={settled}>
           <Button

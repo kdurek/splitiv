@@ -12,6 +12,105 @@ export const expenseRouter = createTRPCRouter({
   log: expenseLogRouter,
   note: expenseNoteRouter,
 
+  listSearch: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.string().nullish(),
+        searchText: z.string().optional(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const items = await ctx.db.expense.findMany({
+        take: input.limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        where: {
+          groupId: ctx.user.activeGroupId,
+          OR: [
+            {
+              name: {
+                contains: input.searchText,
+                mode: 'insensitive',
+              },
+              OR: [
+                { payerId: ctx.user.id },
+                {
+                  debts: {
+                    some: {
+                      debtorId: ctx.user.id,
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              description: {
+                contains: input.searchText,
+                mode: 'insensitive',
+              },
+              OR: [
+                { payerId: ctx.user.id },
+                {
+                  debts: {
+                    some: {
+                      debtorId: ctx.user.id,
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        include: {
+          group: true,
+          payer: true,
+          debts: {
+            orderBy: {
+              debtor: {
+                name: 'asc',
+              },
+            },
+            include: {
+              debtor: true,
+              logs: {
+                include: {
+                  debt: {
+                    select: {
+                      debtor: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          notes: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            include: {
+              createdBy: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+      let nextCursor: typeof input.cursor | undefined;
+      if (items.length > input.limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+
   listActive: protectedProcedure
     .input(
       z.object({

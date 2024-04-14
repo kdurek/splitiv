@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleDollarSign, Plus, Settings } from 'lucide-react';
+import { CircleDollarSign, Plus, Search, Settings } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 
@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { name: 'Wydatki', href: '/', icon: CircleDollarSign },
   { name: 'Dodaj', href: '/wydatki/dodaj', icon: Plus },
+  { name: 'Wyszukaj', href: '/wydatki/wyszukaj', icon: Search },
   { name: 'Ustawienia', href: '/ustawienia', icon: Settings },
 ];
 
@@ -17,7 +18,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="grid h-20 grid-cols-3 justify-items-center gap-2 pb-4 pt-3">
+    <nav className="grid h-20 grid-cols-4 justify-items-center gap-2 pb-4 pt-3">
       {navItems.map((item, index) => (
         <Fragment key={index}>
           <button

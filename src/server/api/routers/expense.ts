@@ -353,7 +353,7 @@ export const expenseRouter = createTRPCRouter({
         (userId) => userId !== ctx.user.id,
       );
 
-      await sendPush(userIdsToPush, 'Nowy wydatek', expense.name);
+      await sendPush(userIdsToPush, 'Nowy wydatek', expense.name, `/wydatki/${expense.id}`);
 
       return expense;
     }),

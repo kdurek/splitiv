@@ -22,5 +22,9 @@ export function ExpenseAdd({ user }: ExpenseAddProps) {
     return <FullScreenError />;
   }
 
-  return <ExpenseForm user={user} group={group} />;
+  return (
+    <div className="rounded-md bg-white p-4">
+      <ExpenseForm user={user} group={group} />
+    </div>
+  );
 }

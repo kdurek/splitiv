@@ -3,7 +3,7 @@ import webPush from 'web-push';
 import { env } from '@/env';
 import { db } from '@/server/db';
 
-export async function sendPush(userIds: string | string[], title: string, body: string) {
+export async function sendPush(userIds: string | string[], title: string, body: string, url?: string) {
   webPush.setVapidDetails(
     `mailto:${env.WEB_PUSH_EMAIL}`,
     env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
@@ -31,6 +31,7 @@ export async function sendPush(userIds: string | string[], title: string, body: 
           JSON.stringify({
             title,
             body,
+            url,
           }),
         );
       } catch (err) {

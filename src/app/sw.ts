@@ -5,7 +5,7 @@ import type { PrecacheEntry } from '@serwist/precaching';
 import { NetworkOnly } from '@serwist/strategies';
 import { Serwist } from '@serwist/sw';
 
-import { pushSchema } from '@/lib/validations/push';
+import { notificationEventSchema, pushEventSchema } from '@/lib/validations/push';
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -22,13 +22,26 @@ declare global {
 declare const self: ServiceWorkerGlobalScope;
 
 self.addEventListener('push', (event) => {
-  const pushMessage = pushSchema.parse(event.data?.json());
+  const pushEvent = pushEventSchema.parse(event.data?.json());
 
   event.waitUntil(
-    self.registration.showNotification(pushMessage.title, {
-      body: pushMessage.body,
+    self.registration.showNotification(pushEvent.title, {
+      body: pushEvent.body,
+      data: {
+        url: pushEvent.url,
+      },
     }),
   );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  const notificationEvent = notificationEventSchema.parse(event.notification);
+
+  if (!notificationEvent.data.url) {
+    return;
+  }
+
+  event.waitUntil(self.clients.openWindow(notificationEvent.data.url));
 });
 
 const serwist = new Serwist();

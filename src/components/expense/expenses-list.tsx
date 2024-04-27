@@ -3,7 +3,7 @@
 import type { User } from 'lucia';
 
 import { ExpensesListCard } from '@/components/expense/expenses-list-card';
-import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/shared';
+import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/react';
 
 interface ExpensesListProps {
   user: User;

@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn, getInitials } from '@/lib/utils';
-import type { GroupCurrent } from '@/trpc/shared';
+import type { GroupCurrent } from '@/trpc/react';
 
 interface UserCardProps {
   image?: string | null;

@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { updateUserFormSchema } from '@/lib/validations/user';
 import { api } from '@/trpc/react';
-import { type UserById } from '@/trpc/shared';
+import { type UserById } from '@/trpc/react';
 
 type UpdateUserFormSchema = z.infer<typeof updateUserFormSchema>;
 

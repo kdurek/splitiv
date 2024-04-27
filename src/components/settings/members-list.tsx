@@ -1,7 +1,7 @@
 'use client';
 
 import { AddUserToGroupForm } from '@/components/group/add-user-to-group-form';
-import type { GroupCurrent, UserListNotInCurrentGroup } from '@/trpc/shared';
+import type { GroupCurrent, UserListNotInCurrentGroup } from '@/trpc/react';
 
 interface MembersListProps {
   group: GroupCurrent;

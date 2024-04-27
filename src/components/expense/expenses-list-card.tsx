@@ -9,7 +9,7 @@ import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/shared';
+import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/react';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
   include: {

@@ -10,12 +10,14 @@
     "pnpm": "8.x"
   },
   "scripts": {
-    "format": "prettier \"**/*.{css,json,md,js,jsx,ts,tsx}\"",
-    "format:write": "prettier --write \"**/*.{css,json,md,js,jsx,ts,tsx}\"",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "check:prettier": "prettier \"**/*.{css,json,md,js,jsx,ts,tsx}\"",
+    "check:lint": "next lint",
+    "check:types": "tsc",
+    "fix:prettier": "prettier \"**/*.{css,json,md,js,jsx,ts,tsx}\" --write",
+    "fix:lint": "next lint --fix",
     "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev\"",
-    "typecheck": "tsc",
     "test": "vitest",
     "build": "next build",
     "start": "next start"

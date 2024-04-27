@@ -16,8 +16,8 @@ import { NumberInput } from '@/components/ui/number-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { expenseFormSchema } from '@/lib/validations/expense';
+import type { ExpenseById, GroupCurrent } from '@/trpc/react';
 import { api } from '@/trpc/react';
-import type { ExpenseById, GroupCurrent } from '@/trpc/shared';
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 

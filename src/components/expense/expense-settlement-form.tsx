@@ -27,8 +27,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Heading } from '@/components/ui/heading';
 import { Label } from '@/components/ui/label';
 import { expenseSettlementFormSchema } from '@/lib/validations/expense-settlement';
+import type { ExpenseDebtSettlement, UserById } from '@/trpc/react';
 import { api } from '@/trpc/react';
-import type { ExpenseDebtSettlement, UserById } from '@/trpc/shared';
 
 type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
 

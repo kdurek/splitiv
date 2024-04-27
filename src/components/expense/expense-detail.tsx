@@ -10,7 +10,7 @@ import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import type { ExpenseById, ExpensesListActive, ExpensesListArchive } from '@/trpc/shared';
+import type { ExpenseById, ExpensesListActive, ExpensesListArchive } from '@/trpc/react';
 
 interface ExpenseDetailProps {
   expense: ExpensesListActive['items'][number] | ExpensesListArchive['items'][number] | NonNullable<ExpenseById>;

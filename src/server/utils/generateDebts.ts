@@ -62,7 +62,7 @@ function reduceDebts(debts: IDebt[]) {
   Object.keys(debtMap).forEach((fromId) => {
     Object.keys(debtMap[fromId]!).forEach((toId) => {
       const amount = debtMap[fromId]![toId];
-      if (amount && amount.gt(0)) {
+      if (amount?.gt(0)) {
         reducedDebts.push({
           fromId,
           toId,

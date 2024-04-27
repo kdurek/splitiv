@@ -8,7 +8,7 @@ import { GroupSelect } from '@/components/group/group-select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
 import { GenderSelectForm } from '@/components/user/gender-select-form';
-import type { GroupList } from '@/trpc/shared';
+import type { GroupList } from '@/trpc/react';
 
 interface AppInitProps {
   children: React.ReactNode;

@@ -41,7 +41,6 @@ export const viewport: Viewport = {
 const poppins = Poppins({
   subsets: ['latin-ext'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-sans',
 });
 
 const dataWebsiteId =
@@ -49,17 +48,17 @@ const dataWebsiteId =
     ? '225083f2-01a5-456e-afa3-f3ed5fd391fe'
     : '26894ae9-08bc-45e4-8d5d-f01b65062952';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pl">
-      <body className={`font-sans ${poppins.variable}`}>
+    <html lang="pl" className={poppins.className}>
+      <body>
         <TRPCReactProvider>
           {children}
           <Toaster />
           <TailwindIndicator />
         </TRPCReactProvider>
       </body>
-      <Script async src="https://analytics.durek.pl/script.js" data-website-id={dataWebsiteId} />
+      <Script defer src="https://analytics.durek.pl/script.js" data-website-id={dataWebsiteId} />
     </html>
   );
 }

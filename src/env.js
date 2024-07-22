@@ -8,10 +8,7 @@ export const env = createEnv({
    */
   server: {
     BASE_URL: z.string().url(),
-    DATABASE_URL: z
-      .string()
-      .url()
-      .refine((str) => !str.includes('YOUR_PSQL_URL_HERE'), 'You forgot to change the default URL'),
+    DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),

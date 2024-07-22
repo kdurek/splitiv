@@ -8,15 +8,13 @@ import { GroupSelect } from '@/components/group/group-select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
 import { GenderSelectForm } from '@/components/user/gender-select-form';
-import type { GroupList } from '@/trpc/react';
 
 interface AppInitProps {
   children: React.ReactNode;
   user: User;
-  groups: GroupList;
 }
 
-export function AppInit({ children, user, groups }: AppInitProps) {
+export function AppInit({ children, user }: AppInitProps) {
   const router = useRouter();
 
   if (!user.gender) {
@@ -31,8 +29,6 @@ export function AppInit({ children, user, groups }: AppInitProps) {
     return (
       <div className="space-y-4 p-4">
         <GroupSelect
-          user={user}
-          groups={groups}
           onSuccess={() => {
             router.refresh();
           }}

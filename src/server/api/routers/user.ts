@@ -8,7 +8,15 @@ export const userRouter = createTRPCRouter({
     return ctx.db.user.findMany();
   }),
 
-  byId: protectedProcedure.input(z.object({ userId: z.string().cuid2() })).query(async ({ input, ctx }) => {
+  current: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findUnique({
+      where: {
+        id: ctx.user.id,
+      },
+    });
+  }),
+
+  byId: protectedProcedure.input(z.object({ userId: z.string().cuid2().optional() })).query(async ({ input, ctx }) => {
     return ctx.db.user.findUnique({
       where: {
         id: input.userId,

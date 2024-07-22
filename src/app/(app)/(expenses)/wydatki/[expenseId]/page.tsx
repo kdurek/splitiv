@@ -1,8 +1,6 @@
-import { redirect } from 'next/navigation';
-
 import { Expense } from '@/components/expense/expense';
 import { Section } from '@/components/layout/section';
-import { validateRequest } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 interface ExpensePageProps {
   params: {
@@ -11,14 +9,12 @@ interface ExpensePageProps {
 }
 
 export default async function ExpensePage({ params }: ExpensePageProps) {
-  const { user } = await validateRequest();
-  if (!user) {
-    return redirect('/logowanie');
-  }
+  void api.expense.byId.prefetch({ id: params.expenseId });
+  void api.user.current.prefetch();
 
   return (
     <Section>
-      <Expense user={user} expenseId={params.expenseId} />
+      <Expense expenseId={params.expenseId} />
     </Section>
   );
 }

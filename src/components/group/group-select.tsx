@@ -1,20 +1,19 @@
 'use client';
 
-import type { User } from 'lucia';
 import { toast } from 'sonner';
 
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { GroupList } from '@/trpc/react';
 import { api } from '@/trpc/react';
 
 interface GroupSelectProps {
-  user: User;
-  groups: GroupList;
   onSuccess?: () => void;
 }
 
-export function GroupSelect({ user, groups, onSuccess }: GroupSelectProps) {
+export function GroupSelect({ onSuccess }: GroupSelectProps) {
+  const [user] = api.user.current.useSuspenseQuery();
+  const [groups] = api.group.list.useSuspenseQuery();
+
   const { mutate: changeActiveGroup } = api.group.changeCurrent.useMutation();
 
   const handleGroupSelect = (value: string) => {
@@ -41,7 +40,7 @@ export function GroupSelect({ user, groups, onSuccess }: GroupSelectProps) {
   return (
     <div className="space-y-2">
       <Label>Wybierz grupę aby przejść dalej</Label>
-      <Select defaultValue={user.activeGroupId} onValueChange={handleGroupSelect}>
+      <Select defaultValue={user?.activeGroupId ?? ''} onValueChange={handleGroupSelect}>
         <SelectTrigger>
           <SelectValue placeholder="Wybierz grupę" />
         </SelectTrigger>

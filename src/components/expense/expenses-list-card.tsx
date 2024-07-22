@@ -3,13 +3,11 @@
 import { type Prisma } from '@prisma/client';
 import { format } from 'date-fns';
 import Decimal from 'decimal.js';
-import type { User } from 'lucia';
 
 import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
-import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/react';
+import { api, type ExpensesListActive, type ExpensesListArchive } from '@/trpc/react';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
   include: {
@@ -30,12 +28,13 @@ export function getExpenseStatus(expense: ExpenseWithDebts) {
 
 interface ExpensesListCardProps {
   expense: ExpensesListActive['items'][number] | ExpensesListArchive['items'][number];
-  user: User;
 }
 
-export function ExpensesListCard({ expense, user }: ExpensesListCardProps) {
-  const isPayer = expense.payerId === user.id;
-  const userDebt = expense.debts.find((debt) => debt.debtorId === user.id);
+export function ExpensesListCard({ expense }: ExpensesListCardProps) {
+  const [user] = api.user.current.useSuspenseQuery();
+
+  const isPayer = expense.payerId === user?.id;
+  const userDebt = expense.debts.find((debt) => debt.debtorId === user?.id);
 
   const debtorsWithoutPayerLeft = expense.debts.reduce((acc, debt) => {
     if (debt.debtorId !== expense.payerId && debt.settled !== debt.amount) {
@@ -79,7 +78,7 @@ export function ExpensesListCard({ expense, user }: ExpensesListCardProps) {
       </DrawerTrigger>
       <DrawerContent className="max-h-[96%]">
         <div className="overflow-auto overscroll-none p-4">
-          <ExpenseDetail expense={expense} user={user} />
+          <ExpenseDetail expense={expense} />
         </div>
       </DrawerContent>
     </Drawer>

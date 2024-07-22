@@ -1,8 +1,6 @@
-import { redirect } from 'next/navigation';
-
 import { ExpenseSettlement } from '@/components/expense/expense-settlement';
 import { Section } from '@/components/layout/section';
-import { validateRequest } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 interface ExpenseSettlementPageProps {
   params: {
@@ -11,14 +9,15 @@ interface ExpenseSettlementPageProps {
 }
 
 export default async function ExpenseSettlementPage({ params }: ExpenseSettlementPageProps) {
-  const { user } = await validateRequest();
-  if (!user) {
-    return redirect('/logowanie');
-  }
+  void api.user.byId.prefetch({ userId: params.userId });
+  void api.expense.debt.settlement.prefetch({
+    userId: params.userId,
+  });
+  void api.user.current.prefetch();
 
   return (
     <Section title="Rozliczenie">
-      <ExpenseSettlement user={user} paramsUserId={params.userId} />
+      <ExpenseSettlement paramsUserId={params.userId} />
     </Section>
   );
 }

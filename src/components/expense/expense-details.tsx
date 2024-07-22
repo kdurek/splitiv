@@ -1,25 +1,22 @@
 'use client';
 
 import Decimal from 'decimal.js';
-import type { User } from 'lucia';
 
 import { ExpensesListCard } from '@/components/expense/expenses-list-card';
-import { FullScreenError } from '@/components/layout/error';
-import { FullScreenLoading } from '@/components/layout/loading';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/trpc/react';
 
 interface ExpenseDetailsProps {
-  user: User;
   paramsUserId: string;
 }
 
-export function ExpenseDetails({ user, paramsUserId }: ExpenseDetailsProps) {
-  const { data: paramsUser, status: paramsUserStatus } = api.user.byId.useQuery({ userId: paramsUserId });
+export function ExpenseDetails({ paramsUserId }: ExpenseDetailsProps) {
+  const [user] = api.user.current.useSuspenseQuery();
+  const [paramsUser] = api.user.byId.useSuspenseQuery({ userId: paramsUserId });
 
-  const { data: credits, status: creditsStatus } = api.expense.between.useQuery(
+  const [credits] = api.expense.between.useSuspenseQuery(
     {
-      payerId: user.id,
+      payerId: user?.id,
       debtorId: paramsUserId,
     },
     {
@@ -35,15 +32,15 @@ export function ExpenseDetails({ user, paramsUserId }: ExpenseDetailsProps) {
     },
   );
 
-  const { data: debts, status: debtsStatus } = api.expense.between.useQuery(
+  const [debts] = api.expense.between.useSuspenseQuery(
     {
       payerId: paramsUserId,
-      debtorId: user.id,
+      debtorId: user?.id,
     },
     {
       select: (expenses) =>
         expenses.map((expense) => {
-          const expenseDebt = expense.debts.find((expenseDebt) => expenseDebt.debtorId === user.id);
+          const expenseDebt = expense.debts.find((expenseDebt) => expenseDebt.debtorId === user?.id);
           const expenseAmount =
             expenseDebt?.amount === expenseDebt?.settled
               ? expenseDebt?.amount
@@ -52,14 +49,6 @@ export function ExpenseDetails({ user, paramsUserId }: ExpenseDetailsProps) {
         }),
     },
   );
-
-  if (paramsUserStatus === 'pending' || creditsStatus === 'pending' || debtsStatus === 'pending') {
-    return <FullScreenLoading />;
-  }
-
-  if (paramsUserStatus === 'error' || creditsStatus === 'error' || debtsStatus === 'error') {
-    return <FullScreenError />;
-  }
 
   if (!paramsUser) {
     return 'Nie znaleziono użytkownika';
@@ -75,12 +64,12 @@ export function ExpenseDetails({ user, paramsUserId }: ExpenseDetailsProps) {
         </TabsList>
         <TabsContent value="credits" className="overflow-hidden rounded-md">
           {credits.map((credit) => (
-            <ExpensesListCard key={credit.id} expense={credit} user={user} />
+            <ExpensesListCard key={credit.id} expense={credit} />
           ))}
         </TabsContent>
         <TabsContent value="debts" className="overflow-hidden rounded-md">
           {debts.map((debt) => (
-            <ExpensesListCard key={debt.id} expense={debt} user={user} />
+            <ExpensesListCard key={debt.id} expense={debt} />
           ))}
         </TabsContent>
       </Tabs>

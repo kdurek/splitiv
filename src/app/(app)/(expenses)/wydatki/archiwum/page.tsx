@@ -1,18 +1,16 @@
-import { redirect } from 'next/navigation';
-
 import { Archive } from '@/components/expense/archive';
 import { Section } from '@/components/layout/section';
-import { validateRequest } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 export default async function ArchivePage() {
-  const { user } = await validateRequest();
-  if (!user) {
-    return redirect('/logowanie');
-  }
+  void api.expense.listArchive.prefetchInfinite({
+    limit: 10,
+  });
+  void api.user.current.prefetch();
 
   return (
     <Section title="Archiwum">
-      <Archive user={user} />
+      <Archive />
     </Section>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { User } from 'lucia';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -16,18 +15,19 @@ import { NumberInput } from '@/components/ui/number-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { expenseFormSchema } from '@/lib/validations/expense';
-import type { ExpenseById, GroupCurrent } from '@/trpc/react';
+import type { ExpenseById } from '@/trpc/react';
 import { api } from '@/trpc/react';
 
 export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
 
 interface ExpenseFormProps {
-  user: User;
-  group: GroupCurrent;
   expense?: ExpenseById;
 }
 
-export function ExpenseForm({ user, group, expense }: ExpenseFormProps) {
+export function ExpenseForm({ expense }: ExpenseFormProps) {
+  const [user] = api.user.current.useSuspenseQuery();
+  const [group] = api.group.current.useSuspenseQuery();
+
   const router = useRouter();
   const { mutate: createExpense, isPending: isPendingCreateExpense } = api.expense.create.useMutation();
   const { mutate: updateExpense, isPending: isPendingUpdateExpense } = api.expense.update.useMutation();
@@ -37,7 +37,7 @@ export function ExpenseForm({ user, group, expense }: ExpenseFormProps) {
       name: expense?.name ?? '',
       description: expense?.description ?? '',
       amount: Number(expense?.amount) || 0,
-      payer: expense?.payerId ?? user.id ?? '',
+      payer: expense?.payerId ?? user?.id ?? '',
       debts: group.members.map((member) => ({
         id: member.id,
         name: member.name ?? '',

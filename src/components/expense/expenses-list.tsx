@@ -1,16 +1,13 @@
 'use client';
 
-import type { User } from 'lucia';
-
 import { ExpensesListCard } from '@/components/expense/expenses-list-card';
 import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/react';
 
 interface ExpensesListProps {
-  user: User;
   expenses: ExpensesListActive['items'] | ExpensesListArchive['items'];
 }
 
-export function ExpensesList({ user, expenses }: ExpensesListProps) {
+export function ExpensesList({ expenses }: ExpensesListProps) {
   if (!expenses.length) {
     return <div className="rounded-md bg-white p-4 text-center">Brak długów</div>;
   }
@@ -18,7 +15,7 @@ export function ExpensesList({ user, expenses }: ExpensesListProps) {
   return (
     <div className="divide-y divide-muted overflow-hidden rounded-md">
       {expenses.map((expense) => (
-        <ExpensesListCard key={expense.id} expense={expense} user={user} />
+        <ExpensesListCard key={expense.id} expense={expense} />
       ))}
     </div>
   );

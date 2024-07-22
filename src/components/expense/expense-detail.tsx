@@ -1,7 +1,6 @@
 'use client';
 
 import { format } from 'date-fns';
-import type { User } from 'lucia';
 import Link from 'next/link';
 
 import { DebtRevertButton } from '@/components/debt/debt-revert-button';
@@ -10,18 +9,19 @@ import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import type { ExpenseById, ExpensesListActive, ExpensesListArchive } from '@/trpc/react';
+import { api, type ExpenseById, type ExpensesListActive, type ExpensesListArchive } from '@/trpc/react';
 
 interface ExpenseDetailProps {
   expense: ExpensesListActive['items'][number] | ExpensesListArchive['items'][number] | NonNullable<ExpenseById>;
-  user: User;
 }
 
-export function ExpenseDetail({ expense, user }: ExpenseDetailProps) {
+export function ExpenseDetail({ expense }: ExpenseDetailProps) {
+  const [user] = api.user.current.useSuspenseQuery();
+
   const logs = expense.debts.flatMap((debt) => debt.logs);
   const formattedDate = format(expense.createdAt, 'EEEEEEE, d MMMM yyyy');
-  const isPayer = user.id === expense.payerId;
-  const isAdmin = user.id === expense.group.adminId;
+  const isPayer = user?.id === expense.payerId;
+  const isAdmin = user?.id === expense.group.adminId;
 
   return (
     <div className="divide-y">
@@ -45,7 +45,7 @@ export function ExpenseDetail({ expense, user }: ExpenseDetailProps) {
             name={debt.debtor.name}
             amount={Number(debt.amount)}
             settled={Number(debt.settled)}
-            canSettle={debt.amount !== debt.settled && (isAdmin || isPayer || (user.id === debt.debtorId && !isPayer))}
+            canSettle={debt.amount !== debt.settled && (isAdmin || isPayer || (user?.id === debt.debtorId && !isPayer))}
           />
         ))}
       </div>

@@ -1,14 +1,12 @@
 'use client';
 
 import { AddUserToGroupForm } from '@/components/group/add-user-to-group-form';
-import type { GroupCurrent, UserListNotInCurrentGroup } from '@/trpc/react';
+import { api } from '@/trpc/react';
 
-interface MembersListProps {
-  group: GroupCurrent;
-  usersNotInCurrentGroup: UserListNotInCurrentGroup;
-}
+export function MembersList() {
+  const [group] = api.group.current.useSuspenseQuery();
+  const [usersNotInCurrentGroup] = api.user.listNotInCurrentGroup.useSuspenseQuery();
 
-export function MembersList({ group, usersNotInCurrentGroup }: MembersListProps) {
   return (
     <div className="space-y-4">
       <ol className="space-y-1">

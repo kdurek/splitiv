@@ -1,8 +1,6 @@
-import { redirect } from 'next/navigation';
-
 import { ExpenseEdit } from '@/components/expense/expense-edit';
 import { Section } from '@/components/layout/section';
-import { validateRequest } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 interface ExpenseEditPageProps {
   params: {
@@ -11,14 +9,13 @@ interface ExpenseEditPageProps {
 }
 
 export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) {
-  const { user } = await validateRequest();
-  if (!user) {
-    return redirect('/logowanie');
-  }
+  void api.expense.byId.prefetch({ id: params.expenseId });
+  void api.group.current.prefetch();
+  void api.user.current.prefetch();
 
   return (
     <Section title="Edytuj wydatek">
-      <ExpenseEdit user={user} expenseId={params.expenseId} />
+      <ExpenseEdit expenseId={params.expenseId} />
     </Section>
   );
 }

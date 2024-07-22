@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Decimal from 'decimal.js';
-import type { User } from 'lucia';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -34,11 +33,12 @@ type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
 
 interface ExpenseSettlementFormProps {
   paramsUser: UserById;
-  currentUser: User;
   usersDebts: ExpenseDebtSettlement;
 }
 
-export function ExpenseSettlementForm({ paramsUser, currentUser, usersDebts }: ExpenseSettlementFormProps) {
+export function ExpenseSettlementForm({ paramsUser, usersDebts }: ExpenseSettlementFormProps) {
+  const [currentUser] = api.user.current.useSuspenseQuery();
+
   const router = useRouter();
 
   const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = api.expense.debt.settle.useMutation();

@@ -7,12 +7,9 @@ import { api } from '@/trpc/server';
 
 export default async function ProfilePage() {
   const { user } = await validateRequest();
-  if (!user) {
-    redirect('/logowanie');
-  }
 
   const selectedUser = await api.user.byId({
-    userId: user.id,
+    userId: user?.id,
   });
   if (!selectedUser) {
     redirect('/');

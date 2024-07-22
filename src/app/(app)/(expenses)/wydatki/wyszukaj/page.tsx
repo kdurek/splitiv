@@ -1,18 +1,17 @@
-import { redirect } from 'next/navigation';
-
 import ExpensesSearch from '@/components/expense/expenses-search';
 import { Section } from '@/components/layout/section';
-import { validateRequest } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 export default async function ExpenseSearchPage() {
-  const { user } = await validateRequest();
-  if (!user) {
-    return redirect('/logowanie');
-  }
+  void api.expense.listSearch.prefetchInfinite({
+    limit: 10,
+    searchText: '',
+  });
+  void api.user.current.prefetch();
 
   return (
     <Section title="Wyszukaj wydatek">
-      <ExpensesSearch user={user} />
+      <ExpensesSearch />
     </Section>
   );
 }

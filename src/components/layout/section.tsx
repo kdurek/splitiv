@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
+import { HydrateClient } from '@/trpc/server';
 
 interface SectionProps {
   children: ReactNode;
@@ -10,13 +11,13 @@ interface SectionProps {
 
 export function Section({ title, children }: SectionProps) {
   return (
-    <div>
+    <HydrateClient>
       {title && (
         <Heading variant="h1" className="p-4">
           {title}
         </Heading>
       )}
       <section className={cn('p-4', title && 'pt-0')}>{children}</section>
-    </div>
+    </HydrateClient>
   );
 }

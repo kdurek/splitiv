@@ -1,8 +1,7 @@
-import { redirect } from 'next/navigation';
-
 import { ExpenseDetails } from '@/components/expense/expense-details';
 import { Section } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
+import { api } from '@/trpc/server';
 
 interface ExpenseDetailsPageProps {
   params: {
@@ -12,13 +11,21 @@ interface ExpenseDetailsPageProps {
 
 export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
   const { user } = await validateRequest();
-  if (!user) {
-    return redirect('/logowanie');
-  }
+
+  void api.user.byId.prefetch({ userId: params.userId });
+  void api.expense.between.prefetch({
+    payerId: params.userId,
+    debtorId: user?.id,
+  });
+  void api.expense.between.prefetch({
+    payerId: user?.id,
+    debtorId: params.userId,
+  });
+  void api.user.current.prefetch();
 
   return (
     <Section title="Szczegóły">
-      <ExpenseDetails user={user} paramsUserId={params.userId} />
+      <ExpenseDetails paramsUserId={params.userId} />
     </Section>
   );
 }

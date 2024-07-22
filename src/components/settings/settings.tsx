@@ -1,13 +1,10 @@
 'use client';
 
-import type { User } from 'lucia';
 import { User2 } from 'lucide-react';
 import Link from 'next/link';
 
 import { LogoutButton } from '@/components/auth/logout-button';
 import { GroupSelect } from '@/components/group/group-select';
-import { FullScreenError } from '@/components/layout/error';
-import { FullScreenLoading } from '@/components/layout/loading';
 import { MembersList } from '@/components/settings/members-list';
 import { Notification } from '@/components/settings/notification';
 import { buttonVariants } from '@/components/ui/button';
@@ -15,23 +12,9 @@ import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
-interface SettingsProps {
-  user: User;
-}
-
-export function Settings({ user }: SettingsProps) {
-  const { data: groups, status: groupsStatus } = api.group.list.useQuery();
-  const { data: group, status: groupStatus } = api.group.current.useQuery();
-  const { data: usersNotInCurrentGroup, status: usersNotInCurrentGroupStatus } =
-    api.user.listNotInCurrentGroup.useQuery();
-
-  if (groupsStatus === 'pending' || groupStatus === 'pending' || usersNotInCurrentGroupStatus === 'pending') {
-    return <FullScreenLoading />;
-  }
-
-  if (groupsStatus === 'error' || groupStatus === 'error' || usersNotInCurrentGroupStatus === 'error') {
-    return <FullScreenError />;
-  }
+export function Settings() {
+  const [user] = api.user.current.useSuspenseQuery();
+  const [group] = api.group.current.useSuspenseQuery();
 
   return (
     <div className="space-y-4">
@@ -44,17 +27,17 @@ export function Settings({ user }: SettingsProps) {
 
       <div className="space-y-2 rounded-md bg-white p-4">
         <Heading variant="h2">Aktywna grupa</Heading>
-        <GroupSelect user={user} groups={groups} />
+        <GroupSelect />
       </div>
 
-      {user.id === group.adminId && (
+      {user?.id === group.adminId && (
         <div className="rounded-md bg-white p-4">
           <Heading variant="h2">Członkowie</Heading>
-          <MembersList group={group} usersNotInCurrentGroup={usersNotInCurrentGroup} />
+          <MembersList />
         </div>
       )}
 
-      {user.id === group.adminId && (
+      {user?.id === group.adminId && (
         <div className="rounded-md bg-white p-4">
           <Notification />
         </div>

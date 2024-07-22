@@ -1,6 +1,5 @@
 'use client';
 
-import type { User } from 'lucia';
 import { ArchiveIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
@@ -8,25 +7,19 @@ import { useInView } from 'react-intersection-observer';
 
 import { ExpensesList } from '@/components/expense/expenses-list';
 import { UserStats } from '@/components/expense/user-stats';
-import { FullScreenError } from '@/components/layout/error';
-import { FullScreenLoading } from '@/components/layout/loading';
 import { NotificationPrompt } from '@/components/settings/notification-prompt';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
-interface ExpensesProps {
-  user: User;
-}
-
-export function Expenses({ user }: ExpensesProps) {
+export function Expenses() {
   const { ref, inView } = useInView({
     root: null,
     rootMargin: '0px',
     threshold: 1,
   });
 
-  const { data, status, fetchNextPage, isFetchingNextPage, hasNextPage } = api.expense.listActive.useInfiniteQuery(
+  const [, { data, fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.listActive.useSuspenseInfiniteQuery(
     {
       limit: 10,
     },
@@ -34,7 +27,6 @@ export function Expenses({ user }: ExpensesProps) {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
-  const { data: group, status: groupStatus } = api.group.current.useQuery();
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -42,21 +34,13 @@ export function Expenses({ user }: ExpensesProps) {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (status === 'pending' || groupStatus === 'pending') {
-    return <FullScreenLoading />;
-  }
-
-  if (status === 'error' || groupStatus === 'error') {
-    return <FullScreenError />;
-  }
-
   const expenses = data.pages.flatMap((page) => page.items);
 
   return (
     <div className="space-y-4">
       <NotificationPrompt />
-      <UserStats user={user} group={group} />
-      <ExpensesList user={user} expenses={expenses} />
+      <UserStats />
+      <ExpensesList expenses={expenses} />
       <div ref={ref} />
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'ghost' }), 'w-full flex')}>
         <ArchiveIcon className="mr-2 size-4" />

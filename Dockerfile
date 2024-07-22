@@ -1,4 +1,4 @@
-FROM node:20.12.2-alpine AS base
+FROM node:20.15.1-alpine AS base
 RUN corepack enable
 
 # Dependencies

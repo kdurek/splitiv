@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "20.12.2",
-    "pnpm": "8.15.7"
+    "node": "20.15.1",
+    "pnpm": "9.6.0"
   },
-  "packageManager": "pnpm@8.15.7",
+  "packageManager": "pnpm@9.6.0",
   "scripts": {
     "db:push": "prisma db push",
     "db:studio": "prisma studio",

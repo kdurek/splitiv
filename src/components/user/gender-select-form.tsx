@@ -2,6 +2,8 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender } from '@prisma/client';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -19,6 +21,10 @@ interface GenderSelectFormProps {
 }
 
 export function GenderSelectForm({ userId }: GenderSelectFormProps) {
+  const t = useTranslations('GenderSelectForm');
+
+  const router = useRouter();
+
   const form = useForm<GenderSelectFormSchema>({
     resolver: zodResolver(genderSelectFormSchema),
   });
@@ -30,7 +36,8 @@ export function GenderSelectForm({ userId }: GenderSelectFormProps) {
       { userId: userId, gender: values.gender },
       {
         onSuccess() {
-          toast.success('Pomyślnie zaktualizowano');
+          toast.success(t('success'));
+          router.refresh();
         },
       },
     );
@@ -44,16 +51,16 @@ export function GenderSelectForm({ userId }: GenderSelectFormProps) {
           name="gender"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Wybierz płeć aby przejść dalej</FormLabel>
+              <FormLabel>{t('label')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Wybierz płeć" />
+                    <SelectValue placeholder={t('placeholder')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={Gender.MALE}>Mężczyzna</SelectItem>
-                  <SelectItem value={Gender.FEMALE}>Kobieta</SelectItem>
+                  <SelectItem value={Gender.MALE}>{t('male')}</SelectItem>
+                  <SelectItem value={Gender.FEMALE}>{t('female')}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -61,7 +68,7 @@ export function GenderSelectForm({ userId }: GenderSelectFormProps) {
           )}
         />
         <div className="mt-6 flex justify-end">
-          <Button>Wybierz</Button>
+          <Button>{t('submit')}</Button>
         </div>
       </form>
     </Form>

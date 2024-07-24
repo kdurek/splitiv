@@ -1,0 +1,46 @@
+{
+  "ExpensesPage": {
+    "title": "Wydatki"
+  },
+  "ExpenseSearchPage": {
+    "title": "Wyszukaj wydatek"
+  },
+  "SettingsPage": {
+    "title": "Ustawienia"
+  },
+  "ExpenseEditPage": {
+    "title": "Edytuj wydatek"
+  },
+  "ExpenseAddPage": {
+    "title": "Dodaj wydatek"
+  },
+  "ArchivePage": {
+    "title": "Archiwum"
+  },
+  "ExpenseDetailsPage": {
+    "title": "Szczegóły"
+  },
+  "ExpenseSettlementPage": {
+    "title": "Rozliczenie"
+  },
+  "ProfilePage": {
+    "title": "Profil"
+  },
+  "LoginPage": {
+    "title": "Aby przejść dalej, zaloguj się"
+  },
+  "LoginButton": {
+    "text": "Zaloguj"
+  },
+  "LogoutButton": {
+    "text": "Wyloguj"
+  },
+  "GenderSelectForm": {
+    "label": "Wybierz płeć aby przejść dalej",
+    "placeholder": "Wybierz płeć",
+    "male": "Mężczyzna",
+    "female": "Kobieta",
+    "success": "Pomyślnie zaktualizowano",
+    "submit": "Zapisz"
+  }
+}

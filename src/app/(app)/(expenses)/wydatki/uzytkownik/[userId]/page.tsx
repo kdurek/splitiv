@@ -1,3 +1,5 @@
+import { getTranslations } from 'next-intl/server';
+
 import { ExpenseDetails } from '@/components/expense/expense-details';
 import { Section } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
@@ -10,6 +12,8 @@ interface ExpenseDetailsPageProps {
 }
 
 export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageProps) {
+  const t = await getTranslations('ExpenseDetailsPage');
+
   const { user } = await validateRequest();
 
   void api.user.byId.prefetch({ userId: params.userId });
@@ -24,7 +28,7 @@ export default async function ExpenseDetailsPage({ params }: ExpenseDetailsPageP
   void api.user.current.prefetch();
 
   return (
-    <Section title="Szczegóły">
+    <Section title={t('title')}>
       <ExpenseDetails paramsUserId={params.userId} />
     </Section>
   );

@@ -1,3 +1,5 @@
+import { getTranslations } from 'next-intl/server';
+
 import { ExpenseSettlement } from '@/components/expense/expense-settlement';
 import { Section } from '@/components/layout/section';
 import { api } from '@/trpc/server';
@@ -9,6 +11,8 @@ interface ExpenseSettlementPageProps {
 }
 
 export default async function ExpenseSettlementPage({ params }: ExpenseSettlementPageProps) {
+  const t = await getTranslations('ExpenseSettlementPage');
+
   void api.user.byId.prefetch({ userId: params.userId });
   void api.expense.debt.settlement.prefetch({
     userId: params.userId,
@@ -16,7 +20,7 @@ export default async function ExpenseSettlementPage({ params }: ExpenseSettlemen
   void api.user.current.prefetch();
 
   return (
-    <Section title="Rozliczenie">
+    <Section title={t('title')}>
       <ExpenseSettlement paramsUserId={params.userId} />
     </Section>
   );

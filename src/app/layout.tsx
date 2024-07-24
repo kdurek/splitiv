@@ -6,6 +6,8 @@ import { pl } from 'date-fns/locale';
 import type { Metadata, Viewport } from 'next';
 import { Poppins } from 'next/font/google';
 import Script from 'next/script';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 
 import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
 import { Toaster } from '@/components/ui/sonner';
@@ -48,15 +50,24 @@ const dataWebsiteId =
     ? '225083f2-01a5-456e-afa3-f3ed5fd391fe'
     : '26894ae9-08bc-45e4-8d5d-f01b65062952';
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="pl" className={poppins.className}>
+    <html lang={locale} className={poppins.className}>
       <body>
-        <TRPCReactProvider>
-          {children}
-          <Toaster />
-          <TailwindIndicator />
-        </TRPCReactProvider>
+        <NextIntlClientProvider messages={messages}>
+          <TRPCReactProvider>
+            {children}
+            <Toaster />
+            <TailwindIndicator />
+          </TRPCReactProvider>
+        </NextIntlClientProvider>
       </body>
       <Script defer src="https://analytics.durek.pl/script.js" data-website-id={dataWebsiteId} />
     </html>

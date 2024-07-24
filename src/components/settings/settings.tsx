@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { LogoutButton } from '@/components/auth/logout-button';
 import { GroupSelect } from '@/components/group/group-select';
+import { LocaleSelect } from '@/components/settings/locale-select';
 import { MembersList } from '@/components/settings/members-list';
 import { Notification } from '@/components/settings/notification';
 import { buttonVariants } from '@/components/ui/button';
@@ -30,8 +31,13 @@ export function Settings() {
         <GroupSelect />
       </div>
 
+      <div className="space-y-2 rounded-md bg-white p-4">
+        <Heading variant="h2">Język</Heading>
+        <LocaleSelect />
+      </div>
+
       {user?.id === group.adminId && (
-        <div className="rounded-md bg-white p-4">
+        <div className="space-y-2 rounded-md bg-white p-4">
           <Heading variant="h2">Członkowie</Heading>
           <MembersList />
         </div>

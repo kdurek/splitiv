@@ -1,0 +1,46 @@
+{
+  "ExpensesPage": {
+    "title": "Expenses"
+  },
+  "ExpenseSearchPage": {
+    "title": "Search expense"
+  },
+  "SettingsPage": {
+    "title": "Settings"
+  },
+  "ExpenseEditPage": {
+    "title": "Edit expense"
+  },
+  "ExpenseAddPage": {
+    "title": "Add expense"
+  },
+  "ArchivePage": {
+    "title": "Archive"
+  },
+  "ExpenseDetailsPage": {
+    "title": "Details"
+  },
+  "ExpenseSettlementPage": {
+    "title": "Settlement"
+  },
+  "ProfilePage": {
+    "title": "Profile"
+  },
+  "LoginPage": {
+    "title": "Login to proceed"
+  },
+  "LoginButton": {
+    "text": "Login"
+  },
+  "LogoutButton": {
+    "text": "Logout"
+  },
+  "GenderSelectForm": {
+    "label": "Select gender to proceed",
+    "placeholder": "Select gender",
+    "male": "Male",
+    "female": "Female",
+    "success": "Successfully updated",
+    "submit": "Save"
+  }
+}

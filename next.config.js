@@ -6,6 +6,7 @@ await import('./src/env.js');
 
 // @ts-check
 import withSerwistInit from '@serwist/next';
+import createNextIntlPlugin from 'next-intl/plugin';
 
 // You may want to use a more robust revision to cache
 // files more efficiently.
@@ -19,6 +20,8 @@ const withSerwist = withSerwistInit({
   additionalPrecacheEntries: [{ url: '/~offline', revision }],
 });
 
+const withNextIntl = createNextIntlPlugin();
+
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   output: 'standalone',
@@ -31,4 +34,4 @@ const nextConfig = {
   },
 };
 
-export default withSerwist(nextConfig);
+export default withSerwist(withNextIntl(nextConfig));

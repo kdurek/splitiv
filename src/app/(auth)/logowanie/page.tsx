@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { LoginButton } from '@/components/auth/login-button';
 import { validateRequest } from '@/server/auth';
@@ -9,10 +10,12 @@ export default async function LoginPage() {
     return redirect('/');
   }
 
+  const t = await getTranslations('LoginPage');
+
   return (
     <div className="p-4">
       <div className="flex flex-col items-center gap-4 rounded-md border p-4">
-        <h1 className="max-w-md">Aby przejść dalej, zaloguj się</h1>
+        <h1 className="max-w-md">{t('title')}</h1>
         <LoginButton />
       </div>
     </div>

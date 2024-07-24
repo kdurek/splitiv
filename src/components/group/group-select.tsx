@@ -2,7 +2,6 @@
 
 import { toast } from 'sonner';
 
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/trpc/react';
 
@@ -38,20 +37,17 @@ export function GroupSelect({ onSuccess }: GroupSelectProps) {
   }
 
   return (
-    <div className="space-y-2">
-      <Label>Wybierz grupę aby przejść dalej</Label>
-      <Select defaultValue={user?.activeGroupId ?? ''} onValueChange={handleGroupSelect}>
-        <SelectTrigger>
-          <SelectValue placeholder="Wybierz grupę" />
-        </SelectTrigger>
-        <SelectContent>
-          {groups.map((group) => (
-            <SelectItem key={group.id} value={group.id}>
-              {group.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <Select defaultValue={user?.activeGroupId ?? ''} onValueChange={handleGroupSelect}>
+      <SelectTrigger>
+        <SelectValue placeholder="Wybierz grupę" />
+      </SelectTrigger>
+      <SelectContent>
+        {groups.map((group) => (
+          <SelectItem key={group.id} value={group.id}>
+            {group.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

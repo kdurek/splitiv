@@ -39,7 +39,7 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        userId: z.string().cuid2(),
+        userId: z.string().cuid2().optional(),
         name: z.string().optional(),
         gender: z.nativeEnum(Gender).optional(),
       }),

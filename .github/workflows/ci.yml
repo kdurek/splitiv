@@ -8,6 +8,9 @@ env:
   # SKIP_ENV_VALIDATION: 1
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  DOKPLOY_URL: ${{ secrets.DOKPLOY_URL }}
+  DOKPLOY_TOKEN: ${{ secrets.DOKPLOY_TOKEN }}
+  DOKPLOY_APP: ${{ secrets.DOKPLOY_APP }}
 
 jobs:
   build-and-push-image-and-deploy:
@@ -81,3 +84,14 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Deploy
+        run: |
+          curl -X 'POST' \
+            '${{ env.DOKPLOY_URL }}/api/application.deploy' \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -H 'Authorization: Bearer ${{ env.DOKPLOY_TOKEN }}' \
+            -d '{
+              "applicationId": ${{ env.DOKPLOY_APP }},
+            }'

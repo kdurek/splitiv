@@ -20,7 +20,8 @@
     "devsafe": "rm -rf .next && next dev",
     "test": "vitest",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

@@ -7,16 +7,16 @@ import { Button } from '@/components/ui/button';
 import { api } from '@/trpc/react';
 
 interface DebtRevertButtonProps {
-  id: string;
+  logId: string;
 }
 
-export function DebtRevertButton({ id }: DebtRevertButtonProps) {
+export function DebtRevertButton({ logId }: DebtRevertButtonProps) {
   const { mutate: revert } = api.expense.log.revert.useMutation();
 
   const handleRevert = () => {
     revert(
       {
-        id,
+        logId,
       },
       {
         onSuccess() {

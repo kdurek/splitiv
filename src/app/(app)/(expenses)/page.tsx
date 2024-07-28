@@ -7,8 +7,9 @@ import { api, HydrateClient } from '@/trpc/server';
 export default async function ExpensesPage() {
   const t = await getTranslations('ExpensesPage');
 
-  void api.expense.listActive.prefetchInfinite({
+  void api.expense.list.prefetchInfinite({
     limit: 10,
+    type: 'active',
   });
   void api.group.current.prefetch();
   void api.user.current.prefetch();

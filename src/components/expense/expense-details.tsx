@@ -1,7 +1,5 @@
 'use client';
 
-import Decimal from 'decimal.js';
-
 import { ExpensesListCard } from '@/components/expense/expenses-list-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/trpc/react';
@@ -11,52 +9,19 @@ interface ExpenseDetailsProps {
 }
 
 export function ExpenseDetails({ paramsUserId }: ExpenseDetailsProps) {
-  const [user] = api.user.current.useSuspenseQuery();
-  const [paramsUser] = api.user.byId.useSuspenseQuery({ userId: paramsUserId });
+  const [otherUser] = api.user.byId.useSuspenseQuery({ userId: paramsUserId });
 
-  const [credits] = api.expense.between.useSuspenseQuery(
-    {
-      payerId: user?.id,
-      debtorId: paramsUserId,
-    },
-    {
-      select: (expenses) =>
-        expenses.map((expense) => {
-          const expenseDebt = expense.debts.find((expenseDebt) => expenseDebt.debtorId === paramsUserId);
-          const expenseAmount =
-            expenseDebt?.amount === expenseDebt?.settled
-              ? expenseDebt?.amount
-              : Decimal.sub(expenseDebt?.amount ?? 0, expenseDebt?.settled ?? 0);
-          return { ...expense, amount: expenseAmount ?? new Decimal(0) };
-        }),
-    },
-  );
+  const [{ credits, debts }] = api.expense.getExpensesBetweenUser.useSuspenseQuery({
+    userId: paramsUserId,
+  });
 
-  const [debts] = api.expense.between.useSuspenseQuery(
-    {
-      payerId: paramsUserId,
-      debtorId: user?.id,
-    },
-    {
-      select: (expenses) =>
-        expenses.map((expense) => {
-          const expenseDebt = expense.debts.find((expenseDebt) => expenseDebt.debtorId === user?.id);
-          const expenseAmount =
-            expenseDebt?.amount === expenseDebt?.settled
-              ? expenseDebt?.amount
-              : Decimal.sub(expenseDebt?.amount ?? 0, expenseDebt?.settled ?? 0);
-          return { ...expense, amount: expenseAmount ?? new Decimal(0) };
-        }),
-    },
-  );
-
-  if (!paramsUser) {
+  if (!otherUser) {
     return 'Nie znaleziono użytkownika';
   }
 
   return (
     <div>
-      <p className="text-muted-foreground">Pomiędzy Tobą, a {paramsUser.name}</p>
+      <p className="text-muted-foreground">Pomiędzy Tobą, a {otherUser.name}</p>
       <Tabs defaultValue="credits" className="mt-2">
         <TabsList>
           <TabsTrigger value="credits">Zapłaciłeś</TabsTrigger>

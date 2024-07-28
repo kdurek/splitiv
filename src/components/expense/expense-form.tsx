@@ -25,8 +25,8 @@ interface ExpenseFormProps {
 }
 
 export function ExpenseForm({ expense }: ExpenseFormProps) {
-  const [user] = api.user.current.useSuspenseQuery();
-  const [group] = api.group.current.useSuspenseQuery();
+  const [currentUser] = api.user.current.useSuspenseQuery();
+  const [currentGroup] = api.group.current.useSuspenseQuery();
 
   const router = useRouter();
   const { mutate: createExpense, isPending: isPendingCreateExpense } = api.expense.create.useMutation();
@@ -37,8 +37,8 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
       name: expense?.name ?? '',
       description: expense?.description ?? '',
       amount: Number(expense?.amount) || 0,
-      payer: expense?.payerId ?? user?.id ?? '',
-      debts: group.members.map((member) => ({
+      payer: expense?.payerId ?? currentUser?.id ?? '',
+      debts: currentGroup.members.map((member) => ({
         id: member.id,
         name: member.name ?? '',
         amount: Number(expense?.debts.find((debt) => debt.debtorId === member.id)?.amount) || 0,
@@ -64,11 +64,13 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
       updateExpense(
         {
           expenseId: expense.id,
-          name: values.name,
-          description: values.description,
-          // amount: values.amount,
-          // payerId: values.payer,
-          // debts: formattedDebts,
+          expenseData: {
+            name: values.name,
+            description: values.description,
+            // amount: values.amount,
+            // payerId: values.payer,
+            // debts: formattedDebts,
+          },
         },
         {
           onSuccess() {
@@ -84,10 +86,21 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
       createExpense(
         {
           name: values.name,
-          description: values.description,
+          description: values.description ?? null,
           amount: values.amount,
-          payerId: values.payer,
-          debts: formattedDebts,
+          payer: {
+            connect: {
+              id: values.payer,
+            },
+          },
+          debts: {
+            createMany: { data: formattedDebts },
+          },
+          group: {
+            connect: {
+              id: currentUser.activeGroupId ?? undefined,
+            },
+          },
         },
         {
           onSuccess() {
@@ -163,7 +176,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {group.members.map((member) => (
+                    {currentGroup.members.map((member) => (
                       <SelectItem key={member.id} value={member.id}>
                         {member.name}
                       </SelectItem>

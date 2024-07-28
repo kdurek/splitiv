@@ -20,7 +20,7 @@ const base64ToUint8Array = (base64: string) => {
 };
 
 export function Notification() {
-  const { mutate: sendNotification } = api.pushSubscription.sendNotification.useMutation();
+  const { mutate: sendTestNotification } = api.pushSubscription.sendTestNotification.useMutation();
   const { mutate: createPushSubscription } = api.pushSubscription.create.useMutation();
   const { mutate: deletePushSubscription } = api.pushSubscription.delete.useMutation();
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -80,7 +80,7 @@ export function Notification() {
       return;
     }
 
-    sendNotification({
+    sendTestNotification({
       title: 'Nowy wydatek',
       body: 'Dodano wydatek w którym uczestniczysz',
     });

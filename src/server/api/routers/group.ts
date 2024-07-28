@@ -1,15 +1,23 @@
 import { TRPCError } from '@trpc/server';
+import { GroupCreateInputSchema } from 'prisma/generated/zod';
 import { z } from 'zod';
 
+import {
+  addUserToGroup,
+  checkGroupMembership,
+  createGroup,
+  getAllGroups,
+  getGroupById,
+} from '@/server/api/services/group';
+import { changeCurrentGroup } from '@/server/api/services/user';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { generateBalances } from '@/server/utils/generateBalances';
 import { generateDebts } from '@/server/utils/generateDebts';
 
 export const groupRouter = createTRPCRouter({
-  list: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.group.findMany({
-      where: { members: { some: { userId: ctx.user.id } } },
-    });
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const groups = await getAllGroups(ctx.user.id);
+    return groups;
   }),
 
   current: protectedProcedure.query(async ({ ctx }) => {
@@ -20,25 +28,9 @@ export const groupRouter = createTRPCRouter({
       });
     }
 
-    const group = await ctx.db.group.findUniqueOrThrow({
-      where: { id: ctx.user.activeGroupId },
-      include: {
-        members: {
-          orderBy: {
-            user: {
-              name: 'asc',
-            },
-          },
-          select: { user: true },
-        },
-      },
-    });
+    const group = await getGroupById(ctx.user.activeGroupId);
 
-    if (!group.members.find((member) => member.user.id === ctx.user.id)) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-      });
-    }
+    await checkGroupMembership(ctx.user.activeGroupId, ctx.user.id);
 
     const expenseDebts = await ctx.db.expenseDebt.findMany({
       where: {
@@ -80,37 +72,18 @@ export const groupRouter = createTRPCRouter({
     };
   }),
 
-  create: protectedProcedure.input(z.object({ name: z.string() })).mutation(({ input, ctx }) => {
-    return ctx.db.group.create({
-      data: {
-        name: input.name,
-        adminId: ctx.user.id,
-        members: {
-          create: [
-            {
-              userId: ctx.user.id,
-            },
-          ],
-        },
-      },
-    });
+  create: protectedProcedure.input(GroupCreateInputSchema).mutation(async ({ input }) => {
+    const group = await createGroup(input);
+    return group;
   }),
 
-  changeCurrent: protectedProcedure.input(z.object({ groupId: z.string().cuid2() })).mutation(({ input, ctx }) => {
-    return ctx.db.user.update({
-      where: { id: ctx.user.id },
-      data: {
-        activeGroupId: input.groupId,
-      },
-    });
+  changeCurrent: protectedProcedure.input(z.object({ groupId: z.string().cuid() })).mutation(async ({ input, ctx }) => {
+    const group = await changeCurrentGroup(input.groupId, ctx.user.id);
+    return group;
   }),
 
   addUser: protectedProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.db.userGroup.create({
-      data: {
-        groupId: ctx.user.activeGroupId,
-        userId: input.userId,
-      },
-    });
+    const group = await addUserToGroup(ctx.user.activeGroupId, input.userId);
+    return group;
   }),
 });

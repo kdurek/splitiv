@@ -13,9 +13,10 @@ export function Archive() {
     threshold: 1,
   });
 
-  const [, { data, fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.listArchive.useSuspenseInfiniteQuery(
+  const [, { data, fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.list.useSuspenseInfiniteQuery(
     {
       limit: 10,
+      type: 'archive',
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

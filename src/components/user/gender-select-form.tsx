@@ -33,7 +33,10 @@ export function GenderSelectForm({ userId }: GenderSelectFormProps) {
 
   const handleUpdateGender = (values: GenderSelectFormSchema) => {
     updateUser(
-      { userId: userId, gender: values.gender },
+      {
+        userId: userId,
+        userData: { gender: values.gender },
+      },
       {
         onSuccess() {
           toast.success(t('success'));

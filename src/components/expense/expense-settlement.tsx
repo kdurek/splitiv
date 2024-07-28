@@ -9,9 +9,9 @@ interface ExpenseSettlementProps {
 
 export function ExpenseSettlement({ paramsUserId }: ExpenseSettlementProps) {
   const [paramsUser] = api.user.byId.useSuspenseQuery({ userId: paramsUserId });
-  const [usersDebts] = api.expense.debt.settlement.useSuspenseQuery({
+  const [usersDebts] = api.expense.debt.getDebtsAndCreditsForCurrentUser.useSuspenseQuery({
     userId: paramsUserId,
   });
 
-  return <ExpenseSettlementForm paramsUser={paramsUser} usersDebts={usersDebts} />;
+  return <ExpenseSettlementForm otherUser={paramsUser} currentUserDebtsAndCredits={usersDebts} />;
 }

@@ -31,7 +31,12 @@ export function UserForm({ user }: UserFormProps) {
   const handleUpdateUser = async (values: UpdateUserFormSchema) => {
     if (user) {
       updateUser(
-        { userId: user.id, name: values.name },
+        {
+          userId: user.id,
+          userData: {
+            name: values.name,
+          },
+        },
         {
           onSuccess() {
             toast.success('Pomyślnie zaktualizowano użytkownika');

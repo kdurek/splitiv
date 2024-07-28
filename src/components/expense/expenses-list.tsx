@@ -1,10 +1,10 @@
 'use client';
 
 import { ExpensesListCard } from '@/components/expense/expenses-list-card';
-import type { ExpensesListActive, ExpensesListArchive } from '@/trpc/react';
+import type { ExpensesList } from '@/trpc/react';
 
 interface ExpensesListProps {
-  expenses: ExpensesListActive['items'] | ExpensesListArchive['items'];
+  expenses: ExpensesList['items'];
 }
 
 export function ExpensesList({ expenses }: ExpensesListProps) {

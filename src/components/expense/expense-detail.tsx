@@ -9,10 +9,10 @@ import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import { api, type ExpenseById, type ExpensesListActive, type ExpensesListArchive } from '@/trpc/react';
+import { api, type ExpenseById, type ExpensesList } from '@/trpc/react';
 
 interface ExpenseDetailProps {
-  expense: ExpensesListActive['items'][number] | ExpensesListArchive['items'][number] | NonNullable<ExpenseById>;
+  expense: ExpensesList['items'][number] | NonNullable<ExpenseById>;
 }
 
 export function ExpenseDetail({ expense }: ExpenseDetailProps) {
@@ -64,7 +64,7 @@ export function ExpenseDetail({ expense }: ExpenseDetailProps) {
               </div>
               <div className="flex items-center gap-4">
                 <div>{Number(log.amount).toFixed(2)} zł</div>
-                <DebtRevertButton id={log.id} />
+                <DebtRevertButton logId={log.id} />
               </div>
             </div>
           ))}

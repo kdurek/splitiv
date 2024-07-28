@@ -53,8 +53,8 @@ function reduceDebts(debts: IDebt[]) {
       debtMap[toId] = {};
     }
 
-    debtMap[fromId]![toId] = (debtMap[fromId]![toId] || new Decimal(0)).plus(amount);
-    debtMap[toId]![fromId] = (debtMap[toId]![fromId] || new Decimal(0)).minus(amount);
+    debtMap[fromId][toId] = (debtMap[fromId][toId] || new Decimal(0)).plus(amount);
+    debtMap[toId][fromId] = (debtMap[toId][fromId] || new Decimal(0)).minus(amount);
   });
 
   const reducedDebts: IDebt[] = [];

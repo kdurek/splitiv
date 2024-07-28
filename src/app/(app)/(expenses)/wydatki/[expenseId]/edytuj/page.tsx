@@ -13,7 +13,7 @@ interface ExpenseEditPageProps {
 export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) {
   const t = await getTranslations('ExpenseEditPage');
 
-  void api.expense.byId.prefetch({ id: params.expenseId });
+  void api.expense.byId.prefetch({ expenseId: params.expenseId });
   void api.group.current.prefetch();
   void api.user.current.prefetch();
 

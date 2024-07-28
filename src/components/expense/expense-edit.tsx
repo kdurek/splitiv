@@ -8,7 +8,7 @@ interface ExpenseEditProps {
 }
 
 export function ExpenseEdit({ expenseId }: ExpenseEditProps) {
-  const [expense] = api.expense.byId.useSuspenseQuery({ id: expenseId });
+  const [expense] = api.expense.byId.useSuspenseQuery({ expenseId });
 
   if (!expense) {
     return 'Nie znaleziono wydatku';

@@ -9,7 +9,7 @@ interface ExpensePageProps {
 }
 
 export default async function ExpensePage({ params }: ExpensePageProps) {
-  void api.expense.byId.prefetch({ id: params.expenseId });
+  void api.expense.byId.prefetch({ expenseId: params.expenseId });
   void api.user.current.prefetch();
 
   return (

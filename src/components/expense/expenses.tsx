@@ -19,9 +19,10 @@ export function Expenses() {
     threshold: 1,
   });
 
-  const [, { data, fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.listActive.useSuspenseInfiniteQuery(
+  const [, { data, fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.list.useSuspenseInfiniteQuery(
     {
       limit: 10,
+      type: 'active',
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

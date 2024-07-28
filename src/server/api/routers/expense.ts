@@ -1,128 +1,40 @@
-import { TRPCError } from '@trpc/server';
+import { ExpenseCreateInputSchema, ExpenseUpdateInputSchema } from 'prisma/generated/zod';
 import { z } from 'zod';
 
 import { expenseDebtRouter } from '@/server/api/routers/expense/debt';
 import { expenseLogRouter } from '@/server/api/routers/expense/log';
 import { expenseNoteRouter } from '@/server/api/routers/expense/note';
+import {
+  createExpense,
+  deleteExpense,
+  getExpenseById,
+  getExpensesBetweenUsers,
+  getInfiniteExpenses,
+  updateExpense,
+} from '@/server/api/services/expense';
+import { checkExpenseAccess } from '@/server/api/services/expense';
+import { sendPush } from '@/server/api/services/push-subscription';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
-import { sendPush } from '@/server/utils/push';
 
 export const expenseRouter = createTRPCRouter({
   debt: expenseDebtRouter,
   log: expenseLogRouter,
   note: expenseNoteRouter,
 
-  listSearch: protectedProcedure
+  list: protectedProcedure
     .input(
       z.object({
         limit: z.number(),
         cursor: z.string().nullish(),
+        type: z.union([z.literal('active'), z.literal('archive'), z.literal('search')]),
         searchText: z.string().optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
-      const items = await ctx.db.expense.findMany({
-        take: input.limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        where: {
-          groupId: ctx.user.activeGroupId,
-          OR: [
-            {
-              name: {
-                contains: input.searchText,
-                mode: 'insensitive',
-              },
-              OR: [
-                { payerId: ctx.user.id },
-                {
-                  debts: {
-                    some: {
-                      debtorId: ctx.user.id,
-                    },
-                  },
-                },
-              ],
-            },
-            {
-              description: {
-                contains: input.searchText,
-                mode: 'insensitive',
-              },
-              OR: [
-                { payerId: ctx.user.id },
-                {
-                  debts: {
-                    some: {
-                      debtorId: ctx.user.id,
-                    },
-                  },
-                },
-              ],
-            },
-          ],
-        },
-        include: {
-          group: true,
-          payer: true,
-          debts: {
-            orderBy: {
-              debtor: {
-                name: 'asc',
-              },
-            },
-            include: {
-              debtor: true,
-              logs: {
-                include: {
-                  debt: {
-                    select: {
-                      debtor: {
-                        select: {
-                          name: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          notes: {
-            orderBy: {
-              createdAt: 'desc',
-            },
-            include: {
-              createdBy: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-      let nextCursor: typeof input.cursor | undefined;
-      if (items.length > input.limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem?.id;
-      }
-      return {
-        items,
-        nextCursor,
-      };
-    }),
+      let expensesWhere = {};
 
-  listActive: protectedProcedure
-    .input(
-      z.object({
-        limit: z.number(),
-        cursor: z.string().nullish(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const items = await ctx.db.expense.findMany({
-        take: input.limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        where: {
+      if (input.type === 'active') {
+        expensesWhere = {
           groupId: ctx.user.activeGroupId,
           OR: [
             {
@@ -148,69 +60,11 @@ export const expenseRouter = createTRPCRouter({
               },
             },
           ],
-        },
-        include: {
-          group: true,
-          payer: true,
-          debts: {
-            orderBy: {
-              debtor: {
-                name: 'asc',
-              },
-            },
-            include: {
-              debtor: true,
-              logs: {
-                include: {
-                  debt: {
-                    select: {
-                      debtor: {
-                        select: {
-                          name: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          notes: {
-            orderBy: {
-              createdAt: 'desc',
-            },
-            include: {
-              createdBy: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-      let nextCursor: typeof input.cursor | undefined;
-      if (items.length > input.limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem?.id;
+        };
       }
-      return {
-        items,
-        nextCursor,
-      };
-    }),
 
-  listArchive: protectedProcedure
-    .input(
-      z.object({
-        limit: z.number(),
-        cursor: z.string().nullish(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const items = await ctx.db.expense.findMany({
-        take: input.limit + 1,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        where: {
+      if (input.type === 'archive') {
+        expensesWhere = {
           groupId: ctx.user.activeGroupId,
           OR: [
             {
@@ -247,310 +101,102 @@ export const expenseRouter = createTRPCRouter({
               },
             },
           ],
-        },
-        include: {
-          group: true,
-          payer: true,
-          debts: {
-            orderBy: {
-              debtor: {
-                name: 'asc',
+        };
+      }
+
+      if (input.type === 'search') {
+        expensesWhere = {
+          groupId: ctx.user.activeGroupId,
+          OR: [
+            {
+              name: {
+                contains: input.searchText,
+                mode: 'insensitive',
               },
-            },
-            include: {
-              debtor: true,
-              logs: {
-                include: {
-                  debt: {
-                    select: {
-                      debtor: {
-                        select: {
-                          name: true,
-                        },
-                      },
+              OR: [
+                { payerId: ctx.user.id },
+                {
+                  debts: {
+                    some: {
+                      debtorId: ctx.user.id,
                     },
                   },
                 },
+              ],
+            },
+            {
+              description: {
+                contains: input.searchText,
+                mode: 'insensitive',
               },
+              OR: [
+                { payerId: ctx.user.id },
+                {
+                  debts: {
+                    some: {
+                      debtorId: ctx.user.id,
+                    },
+                  },
+                },
+              ],
             },
-          },
-          notes: {
-            orderBy: {
-              createdAt: 'desc',
-            },
-            include: {
-              createdBy: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-      let nextCursor: typeof input.cursor | undefined;
-      if (items.length > input.limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem?.id;
+          ],
+        };
       }
-      return {
-        items,
-        nextCursor,
-      };
+
+      const infiniteExpenses = await getInfiniteExpenses(expensesWhere, input.limit, input.cursor);
+
+      return infiniteExpenses;
     }),
 
-  between: protectedProcedure
+  getExpensesBetweenUser: protectedProcedure
     .input(
       z.object({
-        payerId: z.string().optional(),
-        debtorId: z.string().optional(),
+        userId: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      return ctx.db.expense.findMany({
-        where: {
-          groupId: ctx.user.activeGroupId,
-          payerId: input.payerId ?? undefined,
-          debts: {
-            some: {
-              debtorId: input.debtorId ?? undefined,
-              settled: {
-                not: {
-                  equals: ctx.db.expenseDebt.fields.amount,
-                },
-              },
-            },
-          },
-        },
-        include: {
-          group: true,
-          payer: true,
-          debts: {
-            orderBy: {
-              debtor: {
-                name: 'asc',
-              },
-            },
-            include: {
-              debtor: true,
-              logs: {
-                include: {
-                  debt: {
-                    select: {
-                      debtor: {
-                        select: {
-                          name: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          notes: {
-            orderBy: {
-              createdAt: 'desc',
-            },
-            include: {
-              createdBy: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
+      const debts = await getExpensesBetweenUsers(ctx.user.activeGroupId, input.userId, ctx.user.id);
+      const credits = await getExpensesBetweenUsers(ctx.user.activeGroupId, ctx.user.id, input.userId);
+      return {
+        debts,
+        credits,
+      };
     }),
 
-  byId: protectedProcedure.input(z.object({ id: z.string().cuid2() })).query(({ input, ctx }) => {
-    return ctx.db.expense.findUnique({
-      where: {
-        id: input.id,
-      },
-      include: {
-        group: true,
-        payer: true,
-        debts: {
-          orderBy: {
-            debtor: {
-              name: 'asc',
-            },
-          },
-          include: {
-            debtor: true,
-            logs: {
-              include: {
-                debt: {
-                  select: {
-                    debtor: {
-                      select: {
-                        name: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        notes: {
-          orderBy: {
-            createdAt: 'desc',
-          },
-          include: {
-            createdBy: true,
-          },
-        },
-      },
-    });
+  byId: protectedProcedure.input(z.object({ expenseId: z.string().cuid() })).query(async ({ input }) => {
+    const expense = await getExpenseById(input.expenseId);
+    return expense;
   }),
 
-  create: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        description: z
-          .union([z.string().min(3, { message: 'Minimalna długość to 3 znaki' }), z.string().length(0)])
-          .optional(),
-        payerId: z.string(),
-        amount: z.number(),
-        debts: z.array(
-          z.object({
-            amount: z.number(),
-            debtorId: z.string(),
-            settled: z.number().default(0),
-          }),
-        ),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const expense = await ctx.db.expense.create({
-        data: {
-          group: {
-            connect: {
-              id: ctx.user.activeGroupId,
-            },
-          },
-          name: input.name,
-          description: input.description ?? null,
-          amount: input.amount,
-          payer: {
-            connect: {
-              id: input.payerId,
-            },
-          },
-          debts: {
-            createMany: { data: input.debts },
-          },
-        },
-        include: {
-          debts: true,
-        },
-      });
+  create: protectedProcedure.input(ExpenseCreateInputSchema).mutation(async ({ input, ctx }) => {
+    const expense = await createExpense(input);
 
-      const userIdsToPush = [...expense.debts.map((debtor) => debtor.debtorId), expense.payerId].filter(
-        (userId) => userId !== ctx.user.id,
-      );
+    const userIdsToPush = [...expense.debts.map((debtor) => debtor.debtorId), expense.payerId].filter(
+      (userId) => userId !== ctx.user.id,
+    );
 
-      await sendPush(userIdsToPush, 'Nowy wydatek', expense.name, `/wydatki/${expense.id}`);
+    await sendPush(userIdsToPush, 'Nowy wydatek', expense.name, `/wydatki/${expense.id}`);
 
-      return expense;
-    }),
+    return expense;
+  }),
 
   update: protectedProcedure
     .input(
       z.object({
         expenseId: z.string(),
-        name: z.string(),
-        description: z
-          .union([z.string().min(3, { message: 'Minimalna długość to 3 znaki' }), z.string().length(0)])
-          .optional(),
-        // payerId: z.string(),
-        // amount: z.number(),
-        // debts: z.array(
-        //   z.object({
-        //     amount: z.number(),
-        //     debtorId: z.string(),
-        //     settled: z.number().default(0),
-        //   }),
-        // ),
+        expenseData: ExpenseUpdateInputSchema,
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.db.$transaction(async (tx) => {
-        // const isAlreadyPaid = await ctx.db.expenseDebt.count({
-        //   where: {
-        //     expenseId: input.expenseId,
-        //     debtorId: {
-        //       not: input.payerId,
-        //     },
-        //     settled: {
-        //       gt: 0,
-        //     },
-        //   },
-        // });
-
-        // if (!!isAlreadyPaid) {
-        //   return;
-        // }
-
-        const expense = await tx.expense.update({
-          where: {
-            id: input.expenseId,
-          },
-          data: {
-            name: input.name,
-            description: input.description ?? null,
-            // amount: input.amount,
-            // payer: {
-            //   connect: {
-            //     id: input.payerId,
-            //   },
-            // },
-            // debts: {
-            //   deleteMany: {
-            //     expenseId: input.expenseId,
-            //   },
-            //   createMany: {
-            //     data: input.debts,
-            //   },
-            // },
-          },
-          include: {
-            payer: true,
-            group: true,
-          },
-        });
-
-        if (expense.group.adminId !== ctx.user.id && expense.payerId !== ctx.user.id) {
-          throw new TRPCError({
-            code: 'FORBIDDEN',
-            message: `Tylko ${expense.payer.name} może edytować ten wydatek`,
-          });
-        }
-
-        return expense;
-      });
+      await checkExpenseAccess(ctx.user.id, input.expenseId);
+      const expense = await updateExpense(input.expenseId, input.expenseData);
+      return expense;
     }),
 
   delete: protectedProcedure.input(z.object({ expenseId: z.string() })).mutation(async ({ input, ctx }) => {
-    return ctx.db.$transaction(async (tx) => {
-      const expense = await tx.expense.delete({
-        where: {
-          id: input.expenseId,
-        },
-        include: {
-          payer: true,
-          group: true,
-        },
-      });
-
-      if (expense.group.adminId !== ctx.user.id && expense.payerId !== ctx.user.id) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: `Tylko ${expense.payer.name} może usunąć ten wydatek`,
-        });
-      }
-    });
+    await checkExpenseAccess(ctx.user.id, input.expenseId);
+    const expense = await deleteExpense(input.expenseId);
+    return expense;
   }),
 });

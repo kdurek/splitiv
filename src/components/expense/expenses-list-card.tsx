@@ -7,7 +7,7 @@ import Decimal from 'decimal.js';
 import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn } from '@/lib/utils';
-import { api, type ExpensesListActive, type ExpensesListArchive } from '@/trpc/react';
+import { api, type ExpensesList } from '@/trpc/react';
 
 type ExpenseWithDebts = Prisma.ExpenseGetPayload<{
   include: {
@@ -27,7 +27,7 @@ export function getExpenseStatus(expense: ExpenseWithDebts) {
 }
 
 interface ExpensesListCardProps {
-  expense: ExpensesListActive['items'][number] | ExpensesListArchive['items'][number];
+  expense: ExpensesList['items'][number];
 }
 
 export function ExpensesListCard({ expense }: ExpensesListCardProps) {

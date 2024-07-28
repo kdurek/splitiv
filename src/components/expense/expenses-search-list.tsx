@@ -17,9 +17,10 @@ export function ExpensesSearchList() {
     threshold: 1,
   });
 
-  const [, { data, fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.listSearch.useSuspenseInfiniteQuery(
+  const [, { data, fetchNextPage, isFetchingNextPage, hasNextPage }] = api.expense.list.useSuspenseInfiniteQuery(
     {
       limit: 10,
+      type: 'search',
       searchText,
     },
     {

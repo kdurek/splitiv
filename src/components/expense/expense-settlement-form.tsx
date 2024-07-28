@@ -26,26 +26,27 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Heading } from '@/components/ui/heading';
 import { Label } from '@/components/ui/label';
 import { expenseSettlementFormSchema } from '@/lib/validations/expense-settlement';
-import type { ExpenseDebtSettlement, UserById } from '@/trpc/react';
+import type { ExpenseDebtGetDebtsAndCreditsForCurrentUser, UserById } from '@/trpc/react';
 import { api } from '@/trpc/react';
 
 type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
 
 interface ExpenseSettlementFormProps {
-  paramsUser: UserById;
-  usersDebts: ExpenseDebtSettlement;
+  otherUser: UserById;
+  currentUserDebtsAndCredits: ExpenseDebtGetDebtsAndCreditsForCurrentUser;
 }
 
-export function ExpenseSettlementForm({ paramsUser, usersDebts }: ExpenseSettlementFormProps) {
+export function ExpenseSettlementForm({ otherUser, currentUserDebtsAndCredits }: ExpenseSettlementFormProps) {
   const [currentUser] = api.user.current.useSuspenseQuery();
+  const mergedUserDebtsAndCredits = [...currentUserDebtsAndCredits.credits, ...currentUserDebtsAndCredits.debts];
 
   const router = useRouter();
 
-  const { mutate: settlement, isPending: isPendingSettleExpenseDebts } = api.expense.debt.settle.useMutation();
+  const { mutate: settleDebts, isPending: isPendingSettleExpenseDebts } = api.expense.debt.settleDebts.useMutation();
 
   const form = useForm<ExpenseSettlementFormSchema>({
     values: {
-      debts: usersDebts.flatMap((debt) => ({
+      debts: mergedUserDebtsAndCredits.map((debt) => ({
         id: debt.id,
         selected: true,
         name: debt.expense.name,
@@ -67,17 +68,17 @@ export function ExpenseSettlementForm({ paramsUser, usersDebts }: ExpenseSettlem
   });
 
   useEffect(() => {
-    if (!usersDebts.length) {
+    if (!mergedUserDebtsAndCredits.length) {
       router.push('/');
     }
-  }, [router, usersDebts.length]);
+  }, [router, mergedUserDebtsAndCredits.length]);
 
   const selectedDebts = form.watch('debts').filter((debt) => debt.selected);
 
-  const filteredParamUserDebts = selectedDebts.filter((debt) => debt.debtorId === paramsUser?.id);
+  const filteredOtherUserDebts = selectedDebts.filter((debt) => debt.debtorId === otherUser?.id);
   const filteredCurrentUserDebts = selectedDebts.filter((debt) => debt.debtorId === currentUser?.id);
 
-  const paramUserTotalAmount = filteredParamUserDebts.reduce(
+  const otherUserTotalAmount = filteredOtherUserDebts.reduce(
     (acc, cur) => Decimal.add(acc, Decimal.sub(cur.amount, cur.settled)),
     new Decimal(0),
   );
@@ -86,12 +87,12 @@ export function ExpenseSettlementForm({ paramsUser, usersDebts }: ExpenseSettlem
     new Decimal(0),
   );
 
-  const totalDiff = currentUserTotalAmount.greaterThan(paramUserTotalAmount)
-    ? Decimal.sub(currentUserTotalAmount, paramUserTotalAmount).toFixed(2)
-    : Decimal.sub(paramUserTotalAmount, currentUserTotalAmount).toFixed(2);
+  const totalDiff = currentUserTotalAmount.greaterThan(otherUserTotalAmount)
+    ? Decimal.sub(currentUserTotalAmount, otherUserTotalAmount).toFixed(2)
+    : Decimal.sub(otherUserTotalAmount, currentUserTotalAmount).toFixed(2);
 
-  const payer = currentUserTotalAmount.greaterThan(paramUserTotalAmount) ? paramsUser : currentUser;
-  const debtor = currentUserTotalAmount.greaterThan(paramUserTotalAmount) ? currentUser : paramsUser;
+  const payer = currentUserTotalAmount.greaterThan(otherUserTotalAmount) ? otherUser : currentUser;
+  const debtor = currentUserTotalAmount.greaterThan(otherUserTotalAmount) ? currentUser : otherUser;
 
   const handleSettlement = (values: ExpenseSettlementFormSchema) => {
     const expenseDebts = values.debts
@@ -103,7 +104,7 @@ export function ExpenseSettlementForm({ paramsUser, usersDebts }: ExpenseSettlem
         };
       });
 
-    settlement(
+    settleDebts(
       {
         expenseDebts,
       },
@@ -118,7 +119,7 @@ export function ExpenseSettlementForm({ paramsUser, usersDebts }: ExpenseSettlem
   return (
     <Form {...form}>
       <form id="expense-settlement-form" className="space-y-6" onSubmit={form.handleSubmit(handleSettlement)}>
-        <Heading variant="h2">{paramsUser?.name}</Heading>
+        <Heading variant="h2">{otherUser?.name}</Heading>
 
         <div className="space-y-4">
           <Label className="text-base">Podsumowanie</Label>

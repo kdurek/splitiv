@@ -32,7 +32,8 @@ interface ExpenseDebtSettleModalProps {
 }
 
 export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: ExpenseDebtSettleModalProps) {
-  const { mutate: updateExpenseDebt, isPending: isPendingUpdateExpenseDebt } = api.expense.debt.update.useMutation();
+  const { mutate: settleByAmount, isPending: isPendingUpdateExpenseDebt } =
+    api.expense.debt.settleByAmount.useMutation();
 
   const [open, setOpen] = useState(false);
 
@@ -46,10 +47,10 @@ export function ExpenseDebtSettleModal({ children, debtId, amount, settled }: Ex
   const maximumAmount = amount - settled;
 
   const handleSettleExpenseDebt = (values: ExpensePaymentFormSchema) => {
-    updateExpenseDebt(
+    settleByAmount(
       {
-        id: debtId,
-        settled: values.amount + settled,
+        debtId,
+        amount: values.amount,
       },
       {
         onSuccess() {

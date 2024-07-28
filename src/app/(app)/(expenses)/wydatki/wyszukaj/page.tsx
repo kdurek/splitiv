@@ -7,8 +7,9 @@ import { api } from '@/trpc/server';
 export default async function ExpenseSearchPage() {
   const t = await getTranslations('ExpenseSearchPage');
 
-  void api.expense.listSearch.prefetchInfinite({
+  void api.expense.list.prefetchInfinite({
     limit: 10,
+    type: 'search',
     searchText: '',
   });
   void api.user.current.prefetch();

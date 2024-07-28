@@ -14,7 +14,7 @@ export default async function ExpenseSettlementPage({ params }: ExpenseSettlemen
   const t = await getTranslations('ExpenseSettlementPage');
 
   void api.user.byId.prefetch({ userId: params.userId });
-  void api.expense.debt.settlement.prefetch({
+  void api.expense.debt.getDebtsAndCreditsForCurrentUser.prefetch({
     userId: params.userId,
   });
   void api.user.current.prefetch();

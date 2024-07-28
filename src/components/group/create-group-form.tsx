@@ -14,6 +14,7 @@ import { api } from '@/trpc/react';
 type CreateGroupFormSchema = z.infer<typeof createGroupFormSchema>;
 
 export function CreateGroupForm() {
+  const [currentUser] = api.user.current.useSuspenseQuery();
   const { mutateAsync: createGroup } = api.group.create.useMutation();
   const { mutate: changeActiveGroup } = api.group.changeCurrent.useMutation();
 
@@ -26,7 +27,17 @@ export function CreateGroupForm() {
 
   const handleCreateGroup = async (values: CreateGroupFormSchema) => {
     const createdGroup = await createGroup(
-      { name: values.name },
+      {
+        name: values.name,
+        adminId: currentUser.id,
+        members: {
+          create: [
+            {
+              userId: currentUser.id,
+            },
+          ],
+        },
+      },
       {
         onSuccess() {
           toast.success('Pomyślnie utworzono grupę');

@@ -93,5 +93,5 @@ jobs:
             -H 'Content-Type: application/json' \
             -H 'Authorization: Bearer ${{ env.DOKPLOY_TOKEN }}' \
             -d '{
-              "applicationId": ${{ env.DOKPLOY_APP }},
+              "applicationId": "${{ env.DOKPLOY_APP }}",
             }'

@@ -2,7 +2,7 @@ import { UserUpdateInputSchema } from 'prisma/generated/zod';
 import { z } from 'zod';
 
 import { getUsersNotInGroup } from '@/server/api/services/group';
-import { getAllUsers, getUserById, updateUser } from '@/server/api/services/user';
+import { checkIsSameUser, getAllUsers, getUserById, updateUser } from '@/server/api/services/user';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
 
 export const userRouter = createTRPCRouter({
@@ -28,7 +28,8 @@ export const userRouter = createTRPCRouter({
 
   update: protectedProcedure
     .input(z.object({ userId: z.string().cuid(), userData: UserUpdateInputSchema }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      await checkIsSameUser(ctx.user.id, input.userId);
       const user = await updateUser(input.userId, input.userData);
       return user;
     }),

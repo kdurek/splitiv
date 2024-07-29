@@ -30,13 +30,6 @@ export const getUserById = async (userId?: string) => {
 };
 
 export const updateUser = async (userId: string, userData: typeof UserUpdateInputSchema._type) => {
-  if (userId !== userData.id) {
-    throw new TRPCError({
-      code: 'FORBIDDEN',
-      message: 'Nie masz uprawnień do wykonania tej operacji',
-    });
-  }
-
   const updatedUser = await db.user.update({
     where: {
       id: userId,
@@ -56,4 +49,13 @@ export const changeCurrentGroup = async (groupId: string, userId: string) => {
   });
 
   return user;
+};
+
+export const checkIsSameUser = async (firstUserId: string, secondUserId: string) => {
+  if (firstUserId !== secondUserId) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Nie masz uprawnień do wykonania tej operacji',
+    });
+  }
 };

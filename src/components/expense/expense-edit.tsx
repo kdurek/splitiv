@@ -15,7 +15,7 @@ export function ExpenseEdit({ expenseId }: ExpenseEditProps) {
   }
 
   return (
-    <div className="rounded-md bg-white p-4">
+    <div className="rounded-md border p-4">
       <ExpenseForm expense={expense} />
     </div>
   );

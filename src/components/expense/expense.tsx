@@ -15,7 +15,7 @@ export function Expense({ expenseId }: ExpenseProps) {
   }
 
   return (
-    <div className="rounded-md bg-white p-4">
+    <div className="rounded-md border p-4">
       <ExpenseDetail expense={expense} />
     </div>
   );

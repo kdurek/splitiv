@@ -57,7 +57,7 @@ export function ExpensesListCard({ expense }: ExpensesListCardProps) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <button className="w-full bg-white p-4 outline-none">
+        <button className="w-full p-4 outline-none">
           <div className="flex items-start justify-between overflow-hidden">
             <div className="overflow-hidden text-start">
               <div className="line-clamp-1">{expense.name}</div>

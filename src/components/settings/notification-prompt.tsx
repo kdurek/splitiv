@@ -62,7 +62,7 @@ export function NotificationPrompt() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2 rounded-md bg-white p-4">
+    <div className="flex flex-col items-center gap-2 rounded-md border p-4">
       <p className="text-center">Wygląda na to, że nie masz włączonych powiadomień</p>
       <Button type="button" onClick={subscribeButtonOnClick} disabled={isSubscribed}>
         Włącz powiadomienia

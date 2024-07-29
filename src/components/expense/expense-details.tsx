@@ -1,6 +1,6 @@
 'use client';
 
-import { ExpensesListCard } from '@/components/expense/expenses-list-card';
+import { ExpensesList } from '@/components/expense/expenses-list';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/trpc/react';
 
@@ -27,15 +27,11 @@ export function ExpenseDetails({ paramsUserId }: ExpenseDetailsProps) {
           <TabsTrigger value="credits">Zapłaciłeś</TabsTrigger>
           <TabsTrigger value="debts">Pożyczyłeś</TabsTrigger>
         </TabsList>
-        <TabsContent value="credits" className="overflow-hidden rounded-md">
-          {credits.map((credit) => (
-            <ExpensesListCard key={credit.id} expense={credit} />
-          ))}
+        <TabsContent value="credits">
+          <ExpensesList expenses={credits} />
         </TabsContent>
-        <TabsContent value="debts" className="overflow-hidden rounded-md">
-          {debts.map((debt) => (
-            <ExpensesListCard key={debt.id} expense={debt} />
-          ))}
+        <TabsContent value="debts">
+          <ExpensesList expenses={debts} />
         </TabsContent>
       </Tabs>
     </div>

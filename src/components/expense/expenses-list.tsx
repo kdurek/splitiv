@@ -9,11 +9,11 @@ interface ExpensesListProps {
 
 export function ExpensesList({ expenses }: ExpensesListProps) {
   if (!expenses.length) {
-    return <div className="rounded-md bg-white p-4 text-center">Brak długów</div>;
+    return <div className="rounded-md p-4 text-center">Brak wydatków</div>;
   }
 
   return (
-    <div className="divide-y divide-muted overflow-hidden rounded-md">
+    <div className="divide-y rounded-md border">
       {expenses.map((expense) => (
         <ExpensesListCard key={expense.id} expense={expense} />
       ))}

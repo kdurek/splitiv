@@ -88,7 +88,7 @@ export function UserStats() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <div className="flex items-center gap-4 rounded-md bg-white p-4">
+        <div className="flex items-center gap-4 rounded-md border p-4">
           <UserCard image={user?.image} name={user?.name} credit={Number(userCredit)} debt={Number(userDebt)} />
         </div>
       </DrawerTrigger>

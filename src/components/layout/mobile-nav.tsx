@@ -1,7 +1,8 @@
 'use client';
 
 import { CircleDollarSign, Plus, Search, Settings } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -14,27 +15,27 @@ const navItems = [
 ];
 
 export function MobileNav() {
-  const router = useRouter();
   const pathname = usePathname();
 
   return (
-    <nav className="grid h-20 grid-cols-4 justify-items-center gap-2 pb-4 pt-3">
-      {navItems.map((item, index) => (
-        <Fragment key={index}>
-          <button
-            onClick={() => router.push(item.href)}
-            className={cn(
-              'text-center text-xs font-medium',
-              pathname === item.href ? 'text-foreground' : 'text-muted-foreground',
-            )}
-          >
-            <div className={'mx-auto flex h-8 w-16 items-center justify-center'}>
+    <>
+      <nav className="fixed bottom-0 z-40 flex w-full rounded-t-md bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+        {navItems.map((item, index) => (
+          <Fragment key={index}>
+            <Link
+              href={item.href}
+              className={cn(
+                'flex-1 flex flex-col items-center py-2.5 justify-center text-center text-sm',
+                pathname === item.href ? 'text-foreground' : 'text-muted-foreground',
+              )}
+            >
               <item.icon />
-            </div>
-            {item.name}
-          </button>
-        </Fragment>
-      ))}
-    </nav>
+              {item.name}
+            </Link>
+          </Fragment>
+        ))}
+      </nav>
+      <div className="pt-16" />
+    </>
   );
 }

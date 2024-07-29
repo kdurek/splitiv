@@ -38,14 +38,6 @@ export const getInfiniteExpenses = async (
           },
         },
       },
-      notes: {
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: {
-          createdBy: true,
-        },
-      },
     },
     orderBy: {
       createdAt: 'desc',
@@ -106,14 +98,6 @@ export const getExpensesBetweenUsers = async (groupId: string, payerId: string, 
           },
         },
       },
-      notes: {
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: {
-          createdBy: true,
-        },
-      },
     },
     orderBy: {
       createdAt: 'desc',
@@ -148,14 +132,6 @@ export const getExpenseById = async (expenseId?: string) => {
               },
             },
           },
-        },
-      },
-      notes: {
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: {
-          createdBy: true,
         },
       },
     },

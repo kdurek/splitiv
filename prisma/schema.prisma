@@ -32,17 +32,6 @@ model UserGroup {
   @@id([userId, groupId])
 }
 
-model ExpenseNote {
-  id          String   @id @default(cuid())
-  content     String
-  createdBy   User?    @relation(fields: [createdById], references: [id])
-  createdById String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  expense     Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
-  expenseId   String
-}
-
 model ExpenseLog {
   id        String      @id @default(cuid())
   amount    Decimal
@@ -75,7 +64,6 @@ model Expense {
   payerId     String
   amount      Decimal
   debts       ExpenseDebt[]
-  notes       ExpenseNote[]
   group       Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId     String
 }
@@ -97,7 +85,6 @@ model User {
   groups            UserGroup[]
   expenses          Expense[]
   debts             ExpenseDebt[]
-  notes             ExpenseNote[]
   pushSubscriptions PushSubscription[]
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt

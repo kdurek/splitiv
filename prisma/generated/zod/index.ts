@@ -45,15 +45,6 @@ export const GroupScalarFieldEnumSchema = z.enum(['id', 'createdAt', 'updatedAt'
 
 export const UserGroupScalarFieldEnumSchema = z.enum(['userId', 'groupId']);
 
-export const ExpenseNoteScalarFieldEnumSchema = z.enum([
-  'id',
-  'content',
-  'createdById',
-  'createdAt',
-  'updatedAt',
-  'expenseId',
-]);
-
 export const ExpenseLogScalarFieldEnumSchema = z.enum(['id', 'amount', 'debtId', 'createdAt', 'updatedAt']);
 
 export const ExpenseDebtScalarFieldEnumSchema = z.enum([
@@ -131,21 +122,6 @@ export const UserGroupSchema = z.object({
 });
 
 export type UserGroup = z.infer<typeof UserGroupSchema>;
-
-/////////////////////////////////////////
-// EXPENSE NOTE SCHEMA
-/////////////////////////////////////////
-
-export const ExpenseNoteSchema = z.object({
-  id: z.string().cuid(),
-  content: z.string(),
-  createdById: z.string().nullable(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
-  expenseId: z.string(),
-});
-
-export type ExpenseNote = z.infer<typeof ExpenseNoteSchema>;
 
 /////////////////////////////////////////
 // EXPENSE LOG SCHEMA
@@ -319,36 +295,6 @@ export const UserGroupSelectSchema: z.ZodType<Prisma.UserGroupSelect> = z
   })
   .strict();
 
-// EXPENSE NOTE
-//------------------------------------------------------
-
-export const ExpenseNoteIncludeSchema: z.ZodType<Prisma.ExpenseNoteInclude> = z
-  .object({
-    createdBy: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
-    expense: z.union([z.boolean(), z.lazy(() => ExpenseArgsSchema)]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteArgsSchema: z.ZodType<Prisma.ExpenseNoteDefaultArgs> = z
-  .object({
-    select: z.lazy(() => ExpenseNoteSelectSchema).optional(),
-    include: z.lazy(() => ExpenseNoteIncludeSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteSelectSchema: z.ZodType<Prisma.ExpenseNoteSelect> = z
-  .object({
-    id: z.boolean().optional(),
-    content: z.boolean().optional(),
-    createdById: z.boolean().optional(),
-    createdAt: z.boolean().optional(),
-    updatedAt: z.boolean().optional(),
-    expenseId: z.boolean().optional(),
-    createdBy: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
-    expense: z.union([z.boolean(), z.lazy(() => ExpenseArgsSchema)]).optional(),
-  })
-  .strict();
-
 // EXPENSE LOG
 //------------------------------------------------------
 
@@ -430,7 +376,6 @@ export const ExpenseIncludeSchema: z.ZodType<Prisma.ExpenseInclude> = z
   .object({
     payer: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
     debts: z.union([z.boolean(), z.lazy(() => ExpenseDebtFindManyArgsSchema)]).optional(),
-    notes: z.union([z.boolean(), z.lazy(() => ExpenseNoteFindManyArgsSchema)]).optional(),
     group: z.union([z.boolean(), z.lazy(() => GroupArgsSchema)]).optional(),
     _count: z.union([z.boolean(), z.lazy(() => ExpenseCountOutputTypeArgsSchema)]).optional(),
   })
@@ -452,7 +397,6 @@ export const ExpenseCountOutputTypeArgsSchema: z.ZodType<Prisma.ExpenseCountOutp
 export const ExpenseCountOutputTypeSelectSchema: z.ZodType<Prisma.ExpenseCountOutputTypeSelect> = z
   .object({
     debts: z.boolean().optional(),
-    notes: z.boolean().optional(),
   })
   .strict();
 
@@ -468,7 +412,6 @@ export const ExpenseSelectSchema: z.ZodType<Prisma.ExpenseSelect> = z
     groupId: z.boolean().optional(),
     payer: z.union([z.boolean(), z.lazy(() => UserArgsSchema)]).optional(),
     debts: z.union([z.boolean(), z.lazy(() => ExpenseDebtFindManyArgsSchema)]).optional(),
-    notes: z.union([z.boolean(), z.lazy(() => ExpenseNoteFindManyArgsSchema)]).optional(),
     group: z.union([z.boolean(), z.lazy(() => GroupArgsSchema)]).optional(),
     _count: z.union([z.boolean(), z.lazy(() => ExpenseCountOutputTypeArgsSchema)]).optional(),
   })
@@ -483,7 +426,6 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z
     groups: z.union([z.boolean(), z.lazy(() => UserGroupFindManyArgsSchema)]).optional(),
     expenses: z.union([z.boolean(), z.lazy(() => ExpenseFindManyArgsSchema)]).optional(),
     debts: z.union([z.boolean(), z.lazy(() => ExpenseDebtFindManyArgsSchema)]).optional(),
-    notes: z.union([z.boolean(), z.lazy(() => ExpenseNoteFindManyArgsSchema)]).optional(),
     pushSubscriptions: z.union([z.boolean(), z.lazy(() => PushSubscriptionFindManyArgsSchema)]).optional(),
     _count: z.union([z.boolean(), z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
   })
@@ -508,7 +450,6 @@ export const UserCountOutputTypeSelectSchema: z.ZodType<Prisma.UserCountOutputTy
     groups: z.boolean().optional(),
     expenses: z.boolean().optional(),
     debts: z.boolean().optional(),
-    notes: z.boolean().optional(),
     pushSubscriptions: z.boolean().optional(),
   })
   .strict();
@@ -528,7 +469,6 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     groups: z.union([z.boolean(), z.lazy(() => UserGroupFindManyArgsSchema)]).optional(),
     expenses: z.union([z.boolean(), z.lazy(() => ExpenseFindManyArgsSchema)]).optional(),
     debts: z.union([z.boolean(), z.lazy(() => ExpenseDebtFindManyArgsSchema)]).optional(),
-    notes: z.union([z.boolean(), z.lazy(() => ExpenseNoteFindManyArgsSchema)]).optional(),
     pushSubscriptions: z.union([z.boolean(), z.lazy(() => PushSubscriptionFindManyArgsSchema)]).optional(),
     _count: z.union([z.boolean(), z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
   })
@@ -763,128 +703,6 @@ export const UserGroupScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Use
         .optional(),
       userId: z.union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()]).optional(),
       groupId: z.union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()]).optional(),
-    })
-    .strict();
-
-export const ExpenseNoteWhereInputSchema: z.ZodType<Prisma.ExpenseNoteWhereInput> = z
-  .object({
-    AND: z
-      .union([z.lazy(() => ExpenseNoteWhereInputSchema), z.lazy(() => ExpenseNoteWhereInputSchema).array()])
-      .optional(),
-    OR: z
-      .lazy(() => ExpenseNoteWhereInputSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([z.lazy(() => ExpenseNoteWhereInputSchema), z.lazy(() => ExpenseNoteWhereInputSchema).array()])
-      .optional(),
-    id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-    content: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-    createdById: z
-      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-      .optional()
-      .nullable(),
-    createdAt: z.union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()]).optional(),
-    updatedAt: z.union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()]).optional(),
-    expenseId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-    createdBy: z
-      .union([z.lazy(() => UserNullableRelationFilterSchema), z.lazy(() => UserWhereInputSchema)])
-      .optional()
-      .nullable(),
-    expense: z.union([z.lazy(() => ExpenseRelationFilterSchema), z.lazy(() => ExpenseWhereInputSchema)]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteOrderByWithRelationInputSchema: z.ZodType<Prisma.ExpenseNoteOrderByWithRelationInput> = z
-  .object({
-    id: z.lazy(() => SortOrderSchema).optional(),
-    content: z.lazy(() => SortOrderSchema).optional(),
-    createdById: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    expenseId: z.lazy(() => SortOrderSchema).optional(),
-    createdBy: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
-    expense: z.lazy(() => ExpenseOrderByWithRelationInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteWhereUniqueInputSchema: z.ZodType<Prisma.ExpenseNoteWhereUniqueInput> = z
-  .object({
-    id: z.string().cuid(),
-  })
-  .and(
-    z
-      .object({
-        id: z.string().cuid().optional(),
-        AND: z
-          .union([z.lazy(() => ExpenseNoteWhereInputSchema), z.lazy(() => ExpenseNoteWhereInputSchema).array()])
-          .optional(),
-        OR: z
-          .lazy(() => ExpenseNoteWhereInputSchema)
-          .array()
-          .optional(),
-        NOT: z
-          .union([z.lazy(() => ExpenseNoteWhereInputSchema), z.lazy(() => ExpenseNoteWhereInputSchema).array()])
-          .optional(),
-        content: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-        createdById: z
-          .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-          .optional()
-          .nullable(),
-        createdAt: z.union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()]).optional(),
-        updatedAt: z.union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()]).optional(),
-        expenseId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-        createdBy: z
-          .union([z.lazy(() => UserNullableRelationFilterSchema), z.lazy(() => UserWhereInputSchema)])
-          .optional()
-          .nullable(),
-        expense: z.union([z.lazy(() => ExpenseRelationFilterSchema), z.lazy(() => ExpenseWhereInputSchema)]).optional(),
-      })
-      .strict(),
-  );
-
-export const ExpenseNoteOrderByWithAggregationInputSchema: z.ZodType<Prisma.ExpenseNoteOrderByWithAggregationInput> = z
-  .object({
-    id: z.lazy(() => SortOrderSchema).optional(),
-    content: z.lazy(() => SortOrderSchema).optional(),
-    createdById: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    expenseId: z.lazy(() => SortOrderSchema).optional(),
-    _count: z.lazy(() => ExpenseNoteCountOrderByAggregateInputSchema).optional(),
-    _max: z.lazy(() => ExpenseNoteMaxOrderByAggregateInputSchema).optional(),
-    _min: z.lazy(() => ExpenseNoteMinOrderByAggregateInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.ExpenseNoteScalarWhereWithAggregatesInput> =
-  z
-    .object({
-      AND: z
-        .union([
-          z.lazy(() => ExpenseNoteScalarWhereWithAggregatesInputSchema),
-          z.lazy(() => ExpenseNoteScalarWhereWithAggregatesInputSchema).array(),
-        ])
-        .optional(),
-      OR: z
-        .lazy(() => ExpenseNoteScalarWhereWithAggregatesInputSchema)
-        .array()
-        .optional(),
-      NOT: z
-        .union([
-          z.lazy(() => ExpenseNoteScalarWhereWithAggregatesInputSchema),
-          z.lazy(() => ExpenseNoteScalarWhereWithAggregatesInputSchema).array(),
-        ])
-        .optional(),
-      id: z.union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()]).optional(),
-      content: z.union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()]).optional(),
-      createdById: z
-        .union([z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string()])
-        .optional()
-        .nullable(),
-      createdAt: z.union([z.lazy(() => DateTimeWithAggregatesFilterSchema), z.coerce.date()]).optional(),
-      updatedAt: z.union([z.lazy(() => DateTimeWithAggregatesFilterSchema), z.coerce.date()]).optional(),
-      expenseId: z.union([z.lazy(() => StringWithAggregatesFilterSchema), z.string()]).optional(),
     })
     .strict();
 
@@ -1201,7 +1019,6 @@ export const ExpenseWhereInputSchema: z.ZodType<Prisma.ExpenseWhereInput> = z
     groupId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
     payer: z.union([z.lazy(() => UserRelationFilterSchema), z.lazy(() => UserWhereInputSchema)]).optional(),
     debts: z.lazy(() => ExpenseDebtListRelationFilterSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteListRelationFilterSchema).optional(),
     group: z.union([z.lazy(() => GroupRelationFilterSchema), z.lazy(() => GroupWhereInputSchema)]).optional(),
   })
   .strict();
@@ -1218,7 +1035,6 @@ export const ExpenseOrderByWithRelationInputSchema: z.ZodType<Prisma.ExpenseOrde
     groupId: z.lazy(() => SortOrderSchema).optional(),
     payer: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtOrderByRelationAggregateInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteOrderByRelationAggregateInputSchema).optional(),
     group: z.lazy(() => GroupOrderByWithRelationInputSchema).optional(),
   })
   .strict();
@@ -1256,7 +1072,6 @@ export const ExpenseWhereUniqueInputSchema: z.ZodType<Prisma.ExpenseWhereUniqueI
         groupId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
         payer: z.union([z.lazy(() => UserRelationFilterSchema), z.lazy(() => UserWhereInputSchema)]).optional(),
         debts: z.lazy(() => ExpenseDebtListRelationFilterSchema).optional(),
-        notes: z.lazy(() => ExpenseNoteListRelationFilterSchema).optional(),
         group: z.union([z.lazy(() => GroupRelationFilterSchema), z.lazy(() => GroupWhereInputSchema)]).optional(),
       })
       .strict(),
@@ -1358,7 +1173,6 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
     groups: z.lazy(() => UserGroupListRelationFilterSchema).optional(),
     expenses: z.lazy(() => ExpenseListRelationFilterSchema).optional(),
     debts: z.lazy(() => ExpenseDebtListRelationFilterSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteListRelationFilterSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionListRelationFilterSchema).optional(),
   })
   .strict();
@@ -1378,7 +1192,6 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
     groups: z.lazy(() => UserGroupOrderByRelationAggregateInputSchema).optional(),
     expenses: z.lazy(() => ExpenseOrderByRelationAggregateInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtOrderByRelationAggregateInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteOrderByRelationAggregateInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionOrderByRelationAggregateInputSchema).optional(),
   })
   .strict();
@@ -1446,7 +1259,6 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
         groups: z.lazy(() => UserGroupListRelationFilterSchema).optional(),
         expenses: z.lazy(() => ExpenseListRelationFilterSchema).optional(),
         debts: z.lazy(() => ExpenseDebtListRelationFilterSchema).optional(),
-        notes: z.lazy(() => ExpenseNoteListRelationFilterSchema).optional(),
         pushSubscriptions: z.lazy(() => PushSubscriptionListRelationFilterSchema).optional(),
       })
       .strict(),
@@ -1823,87 +1635,6 @@ export const UserGroupUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserGroup
   })
   .strict();
 
-export const ExpenseNoteCreateInputSchema: z.ZodType<Prisma.ExpenseNoteCreateInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    content: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    createdBy: z.lazy(() => UserCreateNestedOneWithoutNotesInputSchema).optional(),
-    expense: z.lazy(() => ExpenseCreateNestedOneWithoutNotesInputSchema),
-  })
-  .strict();
-
-export const ExpenseNoteUncheckedCreateInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedCreateInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    content: z.string(),
-    createdById: z.string().optional().nullable(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    expenseId: z.string(),
-  })
-  .strict();
-
-export const ExpenseNoteUpdateInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    createdBy: z.lazy(() => UserUpdateOneWithoutNotesNestedInputSchema).optional(),
-    expense: z.lazy(() => ExpenseUpdateOneRequiredWithoutNotesNestedInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteUncheckedUpdateInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    createdById: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    expenseId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteCreateManyInputSchema: z.ZodType<Prisma.ExpenseNoteCreateManyInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    content: z.string(),
-    createdById: z.string().optional().nullable(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    expenseId: z.string(),
-  })
-  .strict();
-
-export const ExpenseNoteUpdateManyMutationInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateManyMutationInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateManyInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    createdById: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    expenseId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-  })
-  .strict();
-
 export const ExpenseLogCreateInputSchema: z.ZodType<Prisma.ExpenseLogCreateInput> = z
   .object({
     id: z.string().cuid().optional(),
@@ -2176,7 +1907,6 @@ export const ExpenseCreateInputSchema: z.ZodType<Prisma.ExpenseCreateInput> = z
       .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
     payer: z.lazy(() => UserCreateNestedOneWithoutExpensesInputSchema),
     debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutExpenseInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutExpenseInputSchema).optional(),
     group: z.lazy(() => GroupCreateNestedOneWithoutExpensesInputSchema),
   })
   .strict();
@@ -2194,7 +1924,6 @@ export const ExpenseUncheckedCreateInputSchema: z.ZodType<Prisma.ExpenseUnchecke
       .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
     groupId: z.string(),
     debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
   })
   .strict();
 
@@ -2218,7 +1947,6 @@ export const ExpenseUpdateInputSchema: z.ZodType<Prisma.ExpenseUpdateInput> = z
       .optional(),
     payer: z.lazy(() => UserUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUpdateManyWithoutExpenseNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutExpenseNestedInputSchema).optional(),
     group: z.lazy(() => GroupUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
   })
   .strict();
@@ -2244,7 +1972,6 @@ export const ExpenseUncheckedUpdateInputSchema: z.ZodType<Prisma.ExpenseUnchecke
       .optional(),
     groupId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
     debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
   })
   .strict();
 
@@ -2325,7 +2052,6 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
     groups: z.lazy(() => UserGroupCreateNestedManyWithoutUserInputSchema).optional(),
     expenses: z.lazy(() => ExpenseCreateNestedManyWithoutPayerInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutDebtorInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -2348,7 +2074,6 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
     groups: z.lazy(() => UserGroupUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUncheckedCreateNestedManyWithoutPayerInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutDebtorInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -2386,7 +2111,6 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
     groups: z.lazy(() => UserGroupUpdateManyWithoutUserNestedInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUpdateManyWithoutPayerNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -2424,7 +2148,6 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
     groups: z.lazy(() => UserGroupUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUncheckedUpdateManyWithoutPayerNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -2796,109 +2519,6 @@ export const UserGroupMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserGroup
   })
   .strict();
 
-export const StringNullableFilterSchema: z.ZodType<Prisma.StringNullableFilter> = z
-  .object({
-    equals: z.string().optional().nullable(),
-    in: z.string().array().optional().nullable(),
-    notIn: z.string().array().optional().nullable(),
-    lt: z.string().optional(),
-    lte: z.string().optional(),
-    gt: z.string().optional(),
-    gte: z.string().optional(),
-    contains: z.string().optional(),
-    startsWith: z.string().optional(),
-    endsWith: z.string().optional(),
-    mode: z.lazy(() => QueryModeSchema).optional(),
-    not: z
-      .union([z.string(), z.lazy(() => NestedStringNullableFilterSchema)])
-      .optional()
-      .nullable(),
-  })
-  .strict();
-
-export const UserNullableRelationFilterSchema: z.ZodType<Prisma.UserNullableRelationFilter> = z
-  .object({
-    is: z
-      .lazy(() => UserWhereInputSchema)
-      .optional()
-      .nullable(),
-    isNot: z
-      .lazy(() => UserWhereInputSchema)
-      .optional()
-      .nullable(),
-  })
-  .strict();
-
-export const ExpenseRelationFilterSchema: z.ZodType<Prisma.ExpenseRelationFilter> = z
-  .object({
-    is: z.lazy(() => ExpenseWhereInputSchema).optional(),
-    isNot: z.lazy(() => ExpenseWhereInputSchema).optional(),
-  })
-  .strict();
-
-export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z
-  .object({
-    sort: z.lazy(() => SortOrderSchema),
-    nulls: z.lazy(() => NullsOrderSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteCountOrderByAggregateInputSchema: z.ZodType<Prisma.ExpenseNoteCountOrderByAggregateInput> = z
-  .object({
-    id: z.lazy(() => SortOrderSchema).optional(),
-    content: z.lazy(() => SortOrderSchema).optional(),
-    createdById: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    expenseId: z.lazy(() => SortOrderSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ExpenseNoteMaxOrderByAggregateInput> = z
-  .object({
-    id: z.lazy(() => SortOrderSchema).optional(),
-    content: z.lazy(() => SortOrderSchema).optional(),
-    createdById: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    expenseId: z.lazy(() => SortOrderSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteMinOrderByAggregateInputSchema: z.ZodType<Prisma.ExpenseNoteMinOrderByAggregateInput> = z
-  .object({
-    id: z.lazy(() => SortOrderSchema).optional(),
-    content: z.lazy(() => SortOrderSchema).optional(),
-    createdById: z.lazy(() => SortOrderSchema).optional(),
-    createdAt: z.lazy(() => SortOrderSchema).optional(),
-    updatedAt: z.lazy(() => SortOrderSchema).optional(),
-    expenseId: z.lazy(() => SortOrderSchema).optional(),
-  })
-  .strict();
-
-export const StringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.StringNullableWithAggregatesFilter> = z
-  .object({
-    equals: z.string().optional().nullable(),
-    in: z.string().array().optional().nullable(),
-    notIn: z.string().array().optional().nullable(),
-    lt: z.string().optional(),
-    lte: z.string().optional(),
-    gt: z.string().optional(),
-    gte: z.string().optional(),
-    contains: z.string().optional(),
-    startsWith: z.string().optional(),
-    endsWith: z.string().optional(),
-    mode: z.lazy(() => QueryModeSchema).optional(),
-    not: z
-      .union([z.string(), z.lazy(() => NestedStringNullableWithAggregatesFilterSchema)])
-      .optional()
-      .nullable(),
-    _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
-    _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
-    _max: z.lazy(() => NestedStringNullableFilterSchema).optional(),
-  })
-  .strict();
-
 export const DecimalFilterSchema: z.ZodType<Prisma.DecimalFilter> = z
   .object({
     equals: z
@@ -3067,6 +2687,13 @@ export const DecimalWithAggregatesFilterSchema: z.ZodType<Prisma.DecimalWithAggr
   })
   .strict();
 
+export const ExpenseRelationFilterSchema: z.ZodType<Prisma.ExpenseRelationFilter> = z
+  .object({
+    is: z.lazy(() => ExpenseWhereInputSchema).optional(),
+    isNot: z.lazy(() => ExpenseWhereInputSchema).optional(),
+  })
+  .strict();
+
 export const ExpenseLogListRelationFilterSchema: z.ZodType<Prisma.ExpenseLogListRelationFilter> = z
   .object({
     every: z.lazy(() => ExpenseLogWhereInputSchema).optional(),
@@ -3132,6 +2759,26 @@ export const ExpenseDebtSumOrderByAggregateInputSchema: z.ZodType<Prisma.Expense
   })
   .strict();
 
+export const StringNullableFilterSchema: z.ZodType<Prisma.StringNullableFilter> = z
+  .object({
+    equals: z.string().optional().nullable(),
+    in: z.string().array().optional().nullable(),
+    notIn: z.string().array().optional().nullable(),
+    lt: z.string().optional(),
+    lte: z.string().optional(),
+    gt: z.string().optional(),
+    gte: z.string().optional(),
+    contains: z.string().optional(),
+    startsWith: z.string().optional(),
+    endsWith: z.string().optional(),
+    mode: z.lazy(() => QueryModeSchema).optional(),
+    not: z
+      .union([z.string(), z.lazy(() => NestedStringNullableFilterSchema)])
+      .optional()
+      .nullable(),
+  })
+  .strict();
+
 export const ExpenseDebtListRelationFilterSchema: z.ZodType<Prisma.ExpenseDebtListRelationFilter> = z
   .object({
     every: z.lazy(() => ExpenseDebtWhereInputSchema).optional(),
@@ -3140,22 +2787,14 @@ export const ExpenseDebtListRelationFilterSchema: z.ZodType<Prisma.ExpenseDebtLi
   })
   .strict();
 
-export const ExpenseNoteListRelationFilterSchema: z.ZodType<Prisma.ExpenseNoteListRelationFilter> = z
+export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z
   .object({
-    every: z.lazy(() => ExpenseNoteWhereInputSchema).optional(),
-    some: z.lazy(() => ExpenseNoteWhereInputSchema).optional(),
-    none: z.lazy(() => ExpenseNoteWhereInputSchema).optional(),
+    sort: z.lazy(() => SortOrderSchema),
+    nulls: z.lazy(() => NullsOrderSchema).optional(),
   })
   .strict();
 
 export const ExpenseDebtOrderByRelationAggregateInputSchema: z.ZodType<Prisma.ExpenseDebtOrderByRelationAggregateInput> =
-  z
-    .object({
-      _count: z.lazy(() => SortOrderSchema).optional(),
-    })
-    .strict();
-
-export const ExpenseNoteOrderByRelationAggregateInputSchema: z.ZodType<Prisma.ExpenseNoteOrderByRelationAggregateInput> =
   z
     .object({
       _count: z.lazy(() => SortOrderSchema).optional(),
@@ -3210,6 +2849,29 @@ export const ExpenseMinOrderByAggregateInputSchema: z.ZodType<Prisma.ExpenseMinO
 export const ExpenseSumOrderByAggregateInputSchema: z.ZodType<Prisma.ExpenseSumOrderByAggregateInput> = z
   .object({
     amount: z.lazy(() => SortOrderSchema).optional(),
+  })
+  .strict();
+
+export const StringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.StringNullableWithAggregatesFilter> = z
+  .object({
+    equals: z.string().optional().nullable(),
+    in: z.string().array().optional().nullable(),
+    notIn: z.string().array().optional().nullable(),
+    lt: z.string().optional(),
+    lte: z.string().optional(),
+    gt: z.string().optional(),
+    gte: z.string().optional(),
+    contains: z.string().optional(),
+    startsWith: z.string().optional(),
+    endsWith: z.string().optional(),
+    mode: z.lazy(() => QueryModeSchema).optional(),
+    not: z
+      .union([z.string(), z.lazy(() => NestedStringNullableWithAggregatesFilterSchema)])
+      .optional()
+      .nullable(),
+    _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+    _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
+    _max: z.lazy(() => NestedStringNullableFilterSchema).optional(),
   })
   .strict();
 
@@ -3782,85 +3444,6 @@ export const GroupUpdateOneRequiredWithoutMembersNestedInputSchema: z.ZodType<Pr
     })
     .strict();
 
-export const UserCreateNestedOneWithoutNotesInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutNotesInput> = z
-  .object({
-    create: z
-      .union([
-        z.lazy(() => UserCreateWithoutNotesInputSchema),
-        z.lazy(() => UserUncheckedCreateWithoutNotesInputSchema),
-      ])
-      .optional(),
-    connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutNotesInputSchema).optional(),
-    connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseCreateNestedOneWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseCreateNestedOneWithoutNotesInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseCreateWithoutNotesInputSchema),
-          z.lazy(() => ExpenseUncheckedCreateWithoutNotesInputSchema),
-        ])
-        .optional(),
-      connectOrCreate: z.lazy(() => ExpenseCreateOrConnectWithoutNotesInputSchema).optional(),
-      connect: z.lazy(() => ExpenseWhereUniqueInputSchema).optional(),
-    })
-    .strict();
-
-export const UserUpdateOneWithoutNotesNestedInputSchema: z.ZodType<Prisma.UserUpdateOneWithoutNotesNestedInput> = z
-  .object({
-    create: z
-      .union([
-        z.lazy(() => UserCreateWithoutNotesInputSchema),
-        z.lazy(() => UserUncheckedCreateWithoutNotesInputSchema),
-      ])
-      .optional(),
-    connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutNotesInputSchema).optional(),
-    upsert: z.lazy(() => UserUpsertWithoutNotesInputSchema).optional(),
-    disconnect: z.union([z.boolean(), z.lazy(() => UserWhereInputSchema)]).optional(),
-    delete: z.union([z.boolean(), z.lazy(() => UserWhereInputSchema)]).optional(),
-    connect: z.lazy(() => UserWhereUniqueInputSchema).optional(),
-    update: z
-      .union([
-        z.lazy(() => UserUpdateToOneWithWhereWithoutNotesInputSchema),
-        z.lazy(() => UserUpdateWithoutNotesInputSchema),
-        z.lazy(() => UserUncheckedUpdateWithoutNotesInputSchema),
-      ])
-      .optional(),
-  })
-  .strict();
-
-export const ExpenseUpdateOneRequiredWithoutNotesNestedInputSchema: z.ZodType<Prisma.ExpenseUpdateOneRequiredWithoutNotesNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseCreateWithoutNotesInputSchema),
-          z.lazy(() => ExpenseUncheckedCreateWithoutNotesInputSchema),
-        ])
-        .optional(),
-      connectOrCreate: z.lazy(() => ExpenseCreateOrConnectWithoutNotesInputSchema).optional(),
-      upsert: z.lazy(() => ExpenseUpsertWithoutNotesInputSchema).optional(),
-      connect: z.lazy(() => ExpenseWhereUniqueInputSchema).optional(),
-      update: z
-        .union([
-          z.lazy(() => ExpenseUpdateToOneWithWhereWithoutNotesInputSchema),
-          z.lazy(() => ExpenseUpdateWithoutNotesInputSchema),
-          z.lazy(() => ExpenseUncheckedUpdateWithoutNotesInputSchema),
-        ])
-        .optional(),
-    })
-    .strict();
-
-export const NullableStringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableStringFieldUpdateOperationsInput> =
-  z
-    .object({
-      set: z.string().optional().nullable(),
-    })
-    .strict();
-
 export const ExpenseDebtCreateNestedOneWithoutLogsInputSchema: z.ZodType<Prisma.ExpenseDebtCreateNestedOneWithoutLogsInput> =
   z
     .object({
@@ -4190,33 +3773,6 @@ export const ExpenseDebtCreateNestedManyWithoutExpenseInputSchema: z.ZodType<Pri
     })
     .strict();
 
-export const ExpenseNoteCreateNestedManyWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteCreateNestedManyWithoutExpenseInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyExpenseInputEnvelopeSchema).optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
-
 export const GroupCreateNestedOneWithoutExpensesInputSchema: z.ZodType<Prisma.GroupCreateNestedOneWithoutExpensesInput> =
   z
     .object({
@@ -4258,30 +3814,10 @@ export const ExpenseDebtUncheckedCreateNestedManyWithoutExpenseInputSchema: z.Zo
     })
     .strict();
 
-export const ExpenseNoteUncheckedCreateNestedManyWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedCreateNestedManyWithoutExpenseInput> =
+export const NullableStringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableStringFieldUpdateOperationsInput> =
   z
     .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyExpenseInputEnvelopeSchema).optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
+      set: z.string().optional().nullable(),
     })
     .strict();
 
@@ -4376,75 +3912,6 @@ export const ExpenseDebtUpdateManyWithoutExpenseNestedInputSchema: z.ZodType<Pri
     })
     .strict();
 
-export const ExpenseNoteUpdateManyWithoutExpenseNestedInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateManyWithoutExpenseNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyExpenseInputEnvelopeSchema).optional(),
-      set: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema),
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
-
 export const GroupUpdateOneRequiredWithoutExpensesNestedInputSchema: z.ZodType<Prisma.GroupUpdateOneRequiredWithoutExpensesNestedInput> =
   z
     .object({
@@ -4531,75 +3998,6 @@ export const ExpenseDebtUncheckedUpdateManyWithoutExpenseNestedInputSchema: z.Zo
         .union([
           z.lazy(() => ExpenseDebtScalarWhereInputSchema),
           z.lazy(() => ExpenseDebtScalarWhereInputSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
-
-export const ExpenseNoteUncheckedUpdateManyWithoutExpenseNestedInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateManyWithoutExpenseNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyExpenseInputEnvelopeSchema).optional(),
-      set: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutExpenseInputSchema),
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutExpenseInputSchema).array(),
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema),
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema).array(),
         ])
         .optional(),
     })
@@ -4699,33 +4097,6 @@ export const ExpenseDebtCreateNestedManyWithoutDebtorInputSchema: z.ZodType<Pris
         .union([
           z.lazy(() => ExpenseDebtWhereUniqueInputSchema),
           z.lazy(() => ExpenseDebtWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
-
-export const ExpenseNoteCreateNestedManyWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteCreateNestedManyWithoutCreatedByInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyCreatedByInputEnvelopeSchema).optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
         ])
         .optional(),
     })
@@ -4852,33 +4223,6 @@ export const ExpenseDebtUncheckedCreateNestedManyWithoutDebtorInputSchema: z.Zod
         .union([
           z.lazy(() => ExpenseDebtWhereUniqueInputSchema),
           z.lazy(() => ExpenseDebtWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
-
-export const ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyCreatedByInputEnvelopeSchema).optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
         ])
         .optional(),
     })
@@ -5147,75 +4491,6 @@ export const ExpenseDebtUpdateManyWithoutDebtorNestedInputSchema: z.ZodType<Pris
         .union([
           z.lazy(() => ExpenseDebtScalarWhereInputSchema),
           z.lazy(() => ExpenseDebtScalarWhereInputSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
-
-export const ExpenseNoteUpdateManyWithoutCreatedByNestedInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateManyWithoutCreatedByNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyCreatedByInputEnvelopeSchema).optional(),
-      set: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema),
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema).array(),
         ])
         .optional(),
     })
@@ -5521,75 +4796,6 @@ export const ExpenseDebtUncheckedUpdateManyWithoutDebtorNestedInputSchema: z.Zod
     })
     .strict();
 
-export const ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInput> =
-  z
-    .object({
-      create: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema).array(),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      connectOrCreate: z
-        .union([
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      upsert: z
-        .union([
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUpsertWithWhereUniqueWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      createMany: z.lazy(() => ExpenseNoteCreateManyCreatedByInputEnvelopeSchema).optional(),
-      set: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      disconnect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      delete: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      connect: z
-        .union([
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-          z.lazy(() => ExpenseNoteWhereUniqueInputSchema).array(),
-        ])
-        .optional(),
-      update: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUpdateWithWhereUniqueWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      updateMany: z
-        .union([
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutCreatedByInputSchema),
-          z.lazy(() => ExpenseNoteUpdateManyWithWhereWithoutCreatedByInputSchema).array(),
-        ])
-        .optional(),
-      deleteMany: z
-        .union([
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema),
-          z.lazy(() => ExpenseNoteScalarWhereInputSchema).array(),
-        ])
-        .optional(),
-    })
-    .strict();
-
 export const PushSubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema: z.ZodType<Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput> =
   z
     .object({
@@ -5808,64 +5014,6 @@ export const NestedDateTimeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDa
   })
   .strict();
 
-export const NestedStringNullableFilterSchema: z.ZodType<Prisma.NestedStringNullableFilter> = z
-  .object({
-    equals: z.string().optional().nullable(),
-    in: z.string().array().optional().nullable(),
-    notIn: z.string().array().optional().nullable(),
-    lt: z.string().optional(),
-    lte: z.string().optional(),
-    gt: z.string().optional(),
-    gte: z.string().optional(),
-    contains: z.string().optional(),
-    startsWith: z.string().optional(),
-    endsWith: z.string().optional(),
-    not: z
-      .union([z.string(), z.lazy(() => NestedStringNullableFilterSchema)])
-      .optional()
-      .nullable(),
-  })
-  .strict();
-
-export const NestedStringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedStringNullableWithAggregatesFilter> =
-  z
-    .object({
-      equals: z.string().optional().nullable(),
-      in: z.string().array().optional().nullable(),
-      notIn: z.string().array().optional().nullable(),
-      lt: z.string().optional(),
-      lte: z.string().optional(),
-      gt: z.string().optional(),
-      gte: z.string().optional(),
-      contains: z.string().optional(),
-      startsWith: z.string().optional(),
-      endsWith: z.string().optional(),
-      not: z
-        .union([z.string(), z.lazy(() => NestedStringNullableWithAggregatesFilterSchema)])
-        .optional()
-        .nullable(),
-      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
-      _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
-      _max: z.lazy(() => NestedStringNullableFilterSchema).optional(),
-    })
-    .strict();
-
-export const NestedIntNullableFilterSchema: z.ZodType<Prisma.NestedIntNullableFilter> = z
-  .object({
-    equals: z.number().optional().nullable(),
-    in: z.number().array().optional().nullable(),
-    notIn: z.number().array().optional().nullable(),
-    lt: z.number().optional(),
-    lte: z.number().optional(),
-    gt: z.number().optional(),
-    gte: z.number().optional(),
-    not: z
-      .union([z.number(), z.lazy(() => NestedIntNullableFilterSchema)])
-      .optional()
-      .nullable(),
-  })
-  .strict();
-
 export const NestedDecimalFilterSchema: z.ZodType<Prisma.NestedDecimalFilter> = z
   .object({
     equals: z
@@ -5985,6 +5133,64 @@ export const NestedDecimalWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDec
   })
   .strict();
 
+export const NestedStringNullableFilterSchema: z.ZodType<Prisma.NestedStringNullableFilter> = z
+  .object({
+    equals: z.string().optional().nullable(),
+    in: z.string().array().optional().nullable(),
+    notIn: z.string().array().optional().nullable(),
+    lt: z.string().optional(),
+    lte: z.string().optional(),
+    gt: z.string().optional(),
+    gte: z.string().optional(),
+    contains: z.string().optional(),
+    startsWith: z.string().optional(),
+    endsWith: z.string().optional(),
+    not: z
+      .union([z.string(), z.lazy(() => NestedStringNullableFilterSchema)])
+      .optional()
+      .nullable(),
+  })
+  .strict();
+
+export const NestedStringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedStringNullableWithAggregatesFilter> =
+  z
+    .object({
+      equals: z.string().optional().nullable(),
+      in: z.string().array().optional().nullable(),
+      notIn: z.string().array().optional().nullable(),
+      lt: z.string().optional(),
+      lte: z.string().optional(),
+      gt: z.string().optional(),
+      gte: z.string().optional(),
+      contains: z.string().optional(),
+      startsWith: z.string().optional(),
+      endsWith: z.string().optional(),
+      not: z
+        .union([z.string(), z.lazy(() => NestedStringNullableWithAggregatesFilterSchema)])
+        .optional()
+        .nullable(),
+      _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+      _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
+      _max: z.lazy(() => NestedStringNullableFilterSchema).optional(),
+    })
+    .strict();
+
+export const NestedIntNullableFilterSchema: z.ZodType<Prisma.NestedIntNullableFilter> = z
+  .object({
+    equals: z.number().optional().nullable(),
+    in: z.number().array().optional().nullable(),
+    notIn: z.number().array().optional().nullable(),
+    lt: z.number().optional(),
+    lte: z.number().optional(),
+    gt: z.number().optional(),
+    gte: z.number().optional(),
+    not: z
+      .union([z.number(), z.lazy(() => NestedIntNullableFilterSchema)])
+      .optional()
+      .nullable(),
+  })
+  .strict();
+
 export const NestedEnumGenderNullableFilterSchema: z.ZodType<Prisma.NestedEnumGenderNullableFilter> = z
   .object({
     equals: z
@@ -6081,7 +5287,6 @@ export const ExpenseCreateWithoutGroupInputSchema: z.ZodType<Prisma.ExpenseCreat
       .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
     payer: z.lazy(() => UserCreateNestedOneWithoutExpensesInputSchema),
     debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutExpenseInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutExpenseInputSchema).optional(),
   })
   .strict();
 
@@ -6098,7 +5303,6 @@ export const ExpenseUncheckedCreateWithoutGroupInputSchema: z.ZodType<Prisma.Exp
         .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
         .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
       debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
     })
     .strict();
 
@@ -6264,7 +5468,6 @@ export const UserCreateWithoutGroupsInputSchema: z.ZodType<Prisma.UserCreateWith
     sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
     expenses: z.lazy(() => ExpenseCreateNestedManyWithoutPayerInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutDebtorInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -6286,7 +5489,6 @@ export const UserUncheckedCreateWithoutGroupsInputSchema: z.ZodType<Prisma.UserU
     sessions: z.lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUncheckedCreateNestedManyWithoutPayerInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutDebtorInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -6392,7 +5594,6 @@ export const UserUpdateWithoutGroupsInputSchema: z.ZodType<Prisma.UserUpdateWith
     sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUpdateManyWithoutPayerNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -6429,7 +5630,6 @@ export const UserUncheckedUpdateWithoutGroupsInputSchema: z.ZodType<Prisma.UserU
     sessions: z.lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUncheckedUpdateManyWithoutPayerNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -6479,277 +5679,6 @@ export const GroupUncheckedUpdateWithoutMembersInputSchema: z.ZodType<Prisma.Gro
       name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
       adminId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
       expenses: z.lazy(() => ExpenseUncheckedUpdateManyWithoutGroupNestedInputSchema).optional(),
-    })
-    .strict();
-
-export const UserCreateWithoutNotesInputSchema: z.ZodType<Prisma.UserCreateWithoutNotesInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    googleId: z.string().optional().nullable(),
-    name: z.string().optional().nullable(),
-    email: z.string().optional().nullable(),
-    image: z.string().optional().nullable(),
-    gender: z
-      .lazy(() => GenderSchema)
-      .optional()
-      .nullable(),
-    activeGroupId: z.string().optional().nullable(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
-    groups: z.lazy(() => UserGroupCreateNestedManyWithoutUserInputSchema).optional(),
-    expenses: z.lazy(() => ExpenseCreateNestedManyWithoutPayerInputSchema).optional(),
-    debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutDebtorInputSchema).optional(),
-    pushSubscriptions: z.lazy(() => PushSubscriptionCreateNestedManyWithoutUserInputSchema).optional(),
-  })
-  .strict();
-
-export const UserUncheckedCreateWithoutNotesInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutNotesInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    googleId: z.string().optional().nullable(),
-    name: z.string().optional().nullable(),
-    email: z.string().optional().nullable(),
-    image: z.string().optional().nullable(),
-    gender: z
-      .lazy(() => GenderSchema)
-      .optional()
-      .nullable(),
-    activeGroupId: z.string().optional().nullable(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    sessions: z.lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-    groups: z.lazy(() => UserGroupUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-    expenses: z.lazy(() => ExpenseUncheckedCreateNestedManyWithoutPayerInputSchema).optional(),
-    debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutDebtorInputSchema).optional(),
-    pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  })
-  .strict();
-
-export const UserCreateOrConnectWithoutNotesInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutNotesInput> = z
-  .object({
-    where: z.lazy(() => UserWhereUniqueInputSchema),
-    create: z.union([
-      z.lazy(() => UserCreateWithoutNotesInputSchema),
-      z.lazy(() => UserUncheckedCreateWithoutNotesInputSchema),
-    ]),
-  })
-  .strict();
-
-export const ExpenseCreateWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseCreateWithoutNotesInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    name: z.string(),
-    description: z.string().optional().nullable(),
-    amount: z
-      .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
-      .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-    payer: z.lazy(() => UserCreateNestedOneWithoutExpensesInputSchema),
-    debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutExpenseInputSchema).optional(),
-    group: z.lazy(() => GroupCreateNestedOneWithoutExpensesInputSchema),
-  })
-  .strict();
-
-export const ExpenseUncheckedCreateWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseUncheckedCreateWithoutNotesInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      name: z.string(),
-      description: z.string().optional().nullable(),
-      payerId: z.string(),
-      amount: z
-        .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
-        .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-      groupId: z.string(),
-      debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
-    })
-    .strict();
-
-export const ExpenseCreateOrConnectWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseCreateOrConnectWithoutNotesInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseWhereUniqueInputSchema),
-      create: z.union([
-        z.lazy(() => ExpenseCreateWithoutNotesInputSchema),
-        z.lazy(() => ExpenseUncheckedCreateWithoutNotesInputSchema),
-      ]),
-    })
-    .strict();
-
-export const UserUpsertWithoutNotesInputSchema: z.ZodType<Prisma.UserUpsertWithoutNotesInput> = z
-  .object({
-    update: z.union([
-      z.lazy(() => UserUpdateWithoutNotesInputSchema),
-      z.lazy(() => UserUncheckedUpdateWithoutNotesInputSchema),
-    ]),
-    create: z.union([
-      z.lazy(() => UserCreateWithoutNotesInputSchema),
-      z.lazy(() => UserUncheckedCreateWithoutNotesInputSchema),
-    ]),
-    where: z.lazy(() => UserWhereInputSchema).optional(),
-  })
-  .strict();
-
-export const UserUpdateToOneWithWhereWithoutNotesInputSchema: z.ZodType<Prisma.UserUpdateToOneWithWhereWithoutNotesInput> =
-  z
-    .object({
-      where: z.lazy(() => UserWhereInputSchema).optional(),
-      data: z.union([
-        z.lazy(() => UserUpdateWithoutNotesInputSchema),
-        z.lazy(() => UserUncheckedUpdateWithoutNotesInputSchema),
-      ]),
-    })
-    .strict();
-
-export const UserUpdateWithoutNotesInputSchema: z.ZodType<Prisma.UserUpdateWithoutNotesInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    googleId: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    name: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    email: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    image: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    gender: z
-      .union([z.lazy(() => GenderSchema), z.lazy(() => NullableEnumGenderFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    activeGroupId: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
-    groups: z.lazy(() => UserGroupUpdateManyWithoutUserNestedInputSchema).optional(),
-    expenses: z.lazy(() => ExpenseUpdateManyWithoutPayerNestedInputSchema).optional(),
-    debts: z.lazy(() => ExpenseDebtUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    pushSubscriptions: z.lazy(() => PushSubscriptionUpdateManyWithoutUserNestedInputSchema).optional(),
-  })
-  .strict();
-
-export const UserUncheckedUpdateWithoutNotesInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutNotesInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    googleId: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    name: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    email: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    image: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    gender: z
-      .union([z.lazy(() => GenderSchema), z.lazy(() => NullableEnumGenderFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    activeGroupId: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    sessions: z.lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-    groups: z.lazy(() => UserGroupUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-    expenses: z.lazy(() => ExpenseUncheckedUpdateManyWithoutPayerNestedInputSchema).optional(),
-    debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseUpsertWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseUpsertWithoutNotesInput> = z
-  .object({
-    update: z.union([
-      z.lazy(() => ExpenseUpdateWithoutNotesInputSchema),
-      z.lazy(() => ExpenseUncheckedUpdateWithoutNotesInputSchema),
-    ]),
-    create: z.union([
-      z.lazy(() => ExpenseCreateWithoutNotesInputSchema),
-      z.lazy(() => ExpenseUncheckedCreateWithoutNotesInputSchema),
-    ]),
-    where: z.lazy(() => ExpenseWhereInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseUpdateToOneWithWhereWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseUpdateToOneWithWhereWithoutNotesInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseWhereInputSchema).optional(),
-      data: z.union([
-        z.lazy(() => ExpenseUpdateWithoutNotesInputSchema),
-        z.lazy(() => ExpenseUncheckedUpdateWithoutNotesInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseUpdateWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseUpdateWithoutNotesInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    description: z
-      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-      .optional()
-      .nullable(),
-    amount: z
-      .union([
-        z
-          .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
-          .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-        z.lazy(() => DecimalFieldUpdateOperationsInputSchema),
-      ])
-      .optional(),
-    payer: z.lazy(() => UserUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
-    debts: z.lazy(() => ExpenseDebtUpdateManyWithoutExpenseNestedInputSchema).optional(),
-    group: z.lazy(() => GroupUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseUncheckedUpdateWithoutNotesInputSchema: z.ZodType<Prisma.ExpenseUncheckedUpdateWithoutNotesInput> =
-  z
-    .object({
-      id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-      updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-      name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      description: z
-        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-        .optional()
-        .nullable(),
-      payerId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      amount: z
-        .union([
-          z
-            .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
-            .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
-          z.lazy(() => DecimalFieldUpdateOperationsInputSchema),
-        ])
-        .optional(),
-      groupId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
     })
     .strict();
 
@@ -6888,7 +5817,6 @@ export const ExpenseCreateWithoutDebtsInputSchema: z.ZodType<Prisma.ExpenseCreat
       .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
       .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
     payer: z.lazy(() => UserCreateNestedOneWithoutExpensesInputSchema),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutExpenseInputSchema).optional(),
     group: z.lazy(() => GroupCreateNestedOneWithoutExpensesInputSchema),
   })
   .strict();
@@ -6906,7 +5834,6 @@ export const ExpenseUncheckedCreateWithoutDebtsInputSchema: z.ZodType<Prisma.Exp
         .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
         .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
       groupId: z.string(),
-      notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
     })
     .strict();
 
@@ -6938,7 +5865,6 @@ export const UserCreateWithoutDebtsInputSchema: z.ZodType<Prisma.UserCreateWitho
     sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
     groups: z.lazy(() => UserGroupCreateNestedManyWithoutUserInputSchema).optional(),
     expenses: z.lazy(() => ExpenseCreateNestedManyWithoutPayerInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -6960,7 +5886,6 @@ export const UserUncheckedCreateWithoutDebtsInputSchema: z.ZodType<Prisma.UserUn
     sessions: z.lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
     groups: z.lazy(() => UserGroupUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUncheckedCreateNestedManyWithoutPayerInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -7063,7 +5988,6 @@ export const ExpenseUpdateWithoutDebtsInputSchema: z.ZodType<Prisma.ExpenseUpdat
       ])
       .optional(),
     payer: z.lazy(() => UserUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutExpenseNestedInputSchema).optional(),
     group: z.lazy(() => GroupUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
   })
   .strict();
@@ -7089,7 +6013,6 @@ export const ExpenseUncheckedUpdateWithoutDebtsInputSchema: z.ZodType<Prisma.Exp
         ])
         .optional(),
       groupId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
     })
     .strict();
 
@@ -7150,7 +6073,6 @@ export const UserUpdateWithoutDebtsInputSchema: z.ZodType<Prisma.UserUpdateWitho
     sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
     groups: z.lazy(() => UserGroupUpdateManyWithoutUserNestedInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUpdateManyWithoutPayerNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -7187,7 +6109,6 @@ export const UserUncheckedUpdateWithoutDebtsInputSchema: z.ZodType<Prisma.UserUn
     sessions: z.lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
     groups: z.lazy(() => UserGroupUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUncheckedUpdateManyWithoutPayerNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -7273,7 +6194,6 @@ export const UserCreateWithoutExpensesInputSchema: z.ZodType<Prisma.UserCreateWi
     sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
     groups: z.lazy(() => UserGroupCreateNestedManyWithoutUserInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutDebtorInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -7296,7 +6216,6 @@ export const UserUncheckedCreateWithoutExpensesInputSchema: z.ZodType<Prisma.Use
       sessions: z.lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
       groups: z.lazy(() => UserGroupUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutDebtorInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInputSchema).optional(),
       pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
     })
     .strict();
@@ -7364,49 +6283,6 @@ export const ExpenseDebtCreateManyExpenseInputEnvelopeSchema: z.ZodType<Prisma.E
       data: z.union([
         z.lazy(() => ExpenseDebtCreateManyExpenseInputSchema),
         z.lazy(() => ExpenseDebtCreateManyExpenseInputSchema).array(),
-      ]),
-      skipDuplicates: z.boolean().optional(),
-    })
-    .strict();
-
-export const ExpenseNoteCreateWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteCreateWithoutExpenseInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    content: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    createdBy: z.lazy(() => UserCreateNestedOneWithoutNotesInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteUncheckedCreateWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedCreateWithoutExpenseInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      content: z.string(),
-      createdById: z.string().optional().nullable(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-    })
-    .strict();
-
-export const ExpenseNoteCreateOrConnectWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteCreateOrConnectWithoutExpenseInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-      create: z.union([
-        z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseNoteCreateManyExpenseInputEnvelopeSchema: z.ZodType<Prisma.ExpenseNoteCreateManyExpenseInputEnvelope> =
-  z
-    .object({
-      data: z.union([
-        z.lazy(() => ExpenseNoteCreateManyExpenseInputSchema),
-        z.lazy(() => ExpenseNoteCreateManyExpenseInputSchema).array(),
       ]),
       skipDuplicates: z.boolean().optional(),
     })
@@ -7503,7 +6379,6 @@ export const UserUpdateWithoutExpensesInputSchema: z.ZodType<Prisma.UserUpdateWi
     sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
     groups: z.lazy(() => UserGroupUpdateManyWithoutUserNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -7541,7 +6416,6 @@ export const UserUncheckedUpdateWithoutExpensesInputSchema: z.ZodType<Prisma.Use
       sessions: z.lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
       groups: z.lazy(() => UserGroupUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutDebtorNestedInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInputSchema).optional(),
       pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
     })
     .strict();
@@ -7616,67 +6490,6 @@ export const ExpenseDebtScalarWhereInputSchema: z.ZodType<Prisma.ExpenseDebtScal
       .optional(),
     expenseId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
     debtorId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteUpsertWithWhereUniqueWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUpsertWithWhereUniqueWithoutExpenseInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-      update: z.union([
-        z.lazy(() => ExpenseNoteUpdateWithoutExpenseInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedUpdateWithoutExpenseInputSchema),
-      ]),
-      create: z.union([
-        z.lazy(() => ExpenseNoteCreateWithoutExpenseInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedCreateWithoutExpenseInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseNoteUpdateWithWhereUniqueWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateWithWhereUniqueWithoutExpenseInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-      data: z.union([
-        z.lazy(() => ExpenseNoteUpdateWithoutExpenseInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedUpdateWithoutExpenseInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseNoteUpdateManyWithWhereWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateManyWithWhereWithoutExpenseInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteScalarWhereInputSchema),
-      data: z.union([
-        z.lazy(() => ExpenseNoteUpdateManyMutationInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutExpenseInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseNoteScalarWhereInputSchema: z.ZodType<Prisma.ExpenseNoteScalarWhereInput> = z
-  .object({
-    AND: z
-      .union([z.lazy(() => ExpenseNoteScalarWhereInputSchema), z.lazy(() => ExpenseNoteScalarWhereInputSchema).array()])
-      .optional(),
-    OR: z
-      .lazy(() => ExpenseNoteScalarWhereInputSchema)
-      .array()
-      .optional(),
-    NOT: z
-      .union([z.lazy(() => ExpenseNoteScalarWhereInputSchema), z.lazy(() => ExpenseNoteScalarWhereInputSchema).array()])
-      .optional(),
-    id: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-    content: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
-    createdById: z
-      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
-      .optional()
-      .nullable(),
-    createdAt: z.union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()]).optional(),
-    updatedAt: z.union([z.lazy(() => DateTimeFilterSchema), z.coerce.date()]).optional(),
-    expenseId: z.union([z.lazy(() => StringFilterSchema), z.string()]).optional(),
   })
   .strict();
 
@@ -7807,7 +6620,6 @@ export const ExpenseCreateWithoutPayerInputSchema: z.ZodType<Prisma.ExpenseCreat
       .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
       .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
     debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutExpenseInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutExpenseInputSchema).optional(),
     group: z.lazy(() => GroupCreateNestedOneWithoutExpensesInputSchema),
   })
   .strict();
@@ -7825,7 +6637,6 @@ export const ExpenseUncheckedCreateWithoutPayerInputSchema: z.ZodType<Prisma.Exp
         .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),
       groupId: z.string(),
       debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutExpenseInputSchema).optional(),
     })
     .strict();
 
@@ -7902,49 +6713,6 @@ export const ExpenseDebtCreateManyDebtorInputEnvelopeSchema: z.ZodType<Prisma.Ex
       data: z.union([
         z.lazy(() => ExpenseDebtCreateManyDebtorInputSchema),
         z.lazy(() => ExpenseDebtCreateManyDebtorInputSchema).array(),
-      ]),
-      skipDuplicates: z.boolean().optional(),
-    })
-    .strict();
-
-export const ExpenseNoteCreateWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteCreateWithoutCreatedByInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    content: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-    expense: z.lazy(() => ExpenseCreateNestedOneWithoutNotesInputSchema),
-  })
-  .strict();
-
-export const ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedCreateWithoutCreatedByInput> =
-  z
-    .object({
-      id: z.string().cuid().optional(),
-      content: z.string(),
-      createdAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date().optional(),
-      expenseId: z.string(),
-    })
-    .strict();
-
-export const ExpenseNoteCreateOrConnectWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteCreateOrConnectWithoutCreatedByInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-      create: z.union([
-        z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseNoteCreateManyCreatedByInputEnvelopeSchema: z.ZodType<Prisma.ExpenseNoteCreateManyCreatedByInputEnvelope> =
-  z
-    .object({
-      data: z.union([
-        z.lazy(() => ExpenseNoteCreateManyCreatedByInputSchema),
-        z.lazy(() => ExpenseNoteCreateManyCreatedByInputSchema).array(),
       ]),
       skipDuplicates: z.boolean().optional(),
     })
@@ -8155,43 +6923,6 @@ export const ExpenseDebtUpdateManyWithWhereWithoutDebtorInputSchema: z.ZodType<P
     })
     .strict();
 
-export const ExpenseNoteUpsertWithWhereUniqueWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUpsertWithWhereUniqueWithoutCreatedByInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-      update: z.union([
-        z.lazy(() => ExpenseNoteUpdateWithoutCreatedByInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedUpdateWithoutCreatedByInputSchema),
-      ]),
-      create: z.union([
-        z.lazy(() => ExpenseNoteCreateWithoutCreatedByInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedCreateWithoutCreatedByInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseNoteUpdateWithWhereUniqueWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateWithWhereUniqueWithoutCreatedByInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteWhereUniqueInputSchema),
-      data: z.union([
-        z.lazy(() => ExpenseNoteUpdateWithoutCreatedByInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedUpdateWithoutCreatedByInputSchema),
-      ]),
-    })
-    .strict();
-
-export const ExpenseNoteUpdateManyWithWhereWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateManyWithWhereWithoutCreatedByInput> =
-  z
-    .object({
-      where: z.lazy(() => ExpenseNoteScalarWhereInputSchema),
-      data: z.union([
-        z.lazy(() => ExpenseNoteUpdateManyMutationInputSchema),
-        z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutCreatedByInputSchema),
-      ]),
-    })
-    .strict();
-
 export const PushSubscriptionUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.PushSubscriptionUpsertWithWhereUniqueWithoutUserInput> =
   z
     .object({
@@ -8273,7 +7004,6 @@ export const UserCreateWithoutPushSubscriptionsInputSchema: z.ZodType<Prisma.Use
       groups: z.lazy(() => UserGroupCreateNestedManyWithoutUserInputSchema).optional(),
       expenses: z.lazy(() => ExpenseCreateNestedManyWithoutPayerInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutDebtorInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutCreatedByInputSchema).optional(),
     })
     .strict();
 
@@ -8296,7 +7026,6 @@ export const UserUncheckedCreateWithoutPushSubscriptionsInputSchema: z.ZodType<P
       groups: z.lazy(() => UserGroupUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
       expenses: z.lazy(() => ExpenseUncheckedCreateNestedManyWithoutPayerInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutDebtorInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInputSchema).optional(),
     })
     .strict();
 
@@ -8371,7 +7100,6 @@ export const UserUpdateWithoutPushSubscriptionsInputSchema: z.ZodType<Prisma.Use
       groups: z.lazy(() => UserGroupUpdateManyWithoutUserNestedInputSchema).optional(),
       expenses: z.lazy(() => ExpenseUpdateManyWithoutPayerNestedInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtUpdateManyWithoutDebtorNestedInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     })
     .strict();
 
@@ -8409,7 +7137,6 @@ export const UserUncheckedUpdateWithoutPushSubscriptionsInputSchema: z.ZodType<P
       groups: z.lazy(() => UserGroupUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
       expenses: z.lazy(() => ExpenseUncheckedUpdateManyWithoutPayerNestedInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutDebtorNestedInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     })
     .strict();
 
@@ -8430,7 +7157,6 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
     groups: z.lazy(() => UserGroupCreateNestedManyWithoutUserInputSchema).optional(),
     expenses: z.lazy(() => ExpenseCreateNestedManyWithoutPayerInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtCreateNestedManyWithoutDebtorInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteCreateNestedManyWithoutCreatedByInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionCreateNestedManyWithoutUserInputSchema).optional(),
   })
   .strict();
@@ -8453,7 +7179,6 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       groups: z.lazy(() => UserGroupUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
       expenses: z.lazy(() => ExpenseUncheckedCreateNestedManyWithoutPayerInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedCreateNestedManyWithoutDebtorInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedCreateNestedManyWithoutCreatedByInputSchema).optional(),
       pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
     })
     .strict();
@@ -8526,7 +7251,6 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
     groups: z.lazy(() => UserGroupUpdateManyWithoutUserNestedInputSchema).optional(),
     expenses: z.lazy(() => ExpenseUpdateManyWithoutPayerNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUpdateManyWithoutDebtorNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutCreatedByNestedInputSchema).optional(),
     pushSubscriptions: z.lazy(() => PushSubscriptionUpdateManyWithoutUserNestedInputSchema).optional(),
   })
   .strict();
@@ -8564,7 +7288,6 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       groups: z.lazy(() => UserGroupUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
       expenses: z.lazy(() => ExpenseUncheckedUpdateManyWithoutPayerNestedInputSchema).optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutDebtorNestedInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutCreatedByNestedInputSchema).optional(),
       pushSubscriptions: z.lazy(() => PushSubscriptionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
     })
     .strict();
@@ -8629,7 +7352,6 @@ export const ExpenseUpdateWithoutGroupInputSchema: z.ZodType<Prisma.ExpenseUpdat
       .optional(),
     payer: z.lazy(() => UserUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
     debts: z.lazy(() => ExpenseDebtUpdateManyWithoutExpenseNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutExpenseNestedInputSchema).optional(),
   })
   .strict();
 
@@ -8654,7 +7376,6 @@ export const ExpenseUncheckedUpdateWithoutGroupInputSchema: z.ZodType<Prisma.Exp
         ])
         .optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
     })
     .strict();
 
@@ -8758,16 +7479,6 @@ export const ExpenseDebtCreateManyExpenseInputSchema: z.ZodType<Prisma.ExpenseDe
   })
   .strict();
 
-export const ExpenseNoteCreateManyExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteCreateManyExpenseInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    content: z.string(),
-    createdById: z.string().optional().nullable(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
-  })
-  .strict();
-
 export const ExpenseDebtUpdateWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseDebtUpdateWithoutExpenseInput> = z
   .object({
     id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
@@ -8847,44 +7558,6 @@ export const ExpenseDebtUncheckedUpdateManyWithoutExpenseInputSchema: z.ZodType<
     })
     .strict();
 
-export const ExpenseNoteUpdateWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateWithoutExpenseInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    createdBy: z.lazy(() => UserUpdateOneWithoutNotesNestedInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteUncheckedUpdateWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateWithoutExpenseInput> =
-  z
-    .object({
-      id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      createdById: z
-        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-        .optional()
-        .nullable(),
-      createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-      updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    })
-    .strict();
-
-export const ExpenseNoteUncheckedUpdateManyWithoutExpenseInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateManyWithoutExpenseInput> =
-  z
-    .object({
-      id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      createdById: z
-        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
-        .optional()
-        .nullable(),
-      createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-      updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    })
-    .strict();
-
 export const SessionCreateManyUserInputSchema: z.ZodType<Prisma.SessionCreateManyUserInput> = z
   .object({
     id: z.string().cuid().optional(),
@@ -8924,16 +7597,6 @@ export const ExpenseDebtCreateManyDebtorInputSchema: z.ZodType<Prisma.ExpenseDeb
       .union([z.number(), z.string(), z.instanceof(Decimal), z.instanceof(Prisma.Decimal), DecimalJsLikeSchema])
       .refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' })
       .optional(),
-    expenseId: z.string(),
-  })
-  .strict();
-
-export const ExpenseNoteCreateManyCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteCreateManyCreatedByInput> = z
-  .object({
-    id: z.string().cuid().optional(),
-    content: z.string(),
-    createdAt: z.coerce.date().optional(),
-    updatedAt: z.coerce.date().optional(),
     expenseId: z.string(),
   })
   .strict();
@@ -9007,7 +7670,6 @@ export const ExpenseUpdateWithoutPayerInputSchema: z.ZodType<Prisma.ExpenseUpdat
       ])
       .optional(),
     debts: z.lazy(() => ExpenseDebtUpdateManyWithoutExpenseNestedInputSchema).optional(),
-    notes: z.lazy(() => ExpenseNoteUpdateManyWithoutExpenseNestedInputSchema).optional(),
     group: z.lazy(() => GroupUpdateOneRequiredWithoutExpensesNestedInputSchema).optional(),
   })
   .strict();
@@ -9033,7 +7695,6 @@ export const ExpenseUncheckedUpdateWithoutPayerInputSchema: z.ZodType<Prisma.Exp
         .optional(),
       groupId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
       debts: z.lazy(() => ExpenseDebtUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
-      notes: z.lazy(() => ExpenseNoteUncheckedUpdateManyWithoutExpenseNestedInputSchema).optional(),
     })
     .strict();
 
@@ -9135,38 +7796,6 @@ export const ExpenseDebtUncheckedUpdateManyWithoutDebtorInputSchema: z.ZodType<P
           z.lazy(() => DecimalFieldUpdateOperationsInputSchema),
         ])
         .optional(),
-      expenseId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    })
-    .strict();
-
-export const ExpenseNoteUpdateWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUpdateWithoutCreatedByInput> = z
-  .object({
-    id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-    expense: z.lazy(() => ExpenseUpdateOneRequiredWithoutNotesNestedInputSchema).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteUncheckedUpdateWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateWithoutCreatedByInput> =
-  z
-    .object({
-      id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-      updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-      expenseId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-    })
-    .strict();
-
-export const ExpenseNoteUncheckedUpdateManyWithoutCreatedByInputSchema: z.ZodType<Prisma.ExpenseNoteUncheckedUpdateManyWithoutCreatedByInput> =
-  z
-    .object({
-      id: z.union([z.string().cuid(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      content: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
-      createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
-      updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputSchema)]).optional(),
       expenseId: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputSchema)]).optional(),
     })
     .strict();
@@ -9362,92 +7991,6 @@ export const UserGroupFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.UserGroupFin
     select: UserGroupSelectSchema.optional(),
     include: UserGroupIncludeSchema.optional(),
     where: UserGroupWhereUniqueInputSchema,
-  })
-  .strict();
-
-export const ExpenseNoteFindFirstArgsSchema: z.ZodType<Prisma.ExpenseNoteFindFirstArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    where: ExpenseNoteWhereInputSchema.optional(),
-    orderBy: z
-      .union([ExpenseNoteOrderByWithRelationInputSchema.array(), ExpenseNoteOrderByWithRelationInputSchema])
-      .optional(),
-    cursor: ExpenseNoteWhereUniqueInputSchema.optional(),
-    take: z.number().optional(),
-    skip: z.number().optional(),
-    distinct: z.union([ExpenseNoteScalarFieldEnumSchema, ExpenseNoteScalarFieldEnumSchema.array()]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteFindFirstOrThrowArgsSchema: z.ZodType<Prisma.ExpenseNoteFindFirstOrThrowArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    where: ExpenseNoteWhereInputSchema.optional(),
-    orderBy: z
-      .union([ExpenseNoteOrderByWithRelationInputSchema.array(), ExpenseNoteOrderByWithRelationInputSchema])
-      .optional(),
-    cursor: ExpenseNoteWhereUniqueInputSchema.optional(),
-    take: z.number().optional(),
-    skip: z.number().optional(),
-    distinct: z.union([ExpenseNoteScalarFieldEnumSchema, ExpenseNoteScalarFieldEnumSchema.array()]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteFindManyArgsSchema: z.ZodType<Prisma.ExpenseNoteFindManyArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    where: ExpenseNoteWhereInputSchema.optional(),
-    orderBy: z
-      .union([ExpenseNoteOrderByWithRelationInputSchema.array(), ExpenseNoteOrderByWithRelationInputSchema])
-      .optional(),
-    cursor: ExpenseNoteWhereUniqueInputSchema.optional(),
-    take: z.number().optional(),
-    skip: z.number().optional(),
-    distinct: z.union([ExpenseNoteScalarFieldEnumSchema, ExpenseNoteScalarFieldEnumSchema.array()]).optional(),
-  })
-  .strict();
-
-export const ExpenseNoteAggregateArgsSchema: z.ZodType<Prisma.ExpenseNoteAggregateArgs> = z
-  .object({
-    where: ExpenseNoteWhereInputSchema.optional(),
-    orderBy: z
-      .union([ExpenseNoteOrderByWithRelationInputSchema.array(), ExpenseNoteOrderByWithRelationInputSchema])
-      .optional(),
-    cursor: ExpenseNoteWhereUniqueInputSchema.optional(),
-    take: z.number().optional(),
-    skip: z.number().optional(),
-  })
-  .strict();
-
-export const ExpenseNoteGroupByArgsSchema: z.ZodType<Prisma.ExpenseNoteGroupByArgs> = z
-  .object({
-    where: ExpenseNoteWhereInputSchema.optional(),
-    orderBy: z
-      .union([ExpenseNoteOrderByWithAggregationInputSchema.array(), ExpenseNoteOrderByWithAggregationInputSchema])
-      .optional(),
-    by: ExpenseNoteScalarFieldEnumSchema.array(),
-    having: ExpenseNoteScalarWhereWithAggregatesInputSchema.optional(),
-    take: z.number().optional(),
-    skip: z.number().optional(),
-  })
-  .strict();
-
-export const ExpenseNoteFindUniqueArgsSchema: z.ZodType<Prisma.ExpenseNoteFindUniqueArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    where: ExpenseNoteWhereUniqueInputSchema,
-  })
-  .strict();
-
-export const ExpenseNoteFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.ExpenseNoteFindUniqueOrThrowArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    where: ExpenseNoteWhereUniqueInputSchema,
   })
   .strict();
 
@@ -10071,68 +8614,6 @@ export const UserGroupUpdateManyArgsSchema: z.ZodType<Prisma.UserGroupUpdateMany
 export const UserGroupDeleteManyArgsSchema: z.ZodType<Prisma.UserGroupDeleteManyArgs> = z
   .object({
     where: UserGroupWhereInputSchema.optional(),
-  })
-  .strict();
-
-export const ExpenseNoteCreateArgsSchema: z.ZodType<Prisma.ExpenseNoteCreateArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    data: z.union([ExpenseNoteCreateInputSchema, ExpenseNoteUncheckedCreateInputSchema]),
-  })
-  .strict();
-
-export const ExpenseNoteUpsertArgsSchema: z.ZodType<Prisma.ExpenseNoteUpsertArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    where: ExpenseNoteWhereUniqueInputSchema,
-    create: z.union([ExpenseNoteCreateInputSchema, ExpenseNoteUncheckedCreateInputSchema]),
-    update: z.union([ExpenseNoteUpdateInputSchema, ExpenseNoteUncheckedUpdateInputSchema]),
-  })
-  .strict();
-
-export const ExpenseNoteCreateManyArgsSchema: z.ZodType<Prisma.ExpenseNoteCreateManyArgs> = z
-  .object({
-    data: z.union([ExpenseNoteCreateManyInputSchema, ExpenseNoteCreateManyInputSchema.array()]),
-    skipDuplicates: z.boolean().optional(),
-  })
-  .strict();
-
-export const ExpenseNoteCreateManyAndReturnArgsSchema: z.ZodType<Prisma.ExpenseNoteCreateManyAndReturnArgs> = z
-  .object({
-    data: z.union([ExpenseNoteCreateManyInputSchema, ExpenseNoteCreateManyInputSchema.array()]),
-    skipDuplicates: z.boolean().optional(),
-  })
-  .strict();
-
-export const ExpenseNoteDeleteArgsSchema: z.ZodType<Prisma.ExpenseNoteDeleteArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    where: ExpenseNoteWhereUniqueInputSchema,
-  })
-  .strict();
-
-export const ExpenseNoteUpdateArgsSchema: z.ZodType<Prisma.ExpenseNoteUpdateArgs> = z
-  .object({
-    select: ExpenseNoteSelectSchema.optional(),
-    include: ExpenseNoteIncludeSchema.optional(),
-    data: z.union([ExpenseNoteUpdateInputSchema, ExpenseNoteUncheckedUpdateInputSchema]),
-    where: ExpenseNoteWhereUniqueInputSchema,
-  })
-  .strict();
-
-export const ExpenseNoteUpdateManyArgsSchema: z.ZodType<Prisma.ExpenseNoteUpdateManyArgs> = z
-  .object({
-    data: z.union([ExpenseNoteUpdateManyMutationInputSchema, ExpenseNoteUncheckedUpdateManyInputSchema]),
-    where: ExpenseNoteWhereInputSchema.optional(),
-  })
-  .strict();
-
-export const ExpenseNoteDeleteManyArgsSchema: z.ZodType<Prisma.ExpenseNoteDeleteManyArgs> = z
-  .object({
-    where: ExpenseNoteWhereInputSchema.optional(),
   })
   .strict();
 

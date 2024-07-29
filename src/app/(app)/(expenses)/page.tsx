@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Expenses } from '@/components/expense/expenses';
 import { Section } from '@/components/layout/section';
-import { api, HydrateClient } from '@/trpc/server';
+import { api } from '@/trpc/server';
 
 export default async function ExpensesPage() {
   const t = await getTranslations('ExpensesPage');
@@ -16,9 +16,7 @@ export default async function ExpensesPage() {
 
   return (
     <Section title={t('title')}>
-      <HydrateClient>
-        <Expenses />
-      </HydrateClient>
+      <Expenses />
     </Section>
   );
 }

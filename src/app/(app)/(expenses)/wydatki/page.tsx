@@ -11,7 +11,6 @@ export default async function ExpensesPage() {
     limit: 10,
     type: 'active',
   });
-  void api.group.current.prefetch();
   void api.user.current.prefetch();
 
   return (

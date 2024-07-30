@@ -9,10 +9,10 @@ import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import { api, type ExpenseById, type ExpensesList } from '@/trpc/react';
+import { api, type ExpensesList } from '@/trpc/react';
 
 interface ExpenseDetailProps {
-  expense: ExpensesList['items'][number] | NonNullable<ExpenseById>;
+  expense: ExpensesList['items'][number];
 }
 
 export function ExpenseDetail({ expense }: ExpenseDetailProps) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleDollarSign, Plus, Search, Settings } from 'lucide-react';
+import { CircleDollarSign, Home, Plus, Search, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
@@ -8,7 +8,8 @@ import { Fragment } from 'react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { name: 'Wydatki', href: '/', icon: CircleDollarSign },
+  { name: 'Główna', href: '/', icon: Home },
+  { name: 'Wydatki', href: '/wydatki', icon: CircleDollarSign },
   { name: 'Dodaj', href: '/wydatki/dodaj', icon: Plus },
   { name: 'Wyszukaj', href: '/wydatki/wyszukaj', icon: Search },
   { name: 'Ustawienia', href: '/ustawienia', icon: Settings },
@@ -25,7 +26,7 @@ export function MobileNav() {
             <Link
               href={item.href}
               className={cn(
-                'flex-1 flex flex-col items-center py-2.5 justify-center text-center text-sm',
+                'flex-1 flex flex-col items-center py-2.5 justify-center text-center text-xs',
                 pathname === item.href ? 'text-foreground' : 'text-muted-foreground',
               )}
             >

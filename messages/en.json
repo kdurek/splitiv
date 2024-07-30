@@ -1,4 +1,7 @@
 {
+  "DashboardPage": {
+    "title": "Dashboard"
+  },
   "ExpensesPage": {
     "title": "Expenses"
   },

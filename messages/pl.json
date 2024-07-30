@@ -1,4 +1,7 @@
 {
+  "DashboardPage": {
+    "title": "Główna"
+  },
   "ExpensesPage": {
     "title": "Wydatki"
   },

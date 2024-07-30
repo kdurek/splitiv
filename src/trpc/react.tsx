@@ -56,9 +56,7 @@ export type ExpensesList = RouterOutputs['expense']['list'];
 export type ExpenseById = RouterOutputs['expense']['byId'];
 export type ExpenseDebtGetDebtsAndCreditsForCurrentUser =
   RouterOutputs['expense']['debt']['getDebtsAndCreditsForCurrentUser'];
-export type GroupList = RouterOutputs['group']['list'];
-export type GroupCurrent = RouterOutputs['group']['current'];
-export type UserListNotInCurrentGroup = RouterOutputs['user']['listNotInCurrentGroup'];
+export type GroupGetBalances = RouterOutputs['group']['getBalances'];
 export type UserList = RouterOutputs['user']['list'];
 export type UserById = RouterOutputs['user']['byId'];
 

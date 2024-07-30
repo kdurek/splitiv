@@ -33,7 +33,7 @@ export function Archive() {
 
   return (
     <>
-      <ExpensesList expenses={expenses} />
+      <ExpensesList withDetails expenses={expenses} />
       <div ref={ref} />
     </>
   );

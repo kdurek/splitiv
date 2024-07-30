@@ -13,6 +13,7 @@ import { changeCurrentGroup } from '@/server/api/services/user';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { generateBalances } from '@/server/utils/generateBalances';
 import { generateDebts } from '@/server/utils/generateDebts';
+import { generateDebtsForUser } from '@/server/utils/generateDebtsForUser';
 
 export const groupRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -24,7 +25,7 @@ export const groupRouter = createTRPCRouter({
     if (!ctx.user.activeGroupId) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'activeGroupId is not set',
+        message: 'Aktywna grupa nie została ustawiona',
       });
     }
 
@@ -70,6 +71,11 @@ export const groupRouter = createTRPCRouter({
       members: membersWithBalances,
       debts,
     };
+  }),
+
+  getBalances: protectedProcedure.query(async ({ ctx }) => {
+    const balances = generateDebtsForUser(ctx.user.activeGroupId, ctx.user.id);
+    return balances;
   }),
 
   create: protectedProcedure.input(GroupCreateInputSchema).mutation(async ({ input }) => {

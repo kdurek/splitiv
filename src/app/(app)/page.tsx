@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { Dashboard } from '@/components/dashboard/dashboard';
+import { UsersBalances } from '@/components/expense/users-balances';
 import { Section } from '@/components/layout/section';
 import { api } from '@/trpc/server';
 
@@ -12,7 +12,7 @@ export default async function DashboardPage() {
 
   return (
     <Section title={t('title')}>
-      <Dashboard />
+      <UsersBalances />
     </Section>
   );
 }

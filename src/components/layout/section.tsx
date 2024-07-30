@@ -7,9 +7,10 @@ import { HydrateClient } from '@/trpc/server';
 interface SectionProps {
   children: ReactNode;
   title?: string | null;
+  className?: HTMLDivElement['className'];
 }
 
-export function Section({ title, children }: SectionProps) {
+export function Section({ title, children, className }: SectionProps) {
   return (
     <HydrateClient>
       {title && (
@@ -17,7 +18,7 @@ export function Section({ title, children }: SectionProps) {
           {title}
         </Heading>
       )}
-      <section className={cn('p-4', title && 'pt-0')}>{children}</section>
+      <section className={cn('p-4', title && 'pt-0', className)}>{children}</section>
     </HydrateClient>
   );
 }

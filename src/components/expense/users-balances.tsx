@@ -19,7 +19,7 @@ interface UserCardProps {
 
 function UserBalanceCard({ image, name, credit, debt }: UserCardProps) {
   return (
-    <div className="flex items-center gap-4 p-4">
+    <div className="flex items-center gap-4 py-4">
       <Avatar>
         <AvatarImage src={image ?? undefined} />
         <AvatarFallback>{getInitials(name)}</AvatarFallback>
@@ -43,7 +43,7 @@ export function UsersBalances() {
   const otherUsersBalances = balances.filter((balance) => balance.user.id !== currentUser.id);
 
   return (
-    <div className="divide-y rounded-md border">
+    <div className="divide-y">
       <UserBalanceCard
         image={currentUserBalance?.user.image}
         name={currentUserBalance?.user.name}

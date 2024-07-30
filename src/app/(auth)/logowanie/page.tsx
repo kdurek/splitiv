@@ -13,11 +13,9 @@ export default async function LoginPage() {
   const t = await getTranslations('LoginPage');
 
   return (
-    <div className="p-4">
-      <div className="flex flex-col items-center gap-4 rounded-md border p-4">
-        <h1 className="max-w-md">{t('title')}</h1>
-        <LoginButton />
-      </div>
+    <div className="flex flex-col items-center gap-4 p-4">
+      <h1 className="max-w-md">{t('title')}</h1>
+      <LoginButton />
     </div>
   );
 }

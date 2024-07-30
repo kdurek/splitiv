@@ -14,9 +14,5 @@ export function ExpenseEdit({ expenseId }: ExpenseEditProps) {
     return 'Nie znaleziono wydatku';
   }
 
-  return (
-    <div className="rounded-md border p-4">
-      <ExpenseForm expense={expense} />
-    </div>
-  );
+  return <ExpenseForm expense={expense} />;
 }

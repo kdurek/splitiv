@@ -22,7 +22,7 @@ export function ExpensesList({ expenses, withDetails }: ExpensesListProps) {
 
   if (!withDetails) {
     return (
-      <div className="divide-y rounded-md border">
+      <div className="divide-y">
         {expenses.map((expense) => (
           <ExpenseListItem key={expense.id} expense={expense} />
         ))}
@@ -31,7 +31,7 @@ export function ExpensesList({ expenses, withDetails }: ExpensesListProps) {
   }
 
   return (
-    <div className="divide-y rounded-md border">
+    <div className="divide-y">
       {expenses.map((expense) => (
         <Drawer key={expense.id}>
           <DrawerTrigger asChild>

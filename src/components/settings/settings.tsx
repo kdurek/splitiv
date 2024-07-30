@@ -26,25 +26,26 @@ export function Settings() {
         <LogoutButton />
       </div>
 
-      <div className="space-y-2 rounded-md border p-4">
+      <div className="space-y-2">
         <Heading variant="h2">Aktywna grupa</Heading>
         <GroupSelect />
       </div>
 
-      <div className="space-y-2 rounded-md border p-4">
+      <div className="space-y-2">
         <Heading variant="h2">Język</Heading>
         <LocaleSelect />
       </div>
 
       {user?.id === group.adminId && (
-        <div className="space-y-2 rounded-md border p-4">
+        <div className="space-y-2">
           <Heading variant="h2">Członkowie</Heading>
           <MembersList />
         </div>
       )}
 
       {user?.id === group.adminId && (
-        <div className="rounded-md border p-4">
+        <div className="space-y-2">
+          <Heading variant="h2">Powiadomienia</Heading>
           <Notification />
         </div>
       )}

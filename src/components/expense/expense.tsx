@@ -14,9 +14,5 @@ export function Expense({ expenseId }: ExpenseProps) {
     return 'Nie znaleziono wydatku';
   }
 
-  return (
-    <div className="rounded-md border p-4">
-      <ExpenseDetail expense={expense} />
-    </div>
-  );
+  return <ExpenseDetail expense={expense} />;
 }

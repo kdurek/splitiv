@@ -35,7 +35,7 @@ export function ExpenseListItem({ expense }: ExpenseListItemProps) {
     : new Decimal(0);
 
   return (
-    <div className="flex items-start justify-between overflow-hidden p-4">
+    <div className="flex items-start justify-between overflow-hidden py-4">
       <div className="overflow-hidden text-start">
         <div className="line-clamp-1">{expense.name}</div>
         <div className="line-clamp-1 text-sm text-muted-foreground">{format(expense.createdAt, 'EEEEEE, d MMMM')}</div>

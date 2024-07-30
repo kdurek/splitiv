@@ -1,6 +1,7 @@
 /* eslint-disable import/no-duplicates */
 import '@/styles/globals.css';
 
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { setDefaultOptions } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import type { Metadata, Viewport } from 'next';
@@ -65,6 +66,7 @@ export default async function RootLayout({
           <TRPCReactProvider>
             {children}
             <Toaster />
+            <ReactQueryDevtools initialIsOpen={false} />
             <TailwindIndicator />
           </TRPCReactProvider>
         </NextIntlClientProvider>

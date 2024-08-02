@@ -18,7 +18,7 @@ export function Section({ title, children, className }: SectionProps) {
           {title}
         </Heading>
       )}
-      <section className={cn('p-4', title && 'pt-0', className)}>{children}</section>
+      <section className={cn('p-4 mx-auto max-w-lg', title && 'pt-0', className)}>{children}</section>
     </HydrateClient>
   );
 }

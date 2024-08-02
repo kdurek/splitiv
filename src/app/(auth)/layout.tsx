@@ -8,5 +8,5 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     return redirect('/');
   }
 
-  return <main className="mx-auto my-4 max-w-lg bg-popover p-4">{children}</main>;
+  return <main className="mx-auto my-4 max-w-lg p-4">{children}</main>;
 }

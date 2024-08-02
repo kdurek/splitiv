@@ -7,7 +7,6 @@ import { CreateGroupForm } from '@/components/group/create-group-form';
 import { GroupSelect } from '@/components/group/group-select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
-import { GenderSelectForm } from '@/components/user/gender-select-form';
 
 interface AppInitProps {
   children: React.ReactNode;
@@ -16,14 +15,6 @@ interface AppInitProps {
 
 export function AppInit({ children, user }: AppInitProps) {
   const router = useRouter();
-
-  if (!user.gender) {
-    return (
-      <div className="p-4">
-        <GenderSelectForm userId={user.id} />
-      </div>
-    );
-  }
 
   if (!user.activeGroupId) {
     return (

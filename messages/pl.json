@@ -49,13 +49,5 @@
   },
   "ChangePasswordPage": {
     "title": "Zmiana hasła"
-  },
-  "GenderSelectForm": {
-    "label": "Wybierz płeć aby przejść dalej",
-    "placeholder": "Wybierz płeć",
-    "male": "Mężczyzna",
-    "female": "Kobieta",
-    "success": "Pomyślnie zaktualizowano",
-    "submit": "Zapisz"
   }
 }

@@ -49,13 +49,5 @@
   },
   "ChangePasswordPage": {
     "title": "Change password"
-  },
-  "GenderSelectForm": {
-    "label": "Select gender to proceed",
-    "placeholder": "Select gender",
-    "male": "Male",
-    "female": "Female",
-    "success": "Successfully updated",
-    "submit": "Save"
   }
 }

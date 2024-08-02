@@ -1,5 +1,4 @@
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
-import type { Gender } from '@prisma/client';
 import { Google } from 'arctic';
 import { Lucia, type Session, type User } from 'lucia';
 import { cookies } from 'next/headers';
@@ -22,7 +21,6 @@ interface DatabaseUserAttributes {
   lastName: string;
   email: string;
   image: string;
-  gender: Gender;
   activeGroupId: string;
 }
 
@@ -49,7 +47,6 @@ export const lucia = new Lucia(adapter, {
       lastName: attributes.lastName,
       email: attributes.email,
       image: attributes.image,
-      gender: attributes.gender,
       activeGroupId: attributes.activeGroupId,
     };
   },

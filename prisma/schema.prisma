@@ -68,11 +68,6 @@ model Expense {
   groupId     String
 }
 
-enum Gender {
-  MALE
-  FEMALE
-}
-
 model User {
   id                String             @id @default(cuid())
   googleId          String?            @unique
@@ -82,7 +77,6 @@ model User {
   email             String?            @unique
   password          String?
   image             String?
-  gender            Gender?
   activeGroupId     String?
   sessions          Session[]
   groups            UserGroup[]

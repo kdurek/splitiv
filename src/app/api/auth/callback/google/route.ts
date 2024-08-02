@@ -40,6 +40,12 @@ export async function GET(request: Request): Promise<Response> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const googleUser: GoogleUser = await response.json();
 
+    if (!googleUser.email_verified) {
+      return new Response('Niezweryfikowany email', {
+        status: 400,
+      });
+    }
+
     const existingUser = await db.user.findUnique({
       where: {
         googleId: googleUser.sub,
@@ -58,10 +64,23 @@ export async function GET(request: Request): Promise<Response> {
       });
     }
 
-    const user = await db.user.create({
-      data: {
+    const user = await db.user.upsert({
+      where: {
+        email: googleUser.email,
+      },
+      update: {
         googleId: googleUser.sub,
         name: googleUser.name,
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
+        email: googleUser.email,
+        image: googleUser.picture,
+      },
+      create: {
+        googleId: googleUser.sub,
+        name: googleUser.name,
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
         email: googleUser.email,
         image: googleUser.picture,
       },

@@ -29,14 +29,26 @@
   "ProfilePage": {
     "title": "Profile"
   },
-  "LoginPage": {
-    "title": "Login to proceed"
+  "SignInPage": {
+    "title": "Sign in"
   },
-  "LoginButton": {
-    "text": "Login"
+  "SignInButton": {
+    "text": "Sign in"
+  },
+  "GoogleSignInButton": {
+    "text": "Sign in with Google"
+  },
+  "SignUpPage": {
+    "title": "Sign up"
+  },
+  "SignUpButton": {
+    "text": "Sign up"
   },
   "LogoutButton": {
     "text": "Logout"
+  },
+  "ChangePasswordPage": {
+    "title": "Change password"
   },
   "GenderSelectForm": {
     "label": "Select gender to proceed",

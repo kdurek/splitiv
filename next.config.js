@@ -32,6 +32,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: ['@node-rs/argon2'],
+  },
 };
 
 export default withSerwist(withNextIntl(nextConfig));

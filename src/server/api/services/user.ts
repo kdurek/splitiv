@@ -3,6 +3,8 @@ import type { UserUpdateInputSchema } from 'prisma/generated/zod';
 
 import { db } from '@/server/db';
 
+import { hashPassword } from './auth';
+
 export const getAllUsers = async () => {
   const users = await db.user.findMany();
 
@@ -37,6 +39,19 @@ export const updateUser = async (userId: string, userData: typeof UserUpdateInpu
     data: userData,
   });
 
+  return updatedUser;
+};
+
+export const changePassword = async (userId: string, newPassword: string) => {
+  const hashedPassword = await hashPassword(newPassword);
+  const updatedUser = await db.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
   return updatedUser;
 };
 

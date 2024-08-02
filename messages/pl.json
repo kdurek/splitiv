@@ -29,14 +29,26 @@
   "ProfilePage": {
     "title": "Profil"
   },
-  "LoginPage": {
-    "title": "Aby przejść dalej, zaloguj się"
+  "SignInPage": {
+    "title": "Logowanie"
   },
-  "LoginButton": {
+  "SignInButton": {
     "text": "Zaloguj"
+  },
+  "GoogleSignInButton": {
+    "text": "Zaloguj za pomocą Google"
+  },
+  "SignUpPage": {
+    "title": "Rejestracja"
+  },
+  "SignUpButton": {
+    "text": "Zarejestruj"
   },
   "LogoutButton": {
     "text": "Wyloguj"
+  },
+  "ChangePasswordPage": {
+    "title": "Zmiana hasła"
   },
   "GenderSelectForm": {
     "label": "Wybierz płeć aby przejść dalej",

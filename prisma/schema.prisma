@@ -77,7 +77,10 @@ model User {
   id                String             @id @default(cuid())
   googleId          String?            @unique
   name              String?
+  firstName         String?
+  lastName          String?
   email             String?            @unique
+  password          String?
   image             String?
   gender            Gender?
   activeGroupId     String?

@@ -72,7 +72,10 @@ export const UserScalarFieldEnumSchema = z.enum([
   'id',
   'googleId',
   'name',
+  'firstName',
+  'lastName',
   'email',
+  'password',
   'image',
   'gender',
   'activeGroupId',
@@ -187,7 +190,10 @@ export const UserSchema = z.object({
   id: z.string().cuid(),
   googleId: z.string().nullable(),
   name: z.string().nullable(),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
   email: z.string().nullable(),
+  password: z.string().nullable(),
   image: z.string().nullable(),
   activeGroupId: z.string().nullable(),
   createdAt: z.coerce.date(),
@@ -459,7 +465,10 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z
     id: z.boolean().optional(),
     googleId: z.boolean().optional(),
     name: z.boolean().optional(),
+    firstName: z.boolean().optional(),
+    lastName: z.boolean().optional(),
     email: z.boolean().optional(),
+    password: z.boolean().optional(),
     image: z.boolean().optional(),
     gender: z.boolean().optional(),
     activeGroupId: z.boolean().optional(),
@@ -1151,7 +1160,19 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.lazy(() => StringNullableFilterSchema), z.string()])
       .optional()
       .nullable(),
@@ -1182,7 +1203,10 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
     id: z.lazy(() => SortOrderSchema).optional(),
     googleId: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     name: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
+    firstName: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
+    lastName: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     email: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
+    password: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     image: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     gender: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     activeGroupId: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
@@ -1241,6 +1265,18 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
           .union([z.lazy(() => StringNullableFilterSchema), z.string()])
           .optional()
           .nullable(),
+        firstName: z
+          .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+          .optional()
+          .nullable(),
+        lastName: z
+          .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+          .optional()
+          .nullable(),
+        password: z
+          .union([z.lazy(() => StringNullableFilterSchema), z.string()])
+          .optional()
+          .nullable(),
         image: z
           .union([z.lazy(() => StringNullableFilterSchema), z.string()])
           .optional()
@@ -1269,7 +1305,10 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
     id: z.lazy(() => SortOrderSchema).optional(),
     googleId: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     name: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
+    firstName: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
+    lastName: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     email: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
+    password: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     image: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     gender: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
     activeGroupId: z.union([z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema)]).optional(),
@@ -1308,7 +1347,19 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
       .union([z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string()])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string()])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string()])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string()])
       .optional()
       .nullable(),
@@ -2039,7 +2090,10 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -2061,7 +2115,10 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -2089,7 +2146,19 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -2126,7 +2195,19 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -2157,7 +2238,10 @@ export const UserCreateManyInputSchema: z.ZodType<Prisma.UserCreateManyInput> = 
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -2180,7 +2264,19 @@ export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyM
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -2212,7 +2308,19 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -2932,7 +3040,10 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
     id: z.lazy(() => SortOrderSchema).optional(),
     googleId: z.lazy(() => SortOrderSchema).optional(),
     name: z.lazy(() => SortOrderSchema).optional(),
+    firstName: z.lazy(() => SortOrderSchema).optional(),
+    lastName: z.lazy(() => SortOrderSchema).optional(),
     email: z.lazy(() => SortOrderSchema).optional(),
+    password: z.lazy(() => SortOrderSchema).optional(),
     image: z.lazy(() => SortOrderSchema).optional(),
     gender: z.lazy(() => SortOrderSchema).optional(),
     activeGroupId: z.lazy(() => SortOrderSchema).optional(),
@@ -2946,7 +3057,10 @@ export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderBy
     id: z.lazy(() => SortOrderSchema).optional(),
     googleId: z.lazy(() => SortOrderSchema).optional(),
     name: z.lazy(() => SortOrderSchema).optional(),
+    firstName: z.lazy(() => SortOrderSchema).optional(),
+    lastName: z.lazy(() => SortOrderSchema).optional(),
     email: z.lazy(() => SortOrderSchema).optional(),
+    password: z.lazy(() => SortOrderSchema).optional(),
     image: z.lazy(() => SortOrderSchema).optional(),
     gender: z.lazy(() => SortOrderSchema).optional(),
     activeGroupId: z.lazy(() => SortOrderSchema).optional(),
@@ -2960,7 +3074,10 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
     id: z.lazy(() => SortOrderSchema).optional(),
     googleId: z.lazy(() => SortOrderSchema).optional(),
     name: z.lazy(() => SortOrderSchema).optional(),
+    firstName: z.lazy(() => SortOrderSchema).optional(),
+    lastName: z.lazy(() => SortOrderSchema).optional(),
     email: z.lazy(() => SortOrderSchema).optional(),
+    password: z.lazy(() => SortOrderSchema).optional(),
     image: z.lazy(() => SortOrderSchema).optional(),
     gender: z.lazy(() => SortOrderSchema).optional(),
     activeGroupId: z.lazy(() => SortOrderSchema).optional(),
@@ -5456,7 +5573,10 @@ export const UserCreateWithoutGroupsInputSchema: z.ZodType<Prisma.UserCreateWith
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -5477,7 +5597,10 @@ export const UserUncheckedCreateWithoutGroupsInputSchema: z.ZodType<Prisma.UserU
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -5573,7 +5696,19 @@ export const UserUpdateWithoutGroupsInputSchema: z.ZodType<Prisma.UserUpdateWith
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -5609,7 +5744,19 @@ export const UserUncheckedUpdateWithoutGroupsInputSchema: z.ZodType<Prisma.UserU
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -5853,7 +6000,10 @@ export const UserCreateWithoutDebtsInputSchema: z.ZodType<Prisma.UserCreateWitho
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -5874,7 +6024,10 @@ export const UserUncheckedCreateWithoutDebtsInputSchema: z.ZodType<Prisma.UserUn
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -6052,7 +6205,19 @@ export const UserUpdateWithoutDebtsInputSchema: z.ZodType<Prisma.UserUpdateWitho
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -6088,7 +6253,19 @@ export const UserUncheckedUpdateWithoutDebtsInputSchema: z.ZodType<Prisma.UserUn
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -6182,7 +6359,10 @@ export const UserCreateWithoutExpensesInputSchema: z.ZodType<Prisma.UserCreateWi
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -6204,7 +6384,10 @@ export const UserUncheckedCreateWithoutExpensesInputSchema: z.ZodType<Prisma.Use
       id: z.string().cuid().optional(),
       googleId: z.string().optional().nullable(),
       name: z.string().optional().nullable(),
+      firstName: z.string().optional().nullable(),
+      lastName: z.string().optional().nullable(),
       email: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
       image: z.string().optional().nullable(),
       gender: z
         .lazy(() => GenderSchema)
@@ -6358,7 +6541,19 @@ export const UserUpdateWithoutExpensesInputSchema: z.ZodType<Prisma.UserUpdateWi
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -6395,7 +6590,19 @@ export const UserUncheckedUpdateWithoutExpensesInputSchema: z.ZodType<Prisma.Use
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),
+      firstName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      lastName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
       email: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      password: z
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),
@@ -6991,7 +7198,10 @@ export const UserCreateWithoutPushSubscriptionsInputSchema: z.ZodType<Prisma.Use
       id: z.string().cuid().optional(),
       googleId: z.string().optional().nullable(),
       name: z.string().optional().nullable(),
+      firstName: z.string().optional().nullable(),
+      lastName: z.string().optional().nullable(),
       email: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
       image: z.string().optional().nullable(),
       gender: z
         .lazy(() => GenderSchema)
@@ -7013,7 +7223,10 @@ export const UserUncheckedCreateWithoutPushSubscriptionsInputSchema: z.ZodType<P
       id: z.string().cuid().optional(),
       googleId: z.string().optional().nullable(),
       name: z.string().optional().nullable(),
+      firstName: z.string().optional().nullable(),
+      lastName: z.string().optional().nullable(),
       email: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
       image: z.string().optional().nullable(),
       gender: z
         .lazy(() => GenderSchema)
@@ -7078,7 +7291,19 @@ export const UserUpdateWithoutPushSubscriptionsInputSchema: z.ZodType<Prisma.Use
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),
+      firstName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      lastName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
       email: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      password: z
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),
@@ -7115,7 +7340,19 @@ export const UserUncheckedUpdateWithoutPushSubscriptionsInputSchema: z.ZodType<P
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),
+      firstName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      lastName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
       email: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      password: z
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),
@@ -7145,7 +7382,10 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
     id: z.string().cuid().optional(),
     googleId: z.string().optional().nullable(),
     name: z.string().optional().nullable(),
+    firstName: z.string().optional().nullable(),
+    lastName: z.string().optional().nullable(),
     email: z.string().optional().nullable(),
+    password: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     gender: z
       .lazy(() => GenderSchema)
@@ -7167,7 +7407,10 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
       id: z.string().cuid().optional(),
       googleId: z.string().optional().nullable(),
       name: z.string().optional().nullable(),
+      firstName: z.string().optional().nullable(),
+      lastName: z.string().optional().nullable(),
       email: z.string().optional().nullable(),
+      password: z.string().optional().nullable(),
       image: z.string().optional().nullable(),
       gender: z
         .lazy(() => GenderSchema)
@@ -7230,7 +7473,19 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
+    firstName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    lastName: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
     email: z
+      .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+      .optional()
+      .nullable(),
+    password: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
       .optional()
       .nullable(),
@@ -7267,7 +7522,19 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),
+      firstName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      lastName: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
       email: z
+        .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
+        .optional()
+        .nullable(),
+      password: z
         .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputSchema)])
         .optional()
         .nullable(),

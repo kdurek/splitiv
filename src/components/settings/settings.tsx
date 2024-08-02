@@ -1,9 +1,9 @@
 'use client';
 
-import { User2 } from 'lucide-react';
+import { Lock, User2 } from 'lucide-react';
 import Link from 'next/link';
 
-import { LogoutButton } from '@/components/auth/logout-button';
+import { SignOutButton } from '@/components/auth/sign-out-button';
 import { GroupSelect } from '@/components/group/group-select';
 import { LocaleSelect } from '@/components/settings/locale-select';
 import { MembersList } from '@/components/settings/members-list';
@@ -23,7 +23,10 @@ export function Settings() {
         <Link href={'/ustawienia/profil'} className={cn(buttonVariants({ variant: 'outline' }))}>
           <User2 className="mr-2" /> Profil
         </Link>
-        <LogoutButton />
+        <Link href={'/ustawienia/zmiana-hasla'} className={cn(buttonVariants({ variant: 'outline' }))}>
+          <Lock className="mr-2" /> Zmiana hasła
+        </Link>
+        <SignOutButton />
       </div>
 
       <div className="space-y-2">

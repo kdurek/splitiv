@@ -17,7 +17,7 @@ interface UserCardProps {
   debt?: string;
 }
 
-function UserBalanceCard({ image, name, credit, debt }: UserCardProps) {
+function UserBalanceCard({ image, name, credit = '0.00', debt = '0.00' }: UserCardProps) {
   return (
     <div className="flex items-center gap-4 py-4">
       <Avatar>
@@ -45,8 +45,8 @@ export function UsersBalances() {
   return (
     <div className="divide-y">
       <UserBalanceCard
-        image={currentUserBalance?.user.image}
-        name={currentUserBalance?.user.name}
+        image={currentUser.image}
+        name={currentUser.name}
         credit={currentUserBalance?.creditsAmount}
         debt={currentUserBalance?.debtsAmount}
       />

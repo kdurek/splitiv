@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -19,10 +20,14 @@ interface UserFormProps {
 }
 
 export function UserForm({ user }: UserFormProps) {
+  const router = useRouter();
+
   const form = useForm<UpdateUserFormSchema>({
     resolver: zodResolver(updateUserFormSchema),
     defaultValues: {
       name: user?.name ?? '',
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? '',
     },
   });
 
@@ -35,11 +40,14 @@ export function UserForm({ user }: UserFormProps) {
           userId: user.id,
           userData: {
             name: values.name,
+            firstName: values.firstName,
+            lastName: values.lastName,
           },
         },
         {
           onSuccess() {
             toast.success('Pomyślnie zaktualizowano użytkownika');
+            router.push('/ustawienia');
           },
         },
       );
@@ -48,13 +56,39 @@ export function UserForm({ user }: UserFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleUpdateUser)}>
+      <form onSubmit={form.handleSubmit(handleUpdateUser)} className="space-y-6">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Imię i nazwisko</FormLabel>
+              <FormLabel>Nazwa</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Imię</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nazwisko</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>

@@ -18,6 +18,8 @@ declare module 'lucia' {
 interface DatabaseUserAttributes {
   id: string;
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   image: string;
   gender: Gender;
@@ -43,6 +45,8 @@ export const lucia = new Lucia(adapter, {
     return {
       id: attributes.id,
       name: attributes.name,
+      firstName: attributes.firstName,
+      lastName: attributes.lastName,
       email: attributes.email,
       image: attributes.image,
       gender: attributes.gender,

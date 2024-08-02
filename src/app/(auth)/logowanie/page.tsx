@@ -57,7 +57,7 @@ const SubmitButton = () => {
   );
 };
 
-export function GoogleSignInButton() {
+function GoogleSignInButton() {
   const t = useTranslations('GoogleSignInButton');
 
   return (

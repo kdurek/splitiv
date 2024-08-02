@@ -20,7 +20,7 @@ export function MobileNav() {
 
   return (
     <>
-      <nav className="fixed bottom-0 z-40 flex w-full rounded-t-md bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
+      <nav className="fixed bottom-0 z-40 flex w-full rounded-t-md bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] pwa:pb-8">
         {navItems.map((item, index) => (
           <Fragment key={index}>
             <Link
@@ -36,7 +36,7 @@ export function MobileNav() {
           </Fragment>
         ))}
       </nav>
-      <div className="pt-16" />
+      <div className="pt-16 pwa:pt-24" />
     </>
   );
 }

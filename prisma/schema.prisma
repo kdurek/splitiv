@@ -10,7 +10,8 @@ datasource db {
 }
 
 generator zod {
-  provider = "zod-prisma-types"
+  provider                  = "zod-prisma-types"
+  createRelationValuesTypes = true
 }
 
 model Group {

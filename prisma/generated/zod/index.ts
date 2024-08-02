@@ -109,6 +109,23 @@ export const GroupSchema = z.object({
 
 export type Group = z.infer<typeof GroupSchema>;
 
+// GROUP RELATION SCHEMA
+//------------------------------------------------------
+
+export type GroupRelations = {
+  members: UserGroupWithRelations[];
+  expenses: ExpenseWithRelations[];
+};
+
+export type GroupWithRelations = z.infer<typeof GroupSchema> & GroupRelations;
+
+export const GroupWithRelationsSchema: z.ZodType<GroupWithRelations> = GroupSchema.merge(
+  z.object({
+    members: z.lazy(() => UserGroupWithRelationsSchema).array(),
+    expenses: z.lazy(() => ExpenseWithRelationsSchema).array(),
+  }),
+);
+
 /////////////////////////////////////////
 // USER GROUP SCHEMA
 /////////////////////////////////////////
@@ -119,6 +136,23 @@ export const UserGroupSchema = z.object({
 });
 
 export type UserGroup = z.infer<typeof UserGroupSchema>;
+
+// USER GROUP RELATION SCHEMA
+//------------------------------------------------------
+
+export type UserGroupRelations = {
+  user: UserWithRelations;
+  group: GroupWithRelations;
+};
+
+export type UserGroupWithRelations = z.infer<typeof UserGroupSchema> & UserGroupRelations;
+
+export const UserGroupWithRelationsSchema: z.ZodType<UserGroupWithRelations> = UserGroupSchema.merge(
+  z.object({
+    user: z.lazy(() => UserWithRelationsSchema),
+    group: z.lazy(() => GroupWithRelationsSchema),
+  }),
+);
 
 /////////////////////////////////////////
 // EXPENSE LOG SCHEMA
@@ -135,6 +169,21 @@ export const ExpenseLogSchema = z.object({
 });
 
 export type ExpenseLog = z.infer<typeof ExpenseLogSchema>;
+
+// EXPENSE LOG RELATION SCHEMA
+//------------------------------------------------------
+
+export type ExpenseLogRelations = {
+  debt: ExpenseDebtWithRelations;
+};
+
+export type ExpenseLogWithRelations = z.infer<typeof ExpenseLogSchema> & ExpenseLogRelations;
+
+export const ExpenseLogWithRelationsSchema: z.ZodType<ExpenseLogWithRelations> = ExpenseLogSchema.merge(
+  z.object({
+    debt: z.lazy(() => ExpenseDebtWithRelationsSchema),
+  }),
+);
 
 /////////////////////////////////////////
 // EXPENSE DEBT SCHEMA
@@ -156,6 +205,25 @@ export const ExpenseDebtSchema = z.object({
 
 export type ExpenseDebt = z.infer<typeof ExpenseDebtSchema>;
 
+// EXPENSE DEBT RELATION SCHEMA
+//------------------------------------------------------
+
+export type ExpenseDebtRelations = {
+  expense: ExpenseWithRelations;
+  debtor: UserWithRelations;
+  logs: ExpenseLogWithRelations[];
+};
+
+export type ExpenseDebtWithRelations = z.infer<typeof ExpenseDebtSchema> & ExpenseDebtRelations;
+
+export const ExpenseDebtWithRelationsSchema: z.ZodType<ExpenseDebtWithRelations> = ExpenseDebtSchema.merge(
+  z.object({
+    expense: z.lazy(() => ExpenseWithRelationsSchema),
+    debtor: z.lazy(() => UserWithRelationsSchema),
+    logs: z.lazy(() => ExpenseLogWithRelationsSchema).array(),
+  }),
+);
+
 /////////////////////////////////////////
 // EXPENSE SCHEMA
 /////////////////////////////////////////
@@ -174,6 +242,25 @@ export const ExpenseSchema = z.object({
 });
 
 export type Expense = z.infer<typeof ExpenseSchema>;
+
+// EXPENSE RELATION SCHEMA
+//------------------------------------------------------
+
+export type ExpenseRelations = {
+  payer: UserWithRelations;
+  debts: ExpenseDebtWithRelations[];
+  group: GroupWithRelations;
+};
+
+export type ExpenseWithRelations = z.infer<typeof ExpenseSchema> & ExpenseRelations;
+
+export const ExpenseWithRelationsSchema: z.ZodType<ExpenseWithRelations> = ExpenseSchema.merge(
+  z.object({
+    payer: z.lazy(() => UserWithRelationsSchema),
+    debts: z.lazy(() => ExpenseDebtWithRelationsSchema).array(),
+    group: z.lazy(() => GroupWithRelationsSchema),
+  }),
+);
 
 /////////////////////////////////////////
 // USER SCHEMA
@@ -195,6 +282,29 @@ export const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>;
 
+// USER RELATION SCHEMA
+//------------------------------------------------------
+
+export type UserRelations = {
+  sessions: SessionWithRelations[];
+  groups: UserGroupWithRelations[];
+  expenses: ExpenseWithRelations[];
+  debts: ExpenseDebtWithRelations[];
+  pushSubscriptions: PushSubscriptionWithRelations[];
+};
+
+export type UserWithRelations = z.infer<typeof UserSchema> & UserRelations;
+
+export const UserWithRelationsSchema: z.ZodType<UserWithRelations> = UserSchema.merge(
+  z.object({
+    sessions: z.lazy(() => SessionWithRelationsSchema).array(),
+    groups: z.lazy(() => UserGroupWithRelationsSchema).array(),
+    expenses: z.lazy(() => ExpenseWithRelationsSchema).array(),
+    debts: z.lazy(() => ExpenseDebtWithRelationsSchema).array(),
+    pushSubscriptions: z.lazy(() => PushSubscriptionWithRelationsSchema).array(),
+  }),
+);
+
 /////////////////////////////////////////
 // PUSH SUBSCRIPTION SCHEMA
 /////////////////////////////////////////
@@ -208,6 +318,22 @@ export const PushSubscriptionSchema = z.object({
 
 export type PushSubscription = z.infer<typeof PushSubscriptionSchema>;
 
+// PUSH SUBSCRIPTION RELATION SCHEMA
+//------------------------------------------------------
+
+export type PushSubscriptionRelations = {
+  user: UserWithRelations;
+};
+
+export type PushSubscriptionWithRelations = z.infer<typeof PushSubscriptionSchema> & PushSubscriptionRelations;
+
+export const PushSubscriptionWithRelationsSchema: z.ZodType<PushSubscriptionWithRelations> =
+  PushSubscriptionSchema.merge(
+    z.object({
+      user: z.lazy(() => UserWithRelationsSchema),
+    }),
+  );
+
 /////////////////////////////////////////
 // SESSION SCHEMA
 /////////////////////////////////////////
@@ -219,6 +345,21 @@ export const SessionSchema = z.object({
 });
 
 export type Session = z.infer<typeof SessionSchema>;
+
+// SESSION RELATION SCHEMA
+//------------------------------------------------------
+
+export type SessionRelations = {
+  user: UserWithRelations;
+};
+
+export type SessionWithRelations = z.infer<typeof SessionSchema> & SessionRelations;
+
+export const SessionWithRelationsSchema: z.ZodType<SessionWithRelations> = SessionSchema.merge(
+  z.object({
+    user: z.lazy(() => UserWithRelationsSchema),
+  }),
+);
 
 /////////////////////////////////////////
 // SELECT & INCLUDE

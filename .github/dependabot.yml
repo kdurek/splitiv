@@ -9,7 +9,7 @@ updates:
     directory: "/"
     target-branch: "dev"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     groups:
       actions-deps:
         patterns:
@@ -18,7 +18,7 @@ updates:
     directory: "/"
     target-branch: "dev"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     groups:
       dev-deps:
         dependency-type: "development"

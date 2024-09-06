@@ -33,7 +33,8 @@ export function ExpensesList({ expenses, withDetails }: ExpensesListProps) {
   return (
     <div className="divide-y">
       {expenses.map((expense) => (
-        <Drawer key={expense.id}>
+        // TODO: Remove when fixed: https://github.com/emilkowalski/vaul/issues/365
+        <Drawer key={expense.id} disablePreventScroll>
           <DrawerTrigger asChild>
             <button className="w-full outline-none">
               <ExpenseListItem expense={expense} />

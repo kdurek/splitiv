@@ -7,9 +7,7 @@ import { FullScreenLoading } from '@/components/layout/loading';
 export default function ExpensesSearch() {
   return (
     <>
-      <div className="py-4">
-        <ExpenseSearchInput />
-      </div>
+      <ExpenseSearchInput />
       <Suspense fallback={<FullScreenLoading />}>
         <ExpensesSearchList />
       </Suspense>

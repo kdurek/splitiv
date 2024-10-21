@@ -38,7 +38,7 @@ export function ExpensesSearchList() {
 
   return (
     <>
-      <ExpensesList withDetails expenses={expenses} />
+      <ExpensesList expenses={expenses} />
       <div ref={ref} />
     </>
   );

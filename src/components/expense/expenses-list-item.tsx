@@ -3,11 +3,13 @@
 import { format } from 'date-fns';
 import Decimal from 'decimal.js';
 
+import { ExpenseDetail } from '@/components/expense/expense-detail';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { cn } from '@/lib/utils';
-import { api, type GroupGetBalances } from '@/trpc/react';
+import { api, type ExpensesList } from '@/trpc/react';
 
 interface ExpenseListItemProps {
-  expense: GroupGetBalances[number]['credits'][number];
+  expense: ExpensesList['items'][number];
 }
 
 export function ExpenseListItem({ expense }: ExpenseListItemProps) {
@@ -35,19 +37,33 @@ export function ExpenseListItem({ expense }: ExpenseListItemProps) {
     : new Decimal(0);
 
   return (
-    <div className="flex items-start justify-between overflow-hidden py-4">
-      <div className="overflow-hidden text-start">
-        <div className="line-clamp-1">{expense.name}</div>
-        <div className="line-clamp-1 text-sm text-muted-foreground">{format(expense.createdAt, 'EEEEEE, d MMMM')}</div>
-      </div>
-      <div className="overflow-hidden text-end">
-        <div className={cn('whitespace-nowrap', isPayer ? 'text-green-500' : 'text-red-500')}>
-          {Number(isPayer ? payerDisplayAmount : debtorDisplayAmount).toFixed(2)} zł
+    // TODO: Remove when fixed: https://github.com/emilkowalski/vaul/issues/365
+    <Drawer key={expense.id} disablePreventScroll>
+      <DrawerTrigger asChild>
+        <button className="w-full outline-none">
+          <div className="flex items-start justify-between overflow-hidden py-4">
+            <div className="overflow-hidden text-start">
+              <div className="line-clamp-1">{expense.name}</div>
+              <div className="line-clamp-1 text-sm text-muted-foreground">
+                {format(expense.createdAt, 'EEEEEE, d MMMM')}
+              </div>
+            </div>
+            <div className="overflow-hidden text-end">
+              <div className={cn('whitespace-nowrap', isPayer ? 'text-green-500' : 'text-red-500')}>
+                {Number(isPayer ? payerDisplayAmount : debtorDisplayAmount).toFixed(2)} zł
+              </div>
+              <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
+                {Number(expense.amount).toFixed(2)} zł
+              </div>
+            </div>
+          </div>
+        </button>
+      </DrawerTrigger>
+      <DrawerContent className="max-h-[96%]">
+        <div className="overflow-auto overscroll-none p-4">
+          <ExpenseDetail expense={expense} />
         </div>
-        <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
-          {Number(expense.amount).toFixed(2)} zł
-        </div>
-      </div>
-    </div>
+      </DrawerContent>
+    </Drawer>
   );
 }

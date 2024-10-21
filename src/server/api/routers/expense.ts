@@ -154,12 +154,8 @@ export const expenseRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const debts = await getExpensesBetweenUsers(ctx.user.activeGroupId, input.userId, ctx.user.id);
-      const credits = await getExpensesBetweenUsers(ctx.user.activeGroupId, ctx.user.id, input.userId);
-      return {
-        debts,
-        credits,
-      };
+      const expenses = await getExpensesBetweenUsers(ctx.user.activeGroupId, ctx.user.id, input.userId);
+      return expenses;
     }),
 
   byId: protectedProcedure.input(z.object({ expenseId: z.string().cuid() })).query(async ({ input }) => {

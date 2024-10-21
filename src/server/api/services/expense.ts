@@ -56,21 +56,38 @@ export const getInfiniteExpenses = async (
   };
 };
 
-export const getExpensesBetweenUsers = async (groupId: string, payerId: string, debtorId: string) => {
+export const getExpensesBetweenUsers = async (groupId: string, firstUserId: string, secondUserId: string) => {
   const expenses = await db.expense.findMany({
     where: {
       groupId,
-      payerId,
-      debts: {
-        some: {
-          debtorId,
-          settled: {
-            not: {
-              equals: db.expenseDebt.fields.amount,
+      OR: [
+        {
+          payerId: firstUserId,
+          debts: {
+            some: {
+              debtorId: secondUserId,
+              settled: {
+                not: {
+                  equals: db.expenseDebt.fields.amount,
+                },
+              },
             },
           },
         },
-      },
+        {
+          payerId: secondUserId,
+          debts: {
+            some: {
+              debtorId: firstUserId,
+              settled: {
+                not: {
+                  equals: db.expenseDebt.fields.amount,
+                },
+              },
+            },
+          },
+        },
+      ],
     },
     include: {
       group: true,

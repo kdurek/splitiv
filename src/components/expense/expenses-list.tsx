@@ -1,51 +1,21 @@
 'use client';
 
-import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { ExpenseListItem } from '@/components/expense/expenses-list-item';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
-import type { ExpensesList, GroupGetBalances } from '@/trpc/react';
+import type { ExpensesList } from '@/trpc/react';
 
-type ExpensesListProps =
-  | {
-      expenses: ExpensesList['items'];
-      withDetails?: true;
-    }
-  | {
-      expenses: GroupGetBalances[number]['credits'];
-      withDetails?: false;
-    };
+interface ExpensesListProps {
+  expenses: ExpensesList['items'];
+}
 
-export function ExpensesList({ expenses, withDetails }: ExpensesListProps) {
+export function ExpensesList({ expenses }: ExpensesListProps) {
   if (!expenses.length) {
     return <div className="rounded-md p-4 text-center">Brak wydatków</div>;
-  }
-
-  if (!withDetails) {
-    return (
-      <div className="divide-y">
-        {expenses.map((expense) => (
-          <ExpenseListItem key={expense.id} expense={expense} />
-        ))}
-      </div>
-    );
   }
 
   return (
     <div className="divide-y">
       {expenses.map((expense) => (
-        // TODO: Remove when fixed: https://github.com/emilkowalski/vaul/issues/365
-        <Drawer key={expense.id} disablePreventScroll>
-          <DrawerTrigger asChild>
-            <button className="w-full outline-none">
-              <ExpenseListItem expense={expense} />
-            </button>
-          </DrawerTrigger>
-          <DrawerContent className="max-h-[96%]">
-            <div className="overflow-auto overscroll-none p-4">
-              <ExpenseDetail expense={expense} />
-            </div>
-          </DrawerContent>
-        </Drawer>
+        <ExpenseListItem key={expense.id} expense={expense} />
       ))}
     </div>
   );

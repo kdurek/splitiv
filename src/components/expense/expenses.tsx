@@ -33,7 +33,7 @@ export function Expenses() {
 
   return (
     <div className="space-y-4">
-      <ExpensesList withDetails expenses={expenses} />
+      <ExpensesList expenses={expenses} />
       <div ref={ref} />
     </div>
   );

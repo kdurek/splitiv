@@ -23,6 +23,9 @@
   "ExpenseSettlementPage": {
     "title": "Rozliczenie"
   },
+  "ExpensesWithUserPage": {
+    "title": "Wydatki z"
+  },
   "ProfilePage": {
     "title": "Profil"
   },

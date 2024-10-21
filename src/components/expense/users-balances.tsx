@@ -2,12 +2,8 @@
 
 import Link from 'next/link';
 
-import { ExpensesList } from '@/components/expense/expenses-list';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { buttonVariants } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn, getInitials } from '@/lib/utils';
+import { getInitials } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
 interface UserCardProps {
@@ -27,7 +23,7 @@ function UserBalanceCard({ image, name, credit = '0.00', debt = '0.00' }: UserCa
       <div className="text-start">
         <div className="font-medium">{name ?? 'Brak Nazwy'}</div>
         <div className="flex justify-between">
-          <div className="min-w-[80px] text-sm font-medium text-green-500">{`${credit} zł`}</div>
+          <div className="min-w-[100px] text-sm font-medium text-green-500">{`${credit} zł`}</div>
           <div className="text-sm font-medium text-red-500">{`${debt} zł`}</div>
         </div>
       </div>
@@ -44,51 +40,23 @@ export function UsersBalances() {
 
   return (
     <div className="divide-y">
-      <UserBalanceCard
-        image={currentUser.image}
-        name={currentUser.name}
-        credit={currentUserBalance?.debtsAmount}
-        debt={currentUserBalance?.creditsAmount}
-      />
+      <Link href={`/wydatki`} className="block w-full">
+        <UserBalanceCard
+          image={currentUser.image}
+          name={currentUser.name}
+          credit={currentUserBalance?.debtsAmount}
+          debt={currentUserBalance?.creditsAmount}
+        />
+      </Link>
       {otherUsersBalances.map((balance) => (
-        <div key={balance.user.id}>
-          <Drawer>
-            <DrawerTrigger asChild>
-              <button className="w-full outline-none">
-                <UserBalanceCard
-                  image={balance.user.image}
-                  name={balance.user.name}
-                  credit={balance.creditsAmount}
-                  debt={balance.debtsAmount}
-                />
-              </button>
-            </DrawerTrigger>
-            <DrawerContent className="max-h-[96%]">
-              <div className="overflow-auto overscroll-none p-4">
-                <Tabs defaultValue="credits">
-                  <div className="flex gap-2">
-                    <TabsList>
-                      <TabsTrigger value="credits">Należności</TabsTrigger>
-                      <TabsTrigger value="debts">Długi</TabsTrigger>
-                    </TabsList>
-                    <Link
-                      href={`/wydatki/uzytkownik/${balance.user.id}/rozliczenie`}
-                      className={cn(buttonVariants({ variant: 'default' }))}
-                    >
-                      Rozlicz
-                    </Link>
-                  </div>
-                  <TabsContent value="credits">
-                    <ExpensesList expenses={balance.credits} />
-                  </TabsContent>
-                  <TabsContent value="debts">
-                    <ExpensesList expenses={balance.debts} />
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </DrawerContent>
-          </Drawer>
-        </div>
+        <Link key={balance.user.id} href={`/wydatki/uzytkownik/${balance.user.id}`} className="block w-full">
+          <UserBalanceCard
+            image={balance.user.image}
+            name={balance.user.name}
+            credit={balance.creditsAmount}
+            debt={balance.debtsAmount}
+          />
+        </Link>
       ))}
     </div>
   );

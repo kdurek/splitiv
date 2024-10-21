@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 
+import { NotificationPrompt } from '@/components/settings/notification-prompt';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -21,6 +22,7 @@ export function MobileNav() {
   return (
     <>
       <nav className="fixed bottom-0 z-40 flex w-full rounded-t-md bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] pwa:pb-8">
+        <NotificationPrompt />
         {navItems.map((item, index) => (
           <Fragment key={index}>
             <Link

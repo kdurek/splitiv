@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { ExpensesList } from '@/components/expense/expenses-list';
-import { NotificationPrompt } from '@/components/settings/notification-prompt';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/trpc/react';
@@ -38,7 +37,6 @@ export function Expenses() {
 
   return (
     <div className="space-y-4">
-      <NotificationPrompt />
       <ExpensesList withDetails expenses={expenses} />
       <div ref={ref} />
       <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'ghost' }), 'w-full flex')}>

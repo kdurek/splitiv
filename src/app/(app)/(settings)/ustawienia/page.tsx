@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 
-import { Section } from '@/components/layout/section';
+import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { Settings } from '@/components/settings/settings';
-import { api } from '@/trpc/server';
+import { api, HydrateClient } from '@/trpc/server';
 
 export default async function SettingsPage() {
   const t = await getTranslations('SettingsPage');
@@ -14,8 +14,15 @@ export default async function SettingsPage() {
   void api.user.listNotInCurrentGroup.prefetch();
 
   return (
-    <Section title={t('title')}>
-      <Settings />
-    </Section>
+    <HydrateClient>
+      <Section>
+        <SectionHeader>
+          <SectionTitle>{t('title')}</SectionTitle>
+        </SectionHeader>
+        <SectionContent>
+          <Settings />
+        </SectionContent>
+      </Section>
+    </HydrateClient>
   );
 }

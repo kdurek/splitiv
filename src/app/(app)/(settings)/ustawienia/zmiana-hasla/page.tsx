@@ -2,8 +2,9 @@ import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { ChangePasswordForm } from '@/components/auth/change-password-form';
-import { Section } from '@/components/layout/section';
+import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { validateRequest } from '@/server/auth';
+import { HydrateClient } from '@/trpc/server';
 
 export default async function ChangePasswordPage() {
   const { user } = await validateRequest();
@@ -14,8 +15,15 @@ export default async function ChangePasswordPage() {
   const t = await getTranslations('ChangePasswordPage');
 
   return (
-    <Section title={t('title')}>
-      <ChangePasswordForm userId={user.id} />
-    </Section>
+    <HydrateClient>
+      <Section>
+        <SectionHeader>
+          <SectionTitle>{t('title')}</SectionTitle>
+        </SectionHeader>
+        <SectionContent>
+          <ChangePasswordForm userId={user.id} />
+        </SectionContent>
+      </Section>
+    </HydrateClient>
   );
 }

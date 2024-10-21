@@ -1,24 +1,45 @@
-import { type ReactNode } from 'react';
+import * as React from 'react';
 
-import { Heading } from '@/components/ui/heading';
 import { cn } from '@/lib/utils';
-import { HydrateClient } from '@/trpc/server';
 
-interface SectionProps {
-  children: ReactNode;
-  title?: string | null;
-  className?: HTMLDivElement['className'];
-}
+const Section = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('max-w-lg mx-auto rounded-lg bg-card text-card-foreground', className)} {...props} />
+  ),
+);
+Section.displayName = 'Section';
 
-export function Section({ title, children, className }: SectionProps) {
-  return (
-    <HydrateClient>
-      {title && (
-        <Heading variant="h1" className="p-4">
-          {title}
-        </Heading>
-      )}
-      <section className={cn('p-4 mx-auto max-w-lg', title && 'pt-0', className)}>{children}</section>
-    </HydrateClient>
-  );
-}
+const SectionHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex flex-col space-y-1.5 p-4', className)} {...props} />
+  ),
+);
+SectionHeader.displayName = 'SectionHeader';
+
+const SectionTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props} />
+  ),
+);
+SectionTitle.displayName = 'SectionTitle';
+
+const SectionDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => (
+    <p ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+  ),
+);
+SectionDescription.displayName = 'SectionDescription';
+
+const SectionContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn('p-4 pt-0', className)} {...props} />,
+);
+SectionContent.displayName = 'SectionContent';
+
+const SectionFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex items-center p-4 pt-0', className)} {...props} />
+  ),
+);
+SectionFooter.displayName = 'SectionFooter';
+
+export { Section, SectionContent,SectionDescription, SectionFooter, SectionHeader, SectionTitle };

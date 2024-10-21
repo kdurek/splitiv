@@ -1,6 +1,6 @@
 import { Expense } from '@/components/expense/expense';
-import { Section } from '@/components/layout/section';
-import { api } from '@/trpc/server';
+import { Section, SectionContent, SectionHeader } from '@/components/layout/section';
+import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpensePageProps {
   params: {
@@ -13,8 +13,12 @@ export default async function ExpensePage({ params }: ExpensePageProps) {
   void api.user.current.prefetch();
 
   return (
-    <Section>
-      <Expense expenseId={params.expenseId} />
-    </Section>
+    <HydrateClient>
+      <Section>
+        <SectionContent>
+          <Expense expenseId={params.expenseId} />
+        </SectionContent>
+      </Section>
+    </HydrateClient>
   );
 }

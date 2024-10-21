@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 
 import { ExpenseEdit } from '@/components/expense/expense-edit';
-import { Section } from '@/components/layout/section';
-import { api } from '@/trpc/server';
+import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
+import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpenseEditPageProps {
   params: {
@@ -18,8 +18,15 @@ export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) 
   void api.user.current.prefetch();
 
   return (
-    <Section title={t('title')}>
-      <ExpenseEdit expenseId={params.expenseId} />
-    </Section>
+    <HydrateClient>
+      <Section>
+        <SectionHeader>
+          <SectionTitle>{t('title')}</SectionTitle>
+        </SectionHeader>
+        <SectionContent>
+          <ExpenseEdit expenseId={params.expenseId} />
+        </SectionContent>
+      </Section>
+    </HydrateClient>
   );
 }

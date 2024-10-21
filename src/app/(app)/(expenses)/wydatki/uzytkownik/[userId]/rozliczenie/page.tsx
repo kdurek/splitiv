@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 
 import { ExpenseSettlement } from '@/components/expense/expense-settlement';
-import { Section } from '@/components/layout/section';
-import { api } from '@/trpc/server';
+import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
+import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpenseSettlementPageProps {
   params: {
@@ -20,8 +20,15 @@ export default async function ExpenseSettlementPage({ params }: ExpenseSettlemen
   void api.user.current.prefetch();
 
   return (
-    <Section title={t('title')}>
-      <ExpenseSettlement paramsUserId={params.userId} />
-    </Section>
+    <HydrateClient>
+      <Section>
+        <SectionHeader>
+          <SectionTitle>{t('title')}</SectionTitle>
+        </SectionHeader>
+        <SectionContent>
+          <ExpenseSettlement paramsUserId={params.userId} />
+        </SectionContent>
+      </Section>
+    </HydrateClient>
   );
 }

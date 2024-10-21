@@ -2,9 +2,9 @@ import { getTranslations } from 'next-intl/server';
 
 import { Archive } from '@/components/expense/archive';
 import { Expenses } from '@/components/expense/expenses';
-import { Section } from '@/components/layout/section';
+import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { api } from '@/trpc/server';
+import { api, HydrateClient } from '@/trpc/server';
 
 export default async function ExpensesPage() {
   const t = await getTranslations('ExpensesPage');
@@ -20,19 +20,26 @@ export default async function ExpensesPage() {
   void api.user.current.prefetch();
 
   return (
-    <Section title={t('title')}>
-      <Tabs defaultValue="active">
-        <TabsList>
-          <TabsTrigger value="active">Aktualne</TabsTrigger>
-          <TabsTrigger value="archive">Archiwalne</TabsTrigger>
-        </TabsList>
-        <TabsContent value="active">
-          <Expenses />
-        </TabsContent>
-        <TabsContent value="archive">
-          <Archive />
-        </TabsContent>
-      </Tabs>
-    </Section>
+    <HydrateClient>
+      <Section>
+        <SectionHeader>
+          <SectionTitle>{t('title')}</SectionTitle>
+        </SectionHeader>
+        <SectionContent>
+          <Tabs defaultValue="active">
+            <TabsList>
+              <TabsTrigger value="active">Aktualne</TabsTrigger>
+              <TabsTrigger value="archive">Archiwalne</TabsTrigger>
+            </TabsList>
+            <TabsContent value="active">
+              <Expenses />
+            </TabsContent>
+            <TabsContent value="archive">
+              <Archive />
+            </TabsContent>
+          </Tabs>
+        </SectionContent>
+      </Section>
+    </HydrateClient>
   );
 }

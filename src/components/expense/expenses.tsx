@@ -1,13 +1,9 @@
 'use client';
 
-import { ArchiveIcon } from 'lucide-react';
-import Link from 'next/link';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { ExpensesList } from '@/components/expense/expenses-list';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
 export function Expenses() {
@@ -39,10 +35,6 @@ export function Expenses() {
     <div className="space-y-4">
       <ExpensesList withDetails expenses={expenses} />
       <div ref={ref} />
-      <Link href="/wydatki/archiwum" className={cn(buttonVariants({ variant: 'ghost' }), 'w-full flex')}>
-        <ArchiveIcon className="mr-2 size-4" />
-        Archiwum
-      </Link>
     </div>
   );
 }

@@ -47,8 +47,8 @@ export function UsersBalances() {
       <UserBalanceCard
         image={currentUser.image}
         name={currentUser.name}
-        credit={currentUserBalance?.creditsAmount}
-        debt={currentUserBalance?.debtsAmount}
+        credit={currentUserBalance?.debtsAmount}
+        debt={currentUserBalance?.creditsAmount}
       />
       {otherUsersBalances.map((balance) => (
         <div key={balance.user.id}>
@@ -68,8 +68,8 @@ export function UsersBalances() {
                 <Tabs defaultValue="credits">
                   <div className="flex gap-2">
                     <TabsList>
-                      <TabsTrigger value="credits">Zapłaciłeś</TabsTrigger>
-                      <TabsTrigger value="debts">Pożyczyłeś</TabsTrigger>
+                      <TabsTrigger value="credits">Należności</TabsTrigger>
+                      <TabsTrigger value="debts">Długi</TabsTrigger>
                     </TabsList>
                     <Link
                       href={`/wydatki/uzytkownik/${balance.user.id}/rozliczenie`}

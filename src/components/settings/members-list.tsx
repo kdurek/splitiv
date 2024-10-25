@@ -5,7 +5,6 @@ import { api } from '@/trpc/react';
 
 export function MembersList() {
   const [group] = api.group.current.useSuspenseQuery();
-  const [usersNotInCurrentGroup] = api.user.listNotInCurrentGroup.useSuspenseQuery();
 
   return (
     <div className="space-y-4">
@@ -16,7 +15,7 @@ export function MembersList() {
           </li>
         ))}
       </ol>
-      <AddUserToGroupForm users={usersNotInCurrentGroup} />
+      <AddUserToGroupForm />
     </div>
   );
 }

@@ -11,33 +11,30 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { updateUserFormSchema } from '@/lib/validations/user';
 import { api } from '@/trpc/react';
-import { type UserById } from '@/trpc/react';
 
 type UpdateUserFormSchema = z.infer<typeof updateUserFormSchema>;
 
-interface UserFormProps {
-  user: UserById;
-}
-
-export function UserForm({ user }: UserFormProps) {
+export function UserForm() {
   const router = useRouter();
+
+  const [currentUser] = api.user.current.useSuspenseQuery();
 
   const form = useForm<UpdateUserFormSchema>({
     resolver: zodResolver(updateUserFormSchema),
     defaultValues: {
-      name: user?.name ?? '',
-      firstName: user?.firstName ?? '',
-      lastName: user?.lastName ?? '',
+      name: currentUser?.name ?? '',
+      firstName: currentUser?.firstName ?? '',
+      lastName: currentUser?.lastName ?? '',
     },
   });
 
   const { mutate: updateUser } = api.user.update.useMutation();
 
   const handleUpdateUser = async (values: UpdateUserFormSchema) => {
-    if (user) {
+    if (currentUser) {
       updateUser(
         {
-          userId: user.id,
+          userId: currentUser.id,
           userData: {
             name: values.name,
             firstName: values.firstName,

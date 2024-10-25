@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
-import { Profile } from '@/components/user/profile';
+import { UserForm } from '@/components/user/user-form';
 import { api, HydrateClient } from '@/trpc/server';
 
 export default async function ProfilePage() {
@@ -16,7 +16,7 @@ export default async function ProfilePage() {
           <SectionTitle>{t('title')}</SectionTitle>
         </SectionHeader>
         <SectionContent>
-          <Profile />
+          <UserForm />
         </SectionContent>
       </Section>
     </HydrateClient>

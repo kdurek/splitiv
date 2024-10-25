@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { UserList } from '@/trpc/react';
 import { api } from '@/trpc/react';
 
 const addUserToGroupFormSchema = z.object({
@@ -16,11 +15,9 @@ const addUserToGroupFormSchema = z.object({
 
 type AddUserToGroupFormSchema = z.infer<typeof addUserToGroupFormSchema>;
 
-interface AddUserToGroupFormProps {
-  users: UserList;
-}
+export function AddUserToGroupForm() {
+  const [usersNotInCurrentGroup] = api.user.listNotInCurrentGroup.useSuspenseQuery();
 
-export function AddUserToGroupForm({ users }: AddUserToGroupFormProps) {
   const { mutate: addUserToGroup } = api.group.addUser.useMutation();
 
   const form = useForm<AddUserToGroupFormSchema>({
@@ -46,7 +43,7 @@ export function AddUserToGroupForm({ users }: AddUserToGroupFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {users.map((user) => (
+                  {usersNotInCurrentGroup.map((user) => (
                     <SelectItem key={user.id} value={user.id}>
                       {user.name}
                     </SelectItem>

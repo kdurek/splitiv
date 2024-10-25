@@ -54,8 +54,6 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 export type ExpensesList = RouterOutputs['expense']['list'];
 export type ExpenseById = RouterOutputs['expense']['byId'];
-export type UserList = RouterOutputs['user']['list'];
-export type UserById = RouterOutputs['user']['byId'];
 
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();

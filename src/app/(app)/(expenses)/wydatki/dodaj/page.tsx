@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ExpenseAdd } from '@/components/expense/expense-add';
+import { ExpenseForm } from '@/components/expense/expense-form';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 
@@ -17,7 +17,7 @@ export default async function ExpenseAddPage() {
           <SectionTitle>{t('title')}</SectionTitle>
         </SectionHeader>
         <SectionContent>
-          <ExpenseAdd />
+          <ExpenseForm />
         </SectionContent>
       </Section>
     </HydrateClient>

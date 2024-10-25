@@ -1,5 +1,5 @@
 import { Expense } from '@/components/expense/expense';
-import { Section, SectionContent, SectionHeader } from '@/components/layout/section';
+import { Section, SectionContent } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpensePageProps {

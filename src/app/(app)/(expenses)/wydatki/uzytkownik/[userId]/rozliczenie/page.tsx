@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ExpenseSettlement } from '@/components/expense/expense-settlement';
-import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
+import { ExpenseSettlementForm } from '@/components/expense/expense-settlement-form';
+import { Section, SectionContent, SectionDescription, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpenseSettlementPageProps {
@@ -13,20 +13,20 @@ interface ExpenseSettlementPageProps {
 export default async function ExpenseSettlementPage({ params }: ExpenseSettlementPageProps) {
   const t = await getTranslations('ExpenseSettlementPage');
 
-  void api.user.byId.prefetch({ userId: params.userId });
-  void api.expense.debt.getDebtsAndCreditsForCurrentUser.prefetch({
+  const paramsUser = await api.user.byId({ userId: params.userId });
+  void api.expense.debt.getBetweenUser.prefetch({
     userId: params.userId,
   });
-  void api.user.current.prefetch();
 
   return (
     <HydrateClient>
       <Section>
         <SectionHeader>
           <SectionTitle>{t('title')}</SectionTitle>
+          <SectionDescription>{paramsUser.name}</SectionDescription>
         </SectionHeader>
         <SectionContent>
-          <ExpenseSettlement paramsUserId={params.userId} />
+          <ExpenseSettlementForm paramsUserId={params.userId} />
         </SectionContent>
       </Section>
     </HydrateClient>

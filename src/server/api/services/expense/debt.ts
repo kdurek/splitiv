@@ -75,6 +75,41 @@ export const settleByAmount = async (debtId: string, amount: number) => {
   return expenseDebt;
 };
 
+export const settleFully = async (debtId: string) => {
+  const expenseDebt = await db.$transaction(async (tx) => {
+    const debt = await tx.expenseDebt.findUnique({
+      where: {
+        id: debtId,
+      },
+    });
+
+    if (!debt) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Nie znaleziono długu',
+      });
+    }
+
+    await tx.expenseLog.create({
+      data: {
+        debtId,
+        amount: Decimal.sub(debt.amount, debt.settled),
+      },
+    });
+
+    return tx.expenseDebt.update({
+      where: {
+        id: debtId,
+      },
+      data: {
+        settled: debt.amount,
+      },
+    });
+  });
+
+  return expenseDebt;
+};
+
 export const getExpenseDebtById = async (debtId: string) => {
   const expenseDebt = await db.expenseDebt.findUnique({
     where: {

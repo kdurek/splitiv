@@ -3,7 +3,8 @@
 import Link from 'next/link';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { getInitials } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
+import { cn, getInitials } from '@/lib/utils';
 import { api } from '@/trpc/react';
 
 interface UserCardProps {
@@ -49,14 +50,22 @@ export function UsersBalances() {
         />
       </Link>
       {otherUsersBalances.map((balance) => (
-        <Link key={balance.user.id} href={`/wydatki/uzytkownik/${balance.user.id}`} className="block w-full">
-          <UserBalanceCard
-            image={balance.user.image}
-            name={balance.user.name}
-            credit={balance.creditsAmount}
-            debt={balance.debtsAmount}
-          />
-        </Link>
+        <div key={balance.user.id} className="flex items-center gap-4">
+          <Link href={`/wydatki/uzytkownik/${balance.user.id}`} className="block w-full">
+            <UserBalanceCard
+              image={balance.user.image}
+              name={balance.user.name}
+              credit={balance.creditsAmount}
+              debt={balance.debtsAmount}
+            />
+          </Link>
+          <Link
+            href={`/wydatki/uzytkownik/${balance.user.id}/rozliczenie`}
+            className={cn(buttonVariants({ variant: 'outline' }))}
+          >
+            Rozlicz
+          </Link>
+        </div>
       ))}
     </div>
   );

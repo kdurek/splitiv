@@ -1,8 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
 import Decimal from 'decimal.js';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -22,45 +23,47 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Heading } from '@/components/ui/heading';
-import { Label } from '@/components/ui/label';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 import { expenseSettlementFormSchema } from '@/lib/validations/expense-settlement';
-import type { ExpenseDebtGetDebtsAndCreditsForCurrentUser, UserById } from '@/trpc/react';
 import { api } from '@/trpc/react';
 
 type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
 
 interface ExpenseSettlementFormProps {
-  otherUser: UserById;
-  currentUserDebtsAndCredits: ExpenseDebtGetDebtsAndCreditsForCurrentUser;
+  paramsUserId: string;
 }
 
-export function ExpenseSettlementForm({ otherUser, currentUserDebtsAndCredits }: ExpenseSettlementFormProps) {
-  const [currentUser] = api.user.current.useSuspenseQuery();
-  const mergedUserDebtsAndCredits = [...currentUserDebtsAndCredits.credits, ...currentUserDebtsAndCredits.debts];
-
+export function ExpenseSettlementForm({ paramsUserId }: ExpenseSettlementFormProps) {
   const router = useRouter();
 
-  const { mutate: settleDebts, isPending: isPendingSettleExpenseDebts } = api.expense.debt.settleDebts.useMutation();
+  const [usersDebts] = api.expense.debt.getBetweenUser.useSuspenseQuery({
+    userId: paramsUserId,
+  });
+
+  const { mutate: settleDebtsFully, isPending: isPendingSettleExpenseDebts } =
+    api.expense.debt.settleDebtsFully.useMutation();
 
   const form = useForm<ExpenseSettlementFormSchema>({
     values: {
-      debts: mergedUserDebtsAndCredits.map((debt) => ({
+      credits: usersDebts.credits.map((debt) => ({
         id: debt.id,
         selected: true,
-        name: debt.expense.name,
-        amount: Number(debt.amount),
-        settled: Number(debt.settled),
-        payerId: debt.expense.payer.id,
-        payerName: debt.expense.payer.name,
-        debtorId: debt.debtor.id,
-        debtorName: debt.debtor.name,
+      })),
+      debts: usersDebts.debts.map((debt) => ({
+        id: debt.id,
+        selected: true,
       })),
     },
     resolver: zodResolver(expenseSettlementFormSchema),
   });
 
+  const { fields: creditsFields } = useFieldArray({
+    control: form.control,
+    name: 'credits',
+    keyName: 'fieldId',
+  });
   const { fields: debtsFields } = useFieldArray({
     control: form.control,
     name: 'debts',
@@ -68,45 +71,32 @@ export function ExpenseSettlementForm({ otherUser, currentUserDebtsAndCredits }:
   });
 
   useEffect(() => {
-    if (!mergedUserDebtsAndCredits.length) {
+    if (!creditsFields.length && !debtsFields.length) {
       router.push('/');
     }
-  }, [router, mergedUserDebtsAndCredits.length]);
+  }, [router, creditsFields.length, debtsFields.length]);
 
+  const selectedCredits = form.watch('credits').filter((debt) => debt.selected);
   const selectedDebts = form.watch('debts').filter((debt) => debt.selected);
 
-  const filteredOtherUserDebts = selectedDebts.filter((debt) => debt.debtorId === otherUser?.id);
-  const filteredCurrentUserDebts = selectedDebts.filter((debt) => debt.debtorId === currentUser?.id);
-
-  const otherUserTotalAmount = filteredOtherUserDebts.reduce(
-    (acc, cur) => Decimal.add(acc, Decimal.sub(cur.amount, cur.settled)),
-    new Decimal(0),
-  );
-  const currentUserTotalAmount = filteredCurrentUserDebts.reduce(
-    (acc, cur) => Decimal.add(acc, Decimal.sub(cur.amount, cur.settled)),
-    new Decimal(0),
+  const summedUsersDebts = new Decimal(
+    usersDebts.credits
+      .filter((credit) => selectedCredits.map((selectedCredit) => selectedCredit.id).includes(credit.id))
+      .reduce((acc, credit) => acc.plus(credit.amount), new Decimal(0)),
+  ).minus(
+    usersDebts.debts
+      .filter((debt) => selectedDebts.map((selectedDebt) => selectedDebt.id).includes(debt.id))
+      .reduce((acc, debt) => acc.plus(debt.amount), new Decimal(0)),
   );
 
-  const totalDiff = currentUserTotalAmount.greaterThan(otherUserTotalAmount)
-    ? Decimal.sub(currentUserTotalAmount, otherUserTotalAmount).toFixed(2)
-    : Decimal.sub(otherUserTotalAmount, currentUserTotalAmount).toFixed(2);
-
-  const payer = currentUserTotalAmount.greaterThan(otherUserTotalAmount) ? otherUser : currentUser;
-  const debtor = currentUserTotalAmount.greaterThan(otherUserTotalAmount) ? currentUser : otherUser;
+  const isPayer = summedUsersDebts.isPositive();
 
   const handleSettlement = (values: ExpenseSettlementFormSchema) => {
-    const expenseDebts = values.debts
-      .filter((debt) => debt.selected)
-      .map((debt) => {
-        return {
-          id: debt.id,
-          settled: debt.amount,
-        };
-      });
+    const expenseDebtIds = [...values.credits, ...values.debts].filter((debt) => debt.selected).map((debt) => debt.id);
 
-    settleDebts(
+    settleDebtsFully(
       {
-        expenseDebts,
+        expenseDebtIds,
       },
       {
         onSuccess() {
@@ -119,53 +109,48 @@ export function ExpenseSettlementForm({ otherUser, currentUserDebtsAndCredits }:
   return (
     <Form {...form}>
       <form id="expense-settlement-form" className="space-y-6" onSubmit={form.handleSubmit(handleSettlement)}>
-        <Heading variant="h2">{otherUser?.name}</Heading>
-
-        <div className="space-y-4">
-          <Label className="text-base">Podsumowanie</Label>
-          <div className="grid grid-cols-5 place-items-center rounded-md border p-4">
-            <div className="text-sm text-muted-foreground">{debtor?.name}</div>
-            <ChevronRight />
-            <div className="text-sm text-muted-foreground">{totalDiff} zł</div>
-            <ChevronRight />
-            <div className="text-sm text-muted-foreground">{payer?.name}</div>
+        <div className="flex flex-col gap-4">
+          <div
+            className={cn(
+              'flex justify-center rounded-md border p-4',
+              isPayer ? 'border-green-500 text-green-500' : 'border-red-500 text-red-500',
+            )}
+          >
+            <div>{`${isPayer ? 'Otrzymasz' : 'Zapłacisz'} ${summedUsersDebts.abs().toFixed(2)} zł`}</div>
           </div>
-          <div className="flex items-center justify-end gap-4">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button>Rozlicz</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Rozliczenie</AlertDialogTitle>
-                  <AlertDialogDescription>Czy na pewno chcesz się rozliczyć?</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Nie</AlertDialogCancel>
-                  <AlertDialogAction type="submit" form="expense-settlement-form">
-                    {isPendingSettleExpenseDebts && <Loader2 className="mr-2 size-4 animate-spin" />}
-                    Tak
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button>Rozlicz</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Rozliczenie</AlertDialogTitle>
+                <AlertDialogDescription>Czy na pewno chcesz się rozliczyć?</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Nie</AlertDialogCancel>
+                <AlertDialogAction type="submit" form="expense-settlement-form">
+                  {isPendingSettleExpenseDebts && <Loader2 className="mr-2 size-4 animate-spin" />}
+                  Tak
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <Separator />
         </div>
 
-        <div className="space-y-4">
-          <Label className="text-base">Wydatki</Label>
-          {debtsFields.map((item, index) => (
+        <div className="divide-y">
+          {creditsFields.map((item, index) => (
             <FormField
               key={item.id}
               control={form.control}
-              name={`debts.${index}.selected`}
+              name={`credits.${index}.selected`}
               render={({ field }) => {
+                const credit = usersDebts.credits.find((credit) => credit.id === item.id);
+                if (!credit) return <div />;
                 return (
-                  <FormItem className="space-y-2 rounded-md border p-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <FormLabel className="font-normal">
-                        <div className="line-clamp-1">{item.name}</div>
-                      </FormLabel>
+                  <FormItem className="flex items-center justify-between overflow-hidden py-4">
+                    <div className="flex items-center gap-4">
                       <FormControl>
                         <Checkbox
                           className="size-6"
@@ -173,15 +158,60 @@ export function ExpenseSettlementForm({ otherUser, currentUserDebtsAndCredits }:
                           onCheckedChange={(checked) => field.onChange(!!checked)}
                         />
                       </FormControl>
-                    </div>
-                    <div className="grid grid-cols-5 place-items-center">
-                      <div className="text-sm text-muted-foreground">{item.debtorName}</div>
-                      <ChevronRight />
-                      <div className="text-sm text-muted-foreground">
-                        {(Number(item.amount) - Number(item.settled)).toFixed(2)} zł
+                      <div className="overflow-hidden text-start">
+                        <div className="line-clamp-1">{credit.expense.name}</div>
+                        <div className="line-clamp-1 text-sm text-muted-foreground">
+                          {format(credit.createdAt, 'EEEEEE, d MMMM')}
+                        </div>
                       </div>
-                      <ChevronRight />
-                      <div className="text-sm text-muted-foreground">{item.payerName}</div>
+                    </div>
+
+                    <div className="overflow-hidden text-end">
+                      <div className={cn('whitespace-nowrap text-green-500')}>
+                        {Number(Decimal.sub(credit.amount, credit.settled)).toFixed(2)} zł
+                      </div>
+                      <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
+                        {Number(credit.expense.amount).toFixed(2)} zł
+                      </div>
+                    </div>
+                  </FormItem>
+                );
+              }}
+            />
+          ))}
+          {debtsFields.map((item, index) => (
+            <FormField
+              key={item.id}
+              control={form.control}
+              name={`debts.${index}.selected`}
+              render={({ field }) => {
+                const debt = usersDebts.debts.find((credit) => credit.id === item.id);
+                if (!debt) return <div />;
+                return (
+                  <FormItem className="flex items-center justify-between overflow-hidden py-4">
+                    <div className="flex items-center gap-4">
+                      <FormControl>
+                        <Checkbox
+                          className="size-6"
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(!!checked)}
+                        />
+                      </FormControl>
+                      <div className="overflow-hidden text-start">
+                        <div className="line-clamp-1">{debt.expense.name}</div>
+                        <div className="line-clamp-1 text-sm text-muted-foreground">
+                          {format(debt.createdAt, 'EEEEEE, d MMMM')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="overflow-hidden text-end">
+                      <div className={cn('whitespace-nowrap text-red-500')}>
+                        {Number(Decimal.sub(debt.amount, debt.settled)).toFixed(2)} zł
+                      </div>
+                      <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
+                        {Number(debt.expense.amount).toFixed(2)} zł
+                      </div>
                     </div>
                   </FormItem>
                 );

@@ -54,9 +54,6 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 export type ExpensesList = RouterOutputs['expense']['list'];
 export type ExpenseById = RouterOutputs['expense']['byId'];
-export type ExpenseDebtGetDebtsAndCreditsForCurrentUser =
-  RouterOutputs['expense']['debt']['getDebtsAndCreditsForCurrentUser'];
-export type GroupGetBalances = RouterOutputs['group']['getBalances'];
 export type UserList = RouterOutputs['user']['list'];
 export type UserById = RouterOutputs['user']['byId'];
 

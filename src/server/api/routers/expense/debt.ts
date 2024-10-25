@@ -1,10 +1,15 @@
 import { z } from 'zod';
 
-import { checkExpenseDebtAccess, getDebtsBetweenUsers, settleByAmount } from '@/server/api/services/expense/debt';
+import {
+  checkExpenseDebtAccess,
+  getDebtsBetweenUsers,
+  settleByAmount,
+  settleFully,
+} from '@/server/api/services/expense/debt';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 
 export const expenseDebtRouter = createTRPCRouter({
-  getDebtsAndCreditsForCurrentUser: protectedProcedure
+  getBetweenUser: protectedProcedure
     .input(
       z.object({
         userId: z.string().cuid(),
@@ -47,6 +52,21 @@ export const expenseDebtRouter = createTRPCRouter({
         input.expenseDebts.map(async (expenseDebt) => {
           await checkExpenseDebtAccess(expenseDebt.id, ctx.user.id);
           await settleByAmount(expenseDebt.id, expenseDebt.settled);
+        }),
+      );
+    }),
+
+  settleDebtsFully: protectedProcedure
+    .input(
+      z.object({
+        expenseDebtIds: z.array(z.string().cuid()),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return Promise.all(
+        input.expenseDebtIds.map(async (expenseDebtId) => {
+          await checkExpenseDebtAccess(expenseDebtId, ctx.user.id);
+          await settleFully(expenseDebtId);
         }),
       );
     }),

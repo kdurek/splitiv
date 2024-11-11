@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { ExpensesList } from '@/components/expense/expenses-list';
+import { ExpenseListItem } from '@/components/expense/expenses-list-item';
 import { debouncedValueSearchTextAtom } from '@/lib/atoms';
 import { api } from '@/trpc/react';
 
@@ -38,7 +39,11 @@ export function ExpensesSearchList() {
 
   return (
     <>
-      <ExpensesList expenses={expenses} />
+      <ExpensesList>
+        {expenses.map((expense) => (
+          <ExpenseListItem key={expense.id} expense={expense} />
+        ))}
+      </ExpensesList>
       <div ref={ref} />
     </>
   );

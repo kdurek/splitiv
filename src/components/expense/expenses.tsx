@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { ExpensesList } from '@/components/expense/expenses-list';
+import { ExpenseListItem } from '@/components/expense/expenses-list-item';
 import { api } from '@/trpc/react';
 
 export function Expenses() {
@@ -33,7 +34,11 @@ export function Expenses() {
 
   return (
     <div className="space-y-4">
-      <ExpensesList expenses={expenses} />
+      <ExpensesList>
+        {expenses.map((expense) => (
+          <ExpenseListItem key={expense.id} expense={expense} />
+        ))}
+      </ExpensesList>
       <div ref={ref} />
     </div>
   );

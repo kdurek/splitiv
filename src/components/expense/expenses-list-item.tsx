@@ -18,8 +18,8 @@ interface ExpenseListItemProps {
 
 export function ExpenseListItem({ name, isPayer, createdAt, fullAmount, toPayAmount, children }: ExpenseListItemProps) {
   return (
-    // TODO: Remove when fixed: https://github.com/emilkowalski/vaul/issues/365
-    <Drawer disablePreventScroll>
+    // TODO: Remove when fixed: https://github.com/emilkowalski/vaul/issues/455
+    <Drawer disablePreventScroll={false}>
       <DrawerTrigger asChild>
         <button className="w-full outline-none">
           <div className="flex items-start justify-between overflow-hidden py-4">
@@ -38,9 +38,7 @@ export function ExpenseListItem({ name, isPayer, createdAt, fullAmount, toPayAmo
           </div>
         </button>
       </DrawerTrigger>
-      <DrawerContent className="max-h-[96%]">
-        <div className="overflow-auto overscroll-none p-4">{children}</div>
-      </DrawerContent>
+      <DrawerContent className="max-h-[96%] overflow-auto overscroll-none p-4">{children}</DrawerContent>
     </Drawer>
   );
 }

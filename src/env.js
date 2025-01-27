@@ -7,9 +7,9 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     BASE_URL: z.string().url(),
     DATABASE_URL: z.string().url(),
-    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
     WEB_PUSH_EMAIL: z.string(),
@@ -26,9 +26,17 @@ export const env = createEnv({
   },
 
   /**
-   * For Next.js >= 13.4.4, you only need to destructure client variables.
+   * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
+   * middlewares) or client-side so we need to destruct manually.
    */
-  experimental__runtimeEnv: {
+  runtimeEnv: {
+    NODE_ENV: process.env.NODE_ENV,
+    BASE_URL: process.env.BASE_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    WEB_PUSH_EMAIL: process.env.WEB_PUSH_EMAIL,
+    WEB_PUSH_PRIVATE_KEY: process.env.WEB_PUSH_PRIVATE_KEY,
     NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY: process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
   },
 
@@ -39,8 +47,8 @@ export const env = createEnv({
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 
   /**
-   * Makes it so that empty strings are treated as undefined.
-   * `SOME_VAR: z.string()` and `SOME_VAR=''` will throw an error.
+   * Makes it so that empty strings are treated as undefined. `SOME_VAR: z.string()` and
+   * `SOME_VAR=''` will throw an error.
    */
   emptyStringAsUndefined: true,
 });

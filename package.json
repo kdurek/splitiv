@@ -58,7 +58,7 @@
     "jotai": "^2.10.3",
     "lucia": "^3.2.2",
     "lucide-react": "^0.468.0",
-    "next": "14.2.20",
+    "next": "14.2.21",
     "next-intl": "^3.26.1",
     "oslo": "^1.2.1",
     "rc-input-number": "^9.3.0",

@@ -1,11 +1,7 @@
 import { z } from 'zod';
 
-import {
-  createPushSubscription,
-  deletePushSubscriptionByEndpoint,
-  sendPush,
-} from '@/server/api/services/push-subscription';
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
+import { createPushSubscription, deletePushSubscriptionByEndpoint, sendPush } from '@/server/utils/push-subscription';
 
 export const pushSubscriptionRouter = createTRPCRouter({
   create: protectedProcedure

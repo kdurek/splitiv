@@ -3,8 +3,8 @@ import { z } from 'zod';
 
 import { expenseDebtRouter } from '@/server/api/routers/expense/debt';
 import { expenseLogRouter } from '@/server/api/routers/expense/log';
-import { sendPush } from '@/server/api/services/push-subscription';
 import { createTRPCRouter, protectedProcedure, t } from '@/server/api/trpc';
+import { sendPush } from '@/server/utils/push-subscription';
 
 const checkExpenseAccess = t.procedure
   .input(

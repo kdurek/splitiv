@@ -3,9 +3,9 @@
 import { redirect } from 'next/navigation';
 
 import { genericError, setAuthCookie, validateSignInFormData, validateSignUpFormData } from '@/lib/auth/utils';
-import { hashPassword, verifyPassword } from '@/server/api/services/auth';
 import { lucia, validateRequest } from '@/server/auth';
 import { db } from '@/server/db';
+import { hashPassword, verifyPassword } from '@/server/utils/auth';
 
 interface ActionResult {
   error: string;

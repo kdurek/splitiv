@@ -1,8 +1,8 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { hashPassword } from '@/server/api/services/auth';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
+import { hashPassword } from '@/server/utils/auth';
 
 export const userRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {

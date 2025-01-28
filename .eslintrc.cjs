@@ -11,7 +11,6 @@ const config = {
     'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:tailwindcss/recommended',
   ],
-  ignorePatterns: ['prisma/generated/zod'],
   rules: {
     '@typescript-eslint/array-type': 'off',
     '@typescript-eslint/consistent-type-definitions': 'off',

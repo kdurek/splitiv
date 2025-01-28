@@ -14,11 +14,7 @@ import { api } from '@/trpc/react';
 
 type ChangePasswordFormSchema = z.infer<typeof changePasswordFormSchema>;
 
-interface ChangePasswordFormProps {
-  userId: string;
-}
-
-export function ChangePasswordForm({ userId }: ChangePasswordFormProps) {
+export function ChangePasswordForm() {
   const router = useRouter();
 
   const form = useForm<ChangePasswordFormSchema>({
@@ -34,7 +30,6 @@ export function ChangePasswordForm({ userId }: ChangePasswordFormProps) {
   const handleChangePassword = async ({ password }: ChangePasswordFormSchema) => {
     changePassword(
       {
-        userId,
         password,
       },
       {

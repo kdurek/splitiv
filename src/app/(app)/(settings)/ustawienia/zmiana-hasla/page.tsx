@@ -21,7 +21,7 @@ export default async function ChangePasswordPage() {
           <SectionTitle>{t('title')}</SectionTitle>
         </SectionHeader>
         <SectionContent>
-          <ChangePasswordForm userId={user.id} />
+          <ChangePasswordForm />
         </SectionContent>
       </Section>
     </HydrateClient>

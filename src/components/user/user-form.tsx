@@ -34,12 +34,9 @@ export function UserForm() {
     if (currentUser) {
       updateUser(
         {
-          userId: currentUser.id,
-          userData: {
-            name: values.name,
-            firstName: values.firstName,
-            lastName: values.lastName,
-          },
+          name: values.name,
+          firstName: values.firstName,
+          lastName: values.lastName,
         },
         {
           onSuccess() {

@@ -17,6 +17,7 @@
     "check:prettier": "prettier \"**/*.{css,json,md,js,jsx,ts,tsx}\"",
     "check:lint": "next lint",
     "check:types": "tsc",
+    "check": "pnpm check:lint && pnpm check:types",
     "fix:prettier": "prettier \"**/*.{css,json,md,js,jsx,ts,tsx}\" --write",
     "fix:lint": "next lint --fix",
     "dev": "docker compose up -d && prisma generate && concurrently --kill-others \"docker compose logs -f\" \"prisma studio -b none\" \"next dev\"",

@@ -13,7 +13,7 @@ interface ExpenseSettlementPageProps {
 export default async function ExpenseSettlementPage({ params }: ExpenseSettlementPageProps) {
   const t = await getTranslations('ExpenseSettlementPage');
 
-  const paramsUser = await api.user.byId({ userId: params.userId });
+  const paramsUser = await api.user.byId({ id: params.userId });
   void api.expense.debt.getBetweenUser.prefetch({
     userId: params.userId,
   });

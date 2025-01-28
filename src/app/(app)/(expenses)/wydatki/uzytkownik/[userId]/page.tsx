@@ -13,7 +13,7 @@ interface ExpensesWithUserPageProps {
 export default async function ExpensesWithUserPage({ params }: ExpensesWithUserPageProps) {
   const t = await getTranslations('ExpensesWithUserPage');
 
-  const paramsUser = await api.user.byId({ userId: params.userId });
+  const paramsUser = await api.user.byId({ id: params.userId });
   void api.expense.getExpensesBetweenUser.prefetch({
     userId: params.userId,
   });

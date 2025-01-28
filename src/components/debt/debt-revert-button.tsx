@@ -16,7 +16,7 @@ export function DebtRevertButton({ logId }: DebtRevertButtonProps) {
   const handleRevert = () => {
     revert(
       {
-        logId,
+        id: logId,
       },
       {
         onSuccess() {

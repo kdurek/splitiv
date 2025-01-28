@@ -25,7 +25,7 @@ export function ExpenseDeleteModal({ expenseId }: ExpenseDeleteModalProps) {
 
   const handleExpenseDelete = () => {
     deleteExpense(
-      { expenseId },
+      { id: expenseId },
       {
         onSuccess() {
           toast.success('Pomyślnie usunięto wydatek');

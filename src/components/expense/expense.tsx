@@ -8,7 +8,7 @@ interface ExpenseProps {
 }
 
 export function Expense({ expenseId }: ExpenseProps) {
-  const [expense] = api.expense.byId.useSuspenseQuery({ expenseId });
+  const [expense] = api.expense.byId.useSuspenseQuery({ id: expenseId });
 
   if (!expense) {
     return 'Nie znaleziono wydatku';

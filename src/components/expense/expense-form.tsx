@@ -63,14 +63,12 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
     if (expense) {
       updateExpense(
         {
-          expenseId: expense.id,
-          expenseData: {
-            name: values.name,
-            description: values.description,
-            // amount: values.amount,
-            // payerId: values.payer,
-            // debts: formattedDebts,
-          },
+          id: expense.id,
+          name: values.name,
+          description: values.description,
+          // amount: values.amount,
+          // payerId: values.payer,
+          // debts: formattedDebts,
         },
         {
           onSuccess() {
@@ -86,21 +84,10 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
       createExpense(
         {
           name: values.name,
-          description: values.description ?? null,
+          description: values.description,
           amount: values.amount,
-          payer: {
-            connect: {
-              id: values.payer,
-            },
-          },
-          debts: {
-            createMany: { data: formattedDebts },
-          },
-          group: {
-            connect: {
-              id: currentUser.activeGroupId ?? undefined,
-            },
-          },
+          payerId: values.payer,
+          debts: formattedDebts,
         },
         {
           onSuccess() {

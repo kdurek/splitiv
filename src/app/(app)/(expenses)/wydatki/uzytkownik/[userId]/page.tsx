@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ExpensesWith } from '@/components/expense/expenses-with';
+import { ExpensesWith } from '@/app/(app)/(expenses)/wydatki/uzytkownik/[userId]/with';
 import { Section, SectionContent, SectionDescription, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 

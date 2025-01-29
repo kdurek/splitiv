@@ -1,6 +1,9 @@
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
-import ExpensesSearch from '@/components/expense/expenses-search';
+import { ExpenseSearchInput } from '@/app/(app)/(expenses)/wydatki/wyszukaj/input';
+import { ExpensesSearchList } from '@/app/(app)/(expenses)/wydatki/wyszukaj/list';
+import { FullScreenLoading } from '@/components/layout/loading';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 
@@ -21,7 +24,10 @@ export default async function ExpenseSearchPage() {
           <SectionTitle>{t('title')}</SectionTitle>
         </SectionHeader>
         <SectionContent>
-          <ExpensesSearch />
+          <ExpenseSearchInput />
+          <Suspense fallback={<FullScreenLoading />}>
+            <ExpensesSearchList />
+          </Suspense>
         </SectionContent>
       </Section>
     </HydrateClient>

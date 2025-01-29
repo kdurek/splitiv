@@ -1,6 +1,7 @@
+import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { ExpenseForm } from '@/components/expense/expense-form';
+import { ExpenseForm } from '@/app/(app)/(expenses)/wydatki/dodaj/form';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 
@@ -14,9 +15,10 @@ export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) 
   const t = await getTranslations('ExpenseEditPage');
 
   const expense = await api.expense.byId({ id: params.expenseId });
-  if (!expense) return 'Nie znaleziono wydatku';
+  if (!expense) {
+    return notFound();
+  }
 
-  void api.expense.byId.prefetch({ id: params.expenseId });
   void api.group.current.prefetch();
   void api.user.current.prefetch();
 

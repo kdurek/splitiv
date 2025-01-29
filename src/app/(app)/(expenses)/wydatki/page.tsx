@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
-import { Archive } from '@/components/expense/archive';
-import { Expenses } from '@/components/expense/expenses';
+import { Archive } from '@/app/(app)/(expenses)/wydatki/archive';
+import { Expenses } from '@/app/(app)/(expenses)/wydatki/expenses';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api, HydrateClient } from '@/trpc/server';

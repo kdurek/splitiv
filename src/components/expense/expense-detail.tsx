@@ -3,25 +3,30 @@
 import { format } from 'date-fns';
 import Link from 'next/link';
 
-import { DebtRevertButton } from '@/components/debt/debt-revert-button';
+import { DebtRevertButton } from '@/components/expense/expense-debt-revert-button';
 import { ExpenseDebtorCard, ExpensePayerCard } from '@/components/expense/expense-debts';
 import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
+import { authClient } from '@/lib/auth';
 import { cn } from '@/lib/utils';
-import { api, type ExpensesList } from '@/trpc/react';
+import { type ExpensesList } from '@/trpc/react';
 
 interface ExpenseDetailProps {
   expense: ExpensesList['items'][number];
 }
 
 export function ExpenseDetail({ expense }: ExpenseDetailProps) {
-  const [user] = api.user.current.useSuspenseQuery();
+  const { data: session } = authClient.useSession();
 
   const logs = expense.debts.flatMap((debt) => debt.logs);
   const formattedDate = format(expense.createdAt, 'EEEEEEE, d MMMM yyyy');
-  const isPayer = user?.id === expense.payerId;
-  const isAdmin = user?.id === expense.group.adminId;
+  const isPayer = session?.user.id === expense.payerId;
+  const isAdmin = session?.user.id === expense.group.adminId;
+
+  if (!expense) {
+    return 'Nie znaleziono wydatku';
+  }
 
   return (
     <div className="divide-y">
@@ -45,7 +50,9 @@ export function ExpenseDetail({ expense }: ExpenseDetailProps) {
             name={debt.debtor.name}
             amount={Number(debt.amount)}
             settled={Number(debt.settled)}
-            canSettle={debt.amount !== debt.settled && (isAdmin || isPayer || (user?.id === debt.debtorId && !isPayer))}
+            canSettle={
+              debt.amount !== debt.settled && (isAdmin || isPayer || (session?.user.id === debt.debtorId && !isPayer))
+            }
           />
         ))}
       </div>

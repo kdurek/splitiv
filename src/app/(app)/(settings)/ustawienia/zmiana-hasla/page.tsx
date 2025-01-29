@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ChangePasswordForm } from '@/components/auth/change-password-form';
+import { ChangePasswordForm } from '@/app/(app)/(settings)/ustawienia/zmiana-hasla/form';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { HydrateClient } from '@/trpc/server';
 

@@ -288,7 +288,7 @@ export const expenseRouter = createTRPCRouter({
       return expenses;
     }),
 
-  byId: protectedProcedure.input(z.object({ id: z.string().cuid() })).query(async ({ input, ctx }) => {
+  byId: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
     const expense = await ctx.db.expense.findUnique({
       where: {
         id: input.id,
@@ -317,13 +317,6 @@ export const expenseRouter = createTRPCRouter({
         },
       },
     });
-
-    if (!expense) {
-      throw new TRPCError({
-        code: 'NOT_FOUND',
-        message: 'Nie znaleziono wydatku',
-      });
-    }
 
     return expense;
   }),

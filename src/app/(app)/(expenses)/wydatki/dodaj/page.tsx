@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ExpenseForm } from '@/components/expense/expense-form';
+import { ExpenseForm } from '@/app/(app)/(expenses)/wydatki/dodaj/form';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 
-import { NotificationPrompt } from '@/components/settings/notification-prompt';
+import { NotificationPrompt } from '@/components/layout/notification-prompt';
 import { cn } from '@/lib/utils';
 
 const navItems = [

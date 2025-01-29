@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { ExpenseSettlementForm } from '@/components/expense/expense-settlement-form';
+import { ExpenseSettlementForm } from '@/app/(app)/(expenses)/wydatki/uzytkownik/[userId]/rozliczenie/form';
 import { Section, SectionContent, SectionDescription, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 

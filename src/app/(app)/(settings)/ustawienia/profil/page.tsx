@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
+import { UserForm } from '@/app/(app)/(settings)/ustawienia/profil/form';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
-import { UserForm } from '@/components/user/user-form';
 import { api, HydrateClient } from '@/trpc/server';
 
 export default async function ProfilePage() {

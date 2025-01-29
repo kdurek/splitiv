@@ -1,4 +1,6 @@
-import { Expense } from '@/components/expense/expense';
+import { notFound } from 'next/navigation';
+
+import { ExpenseDetail } from '@/components/expense/expense-detail';
 import { Section, SectionContent } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 
@@ -9,14 +11,18 @@ interface ExpensePageProps {
 }
 
 export default async function ExpensePage({ params }: ExpensePageProps) {
-  void api.expense.byId.prefetch({ id: params.expenseId });
+  const expense = await api.expense.byId({ id: params.expenseId });
+  if (!expense) {
+    return notFound();
+  }
+
   void api.user.current.prefetch();
 
   return (
     <HydrateClient>
       <Section>
         <SectionContent>
-          <Expense expenseId={params.expenseId} />
+          <ExpenseDetail expense={expense} />
         </SectionContent>
       </Section>
     </HydrateClient>

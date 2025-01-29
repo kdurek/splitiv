@@ -1,5 +1,8 @@
 FROM node:20-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
+RUN apk add --no-cache openssl
 
 # Dependencies
 FROM base AS deps
@@ -8,7 +11,7 @@ WORKDIR /app
 COPY prisma ./
 COPY package.json pnpm-lock.yaml* ./
 
-RUN pnpm i --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Build
 FROM base AS builder

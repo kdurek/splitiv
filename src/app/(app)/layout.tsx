@@ -7,7 +7,7 @@ import { auth } from '@/server/auth';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({
-    headers: headers(),
+    headers: await headers(),
   });
   if (!session) {
     return redirect('/logowanie');

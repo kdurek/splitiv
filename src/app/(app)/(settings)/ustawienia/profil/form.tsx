@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -12,47 +11,38 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth';
 import { userInfoSchema } from '@/lib/validations/auth';
+import { api } from '@/trpc/react';
 
 export function UserForm() {
   const router = useRouter();
-
-  const { data: session } = authClient.useSession();
+  const [user] = api.user.current.useSuspenseQuery();
 
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
-    defaultValues: {
-      name: '',
-      firstName: '',
-      lastName: '',
+    values: {
+      name: user.name ?? '',
+      firstName: user.firstName ?? '',
+      lastName: user.lastName ?? '',
     },
   });
 
-  useEffect(() => {
-    if (session?.user) {
-      form.reset({
-        name: session.user.name ?? '',
-        firstName: session.user.firstName ?? '',
-        lastName: session.user.lastName ?? '',
-      });
-    }
-  }, [form, session]);
-
   const handleUpdateUser = async (values: z.infer<typeof userInfoSchema>) => {
-    if (session) {
-      await authClient.updateUser(
-        {
-          name: values.name,
-          firstName: values.firstName,
-          lastName: values.lastName,
+    await authClient.updateUser(
+      {
+        name: values.name,
+        firstName: values.firstName,
+        lastName: values.lastName,
+      },
+      {
+        onSuccess() {
+          toast.success('Pomyślnie zaktualizowano');
+          router.push('/ustawienia');
         },
-        {
-          onSuccess() {
-            toast.success('Pomyślnie zaktualizowano użytkownika');
-            router.push('/ustawienia');
-          },
+        onError() {
+          toast.error('Wystąpił błąd podczas aktualizacji');
         },
-      );
-    }
+      },
+    );
   };
 
   return (

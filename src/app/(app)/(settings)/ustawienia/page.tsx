@@ -2,11 +2,11 @@ import { Lock, User2 } from 'lucide-react';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
-import { LocaleSelect } from '@/app/(app)/(settings)/ustawienia/locale-select';
 import { MembersList } from '@/app/(app)/(settings)/ustawienia/members-list';
 import { Notification } from '@/app/(app)/(settings)/ustawienia/notification';
 import { SignOutButton } from '@/app/(app)/(settings)/ustawienia/sign-out-button';
 import { GroupSelect } from '@/components/group/group-select';
+import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 import { Section, SectionContent, SectionHeader, SectionTitle } from '@/components/layout/section';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
@@ -49,7 +49,7 @@ export default async function SettingsPage() {
 
             <div className="space-y-2">
               <Heading variant="h2">Język</Heading>
-              <LocaleSelect />
+              <LocaleSwitcher />
             </div>
 
             {user?.id === group.adminId && (

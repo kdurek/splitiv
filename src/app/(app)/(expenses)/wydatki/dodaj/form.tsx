@@ -25,8 +25,8 @@ interface ExpenseFormProps {
 }
 
 export function ExpenseForm({ expense }: ExpenseFormProps) {
-  const [currentUser] = api.user.current.useSuspenseQuery();
-  const [currentGroup] = api.group.current.useSuspenseQuery();
+  const [user] = api.user.current.useSuspenseQuery();
+  const [group] = api.group.current.useSuspenseQuery();
 
   const router = useRouter();
   const { mutate: createExpense, isPending: isPendingCreateExpense } = api.expense.create.useMutation();
@@ -37,8 +37,8 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
       name: expense?.name ?? '',
       description: expense?.description ?? '',
       amount: Number(expense?.amount) || 0,
-      payer: expense?.payerId ?? currentUser?.id ?? '',
-      debts: currentGroup.members.map((member) => ({
+      payer: expense?.payerId ?? user?.id ?? '',
+      debts: group.members.map((member) => ({
         id: member.id,
         name: member.name ?? '',
         amount: Number(expense?.debts.find((debt) => debt.debtorId === member.id)?.amount) || 0,
@@ -163,7 +163,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {currentGroup.members.map((member) => (
+                    {group.members.map((member) => (
                       <SelectItem key={member.id} value={member.id}>
                         {member.name}
                       </SelectItem>

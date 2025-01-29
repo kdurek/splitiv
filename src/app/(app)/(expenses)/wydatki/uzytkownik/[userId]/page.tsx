@@ -18,9 +18,6 @@ export default async function ExpensesWithUserPage({ params }: ExpensesWithUserP
     userId: params.userId,
   });
   void api.user.current.prefetch();
-  void api.expense.getExpensesBetweenUser.prefetch({
-    userId: params.userId,
-  });
 
   return (
     <HydrateClient>

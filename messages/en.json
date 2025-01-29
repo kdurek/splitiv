@@ -1,4 +1,9 @@
 {
+  "LocaleSwitcher": {
+    "en": "English",
+    "pl": "Polish",
+    "label": "Language"
+  },
   "DashboardPage": {
     "title": "Dashboard"
   },

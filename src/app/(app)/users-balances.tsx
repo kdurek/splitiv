@@ -34,17 +34,17 @@ function UserBalanceCard({ image, name, credit = '0.00', debt = '0.00' }: UserCa
 
 export function UsersBalances() {
   const [balances] = api.group.getBalances.useSuspenseQuery();
-  const [currentUser] = api.user.current.useSuspenseQuery();
+  const [user] = api.user.current.useSuspenseQuery();
 
-  const currentUserBalance = balances.find((balance) => balance.user.id === currentUser.id);
-  const otherUsersBalances = balances.filter((balance) => balance.user.id !== currentUser.id);
+  const currentUserBalance = balances.find((balance) => balance.user.id === user.id);
+  const otherUsersBalances = balances.filter((balance) => balance.user.id !== user.id);
 
   return (
     <div className="divide-y">
       <Link href={`/wydatki`} className="block w-full">
         <UserBalanceCard
-          image={currentUser.image}
-          name={currentUser.name}
+          image={user.image}
+          name={user.name}
           credit={currentUserBalance?.debtsAmount}
           debt={currentUserBalance?.creditsAmount}
         />

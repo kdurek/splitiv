@@ -13,20 +13,7 @@ export const userRouter = createTRPCRouter({
   }),
 
   current: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.db.user.findUnique({
-      where: {
-        id: ctx.user.id,
-      },
-    });
-
-    if (!user) {
-      throw new TRPCError({
-        code: 'NOT_FOUND',
-        message: 'Nie znaleziono użytkownika',
-      });
-    }
-
-    return user;
+    return ctx.user;
   }),
 
   byId: protectedProcedure

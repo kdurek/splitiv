@@ -41,6 +41,7 @@ const config = {
     'import/newline-after-import': 'error',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
+    // 'react/jsx-no-literals': 'error', // Useful for i18n
   },
 };
 

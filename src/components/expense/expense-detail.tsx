@@ -8,21 +8,20 @@ import { ExpenseDebtorCard, ExpensePayerCard } from '@/components/expense/expens
 import { ExpenseDeleteModal } from '@/components/expense/expense-delete-modal';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
-import { authClient } from '@/lib/auth';
 import { cn } from '@/lib/utils';
-import { type ExpensesList } from '@/trpc/react';
+import { api, type ExpensesList } from '@/trpc/react';
 
 interface ExpenseDetailProps {
   expense: ExpensesList['items'][number];
 }
 
 export function ExpenseDetail({ expense }: ExpenseDetailProps) {
-  const { data: session } = authClient.useSession();
+  const [user] = api.user.current.useSuspenseQuery();
 
   const logs = expense.debts.flatMap((debt) => debt.logs);
   const formattedDate = format(expense.createdAt, 'EEEEEEE, d MMMM yyyy');
-  const isPayer = session?.user.id === expense.payerId;
-  const isAdmin = session?.user.id === expense.group.adminId;
+  const isPayer = user.id === expense.payerId;
+  const isAdmin = user.id === expense.group.adminId;
 
   if (!expense) {
     return 'Nie znaleziono wydatku';
@@ -50,9 +49,7 @@ export function ExpenseDetail({ expense }: ExpenseDetailProps) {
             name={debt.debtor.name}
             amount={Number(debt.amount)}
             settled={Number(debt.settled)}
-            canSettle={
-              debt.amount !== debt.settled && (isAdmin || isPayer || (session?.user.id === debt.debtorId && !isPayer))
-            }
+            canSettle={debt.amount !== debt.settled && (isAdmin || isPayer || (user.id === debt.debtorId && !isPayer))}
           />
         ))}
       </div>

@@ -10,6 +10,7 @@ import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 
+import { Providers } from '@/app/providers';
 import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
 import { Toaster } from '@/components/ui/sonner';
 import { TRPCReactProvider } from '@/trpc/react';
@@ -64,10 +65,12 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider messages={messages}>
           <TRPCReactProvider>
-            {children}
-            <Toaster />
-            <ReactQueryDevtools initialIsOpen={false} />
-            <TailwindIndicator />
+            <Providers>
+              {children}
+              <Toaster />
+              <ReactQueryDevtools initialIsOpen={false} />
+              <TailwindIndicator />
+            </Providers>
           </TRPCReactProvider>
         </NextIntlClientProvider>
       </body>

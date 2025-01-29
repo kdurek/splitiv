@@ -5,25 +5,33 @@
 
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
+  # - package-ecosystem: "github-actions"
+  #   directory: "/"
+  #   target-branch: "dev"
+  #   schedule:
+  #     interval: "monthly"
+  #   groups:
+  #     actions-deps:
+  #       patterns:
+  #         - "*"
+  - package-ecosystem: "docker"
     directory: "/"
     target-branch: "dev"
     schedule:
       interval: "monthly"
-    groups:
-      actions-deps:
-        patterns:
-          - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "npm"
     directory: "/"
     target-branch: "dev"
     schedule:
       interval: "monthly"
-    groups:
-      dev-deps:
-        dependency-type: "development"
-      prod-deps:
-        dependency-type: "production"
+    # groups:
+    #   dev-deps:
+    #     dependency-type: "development"
+    #   prod-deps:
+    #     dependency-type: "production"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]

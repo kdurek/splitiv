@@ -1,8 +1,7 @@
 import { defaultCache } from '@serwist/next/worker';
 import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
 import { ExpirationPlugin, NetworkOnly, Serwist } from 'serwist';
-
-import { notificationEventSchema, pushEventSchema } from '@/lib/validations/push';
+import { z } from 'zod';
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -14,6 +13,20 @@ declare global {
 }
 
 declare const self: ServiceWorkerGlobalScope;
+
+const pushEventSchema = z.object({
+  title: z.string(),
+  body: z.string(),
+  url: z.string().optional(),
+});
+
+const notificationEventSchema = z.object({
+  title: z.string(),
+  body: z.string(),
+  data: z.object({
+    url: z.string().optional(),
+  }),
+});
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,

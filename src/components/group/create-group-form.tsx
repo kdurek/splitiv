@@ -3,28 +3,29 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { type z } from 'zod';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { createGroupFormSchema } from '@/lib/validations/group';
 import { api } from '@/trpc/react';
 
-type CreateGroupFormSchema = z.infer<typeof createGroupFormSchema>;
+const createGroupFormSchema = z.object({
+  name: z.string({ required_error: 'Musisz podać nazwę grupy' }).min(3, 'Minimalna długość to 3 znaki'),
+});
 
 export function CreateGroupForm() {
   const { mutateAsync: createGroup } = api.group.create.useMutation();
   const { mutate: changeActiveGroup } = api.group.changeCurrent.useMutation();
 
-  const form = useForm<CreateGroupFormSchema>({
+  const form = useForm({
     resolver: zodResolver(createGroupFormSchema),
     defaultValues: {
       name: '',
     },
   });
 
-  const handleCreateGroup = async (values: CreateGroupFormSchema) => {
+  const handleCreateGroup = async (values: z.infer<typeof createGroupFormSchema>) => {
     const createdGroup = await createGroup(
       {
         name: values.name,

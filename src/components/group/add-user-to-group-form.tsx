@@ -13,18 +13,19 @@ const addUserToGroupFormSchema = z.object({
   userId: z.string({ required_error: 'Musisz wybrać użytkownika' }),
 });
 
-type AddUserToGroupFormSchema = z.infer<typeof addUserToGroupFormSchema>;
-
 export function AddUserToGroupForm() {
   const [usersNotInCurrentGroup] = api.user.listNotInCurrentGroup.useSuspenseQuery();
 
   const { mutate: addUserToGroup } = api.group.addUser.useMutation();
 
-  const form = useForm<AddUserToGroupFormSchema>({
+  const form = useForm({
     resolver: zodResolver(addUserToGroupFormSchema),
+    defaultValues: {
+      userId: '',
+    },
   });
 
-  const handleAddUserToGroup = (values: AddUserToGroupFormSchema) => {
+  const handleAddUserToGroup = (values: z.infer<typeof addUserToGroupFormSchema>) => {
     addUserToGroup({ userId: values.userId });
   };
 

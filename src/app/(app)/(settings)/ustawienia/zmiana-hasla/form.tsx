@@ -12,12 +12,10 @@ import { Input } from '@/components/ui/input';
 import { changePasswordFormSchema } from '@/lib/validations/auth';
 import { api } from '@/trpc/react';
 
-type ChangePasswordFormSchema = z.infer<typeof changePasswordFormSchema>;
-
 export function ChangePasswordForm() {
   const router = useRouter();
 
-  const form = useForm<ChangePasswordFormSchema>({
+  const form = useForm({
     resolver: zodResolver(changePasswordFormSchema),
     defaultValues: {
       currentPassword: '',
@@ -28,7 +26,7 @@ export function ChangePasswordForm() {
 
   const { mutate: changePassword, isPending: isPendingChangePassword } = api.user.changePassword.useMutation();
 
-  const handleChangePassword = async (values: ChangePasswordFormSchema) => {
+  const handleChangePassword = async (values: z.infer<typeof changePasswordFormSchema>) => {
     changePassword(
       {
         currentPassword: values.currentPassword,

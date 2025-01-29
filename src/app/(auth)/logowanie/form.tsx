@@ -19,7 +19,7 @@ import { signInFormSchema } from '@/lib/validations/auth';
 export function SignInForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<z.infer<typeof signInFormSchema>>({
+  const form = useForm({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: '',

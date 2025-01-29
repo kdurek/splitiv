@@ -17,9 +17,9 @@ export function UserForm() {
   const router = useRouter();
   const [user] = api.user.current.useSuspenseQuery();
 
-  const form = useForm<z.infer<typeof userInfoSchema>>({
+  const form = useForm({
     resolver: zodResolver(userInfoSchema),
-    values: {
+    defaultValues: {
       name: user.name ?? '',
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',

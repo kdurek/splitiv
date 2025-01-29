@@ -47,8 +47,6 @@ export const signInFormSchema = z.object({
   password: passwordSchema,
 });
 
-export type SignInFormSchema = z.infer<typeof signInFormSchema>;
-
 export const signUpFormSchema = userInfoSchema
   .extend({
     email: z.string().email().min(5).max(64),
@@ -64,8 +62,6 @@ export const signUpFormSchema = userInfoSchema
       path: ['confirmPassword'],
     },
   );
-
-export type SignUpFormSchema = z.infer<typeof signUpFormSchema>;
 
 export const changePasswordFormSchema = z
   .object({

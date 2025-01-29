@@ -42,10 +42,8 @@ function allocate(totalAmount: number | string, userCounts: number[]) {
   return allocations.map(parseFloat); // Convert the Decimal objects back to numbers
 }
 
-export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
-
 export function ExpenseFormMethods() {
-  const form = useFormContext<ExpenseFormSchema>();
+  const form = useFormContext<z.infer<typeof expenseFormSchema>>();
   const { watch, getValues, setValue, trigger } = form;
 
   const defaultRatioSplit = form.getValues('debts').reduce((acc, cur) => ({ ...acc, [cur.id]: 0 }), {});

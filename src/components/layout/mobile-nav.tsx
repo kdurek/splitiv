@@ -38,7 +38,7 @@ export function MobileNav() {
           </Fragment>
         ))}
       </nav>
-      <div className="pt-16 pwa:pt-24" />
+      <div className="pt-16 pwa:pt-20" />
     </>
   );
 }

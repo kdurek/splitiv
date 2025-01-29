@@ -18,13 +18,7 @@ import { expenseFormSchema } from '@/lib/validations/expense';
 import type { ExpenseById } from '@/trpc/react';
 import { api } from '@/trpc/react';
 
-export type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
-
-interface ExpenseFormProps {
-  expense?: ExpenseById;
-}
-
-export function ExpenseForm({ expense }: ExpenseFormProps) {
+export function ExpenseForm({ expense }: { expense?: ExpenseById }) {
   const [user] = api.user.current.useSuspenseQuery();
   const [group] = api.group.current.useSuspenseQuery();
 
@@ -33,6 +27,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
   const { mutate: updateExpense, isPending: isPendingUpdateExpense } = api.expense.update.useMutation();
 
   const form = useForm({
+    resolver: zodResolver(expenseFormSchema),
     defaultValues: {
       name: expense?.name ?? '',
       description: expense?.description ?? '',
@@ -44,10 +39,9 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
         amount: Number(expense?.debts.find((debt) => debt.debtorId === member.id)?.amount) || 0,
       })),
     },
-    resolver: zodResolver(expenseFormSchema),
   });
 
-  const handleOnSubmit = (values: ExpenseFormSchema) => {
+  const handleOnSubmit = (values: z.infer<typeof expenseFormSchema>) => {
     const formattedDebts = values.debts
       .filter((debt) => debt.amount !== 0 || (values.payer === debt.id && debt.amount !== 0))
       .map((debt) => {

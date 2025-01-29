@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { type z } from 'zod';
+import { z } from 'zod';
 
 import {
   AlertDialog,
@@ -26,16 +26,24 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { expenseSettlementFormSchema } from '@/lib/validations/expense-settlement';
 import { api } from '@/trpc/react';
 
-type ExpenseSettlementFormSchema = z.infer<typeof expenseSettlementFormSchema>;
+const expenseSettlementFormSchema = z.object({
+  credits: z.array(
+    z.object({
+      id: z.string(),
+      selected: z.boolean(),
+    }),
+  ),
+  debts: z.array(
+    z.object({
+      id: z.string(),
+      selected: z.boolean(),
+    }),
+  ),
+});
 
-interface ExpenseSettlementFormProps {
-  paramsUserId: string;
-}
-
-export function ExpenseSettlementForm({ paramsUserId }: ExpenseSettlementFormProps) {
+export function ExpenseSettlementForm({ paramsUserId }: { paramsUserId: string }) {
   const router = useRouter();
 
   const [usersDebts] = api.expense.debt.getBetweenUser.useSuspenseQuery({
@@ -45,7 +53,8 @@ export function ExpenseSettlementForm({ paramsUserId }: ExpenseSettlementFormPro
   const { mutate: settleDebtsFully, isPending: isPendingSettleExpenseDebts } =
     api.expense.debt.settleDebtsFully.useMutation();
 
-  const form = useForm<ExpenseSettlementFormSchema>({
+  const form = useForm({
+    resolver: zodResolver(expenseSettlementFormSchema),
     values: {
       credits: usersDebts.credits.map((debt) => ({
         id: debt.id,
@@ -56,7 +65,6 @@ export function ExpenseSettlementForm({ paramsUserId }: ExpenseSettlementFormPro
         selected: true,
       })),
     },
-    resolver: zodResolver(expenseSettlementFormSchema),
   });
 
   const { fields: creditsFields } = useFieldArray({
@@ -91,7 +99,7 @@ export function ExpenseSettlementForm({ paramsUserId }: ExpenseSettlementFormPro
 
   const isPayer = summedUsersDebts.isPositive();
 
-  const handleSettlement = (values: ExpenseSettlementFormSchema) => {
+  const handleSettlement = (values: z.infer<typeof expenseSettlementFormSchema>) => {
     const expenseDebtIds = [...values.credits, ...values.debts].filter((debt) => debt.selected).map((debt) => debt.id);
 
     settleDebtsFully(

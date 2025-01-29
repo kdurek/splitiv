@@ -38,7 +38,9 @@ export function ExpenseListItem({ name, isPayer, createdAt, fullAmount, toPayAmo
           </div>
         </button>
       </DrawerTrigger>
-      <DrawerContent className="max-h-[96%] overflow-auto overscroll-none p-4">{children}</DrawerContent>
+      <DrawerContent className="max-h-[96%]">
+        <div className="overflow-y-auto overscroll-none p-4">{children}</div>
+      </DrawerContent>
     </Drawer>
   );
 }

@@ -1,12 +1,12 @@
 'use client';
 
-import type { User } from 'lucia';
 import { useRouter } from 'next/navigation';
 
 import { CreateGroupForm } from '@/components/group/create-group-form';
 import { GroupSelect } from '@/components/group/group-select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
+import type { User } from '@/lib/auth';
 
 interface AppInitProps {
   children: React.ReactNode;

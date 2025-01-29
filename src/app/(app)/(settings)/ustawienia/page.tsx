@@ -9,7 +9,6 @@ export default async function SettingsPage() {
 
   void api.user.current.prefetch();
   void api.group.list.prefetch();
-  void api.user.current.prefetch();
   void api.group.current.prefetch();
   void api.user.listNotInCurrentGroup.prefetch();
 

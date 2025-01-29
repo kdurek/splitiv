@@ -1,79 +1,51 @@
-import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
-import { Google } from 'arctic';
-import { Lucia, type Session, type User } from 'lucia';
-import { cookies } from 'next/headers';
-import { cache } from 'react';
+import { betterAuth } from 'better-auth';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
 
 import { env } from '@/env';
 import { db } from '@/server/db';
 
-declare module 'lucia' {
-  interface Register {
-    Lucia: typeof lucia;
-    DatabaseUserAttributes: DatabaseUserAttributes;
-  }
-}
-
-interface DatabaseUserAttributes {
-  id: string;
-  name: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  image: string;
-  activeGroupId: string;
-}
-
-export const google = new Google(
-  env.GOOGLE_CLIENT_ID,
-  env.GOOGLE_CLIENT_SECRET,
-  env.BASE_URL + '/api/auth/callback/google',
-);
-
-const adapter = new PrismaAdapter(db.session, db.user);
-
-export const lucia = new Lucia(adapter, {
-  sessionCookie: {
-    expires: false,
-    attributes: {
-      secure: process.env.NODE_ENV === 'production',
+export const auth = betterAuth({
+  appName: 'Splitiv',
+  trustedOrigins: ['*'],
+  database: prismaAdapter(db, {
+    provider: 'postgresql',
+  }),
+  emailAndPassword: {
+    enabled: true,
+  },
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      mapProfileToUser: (profile) => {
+        return {
+          name: profile.name,
+          email: profile.email,
+          emailVerified: profile.email_verified,
+          image: profile.picture,
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+        };
+      },
     },
   },
-  getUserAttributes: (attributes) => {
-    return {
-      id: attributes.id,
-      name: attributes.name,
-      firstName: attributes.firstName,
-      lastName: attributes.lastName,
-      email: attributes.email,
-      image: attributes.image,
-      activeGroupId: attributes.activeGroupId,
-    };
+  user: {
+    additionalFields: {
+      firstName: {
+        type: 'string',
+      },
+      lastName: {
+        type: 'string',
+      },
+      activeGroupId: {
+        type: 'string',
+        input: false,
+      },
+    },
+  },
+  account: {
+    accountLinking: {
+      enabled: true,
+    },
   },
 });
-
-export const validateRequest = cache(
-  async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
-    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
-    if (!sessionId) {
-      return {
-        user: null,
-        session: null,
-      };
-    }
-
-    const result = await lucia.validateSession(sessionId);
-    // next.js throws when you attempt to set cookie when rendering page
-    try {
-      if (result.session?.fresh) {
-        const sessionCookie = lucia.createSessionCookie(result.session.id);
-        cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-      }
-      if (!result.session) {
-        const sessionCookie = lucia.createBlankSessionCookie();
-        cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-      }
-    } catch {}
-    return result;
-  },
-);

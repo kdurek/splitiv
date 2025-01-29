@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { type z } from 'zod';
@@ -9,30 +10,36 @@ import { type z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { updateUserFormSchema } from '@/lib/validations/user';
-import { api } from '@/trpc/react';
-
-type UpdateUserFormSchema = z.infer<typeof updateUserFormSchema>;
+import { authClient } from '@/lib/auth';
+import { userInfoSchema } from '@/lib/validations/auth';
 
 export function UserForm() {
   const router = useRouter();
 
-  const [currentUser] = api.user.current.useSuspenseQuery();
+  const { data: session } = authClient.useSession();
 
-  const form = useForm<UpdateUserFormSchema>({
-    resolver: zodResolver(updateUserFormSchema),
+  const form = useForm<z.infer<typeof userInfoSchema>>({
+    resolver: zodResolver(userInfoSchema),
     defaultValues: {
-      name: currentUser?.name ?? '',
-      firstName: currentUser?.firstName ?? '',
-      lastName: currentUser?.lastName ?? '',
+      name: '',
+      firstName: '',
+      lastName: '',
     },
   });
 
-  const { mutate: updateUser } = api.user.update.useMutation();
+  useEffect(() => {
+    if (session?.user) {
+      form.reset({
+        name: session.user.name ?? '',
+        firstName: session.user.firstName ?? '',
+        lastName: session.user.lastName ?? '',
+      });
+    }
+  }, [form, session]);
 
-  const handleUpdateUser = async (values: UpdateUserFormSchema) => {
-    if (currentUser) {
-      updateUser(
+  const handleUpdateUser = async (values: z.infer<typeof userInfoSchema>) => {
+    if (session) {
+      await authClient.updateUser(
         {
           name: values.name,
           firstName: values.firstName,

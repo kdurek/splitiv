@@ -1,12 +1,15 @@
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { validateRequest } from '@/server/auth';
+import { auth } from '@/server/auth';
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
-  const { user } = await validateRequest();
-  if (user) {
+  const session = await auth.api.getSession({
+    headers: headers(),
+  });
+  if (session) {
     return redirect('/');
   }
 
-  return <main className="mx-auto my-4 max-w-lg p-4">{children}</main>;
+  return <main className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">{children}</main>;
 }

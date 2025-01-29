@@ -69,6 +69,7 @@ export type SignUpFormSchema = z.infer<typeof signUpFormSchema>;
 
 export const changePasswordFormSchema = z
   .object({
+    currentPassword: z.string(),
     password: passwordSchema,
     confirmPassword: passwordSchema,
   })

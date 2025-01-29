@@ -20,22 +20,27 @@ export function ChangePasswordForm() {
   const form = useForm<ChangePasswordFormSchema>({
     resolver: zodResolver(changePasswordFormSchema),
     defaultValues: {
+      currentPassword: '',
       password: '',
       confirmPassword: '',
     },
   });
 
-  const { mutate: changePassword } = api.user.changePassword.useMutation();
+  const { mutate: changePassword, isPending: isPendingChangePassword } = api.user.changePassword.useMutation();
 
-  const handleChangePassword = async ({ password }: ChangePasswordFormSchema) => {
+  const handleChangePassword = async (values: ChangePasswordFormSchema) => {
     changePassword(
       {
-        password,
+        currentPassword: values.currentPassword,
+        password: values.password,
       },
       {
         onSuccess() {
           toast.success('Pomyślnie zaktualizowano hasło');
           router.push('/ustawienia');
+        },
+        onError(err) {
+          toast.error(err.message);
         },
       },
     );
@@ -44,6 +49,19 @@ export function ChangePasswordForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleChangePassword)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="currentPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Aktualne hasło</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="password"
@@ -71,7 +89,7 @@ export function ChangePasswordForm() {
           )}
         />
         <div className="mt-6 flex justify-end">
-          <Button>Zmień hasło</Button>
+          <Button disabled={isPendingChangePassword}>Zmień hasło</Button>
         </div>
       </form>
     </Form>

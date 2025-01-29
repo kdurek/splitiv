@@ -1,8 +1,9 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
+import { passwordSchema } from '@/lib/validations/auth';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '@/server/api/trpc';
-import { hashPassword } from '@/server/utils/auth';
+import { auth } from '@/server/auth';
 
 export const userRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
@@ -90,19 +91,43 @@ export const userRouter = createTRPCRouter({
   changePassword: protectedProcedure
     .input(
       z.object({
-        password: z.string(),
+        currentPassword: z.string(),
+        password: passwordSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const hashedPassword = await hashPassword(input.password);
-
-      await ctx.db.user.update({
+      const hasPassword = await ctx.db.account.count({
         where: {
-          id: ctx.user.id,
-        },
-        data: {
-          password: hashedPassword,
+          userId: ctx.user.id,
+          password: {
+            not: null,
+          },
         },
       });
+
+      if (hasPassword) {
+        if (!input.currentPassword) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Podaj aktualne hasło',
+          });
+        }
+
+        await auth.api.changePassword({
+          headers: ctx.headers,
+          body: {
+            currentPassword: input.currentPassword,
+            newPassword: input.password,
+            revokeOtherSessions: true,
+          },
+        });
+      } else {
+        await auth.api.setPassword({
+          headers: ctx.headers,
+          body: {
+            newPassword: input.password,
+          },
+        });
+      }
     }),
 });

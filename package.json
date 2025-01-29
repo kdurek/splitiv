@@ -4,13 +4,14 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20",
+    "node": ">=22",
     "pnpm": ">=9"
   },
   "volta": {
-    "node": "20.17.0",
-    "pnpm": "9.9.0"
+    "node": "22.13.1",
+    "pnpm": "9.15.4"
   },
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
@@ -25,6 +26,7 @@
     "test": "vitest",
     "build": "next build",
     "start": "next start",
+    "start:prod": "pnpm dlx prisma migrate deploy && node server.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

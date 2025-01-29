@@ -6,12 +6,13 @@ import { Section, SectionContent, SectionHeader, SectionTitle } from '@/componen
 import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpenseEditPageProps {
-  params: {
+  params: Promise<{
     expenseId: string;
-  };
+  }>;
 }
 
-export default async function ExpenseEditPage({ params }: ExpenseEditPageProps) {
+export default async function ExpenseEditPage({ params: paramsPromise }: ExpenseEditPageProps) {
+  const params = await paramsPromise;
   const t = await getTranslations('ExpenseEditPage');
 
   const expense = await api.expense.byId({ id: params.expenseId });

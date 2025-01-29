@@ -5,12 +5,13 @@ import { Section, SectionContent, SectionDescription, SectionHeader, SectionTitl
 import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpensesWithUserPageProps {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 }
 
-export default async function ExpensesWithUserPage({ params }: ExpensesWithUserPageProps) {
+export default async function ExpensesWithUserPage({ params: paramsPromise }: ExpensesWithUserPageProps) {
+  const params = await paramsPromise;
   const t = await getTranslations('ExpensesWithUserPage');
 
   const paramsUser = await api.user.byId({ id: params.userId });

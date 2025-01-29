@@ -5,12 +5,14 @@ import { Section, SectionContent } from '@/components/layout/section';
 import { api, HydrateClient } from '@/trpc/server';
 
 interface ExpensePageProps {
-  params: {
+  params: Promise<{
     expenseId: string;
-  };
+  }>;
 }
 
-export default async function ExpensePage({ params }: ExpensePageProps) {
+export default async function ExpensePage({ params: paramsPromise }: ExpensePageProps) {
+  const params = await paramsPromise;
+
   const expense = await api.expense.byId({ id: params.expenseId });
   if (!expense) {
     return notFound();

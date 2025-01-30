@@ -21,7 +21,7 @@ export function GroupSelect({ onSuccess }: GroupSelectProps) {
       {
         onSuccess() {
           toast.success('Pomyślnie wybrano grupę');
-          onSuccess && onSuccess();
+          onSuccess?.();
         },
       },
     );

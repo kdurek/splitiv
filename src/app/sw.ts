@@ -74,13 +74,22 @@ self.addEventListener('push', (event) => {
 });
 
 self.addEventListener('notificationclick', (event) => {
-  const notificationEvent = notificationEventSchema.parse(event.notification);
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientsArr) => {
+      const notificationEvent = notificationEventSchema.parse(event.notification);
 
-  if (!notificationEvent.data.url) {
-    return;
-  }
+      const hadWindowToFocus = clientsArr.some((windowClient) =>
+        windowClient.url === notificationEvent.data.url ? (windowClient.focus(), true) : false,
+      );
 
-  event.waitUntil(self.clients.openWindow(notificationEvent.data.url));
+      if (!hadWindowToFocus) {
+        void self.clients
+          .openWindow(notificationEvent.data.url ? notificationEvent.data.url : self.location.origin)
+          .then((windowClient) => (windowClient ? windowClient.focus() : null));
+      }
+    }),
+  );
 });
 
 serwist.addEventListeners();

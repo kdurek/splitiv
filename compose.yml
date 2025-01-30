@@ -13,11 +13,3 @@ services:
     restart: unless-stopped
     volumes:
       - ./.docker/postgres:/var/lib/postgresql/data
-    networks:
-      - splitiv
-
-volumes:
-  postgres:
-
-networks:
-  splitiv:

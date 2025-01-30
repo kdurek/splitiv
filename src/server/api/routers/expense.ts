@@ -4,7 +4,28 @@ import { z } from 'zod';
 import { expenseDebtRouter } from '@/server/api/routers/expense/debt';
 import { expenseLogRouter } from '@/server/api/routers/expense/log';
 import { createTRPCRouter, protectedProcedure, t } from '@/server/api/trpc';
-import { sendPush } from '@/server/utils/push-subscription';
+
+const checkGroupAccess = t.procedure.use(async ({ ctx, next }) => {
+  const group = await ctx.db.group.count({
+    where: {
+      id: ctx.user?.activeGroupId,
+      members: {
+        some: {
+          userId: ctx.user?.id,
+        },
+      },
+    },
+  });
+
+  if (!group) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Nie masz uprawnień do wykonania tej operacji',
+    });
+  }
+
+  return next();
+});
 
 const checkExpenseAccess = t.procedure
   .input(
@@ -322,22 +343,45 @@ export const expenseRouter = createTRPCRouter({
   }),
 
   create: protectedProcedure
+    .unstable_concat(checkGroupAccess)
     .input(
       z.object({
         name: z.string(),
         description: z.string().optional(),
-        amount: z.number(),
+        amount: z.number().positive(),
         payerId: z.string(),
         debts: z.array(
           z.object({
             settled: z.number(),
-            amount: z.number(),
+            amount: z.number().positive(),
             debtorId: z.string(),
           }),
         ),
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      const debtsAmount = input.debts.reduce((acc, debt) => acc + debt.amount, 0);
+      if (debtsAmount !== input.amount) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Suma długów nie zgadza się z kwotą wydatku',
+        });
+      }
+
+      if (input.debts.some((debt) => debt.settled > debt.amount)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Kwota spłaty nie może przekroczyć kwoty długu',
+        });
+      }
+
+      if (input.debts.length !== new Set(input.debts.map((debt) => debt.debtorId)).size) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Ten sam dłużnik nie może wystąpić więcej niż raz',
+        });
+      }
+
       const expense = await ctx.db.expense.create({
         data: {
           name: input.name,
@@ -356,11 +400,11 @@ export const expenseRouter = createTRPCRouter({
         },
       });
 
-      const userIdsToPush = [...expense.debts.map((debtor) => debtor.debtorId), expense.payerId].filter(
-        (userId) => userId !== ctx.user.id,
-      );
+      // const userIdsToPush = [...expense.debts.map((debtor) => debtor.debtorId), expense.payerId].filter(
+      //   (userId) => userId !== ctx.user.id,
+      // );
 
-      await sendPush(userIdsToPush, 'Nowy wydatek', expense.name, `/wydatki/${expense.id}`);
+      // await sendPush(userIdsToPush, 'Nowy wydatek', expense.name, `/wydatki/${expense.id}`);
 
       return expense;
     }),
@@ -396,6 +440,23 @@ export const expenseRouter = createTRPCRouter({
     .unstable_concat(checkExpenseAccess)
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
+      const settledDebts = await ctx.db.expenseDebt.count({
+        where: {
+          expenseId: input.id,
+          settled: {
+            not: {
+              equals: 0,
+            },
+          },
+        },
+      });
+      if (settledDebts) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Nie można usunąć wydatku z rozliczonymi długami',
+        });
+      }
+
       const expense = await ctx.db.expense.delete({
         where: {
           id: input.id,

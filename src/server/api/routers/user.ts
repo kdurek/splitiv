@@ -75,7 +75,7 @@ export const userRouter = createTRPCRouter({
       return user;
     }),
 
-  changePassword: protectedProcedure
+  setPassword: protectedProcedure
     .input(
       z.object({
         currentPassword: z.string(),
@@ -83,38 +83,11 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const hasPassword = await ctx.db.account.count({
-        where: {
-          userId: ctx.user.id,
-          password: {
-            not: null,
-          },
+      await auth.api.setPassword({
+        headers: ctx.headers,
+        body: {
+          newPassword: input.password,
         },
       });
-
-      if (hasPassword) {
-        if (!input.currentPassword) {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'Podaj aktualne hasło',
-          });
-        }
-
-        await auth.api.changePassword({
-          headers: ctx.headers,
-          body: {
-            currentPassword: input.currentPassword,
-            newPassword: input.password,
-            revokeOtherSessions: true,
-          },
-        });
-      } else {
-        await auth.api.setPassword({
-          headers: ctx.headers,
-          body: {
-            newPassword: input.password,
-          },
-        });
-      }
     }),
 });

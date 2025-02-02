@@ -33,8 +33,8 @@ updates:
       # prod-deps:
       #   dependency-type: "production"
       deps:
-        dependency-type: "development"
-        dependency-type: "production"
+        patterns:
+          - "*"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]

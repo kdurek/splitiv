@@ -27,11 +27,13 @@ updates:
     target-branch: "dev"
     schedule:
       interval: "monthly"
-    # groups:
-    #   dev-deps:
-    #     dependency-type: "development"
-    #   prod-deps:
-    #     dependency-type: "production"
+    groups:
+      # dev-deps:
+      #   dependency-type: "development"
+      # prod-deps:
+      #   dependency-type: "production"
+      deps:
+        dependency-type: "*"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]

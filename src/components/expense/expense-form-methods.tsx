@@ -198,7 +198,7 @@ export function ExpenseFormMethods() {
             {form.watch('debts').map((debt) => (
               <div key={debt.id} className="flex items-center justify-between">
                 <FormLabel>{debt.name}</FormLabel>
-                <div className="flex h-10 items-center gap-4">
+                <div className="flex h-9 items-center gap-4">
                   <FormLabel>{`${debt.amount.toFixed(2)} zł`}</FormLabel>
                   <Checkbox
                     className="size-6"

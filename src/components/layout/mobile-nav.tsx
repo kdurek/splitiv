@@ -21,14 +21,14 @@ export function MobileNav() {
 
   return (
     <>
-      <nav className="fixed bottom-0 z-40 flex w-full rounded-t-md bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] pwa:pb-8">
+      <nav className="fixed bottom-0 z-40 flex w-full rounded-t-md bg-background shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]">
         <NotificationPrompt />
         {navItems.map((item, index) => (
           <Fragment key={index}>
             <Link
               href={item.href}
               className={cn(
-                'flex-1 flex flex-col items-center py-2.5 justify-center text-center text-xs',
+                'flex flex-1 flex-col items-center justify-center py-2.5 text-center text-xs',
                 pathname === item.href ? 'text-foreground' : 'text-muted-foreground',
               )}
             >
@@ -38,7 +38,7 @@ export function MobileNav() {
           </Fragment>
         ))}
       </nav>
-      <div className="pt-16 pwa:pt-20" />
+      <div className="pt-16" />
     </>
   );
 }

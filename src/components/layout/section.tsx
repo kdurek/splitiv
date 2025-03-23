@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 const Section = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('max-w-lg mx-auto rounded-lg bg-card text-card-foreground', className)} {...props} />
+    <div ref={ref} className={cn('mx-auto max-w-lg rounded-lg bg-card text-card-foreground', className)} {...props} />
   ),
 );
 Section.displayName = 'Section';
@@ -18,7 +18,7 @@ SectionHeader.displayName = 'SectionHeader';
 
 const SectionTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props} />
+    <h3 ref={ref} className={cn('text-2xl leading-none font-semibold tracking-tight', className)} {...props} />
   ),
 );
 SectionTitle.displayName = 'SectionTitle';
@@ -42,4 +42,4 @@ const SectionFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 );
 SectionFooter.displayName = 'SectionFooter';
 
-export { Section, SectionContent,SectionDescription, SectionFooter, SectionHeader, SectionTitle };
+export { Section, SectionContent, SectionDescription, SectionFooter, SectionHeader, SectionTitle };

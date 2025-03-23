@@ -21,7 +21,7 @@ export function ExpenseListItem({ name, isPayer, createdAt, fullAmount, toPayAmo
     // TODO: Remove when fixed: https://github.com/emilkowalski/vaul/issues/455
     <Drawer disablePreventScroll={false}>
       <DrawerTrigger asChild>
-        <button className="w-full outline-none">
+        <button className="w-full outline-hidden">
           <div className="flex items-start justify-between overflow-hidden py-4">
             <div className="overflow-hidden text-start">
               <div className="line-clamp-1">{name}</div>
@@ -31,7 +31,7 @@ export function ExpenseListItem({ name, isPayer, createdAt, fullAmount, toPayAmo
               <div className={cn('whitespace-nowrap', isPayer ? 'text-green-500' : 'text-red-500')}>
                 {Number(toPayAmount).toFixed(2)} zł
               </div>
-              <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
+              <div className={cn('text-sm whitespace-nowrap text-muted-foreground')}>
                 {Number(fullAmount).toFixed(2)} zł
               </div>
             </div>

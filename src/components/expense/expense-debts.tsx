@@ -16,12 +16,12 @@ export function ExpensePayerCard({ name, amount }: ExpensePayerCardProps) {
     <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-4 overflow-hidden">
         <div className="overflow-hidden text-start">
-          <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Zapłacone przez</div>
+          <div className="line-clamp-1 text-xs font-medium text-muted-foreground uppercase">Zapłacone przez</div>
           <div className="line-clamp-1">{name}</div>
         </div>
       </div>
       <div className="text-end">
-        <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Kwota</div>
+        <div className="line-clamp-1 text-xs font-medium text-muted-foreground uppercase">Kwota</div>
         <div className="whitespace-nowrap">{amount.toFixed(2)} zł</div>
       </div>
     </div>
@@ -42,7 +42,11 @@ export function ExpenseDebtorCard({ debtId, name, amount, settled, canSettle }: 
 
   const maximumAmount = Number(amount) - Number(settled);
 
-  const statusIcon = isFullySettled ? <XSquare size={40} strokeWidth={1} /> : <Square size={40} strokeWidth={1} />;
+  const statusIcon = isFullySettled ? (
+    <XSquare className="size-9" strokeWidth={1} />
+  ) : (
+    <Square className="size-9" strokeWidth={1} />
+  );
 
   return (
     <div className="flex items-center justify-between gap-4 overflow-hidden">
@@ -51,7 +55,7 @@ export function ExpenseDebtorCard({ debtId, name, amount, settled, canSettle }: 
           <Button
             variant="ghost"
             size="icon"
-            className={cn('shrink-0', 'text-blue-500 hover:text-blue-500', {
+            className={cn('text-blue-500 hover:text-blue-500', {
               'text-teal-500 hover:text-teal-500': isFullySettled,
               'text-yellow-500 hover:text-yellow-500': isPartiallySettled,
             })}
@@ -61,14 +65,14 @@ export function ExpenseDebtorCard({ debtId, name, amount, settled, canSettle }: 
           </Button>
         </ExpenseDebtSettleModal>
         <div className="text-start">
-          <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">
+          <div className="line-clamp-1 text-xs font-medium text-muted-foreground uppercase">
             {isFullySettled ? 'Oddane' : 'Do oddania'}
           </div>
           <div className="line-clamp-1">{name}</div>
         </div>
       </div>
       <div className="text-end">
-        <div className="line-clamp-1 text-xs font-medium uppercase text-muted-foreground">Kwota</div>
+        <div className="line-clamp-1 text-xs font-medium text-muted-foreground uppercase">Kwota</div>
         <div className="whitespace-nowrap">
           {isFullySettled ? Number(amount).toFixed(2) : maximumAmount.toFixed(2)} zł
         </div>

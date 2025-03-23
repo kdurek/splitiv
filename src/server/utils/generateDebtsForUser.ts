@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import type { Prisma } from '@prisma/client';
 import Decimal from 'decimal.js';
 

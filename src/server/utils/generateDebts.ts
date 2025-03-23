@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { Prisma } from '@prisma/client';
 import Decimal from 'decimal.js';
 
@@ -33,7 +32,6 @@ function upsertDebt<T extends { amount: Decimal }>(
   );
 
   if (i > -1) {
-    // eslint-disable-next-line no-param-reassign
     array[i]!.amount = new Decimal(array[i]!.amount).plus(new Decimal(element.amount));
   } else array.push(element);
 }

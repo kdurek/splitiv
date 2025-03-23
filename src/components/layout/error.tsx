@@ -3,7 +3,7 @@ import { BugIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function Error({ className }: { className?: string }) {
-  return <BugIcon className={cn('size-16 text-primary-100', className)} />;
+  return <BugIcon className={cn('text-primary-100 size-16', className)} />;
 }
 
 export function FullScreenError({ className }: { className?: string }) {

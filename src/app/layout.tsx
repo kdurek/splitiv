@@ -1,6 +1,3 @@
-/* eslint-disable import/no-duplicates */
-import '@/styles/globals.css';
-
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { setDefaultOptions } from 'date-fns';
 import { pl } from 'date-fns/locale';
@@ -14,6 +11,8 @@ import { Providers } from '@/app/providers';
 import { TailwindIndicator } from '@/components/layout/tailwind-indicator';
 import { Toaster } from '@/components/ui/sonner';
 import { TRPCReactProvider } from '@/trpc/react';
+
+import '@/styles/globals.css';
 
 setDefaultOptions({
   locale: pl,

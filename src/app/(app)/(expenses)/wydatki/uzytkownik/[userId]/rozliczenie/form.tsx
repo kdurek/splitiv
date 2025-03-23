@@ -178,7 +178,7 @@ export function ExpenseSettlementForm({ paramsUserId }: { paramsUserId: string }
                       <div className={cn('whitespace-nowrap text-green-500')}>
                         {Number(Decimal.sub(credit.amount, credit.settled)).toFixed(2)} zł
                       </div>
-                      <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
+                      <div className={cn('text-sm whitespace-nowrap text-muted-foreground')}>
                         {Number(credit.expense.amount).toFixed(2)} zł
                       </div>
                     </div>
@@ -217,7 +217,7 @@ export function ExpenseSettlementForm({ paramsUserId }: { paramsUserId: string }
                       <div className={cn('whitespace-nowrap text-red-500')}>
                         {Number(Decimal.sub(debt.amount, debt.settled)).toFixed(2)} zł
                       </div>
-                      <div className={cn('whitespace-nowrap text-sm text-muted-foreground')}>
+                      <div className={cn('text-sm whitespace-nowrap text-muted-foreground')}>
                         {Number(debt.expense.amount).toFixed(2)} zł
                       </div>
                     </div>

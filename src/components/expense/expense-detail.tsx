@@ -77,7 +77,7 @@ export function ExpenseDetail({ expense }: ExpenseDetailProps) {
 
       {(isPayer || isAdmin) && (
         <div className="flex gap-2 pt-4">
-          <Link href={`/wydatki/${expense.id}/edytuj`} className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
+          <Link href={`/wydatki/${expense.id}/edytuj`} className={cn(buttonVariants({ variant: 'outline' }), 'grow')}>
             Edytuj
           </Link>
           <ExpenseDeleteModal expenseId={expense.id} />

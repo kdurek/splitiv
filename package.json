@@ -52,7 +52,7 @@
     "jotai": "^2.12.2",
     "lucide-react": "^0.483.0",
     "next": "^15.2.3",
-    "next-intl": "^3.26.5",
+    "next-intl": "^4.0.2",
     "rc-input-number": "^9.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -1,3 +1,1 @@
 # Splitiv
-
-- [ ] Update next-intl

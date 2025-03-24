@@ -1,8 +1,9 @@
-import type en from './messages/en.json';
+import type { locales } from '@/i18n/config';
+import type messages from './messages/pl.json';
 
-type Messages = typeof en;
-
-declare global {
-  // Use type safe message keys with `next-intl`
-  type IntlMessages = Messages;
+declare module 'next-intl' {
+  interface AppConfig {
+    Locale: (typeof locales)[number];
+    Messages: typeof messages;
+  }
 }

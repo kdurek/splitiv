@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { expenseDebtRouter } from '@/server/api/routers/expense/debt';
 import { expenseLogRouter } from '@/server/api/routers/expense/log';
 import { createTRPCRouter, protectedProcedure, t } from '@/server/api/trpc';
+import Decimal from 'decimal.js';
 
 const checkGroupAccess = t.procedure.use(async ({ ctx, next }) => {
   const group = await ctx.db.group.count({
@@ -360,8 +361,8 @@ export const expenseRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const debtsAmount = input.debts.reduce((acc, debt) => acc + debt.amount, 0);
-      if (debtsAmount !== input.amount) {
+      const debtsAmount = input.debts.reduce((acc, debt) => acc.plus(debt.amount), new Decimal(0));
+      if (debtsAmount.minus(input.amount).abs().greaterThan(0)) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'Suma długów nie zgadza się z kwotą wydatku',

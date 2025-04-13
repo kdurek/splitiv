@@ -31,8 +31,8 @@ export default async function SettingsPage() {
           <SectionTitle>{t('title')}</SectionTitle>
         </SectionHeader>
         <SectionContent>
-          <div className="space-y-4">
-            <div className="flex flex-col gap-4">
+          <div className="grid gap-4">
+            <div className="grid gap-4">
               <Link href={'/ustawienia/profil'} className={cn(buttonVariants({ variant: 'outline' }))}>
                 <User2 className="mr-2" /> Profil
               </Link>
@@ -42,25 +42,25 @@ export default async function SettingsPage() {
               <SignOutButton />
             </div>
 
-            <div className="space-y-2">
+            <div className="grid gap-2">
               <Heading variant="h2">Aktywna grupa</Heading>
               <GroupSelect />
             </div>
 
-            <div className="space-y-2">
+            <div className="grid gap-2">
               <Heading variant="h2">Język</Heading>
               <LocaleSwitcher />
             </div>
 
             {user?.id === group.adminId && (
-              <div className="space-y-2">
+              <div className="grid gap-2">
                 <Heading variant="h2">Członkowie</Heading>
                 <MembersList />
               </div>
             )}
 
             {user?.id === group.adminId && (
-              <div className="space-y-2">
+              <div className="grid gap-2">
                 <Heading variant="h2">Powiadomienia</Heading>
                 <Notification />
               </div>

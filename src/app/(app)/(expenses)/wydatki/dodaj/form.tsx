@@ -98,7 +98,7 @@ export function ExpenseForm({ expense }: { expense?: ExpenseById }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleOnSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleOnSubmit)} className="grid gap-6">
         <FormField
           control={form.control}
           name="name"
@@ -171,7 +171,7 @@ export function ExpenseForm({ expense }: { expense?: ExpenseById }) {
         )}
 
         {!expense && (
-          <div className="flex flex-col gap-4">
+          <div className="grid gap-4">
             <FormLabel>Kto uczestniczył w wydatku?</FormLabel>
             <ExpenseFormMethods />
           </div>

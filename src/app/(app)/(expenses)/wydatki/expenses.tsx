@@ -36,7 +36,7 @@ export function Expenses() {
   const expenses = data.pages.flatMap((page) => page.items);
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4">
       <ExpensesList>
         {expenses.map((expense) => (
           <ExpenseListItem

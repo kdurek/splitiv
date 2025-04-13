@@ -41,7 +41,7 @@ export function ExpenseDetail({ expense }: ExpenseDetailProps) {
         <ExpensePayerCard name={expense.payer.name} amount={Number(expense.amount)} />
       </div>
 
-      <div className="flex flex-col gap-4 py-4">
+      <div className="grid gap-4 py-4">
         {expense.debts.map((debt) => (
           <ExpenseDebtorCard
             key={debt.id}
@@ -56,7 +56,7 @@ export function ExpenseDetail({ expense }: ExpenseDetailProps) {
 
       {logs.length !== 0 && (
         <div
-          className={cn('flex flex-col gap-4 pt-4', {
+          className={cn('grid gap-4 pt-4', {
             'pb-4': isPayer || isAdmin,
           })}
         >

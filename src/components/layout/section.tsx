@@ -10,9 +10,7 @@ const Section = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
 Section.displayName = 'Section';
 
 const SectionHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex flex-col space-y-1.5 p-4', className)} {...props} />
-  ),
+  ({ className, ...props }, ref) => <div ref={ref} className={cn('flex flex-col gap-1.5 p-4', className)} {...props} />,
 );
 SectionHeader.displayName = 'SectionHeader';
 

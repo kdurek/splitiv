@@ -5,7 +5,7 @@ import { GoogleSignInButton } from '@/app/(auth)/logowanie/google';
 
 export default function SignInPage() {
   return (
-    <div className="w-full max-w-sm space-y-4">
+    <div className="grid w-full max-w-sm gap-4">
       <SignInForm />
       <GoogleSignInButton />
       <div className="text-center text-sm text-muted-foreground">

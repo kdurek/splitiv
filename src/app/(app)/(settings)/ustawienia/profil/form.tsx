@@ -47,7 +47,7 @@ export function UserForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleUpdateUser)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleUpdateUser)} className="grid gap-6">
         <FormField
           control={form.control}
           name="name"

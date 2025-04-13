@@ -79,7 +79,7 @@ export function ExpenseDebtSettleModal({
           <DialogDescription>Pozostało do oddania {maximumAmount.toFixed(2)} zł</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form id="expense-payment-form" className="space-y-6" onSubmit={form.handleSubmit(handleSettleExpenseDebt)}>
+          <form id="expense-payment-form" className="grid gap-6" onSubmit={form.handleSubmit(handleSettleExpenseDebt)}>
             <FormField
               control={form.control}
               name="amount"

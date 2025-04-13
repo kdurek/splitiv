@@ -18,7 +18,7 @@ export function AppInit({ children, user }: AppInitProps) {
 
   if (!user.activeGroupId) {
     return (
-      <div className="space-y-4 p-4">
+      <div className="grid gap-4 p-4">
         <GroupSelect
           onSuccess={() => {
             router.refresh();

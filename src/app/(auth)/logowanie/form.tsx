@@ -49,15 +49,15 @@ export function SignInForm({ className, ...props }: React.ComponentPropsWithoutR
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('grid gap-6', className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Logowanie</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form className="space-y-4">
-              <div className="flex flex-col gap-6">
+            <form className="grid gap-4">
+              <div className="grid gap-6">
                 <FormField
                   name="email"
                   control={form.control}

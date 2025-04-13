@@ -9,5 +9,5 @@ interface ExpensesListProps {
 }
 
 export function ExpensesList({ children }: ExpensesListProps) {
-  return <div className="flex flex-col gap-2">{children}</div>;
+  return <div className="grid gap-2">{children}</div>;
 }

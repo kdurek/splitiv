@@ -174,14 +174,14 @@ export function ExpenseFormMethods() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="unequal">
-          <div className="mt-4 flex flex-col gap-4">
+          <div className="mt-4 grid gap-4">
             {form.watch('debts').map((debt, index) => (
               <FormField
                 key={debt.id}
                 control={form.control}
                 name={`debts.${index}.amount`}
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between space-y-0">
+                  <FormItem className="flex items-center justify-between gap-0">
                     <FormLabel>{debt.name}</FormLabel>
                     <FormControl>
                       <NumberInput className="w-20" {...field} />
@@ -194,7 +194,7 @@ export function ExpenseFormMethods() {
           </div>
         </TabsContent>
         <TabsContent value="equal">
-          <div className="mt-4 flex flex-col gap-4">
+          <div className="mt-4 grid gap-4">
             {form.watch('debts').map((debt) => (
               <div key={debt.id} className="flex items-center justify-between">
                 <FormLabel>{debt.name}</FormLabel>
@@ -215,7 +215,7 @@ export function ExpenseFormMethods() {
           </div>
         </TabsContent>
         <TabsContent value="ratio">
-          <div className="mt-4 flex flex-col gap-4">
+          <div className="mt-4 grid gap-4">
             {form.watch('debts').map((debt) => (
               <div key={debt.id} className="flex flex-nowrap items-center justify-between gap-4">
                 <FormLabel>{debt.name}</FormLabel>

@@ -23,7 +23,7 @@ export default async function ExpenseSearchPage() {
         <SectionHeader>
           <SectionTitle>{t('title')}</SectionTitle>
         </SectionHeader>
-        <SectionContent>
+        <SectionContent className="grid gap-2">
           <ExpenseSearchInput />
           <Suspense fallback={<FullScreenLoading />}>
             <ExpensesSearchList />

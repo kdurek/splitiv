@@ -116,8 +116,8 @@ export function ExpenseSettlementForm({ paramsUserId }: { paramsUserId: string }
 
   return (
     <Form {...form}>
-      <form id="expense-settlement-form" className="space-y-6" onSubmit={form.handleSubmit(handleSettlement)}>
-        <div className="flex flex-col gap-4">
+      <form id="expense-settlement-form" className="grid gap-6" onSubmit={form.handleSubmit(handleSettlement)}>
+        <div className="grid gap-4">
           <div
             className={cn(
               'flex justify-center rounded-md border p-4',

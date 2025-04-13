@@ -47,7 +47,10 @@ export function ExpensesSearchList() {
           <ExpenseListItem
             key={expense.id}
             name={expense.name}
+            description={expense.description}
+            payer={expense.payer}
             isPayer={expense.payerId === user?.id}
+            debts={expense.debts}
             createdAt={expense.createdAt}
             fullAmount={expense.amount}
             toPayAmount={getAllRemainingAmount(expense, user.id)}

@@ -70,7 +70,7 @@ export function ExpenseListItem({
               </div>
               <div className="text-start">
                 <div className="text-sm text-muted-foreground">Twój udział</div>
-                <div className={cn(isPayer ? 'text-green-500' : 'text-red-500')}>
+                <div className={cn(Number(toPayAmount) === 0 ? '' : isPayer ? 'text-green-500' : 'text-red-500')}>
                   {Number(toPayAmount).toFixed(2)} zł
                 </div>
               </div>

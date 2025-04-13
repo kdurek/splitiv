@@ -82,7 +82,6 @@ export const expenseRouter = createTRPCRouter({
           groupId: ctx.user.activeGroupId,
           OR: [
             {
-              payerId: ctx.user.id,
               debts: {
                 some: {
                   settled: {
@@ -96,7 +95,6 @@ export const expenseRouter = createTRPCRouter({
             {
               debts: {
                 some: {
-                  debtorId: ctx.user.id,
                   settled: {
                     lt: ctx.db.expenseDebt.fields.amount,
                   },
@@ -112,7 +110,6 @@ export const expenseRouter = createTRPCRouter({
           groupId: ctx.user.activeGroupId,
           OR: [
             {
-              payerId: ctx.user.id,
               debts: {
                 every: {
                   settled: {
@@ -122,22 +119,8 @@ export const expenseRouter = createTRPCRouter({
               },
             },
             {
-              payerId: ctx.user.id,
-              debts: {
-                every: {
-                  settled: {
-                    equals: ctx.db.expenseDebt.fields.amount,
-                  },
-                },
-              },
-            },
-            {
-              payerId: {
-                not: ctx.user.id,
-              },
               debts: {
                 some: {
-                  debtorId: ctx.user.id,
                   settled: {
                     equals: ctx.db.expenseDebt.fields.amount,
                   },
@@ -157,32 +140,12 @@ export const expenseRouter = createTRPCRouter({
                 contains: input.searchText,
                 mode: 'insensitive',
               },
-              OR: [
-                { payerId: ctx.user.id },
-                {
-                  debts: {
-                    some: {
-                      debtorId: ctx.user.id,
-                    },
-                  },
-                },
-              ],
             },
             {
               description: {
                 contains: input.searchText,
                 mode: 'insensitive',
               },
-              OR: [
-                { payerId: ctx.user.id },
-                {
-                  debts: {
-                    some: {
-                      debtorId: ctx.user.id,
-                    },
-                  },
-                },
-              ],
             },
           ],
         };

@@ -1,39 +1,35 @@
-import { ORPCError, os } from "@orpc/server";
 import { protectedProcedure } from "@splitiv/api";
-import type { User } from "@splitiv/auth";
 import prisma from "@splitiv/db";
 import { z } from "zod";
-import { generateBalances } from "../utils/generate-balances";
-import { generateDebts } from "../utils/generate-debts";
 
-const checkGroupMembership = os
-  .$context<{ user: User }>()
-  .middleware(async ({ context, next }) => {
-    if (!context.user?.activeGroupId) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Aktywna grupa nie została ustawiona",
-      });
-    }
+// const checkGroupMembership = os
+//   .$context<{ user: User }>()
+//   .middleware(async ({ context, next }) => {
+//     if (!context.user?.activeGroupId) {
+//       throw new ORPCError("INTERNAL_SERVER_ERROR", {
+//         message: "Aktywna grupa nie została ustawiona",
+//       });
+//     }
 
-    const group = await prisma.group.findUnique({
-      where: { id: context.user?.activeGroupId },
-      include: {
-        members: {
-          where: {
-            userId: context.user?.id,
-          },
-        },
-      },
-    });
+//     const group = await prisma.group.findUnique({
+//       where: { id: context.user?.activeGroupId },
+//       include: {
+//         members: {
+//           where: {
+//             userId: context.user?.id,
+//           },
+//         },
+//       },
+//     });
 
-    if (!group) {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Nie masz uprawnień do wykonania tej operacji",
-      });
-    }
+//     if (!group) {
+//       throw new ORPCError("FORBIDDEN", {
+//         message: "Nie masz uprawnień do wykonania tej operacji",
+//       });
+//     }
 
-    return next();
-  });
+//     return next();
+//   });
 
 export const groupRouter = {
   list: protectedProcedure.handler(async ({ context }) => {
@@ -49,75 +45,6 @@ export const groupRouter = {
 
     return groups;
   }),
-
-  current: protectedProcedure
-    .use(checkGroupMembership)
-    .handler(async ({ context }) => {
-      const group = await prisma.group.findUnique({
-        where: { id: context.user.activeGroupId },
-        include: {
-          members: {
-            include: {
-              user: true,
-            },
-            orderBy: {
-              user: {
-                name: "asc",
-              },
-            },
-          },
-        },
-      });
-
-      if (!group) {
-        throw new ORPCError("NOT_FOUND", {
-          message: "Nie znaleziono grupy",
-        });
-      }
-
-      const expenseDebts = await prisma.expenseDebt.findMany({
-        where: {
-          expense: {
-            groupId: context.user.activeGroupId,
-          },
-          settled: { lt: prisma.expenseDebt.fields.amount },
-        },
-        include: {
-          expense: {
-            select: {
-              amount: true,
-              payerId: true,
-            },
-          },
-        },
-      });
-
-      const generatedBalances = generateBalances(expenseDebts);
-
-      const membersWithBalances = group.members.map((member) => {
-        const findBalance = (userId: string) => {
-          const foundBalance = generatedBalances.find(
-            (b) => b.userId === userId
-          );
-          if (!foundBalance) {
-            return "0.00";
-          }
-          return foundBalance.amount;
-        };
-
-        const balance = findBalance(member.user.id);
-
-        return { ...member.user, balance };
-      });
-
-      const debts = generateDebts(expenseDebts);
-
-      return {
-        ...group,
-        members: membersWithBalances,
-        debts,
-      };
-    }),
 
   create: protectedProcedure
     .input(

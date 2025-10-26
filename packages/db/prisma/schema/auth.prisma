@@ -1,0 +1,60 @@
+model User {
+  id                String             @id @default(cuid())
+  name              String
+  email             String
+  emailVerified     Boolean            @default(true) // TODO: Remove default value
+  image             String?
+  createdAt         DateTime
+  updatedAt         DateTime
+  sessions          Session[]
+  accounts          Account[]
+  pushSubscriptions PushSubscription[]
+  groups            UserGroup[]
+  expenses          Expense[]
+  debts             ExpenseDebt[]
+  firstName         String?
+  lastName          String?
+  activeGroupId     String?
+
+  @@unique([email])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+}

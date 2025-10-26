@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run dist/index.js"
+  },
+  "dependencies": {
+    "hono": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/client": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/zod": "catalog:",
+    "better-auth": "catalog:",
+    "decimal.js": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:",
+    "@splitiv/api": "workspace:*",
+    "@splitiv/auth": "workspace:*",
+    "@splitiv/db": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/bun": "catalog:",
+    "tsdown": "catalog:"
+  }
+}

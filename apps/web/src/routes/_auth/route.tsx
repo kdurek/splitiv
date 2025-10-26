@@ -1,0 +1,31 @@
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { orpc } from "@/utils/orpc";
+
+export const Route = createFileRoute("/_auth")({
+  component: RouteComponent,
+  beforeLoad: async ({ context }) => {
+    const REDIRECT_URL = "/";
+    const user = await context.queryClient.ensureQueryData({
+      ...orpc.auth.getCurrentUser.queryOptions(),
+      revalidateIfStale: true,
+    });
+    if (user) {
+      throw redirect({
+        to: REDIRECT_URL,
+      });
+    }
+    return {
+      redirectUrl: REDIRECT_URL,
+    };
+  },
+});
+
+function RouteComponent() {
+  return (
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <Outlet />
+      </div>
+    </div>
+  );
+}

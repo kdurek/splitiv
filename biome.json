@@ -1,0 +1,63 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/dist",
+      "!**/.turbo",
+      "!**/dev-dist",
+      "!**/.zed",
+      "!**/.vscode",
+      "!**/routeTree.gen.ts",
+      "!**/src-tauri",
+      "!**/.nuxt",
+      "!bts.jsonc",
+      "!**/.expo",
+      "!**/.wrangler",
+      "!**/.alchemy",
+      "!**/.svelte-kit",
+      "!**/wrangler.jsonc",
+      "!**/.source"
+    ]
+  },
+  "extends": ["ultracite"],
+  "linter": {
+    "rules": {
+      "performance": {
+        "noNamespaceImport": "off"
+      },
+      "suspicious": {
+        "noConsole": "off",
+        "noUnknownAtRules": "off",
+        "noArrayIndexKey": "warn"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off"
+      },
+      "correctness": {
+        "noChildrenProp": "off",
+        "noUnusedVariables": {
+          "fix": "none",
+          "level": "error"
+        }
+      },
+      "style": {
+        "noMagicNumbers": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["apps/web/src/routes/**/*"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": "off"
+          }
+        }
+      }
+    }
+  ]
+}

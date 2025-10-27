@@ -30,6 +30,11 @@ RUN cd /temp/prod && bun install --frozen-lockfile --production
 # then copy all (non-ignored) project files into the image
 FROM base AS build
 COPY --from=install /temp/dev/node_modules node_modules
+COPY --from=install /temp/dev/apps/server/node_modules /splitiv/apps/server/node_modules
+COPY --from=install /temp/dev/apps/web/node_modules /splitiv/apps/web/node_modules
+COPY --from=install /temp/dev/packages/api/node_modules /splitiv/packages/api/node_modules
+COPY --from=install /temp/dev/packages/auth/node_modules /splitiv/packages/auth/node_modules
+COPY --from=install /temp/dev/packages/db/node_modules /splitiv/packages/db/node_modules
 COPY . .
 
 # tests & build

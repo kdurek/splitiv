@@ -50,7 +50,7 @@ export async function sendPush(
   if (
     !(
       import.meta.env.WEB_PUSH_EMAIL &&
-      import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY &&
+      import.meta.env.WEB_PUSH_PUBLIC_KEY &&
       import.meta.env.WEB_PUSH_PRIVATE_KEY
     )
   ) {
@@ -61,7 +61,7 @@ export async function sendPush(
 
   webPush.setVapidDetails(
     `mailto:${import.meta.env.WEB_PUSH_EMAIL}`,
-    import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY,
+    import.meta.env.WEB_PUSH_PUBLIC_KEY,
     import.meta.env.WEB_PUSH_PRIVATE_KEY
   );
   const users = typeof userIds === "string" ? [userIds] : userIds;

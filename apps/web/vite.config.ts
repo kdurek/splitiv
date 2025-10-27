@@ -6,6 +6,13 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  build: {
+    target: "es2022",
+    cssCodeSplit: true,
+    sourcemap: false,
+    minify: "esbuild",
+    chunkSizeWarningLimit: 1000,
+  },
   plugins: [
     tailwindcss(),
     tanstackRouter({
@@ -40,7 +47,11 @@ export default defineConfig({
       pwaAssets: { config: true },
       devOptions: { enabled: true },
       workbox: {
-        importScripts: ["/service-worker-push.js"],
+        importScripts: ["/sw-push.js"],
+        clientsClaim: true,
+        skipWaiting: true,
+        navigateFallbackDenylist: [/^\/api\//],
+        cleanupOutdatedCaches: true,
       },
     }),
   ],
@@ -48,5 +59,8 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  esbuild: {
+    drop: ["console", "debugger"],
   },
 });

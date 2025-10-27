@@ -83,7 +83,8 @@ function RouteComponent() {
           <Button
             className={cn(
               "flex-1",
-              status === "active" && "bg-accent text-accent-foreground"
+              status === "active" &&
+                "bg-accent text-accent-foreground dark:bg-input/50"
             )}
             onClick={() => status !== "active" && setStatus("active")}
             variant="outline"
@@ -93,7 +94,8 @@ function RouteComponent() {
           <Button
             className={cn(
               "flex-1",
-              status === "archive" && "bg-accent text-accent-foreground"
+              status === "archive" &&
+                "bg-accent text-accent-foreground dark:bg-input/50"
             )}
             onClick={() => status !== "archive" && setStatus("archive")}
             variant="outline"

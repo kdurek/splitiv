@@ -41,6 +41,8 @@ COPY . .
 ENV NODE_ENV=production
 ARG VITE_SERVER_URL
 ENV VITE_SERVER_URL=$VITE_SERVER_URL
+ARG VITE_BASE_URL
+ENV VITE_BASE_URL=$VITE_BASE_URL
 RUN bun test
 RUN bun db:generate
 RUN bun run build
@@ -57,18 +59,6 @@ ENV NODE_ENV=production
 USER bun
 EXPOSE 3000
 ENTRYPOINT [ "bun", "run", "/splitiv/apps/server/dist/index.js" ]
-
-# copy production dependencies and source code into web image
-# FROM base AS web
-# COPY --from=install /temp/prod/node_modules /splitiv/node_modules
-# COPY --from=install /temp/prod/apps/web/node_modules /splitiv/apps/web/node_modules
-# COPY --from=build /splitiv/apps/web/dist /splitiv/apps/web/dist
-
-# ENV NODE_ENV=production
-
-# USER bun
-# EXPOSE 3001
-# ENTRYPOINT [ "bun", "run","--port", "3001", "/splitiv/apps/web/dist/index.html" ]
 
 FROM nginx:1.29.2-alpine AS web
 

@@ -21,7 +21,7 @@ export function SignInSocialButton(props: SocialLoginButtonProps) {
       await authClient.signIn.social(
         {
           provider: props.provider,
-          callbackURL: props.callbackURL,
+          callbackURL: `${import.meta.env.VITE_BASE_URL}${props.callbackURL}`,
         },
         {
           onError: ({ error }) => {

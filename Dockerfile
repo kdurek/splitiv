@@ -29,7 +29,7 @@ RUN cd /temp/prod && bun install --frozen-lockfile --production
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
 FROM base AS build
-COPY --from=install /temp/dev/node_modules node_modules
+COPY --from=install /temp/dev/node_modules /splitiv/node_modules
 COPY --from=install /temp/dev/apps/server/node_modules /splitiv/apps/server/node_modules
 COPY --from=install /temp/dev/apps/web/node_modules /splitiv/apps/web/node_modules
 COPY --from=install /temp/dev/packages/api/node_modules /splitiv/packages/api/node_modules
@@ -39,6 +39,8 @@ COPY . .
 
 # tests & build
 ENV NODE_ENV=production
+ARG VITE_SERVER_URL
+ENV VITE_SERVER_URL=$VITE_SERVER_URL
 RUN bun test
 RUN bun db:generate
 RUN bun run build

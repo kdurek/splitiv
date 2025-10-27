@@ -6,13 +6,6 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  build: {
-    target: "es2022",
-    cssCodeSplit: true,
-    sourcemap: false,
-    minify: "esbuild",
-    chunkSizeWarningLimit: 1000,
-  },
   plugins: [
     tailwindcss(),
     tanstackRouter({

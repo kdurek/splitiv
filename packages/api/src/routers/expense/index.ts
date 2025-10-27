@@ -2,10 +2,10 @@ import { ORPCError, os } from "@orpc/server";
 import { protectedProcedure } from "@splitiv/api";
 import type { User } from "@splitiv/auth";
 import prisma from "@splitiv/db";
+import type { ExpenseWhereInput } from "@splitiv/db/prisma/generated/models";
 import Decimal from "decimal.js";
 import removeAccents from "remove-accents";
 import { z } from "zod";
-import type { ExpenseWhereInput } from "../../../../db/prisma/generated/models";
 import { sendPush } from "../../utils/push-subscription";
 import { expenseDebtRouter } from "./debt";
 import { expenseLogRouter } from "./log";
@@ -147,13 +147,6 @@ export const expenseRouter = {
             ],
           }
         : {};
-
-      const allCount = await prisma.expense.count({
-        where: {
-          groupId: context.user.activeGroupId,
-        },
-      });
-      console.log("🚀 > allCount:", allCount);
 
       const count = await prisma.expense.count({
         where: {

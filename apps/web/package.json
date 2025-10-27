@@ -17,6 +17,7 @@
     "@prisma/client": "catalog:",
     "@splitiv/api": "workspace:*",
     "@splitiv/auth": "workspace:*",
+    "@splitiv/db": "workspace:*",
     "@tailwindcss/vite": "^4.1.16",
     "@tanstack/react-form": "^1.23.8",
     "@tanstack/react-query": "^5.90.5",

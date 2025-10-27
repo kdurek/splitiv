@@ -197,7 +197,7 @@ export function CreateExpenseForm() {
       splitMethod: "ratio",
       debts:
         currentGroupQuery.data?.members?.map((member) => ({
-          debtorId: member.id,
+          debtorId: member.user.id,
           amount: 0,
           equalSplit: false,
           ratioSplit: 0,
@@ -366,8 +366,11 @@ export function CreateExpenseForm() {
                       </SelectTrigger>
                       <SelectContent position="item-aligned">
                         {currentGroupQuery.data?.members?.map((member) => (
-                          <SelectItem key={member.id} value={member.id}>
-                            {member.name}
+                          <SelectItem
+                            key={member.user.id}
+                            value={member.user.id}
+                          >
+                            {member.user.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -437,8 +440,8 @@ export function CreateExpenseForm() {
                             <Label>
                               {
                                 currentGroupQuery.data?.members?.find(
-                                  (member) => member.id === debt.debtorId
-                                )?.name
+                                  (member) => member.user.id === debt.debtorId
+                                )?.user.name
                               }
                             </Label>
                             <div>

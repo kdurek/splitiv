@@ -67,9 +67,10 @@ function RouteComponent() {
           <CardContent>
             <div className="grid gap-4">
               <ol className="grid gap-1">
-                {currentGroupQuery.data.members.map((user) => (
-                  <li className="flex items-center gap-2" key={user.id}>
-                    <div className="size-1 rounded-full bg-black" /> {user.name}
+                {currentGroupQuery.data.members.map((member) => (
+                  <li className="flex items-center gap-2" key={member.user.id}>
+                    <div className="size-1 rounded-full bg-black" />{" "}
+                    {member.user.name}
                   </li>
                 ))}
               </ol>

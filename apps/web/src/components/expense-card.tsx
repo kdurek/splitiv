@@ -1,3 +1,4 @@
+import type { Expense } from "@splitiv/db/prisma/generated/client";
 import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import type { Expense } from "../../../../packages/db/prisma/generated/client";
 
 export function ExpenseCardSkeleton() {
   return (

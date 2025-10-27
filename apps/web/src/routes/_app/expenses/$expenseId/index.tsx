@@ -1,3 +1,8 @@
+import type { Expense } from "@splitiv/db/prisma/generated/client";
+import type {
+  ExpenseDebtGetPayload,
+  ExpenseLogGetPayload,
+} from "@splitiv/db/prisma/generated/models";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -56,11 +61,6 @@ import { Label } from "@/components/ui/label";
 import { NumberField, NumberFieldInput } from "@/components/ui/number-field";
 import { cn } from "@/lib/utils";
 import { orpc, queryClient } from "@/utils/orpc";
-import type { Expense } from "../../../../../../../packages/db/prisma/generated/client";
-import type {
-  ExpenseDebtGetPayload,
-  ExpenseLogGetPayload,
-} from "../../../../../../../packages/db/prisma/generated/models";
 
 export const Route = createFileRoute("/_app/expenses/$expenseId/")({
   component: RouteComponent,

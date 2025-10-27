@@ -1,3 +1,4 @@
+import type { User } from "@splitiv/db/prisma/generated/client";
 import type Decimal from "decimal.js";
 import {
   Card,
@@ -15,7 +16,6 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { User } from "../../../../packages/db/prisma/generated/client";
 
 export function BalanceCardSkeleton() {
   return (

@@ -595,14 +595,9 @@ export function CreateExpenseForm() {
         </form>
       </CardContent>
       <CardFooter>
-        <Field orientation="horizontal">
-          <Button onClick={() => form.reset()} type="button" variant="outline">
-            Resetuj
-          </Button>
-          <Button form="create-expense-form" type="submit">
-            Wyślij
-          </Button>
-        </Field>
+        <Button className="w-full" form="create-expense-form" type="submit">
+          Dodaj
+        </Button>
       </CardFooter>
     </Card>
   );

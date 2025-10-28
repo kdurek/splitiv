@@ -12,17 +12,6 @@ import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 import { PageLoader } from "@/components/page-loader";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -33,15 +22,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Field,
   FieldError,
@@ -256,33 +245,36 @@ function ExpenseDeleteModal({ expense }: { expense: Expense }) {
   );
 
   return (
-    <AlertDialog onOpenChange={setOpen} open={open}>
-      <AlertDialogTrigger asChild>
+    <Drawer onOpenChange={setOpen} open={open}>
+      <DrawerTrigger asChild>
         <Button className="w-full" variant="outline">
           Usuń
         </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            Czy na pewno chcesz usunąć wydatek?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Czy na pewno chcesz usunąć wydatek?</DrawerTitle>
+          <DrawerDescription>
             Ta akcja jest nieodwracalna. Wydatek zostanie usunięty na zawsze i
             nie będzie można go przywrócić.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Anuluj</AlertDialogCancel>
-          <AlertDialogAction
+          </DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter>
+          <Button
             className={buttonVariants({ variant: "destructive" })}
             onClick={() => deleteExpenseMutation.mutate({ id: expense.id })}
+            type="button"
           >
             Potwierdź
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </Button>
+          <DrawerClose asChild>
+            <Button type="button" variant="outline">
+              Anuluj
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
@@ -366,8 +358,8 @@ function SettleDebtForm({
   });
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
+    <Drawer onOpenChange={setOpen} open={open}>
+      <DrawerTrigger asChild>
         <Button
           className={cn(
             "rounded-full",
@@ -379,15 +371,16 @@ function SettleDebtForm({
         >
           {getDebtStatusIcon(Number(debt.settled), Number(debt.amount))}
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Rozlicz dług</DialogTitle>
-          <DialogDescription>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Rozlicz dług</DrawerTitle>
+          <DrawerDescription>
             Rozlicz dług uczestnika {debt.debtor.name}
-          </DialogDescription>
-        </DialogHeader>
+          </DrawerDescription>
+        </DrawerHeader>
         <form
+          className="px-4"
           id="settle-debt-form"
           onSubmit={(e) => {
             e.preventDefault();
@@ -434,17 +427,17 @@ function SettleDebtForm({
             />
           </FieldGroup>
         </form>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="outline">
-              Anuluj
-            </Button>
-          </DialogClose>
+        <DrawerFooter>
           <Button form="settle-debt-form" type="submit">
             Rozlicz
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DrawerClose asChild>
+            <Button type="button" variant="outline">
+              Anuluj
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }

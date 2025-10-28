@@ -6,18 +6,17 @@ import { toast } from "sonner";
 import { BalanceCard } from "@/components/balance-card";
 import { ExpenseCard, ExpenseCardSkeleton } from "@/components/expense-card";
 import { InfiniteList } from "@/components/infinite-list";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { orpc, queryClient } from "@/utils/orpc";
 
 export const Route = createFileRoute("/_app/users/$userId")({
@@ -49,7 +48,7 @@ function RouteComponent() {
   );
 
   return (
-    <div className="grid gap-12">
+    <div className="grid gap-8">
       <BalanceCard
         action={
           <SettleBetweenUserModal
@@ -164,8 +163,8 @@ function SettleBetweenUserModal({
   );
 
   return (
-    <AlertDialog onOpenChange={setOpen} open={open}>
-      <AlertDialogTrigger asChild>
+    <Drawer onOpenChange={setOpen} open={open}>
+      <DrawerTrigger asChild>
         <Button
           aria-label="Rozlicz"
           disabled={!settlementSummary}
@@ -174,17 +173,14 @@ function SettleBetweenUserModal({
         >
           Rozlicz
         </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            Czy na pewno chcesz rozliczyć długi?
-          </AlertDialogTitle>
-          <AlertDialogDescription>{settlementSummary}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel type="button">Anuluj</AlertDialogCancel>
-          <AlertDialogAction
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Czy na pewno chcesz rozliczyć długi?</DrawerTitle>
+          <DrawerDescription>{settlementSummary}</DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter>
+          <Button
             disabled={settleBetweenUserMutation.isPending}
             onClick={() =>
               settleBetweenUserMutation.mutate({ userId: otherUserId })
@@ -192,9 +188,14 @@ function SettleBetweenUserModal({
             type="button"
           >
             Potwierdź
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </Button>
+          <DrawerClose asChild>
+            <Button type="button" variant="outline">
+              Anuluj
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }

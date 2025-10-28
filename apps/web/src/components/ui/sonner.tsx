@@ -7,7 +7,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       className="toaster group"
-      position="bottom-center"
+      mobileOffset={4}
+      position="top-center"
       style={
         {
           "--normal-bg": "var(--popover)",
@@ -16,9 +17,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
         } as React.CSSProperties
       }
       theme={theme as ToasterProps["theme"]}
-      toastOptions={{
-        className: "mb-17 [@media(min-width:601px)]:mb-15",
-      }}
       {...props}
     />
   );

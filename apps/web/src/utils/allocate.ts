@@ -33,7 +33,7 @@ export function allocate(
   for (let i = 0; i < items.length; i++) {
     if (remainder > 0 && items[i].ratio > 0) {
       debtsInCents[i].amount += 1;
-      remainder--;
+      remainder -= 1;
     }
   }
 

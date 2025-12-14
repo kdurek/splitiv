@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@splitiv/config/tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
     "outDir": "dist",
@@ -8,6 +8,7 @@
       "@/*": ["./src/*"]
     },
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    "strictNullChecks": true
   }
 }

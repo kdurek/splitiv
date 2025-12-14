@@ -26,6 +26,7 @@
   "devDependencies": {
     "typescript": "catalog:",
     "@types/bun": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "^0.15.12",
+    "@splitiv/config": "workspace:*"
   }
 }

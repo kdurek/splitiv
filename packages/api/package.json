@@ -2,25 +2,18 @@
   "name": "@splitiv/api",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "default": "./src/index.ts"
     },
     "./*": {
-      "types": "./dist/*.d.ts",
       "default": "./src/*.ts"
     }
   },
   "type": "module",
-  "scripts": {
-    "build": "tsdown"
-  },
+  "scripts": {},
   "devDependencies": {
+    "typescript": "catalog:",
     "@types/web-push": "^3.6.4",
-    "vitest": "catalog:",
-    "tsdown": "catalog:"
-  },
-  "peerDependencies": {
-    "typescript": "catalog:"
+    "@splitiv/config": "workspace:*"
   },
   "dependencies": {
     "@orpc/client": "catalog:",

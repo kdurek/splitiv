@@ -1,0 +1,42 @@
+name: splitiv
+
+services:
+  postgres:
+    image: postgres
+    container_name: splitiv-postgres
+    environment:
+      POSTGRES_DB: splitiv
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./packages/db/.docker/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: server
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./apps/server/.env
+    depends_on:
+      - postgres
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./apps/web/.env
+    depends_on:
+      - server

@@ -1,4 +1,4 @@
-lint-staged
+bun test
 
 #!/bin/sh
 # Exit on any error

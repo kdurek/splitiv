@@ -1,6 +1,7 @@
 import prisma from "@splitiv/db";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import type { GoogleProfile } from "better-auth/social-providers";
 
 export const auth = betterAuth({
   appName: "Splitiv",
@@ -17,7 +18,7 @@ export const auth = betterAuth({
         ? {
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            mapProfileToUser: (profile) => ({
+            mapProfileToUser: (profile: GoogleProfile) => ({
               name: profile.name,
               email: profile.email,
               emailVerified: profile.email_verified,

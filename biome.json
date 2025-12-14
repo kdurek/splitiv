@@ -22,7 +22,7 @@
       "!**/.source"
     ]
   },
-  "extends": ["ultracite"],
+  "extends": ["ultracite/core", "ultracite/react", "ultracite/remix"],
   "linter": {
     "rules": {
       "performance": {
@@ -45,6 +45,9 @@
       },
       "style": {
         "noMagicNumbers": "off"
+      },
+      "nursery": {
+        "noLeakedRender": "off"
       }
     }
   },

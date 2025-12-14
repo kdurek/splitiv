@@ -19,7 +19,7 @@ const router = createRouter({
 });
 
 declare module "@tanstack/react-router" {
-  // biome-ignore lint/nursery/useConsistentTypeDefinitions: false positive
+  // biome-ignore lint/style/useConsistentTypeDefinitions: false positive
   interface Register {
     router: typeof router;
   }

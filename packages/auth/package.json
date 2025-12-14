@@ -2,23 +2,17 @@
   "name": "@splitiv/auth",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "default": "./src/index.ts"
     },
     "./*": {
-      "types": "./dist/*.d.ts",
       "default": "./src/*.ts"
     }
   },
   "type": "module",
-  "scripts": {
-    "build": "tsdown"
-  },
+  "scripts": {},
   "devDependencies": {
-    "tsdown": "catalog:"
-  },
-  "peerDependencies": {
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@splitiv/config": "workspace:*"
   },
   "dependencies": {
     "better-auth": "catalog:",

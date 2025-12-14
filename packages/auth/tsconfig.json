@@ -1,10 +1,11 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@splitiv/config/tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "dist",
-    "composite": true
+    "composite": true,
+    "strictNullChecks": true
   }
 }

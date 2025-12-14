@@ -1,6 +1,6 @@
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1.3.1-alpine AS base
+FROM oven/bun:1.3.4-alpine AS base
 RUN apk add --no-cache curl openssl
 WORKDIR /splitiv
 
@@ -8,21 +8,23 @@ WORKDIR /splitiv
 # this will cache them and speed up future builds
 FROM base AS install
 RUN mkdir -p /temp/dev
-COPY package.json bun.lock /temp/dev/
+COPY package.json bun.lock bunfig.toml /temp/dev/
 COPY apps/server/package.json /temp/dev/apps/server/
 COPY apps/web/package.json /temp/dev/apps/web/
 COPY packages/api/package.json /temp/dev/packages/api/
 COPY packages/auth/package.json /temp/dev/packages/auth/
+COPY packages/config/package.json /temp/dev/packages/config/
 COPY packages/db/package.json /temp/dev/packages/db/
 RUN cd /temp/dev && bun install --frozen-lockfile
 
 # install with --production (exclude devDependencies)
 RUN mkdir -p /temp/prod
-COPY package.json bun.lock /temp/prod/
+COPY package.json bun.lock bunfig.toml /temp/prod/
 COPY apps/server/package.json /temp/prod/apps/server/
 COPY apps/web/package.json /temp/prod/apps/web/
 COPY packages/api/package.json /temp/prod/packages/api/
 COPY packages/auth/package.json /temp/prod/packages/auth/
+COPY packages/config/package.json /temp/prod/packages/config/
 COPY packages/db/package.json /temp/prod/packages/db/
 RUN cd /temp/prod && bun install --frozen-lockfile --production
 
@@ -62,7 +64,7 @@ USER bun
 EXPOSE 3000
 ENTRYPOINT [ "bun", "run", "/splitiv/apps/server/dist/index.js" ]
 
-FROM nginx:1.29.2-alpine AS web
+FROM nginx:1.29.4-alpine AS web
 
 # Create a non-root user to run nginx
 RUN adduser -D -H -u 1001 -s /sbin/nologin webuser

@@ -97,7 +97,7 @@ function RouteComponent() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <ItemGroup>
+          <ItemGroup className="gap-0">
             <Item className="px-0 py-3">
               <ItemContent className="flex-row justify-between">
                 <ItemTitle>Zapłacone przez</ItemTitle>
@@ -123,7 +123,7 @@ function RouteComponent() {
               </ItemContent>
             </Item>
           </ItemGroup>
-          <ItemGroup>
+          <ItemGroup className="gap-0">
             {expense.debts.map((debt, index) => (
               <Fragment key={debt.debtor.id}>
                 <Item className="px-0 py-3">
@@ -154,7 +154,7 @@ function RouteComponent() {
             <CardTitle>Historia wydatku</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-6">
-            <ItemGroup>
+            <ItemGroup className="gap-0">
               {logs.map((log, index) => (
                 <Fragment key={log.id}>
                   <Item className="px-0 py-3">

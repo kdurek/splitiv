@@ -3,12 +3,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { NotificationPlayground } from "@/components/notification-playground";
 import { PageLoader } from "@/components/page-loader";
-import { SelectGroup } from "@/components/select-group";
+import { GroupSwitcher } from "@/components/select-group";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -25,6 +26,13 @@ function RouteComponent() {
   const usersNotInCurrentGroupQuery = useQuery(
     orpc.auth.listNotInCurrentGroup.queryOptions()
   );
+
+  const USERS_NOT_IN_CURRENT_GROUP =
+    usersNotInCurrentGroupQuery.data?.map((user) => ({
+      label: user.name,
+      value: user.id,
+    })) ?? [];
+
   const addUserToGroupMutation = useMutation(
     orpc.group.addUser.mutationOptions({
       onSuccess() {
@@ -56,7 +64,7 @@ function RouteComponent() {
           <CardTitle>Aktywna grupa</CardTitle>
         </CardHeader>
         <CardContent>
-          <SelectGroup />
+          <GroupSwitcher />
         </CardContent>
       </Card>
       {isAdmin && (
@@ -74,26 +82,28 @@ function RouteComponent() {
                   </li>
                 ))}
               </ol>
-              {usersNotInCurrentGroupQuery.data &&
-                usersNotInCurrentGroupQuery.data.length > 0 && (
-                  <Select
-                    onValueChange={(value) =>
-                      addUserToGroupMutation.mutate({ userId: value })
-                    }
-                    value=""
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Dodaj użytkownika" />
-                    </SelectTrigger>
-                    <SelectContent position="item-aligned">
-                      {usersNotInCurrentGroupQuery.data?.map((user) => (
-                        <SelectItem key={user.id} value={user.id}>
-                          {user.name}
+              {USERS_NOT_IN_CURRENT_GROUP.length > 0 && (
+                <Select
+                  items={USERS_NOT_IN_CURRENT_GROUP}
+                  onValueChange={(value) =>
+                    value && addUserToGroupMutation.mutate({ userId: value })
+                  }
+                  value=""
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue data-placeholder="Dodaj użytkownika" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {USERS_NOT_IN_CURRENT_GROUP.map((user) => (
+                        <SelectItem key={user.value} value={user.value}>
+                          {user.label}
                         </SelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
-                )}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </CardContent>
         </Card>

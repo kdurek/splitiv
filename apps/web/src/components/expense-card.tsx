@@ -23,10 +23,10 @@ export function ExpenseCardSkeleton() {
   return (
     <Card>
       <CardHeader className="gap-0">
-        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-6 w-24" />
       </CardHeader>
       <CardContent className="grid gap-6">
-        <ItemGroup>
+        <ItemGroup className="gap-0">
           <Item className="px-0 py-3">
             <ItemContent className="flex-row justify-between">
               <Skeleton className="h-[21px] w-24" />
@@ -68,7 +68,7 @@ export function ExpenseCard({
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <ItemGroup>
+          <ItemGroup className="gap-0">
             <Item className="px-0 py-3">
               <ItemContent className="flex-row justify-between">
                 <ItemTitle>Kwota wydatku</ItemTitle>

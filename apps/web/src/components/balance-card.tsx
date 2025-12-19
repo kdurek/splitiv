@@ -27,7 +27,7 @@ export function BalanceCardSkeleton() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <ItemGroup>
+        <ItemGroup className="gap-0">
           <Item className="px-0 py-3">
             <ItemContent className="flex-row justify-between">
               <Skeleton className="h-[21px] w-24" />
@@ -65,7 +65,7 @@ export function BalanceCard({
         {action && <CardAction>{action}</CardAction>}
       </CardHeader>
       <CardContent>
-        <ItemGroup>
+        <ItemGroup className="gap-0">
           <Item className="px-0 py-3">
             <ItemContent className="flex-row justify-between">
               <ItemTitle>Twoje należności</ItemTitle>

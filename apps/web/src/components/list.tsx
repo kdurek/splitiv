@@ -22,7 +22,7 @@ const List = <TItem,>({
   children,
   getKey,
   loading,
-  loadingCount = 4,
+  loadingCount = 5,
   empty,
   className,
 }: ListProps<TItem>) => {

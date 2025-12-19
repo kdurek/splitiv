@@ -13,7 +13,7 @@ import {
   SettingsIcon,
 } from "lucide-react";
 import { NotificationPrompt } from "@/components/notification-prompt";
-import { SelectGroup } from "@/components/select-group";
+import { GroupSwitcher } from "@/components/select-group";
 import { cn } from "@/lib/utils";
 import { orpc } from "@/utils/orpc";
 
@@ -47,7 +47,11 @@ function RouteComponent() {
   return (
     <>
       <div className="relative mx-auto max-w-lg overflow-y-auto px-4 pt-4 pb-21">
-        {getCurrentUserQuery.data?.activeGroupId ? <Outlet /> : <SelectGroup />}
+        {getCurrentUserQuery.data?.activeGroupId ? (
+          <Outlet />
+        ) : (
+          <GroupSwitcher />
+        )}
       </div>
       <nav className="fixed right-1 bottom-1 left-1 z-40 mx-auto flex h-16 max-w-lg items-center justify-between rounded-xl border bg-background shadow-sm">
         {navItems.map((item) => (

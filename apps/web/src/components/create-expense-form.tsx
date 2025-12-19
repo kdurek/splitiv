@@ -36,6 +36,7 @@ import { NumberField, NumberFieldInput } from "@/components/ui/number-field";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -170,6 +171,12 @@ export function CreateExpenseForm() {
 
   const currentUserQuery = useQuery(orpc.auth.getCurrentUser.queryOptions());
   const currentGroupQuery = useQuery(orpc.group.current.queryOptions());
+
+  const GROUP_MEMBERS =
+    currentGroupQuery.data?.members?.map((member) => ({
+      label: member.user.name,
+      value: member.user.id,
+    })) ?? [];
 
   const createExpenseMutation = useMutation(
     orpc.expense.create.mutationOptions({
@@ -357,22 +364,24 @@ export function CreateExpenseForm() {
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Osoba płacąca</FieldLabel>
                     <Select
+                      items={GROUP_MEMBERS}
                       name={field.name}
-                      onValueChange={field.handleChange}
+                      onValueChange={(value) =>
+                        value && field.handleChange(value)
+                      }
                       value={field.state.value}
                     >
                       <SelectTrigger aria-invalid={isInvalid} id={field.name}>
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent position="item-aligned">
-                        {currentGroupQuery.data?.members?.map((member) => (
-                          <SelectItem
-                            key={member.user.id}
-                            value={member.user.id}
-                          >
-                            {member.user.name}
-                          </SelectItem>
-                        ))}
+                      <SelectContent>
+                        <SelectGroup>
+                          {GROUP_MEMBERS.map((member) => (
+                            <SelectItem key={member.value} value={member.value}>
+                              {member.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
                       </SelectContent>
                     </Select>
                     {isInvalid && (
@@ -394,8 +403,11 @@ export function CreateExpenseForm() {
                       Sposób rozliczenia
                     </FieldLabel>
                     <Select
+                      items={SPLIT_METHODS}
                       name={field.name}
-                      onValueChange={field.handleChange}
+                      onValueChange={(value) =>
+                        value && field.handleChange(value)
+                      }
                       value={field.state.value}
                     >
                       <SelectTrigger
@@ -403,14 +415,16 @@ export function CreateExpenseForm() {
                         className="w-full"
                         id={field.name}
                       >
-                        <SelectValue placeholder="Wybierz sposób rozliczenia" />
+                        <SelectValue data-placeholder="Wybierz sposób rozliczenia" />
                       </SelectTrigger>
-                      <SelectContent position="item-aligned">
-                        {SPLIT_METHODS.map((method) => (
-                          <SelectItem key={method.value} value={method.value}>
-                            {method.label}
-                          </SelectItem>
-                        ))}
+                      <SelectContent>
+                        <SelectGroup>
+                          {SPLIT_METHODS.map((method) => (
+                            <SelectItem key={method.value} value={method.value}>
+                              {method.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
                       </SelectContent>
                     </Select>
                     {isInvalid && (
@@ -506,6 +520,7 @@ export function CreateExpenseForm() {
                                         }).format(debt.amount)}
                                       </FieldLabel>
                                       <Select
+                                        items={RATIO_SPLIT_VALUES}
                                         name={subField.name}
                                         onValueChange={(value) =>
                                           subField.handleChange(Number(value))
@@ -518,15 +533,17 @@ export function CreateExpenseForm() {
                                         >
                                           <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent position="item-aligned">
-                                          {RATIO_SPLIT_VALUES.map((ratio) => (
-                                            <SelectItem
-                                              key={ratio.value}
-                                              value={ratio.value.toString()}
-                                            >
-                                              {ratio.label}
-                                            </SelectItem>
-                                          ))}
+                                        <SelectContent>
+                                          <SelectGroup>
+                                            {RATIO_SPLIT_VALUES.map((ratio) => (
+                                              <SelectItem
+                                                key={ratio.value}
+                                                value={ratio.value.toString()}
+                                              >
+                                                {ratio.label}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectGroup>
                                         </SelectContent>
                                       </Select>
                                     </Field>

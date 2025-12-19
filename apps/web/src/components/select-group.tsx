@@ -3,13 +3,14 @@ import { toast } from "sonner";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { orpc, queryClient } from "@/utils/orpc";
 
-export function SelectGroup() {
+export function GroupSwitcher() {
   const getCurrentUserQuery = useQuery(orpc.auth.getCurrentUser.queryOptions());
   const groupsQuery = useQuery(orpc.group.list.queryOptions());
   const changeActiveGroupMutation = useMutation(
@@ -26,23 +27,32 @@ export function SelectGroup() {
     })
   );
 
+  const GROUPS =
+    groupsQuery.data?.map((group) => ({
+      label: group.name,
+      value: group.id,
+    })) ?? [];
+
   return (
     <Select
       disabled={getCurrentUserQuery.isPending}
+      items={GROUPS}
       onValueChange={(value) =>
-        changeActiveGroupMutation.mutate({ groupId: value })
+        value && changeActiveGroupMutation.mutate({ groupId: value })
       }
       value={getCurrentUserQuery.data?.activeGroupId ?? ""}
     >
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Wybierz grupę" />
+        <SelectValue data-placeholder="Wybierz grupę" />
       </SelectTrigger>
-      <SelectContent position="item-aligned">
-        {groupsQuery.data?.map((group) => (
-          <SelectItem key={group.id} value={group.id}>
-            {group.name}
-          </SelectItem>
-        ))}
+      <SelectContent>
+        <SelectGroup>
+          {GROUPS.map((group) => (
+            <SelectItem key={group.value} value={group.value}>
+              {group.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   );

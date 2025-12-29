@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import Decimal from "decimal.js";
 import { Fragment } from "react";
 import { toast } from "sonner";
-import * as z from "zod";
+import { z } from "zod";
 import { PageLoader } from "@/components/page-loader";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,6 +42,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
+import { formatCurrency } from "@/lib/currency";
 import { allocate } from "@/utils/allocate";
 import { orpc } from "@/utils/orpc";
 
@@ -439,180 +441,194 @@ export function CreateExpenseForm() {
               name="splitMethod"
             />
 
-            <form.Field mode="array" name="debts">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                const splitMethod = form.getFieldValue("splitMethod");
-                return (
-                  <FieldSet>
-                    <FieldLegend variant="label">Uczestnicy</FieldLegend>
-                    <FieldGroup className="gap-4">
-                      {field.state.value.map((debt, index) => (
-                        <Fragment key={index}>
-                          <div className="flex h-9 items-center justify-between gap-4">
-                            <Label>
-                              {
-                                currentGroupQuery.data?.members?.find(
-                                  (member) => member.user.id === debt.debtorId
-                                )?.user.name
-                              }
-                            </Label>
-                            <div>
-                              {splitMethod === "equal" && (
-                                <form.Field
-                                  children={(subField) => (
-                                    <Field
-                                      data-invalid={isInvalid}
-                                      orientation="horizontal"
+            <form.Subscribe selector={(state) => state.values.splitMethod}>
+              {(splitMethod) => (
+                <form.Field mode="array" name="debts">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    return (
+                      <FieldSet>
+                        <FieldLegend variant="label">Uczestnicy</FieldLegend>
+                        <FieldGroup className="gap-4">
+                          {field.state.value.map((debt, index) => (
+                            <Fragment key={debt.debtorId}>
+                              <div className="flex h-9 items-center justify-between gap-4">
+                                <Label>
+                                  {
+                                    currentGroupQuery.data?.members?.find(
+                                      (member) =>
+                                        member.user.id === debt.debtorId
+                                    )?.user.name
+                                  }
+                                </Label>
+                                <div>
+                                  {splitMethod === "equal" && (
+                                    <form.Field
+                                      listeners={{
+                                        onChange: handleAllocateDebts,
+                                      }}
+                                      name={`debts[${index}].equalSplit`}
                                     >
-                                      <FieldLabel
-                                        className="text-muted-foreground"
-                                        htmlFor={subField.name}
-                                      >
-                                        {Intl.NumberFormat("pl-PL", {
-                                          style: "currency",
-                                          currency: "PLN",
-                                          currencySign: "accounting",
-                                          minimumFractionDigits: 2,
-                                          maximumFractionDigits: 2,
-                                        }).format(debt.amount)}
-                                      </FieldLabel>
-                                      <Checkbox
-                                        aria-invalid={isInvalid}
-                                        checked={subField.state.value}
-                                        className="size-6"
-                                        id={subField.name}
-                                        name={subField.name}
-                                        onCheckedChange={(checked) =>
-                                          subField.handleChange(
-                                            checked === true
-                                          )
-                                        }
-                                      />
-                                    </Field>
-                                  )}
-                                  key={index}
-                                  listeners={{
-                                    onChange: handleAllocateDebts,
-                                  }}
-                                  name={`debts[${index}].equalSplit`}
-                                />
-                              )}
-
-                              {splitMethod === "ratio" && (
-                                <form.Field
-                                  children={(subField) => (
-                                    <Field
-                                      data-invalid={isInvalid}
-                                      orientation="horizontal"
-                                    >
-                                      <FieldLabel
-                                        className="text-muted-foreground"
-                                        htmlFor={subField.name}
-                                      >
-                                        {Intl.NumberFormat("pl-PL", {
-                                          style: "currency",
-                                          currency: "PLN",
-                                          currencySign: "accounting",
-                                          minimumFractionDigits: 2,
-                                          maximumFractionDigits: 2,
-                                        }).format(debt.amount)}
-                                      </FieldLabel>
-                                      <Select
-                                        items={RATIO_SPLIT_VALUES}
-                                        name={subField.name}
-                                        onValueChange={(value) =>
-                                          subField.handleChange(Number(value))
-                                        }
-                                        value={subField.state.value.toString()}
-                                      >
-                                        <SelectTrigger
-                                          aria-invalid={isInvalid}
-                                          id={subField.name}
+                                      {(subField) => (
+                                        <Field
+                                          data-invalid={isInvalid}
+                                          orientation="horizontal"
                                         >
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          <SelectGroup>
-                                            {RATIO_SPLIT_VALUES.map((ratio) => (
-                                              <SelectItem
-                                                key={ratio.value}
-                                                value={ratio.value.toString()}
-                                              >
-                                                {ratio.label}
-                                              </SelectItem>
-                                            ))}
-                                          </SelectGroup>
-                                        </SelectContent>
-                                      </Select>
-                                    </Field>
+                                          <form.Subscribe
+                                            selector={(state) =>
+                                              state.values.debts[index]
+                                                ?.amount ?? 0
+                                            }
+                                          >
+                                            {(amount) => (
+                                              <FieldLabel className="text-muted-foreground">
+                                                {formatCurrency(amount)}
+                                              </FieldLabel>
+                                            )}
+                                          </form.Subscribe>
+                                          <Checkbox
+                                            aria-invalid={isInvalid}
+                                            checked={subField.state.value}
+                                            className="size-6"
+                                            id={subField.name}
+                                            name={subField.name}
+                                            onCheckedChange={(checked) =>
+                                              subField.handleChange(
+                                                checked === true
+                                              )
+                                            }
+                                          />
+                                        </Field>
+                                      )}
+                                    </form.Field>
                                   )}
-                                  key={index}
-                                  listeners={{
-                                    onChange: handleAllocateDebts,
-                                  }}
-                                  name={`debts[${index}].ratioSplit`}
-                                />
-                              )}
 
-                              {splitMethod === "custom" && (
-                                <form.Field
-                                  children={(subField) => (
-                                    <Field
-                                      data-invalid={isInvalid}
-                                      orientation="horizontal"
+                                  {splitMethod === "ratio" && (
+                                    <form.Field
+                                      listeners={{
+                                        onChange: handleAllocateDebts,
+                                      }}
+                                      name={`debts[${index}].ratioSplit`}
                                     >
-                                      <NumberField
-                                        aria-invalid={isInvalid}
-                                        aria-label="Kwota wydatku"
-                                        formatOptions={{
-                                          style: "currency",
-                                          currency: "PLN",
-                                          currencySign: "accounting",
-                                          minimumFractionDigits: 2,
-                                          maximumFractionDigits: 2,
-                                        }}
-                                        id={subField.name}
-                                        minValue={0}
-                                        name={subField.name}
-                                        onBlur={subField.handleBlur}
-                                        onChange={(e) =>
-                                          subField.handleChange(e)
-                                        }
-                                        value={subField.state.value}
-                                      >
-                                        <NumberFieldInput className="w-24" />
-                                      </NumberField>
-                                    </Field>
+                                      {(subField) => (
+                                        <Field
+                                          data-invalid={isInvalid}
+                                          orientation="horizontal"
+                                        >
+                                          <form.Subscribe
+                                            selector={(state) =>
+                                              state.values.debts[index]
+                                                ?.amount ?? 0
+                                            }
+                                          >
+                                            {(amount) => (
+                                              <FieldLabel className="text-muted-foreground">
+                                                {formatCurrency(amount)}
+                                              </FieldLabel>
+                                            )}
+                                          </form.Subscribe>
+                                          <Select
+                                            items={RATIO_SPLIT_VALUES}
+                                            name={subField.name}
+                                            onValueChange={(value) =>
+                                              subField.handleChange(
+                                                Number(value)
+                                              )
+                                            }
+                                            value={subField.state.value.toString()}
+                                          >
+                                            <SelectTrigger
+                                              aria-invalid={isInvalid}
+                                              id={subField.name}
+                                            >
+                                              <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectGroup>
+                                                {RATIO_SPLIT_VALUES.map(
+                                                  (ratio) => (
+                                                    <SelectItem
+                                                      key={ratio.value}
+                                                      value={ratio.value.toString()}
+                                                    >
+                                                      {ratio.label}
+                                                    </SelectItem>
+                                                  )
+                                                )}
+                                              </SelectGroup>
+                                            </SelectContent>
+                                          </Select>
+                                        </Field>
+                                      )}
+                                    </form.Field>
                                   )}
-                                  key={index}
-                                  listeners={{
-                                    onChange: handleAllocateDebts,
-                                  }}
-                                  name={`debts[${index}].customSplit`}
-                                />
+
+                                  {splitMethod === "custom" && (
+                                    <form.Field
+                                      listeners={{
+                                        onChange: handleAllocateDebts,
+                                      }}
+                                      name={`debts[${index}].customSplit`}
+                                    >
+                                      {(subField) => (
+                                        <Field
+                                          data-invalid={isInvalid}
+                                          orientation="horizontal"
+                                        >
+                                          <NumberField
+                                            aria-invalid={isInvalid}
+                                            aria-label="Kwota wydatku"
+                                            formatOptions={{
+                                              style: "currency",
+                                              currency: "PLN",
+                                              currencySign: "accounting",
+                                              minimumFractionDigits: 2,
+                                              maximumFractionDigits: 2,
+                                            }}
+                                            id={subField.name}
+                                            minValue={0}
+                                            name={subField.name}
+                                            onBlur={subField.handleBlur}
+                                            onChange={(e) =>
+                                              subField.handleChange(e)
+                                            }
+                                            value={subField.state.value}
+                                          >
+                                            <NumberFieldInput className="w-24" />
+                                          </NumberField>
+                                        </Field>
+                                      )}
+                                    </form.Field>
+                                  )}
+                                </div>
+                              </div>
+                              {index !== field.state.value.length - 1 && (
+                                <Separator />
                               )}
-                            </div>
-                          </div>
-                          {index !== field.state.value.length - 1 && (
-                            <Separator />
-                          )}
-                        </Fragment>
-                      ))}
-                    </FieldGroup>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </FieldSet>
-                );
-              }}
-            </form.Field>
+                            </Fragment>
+                          ))}
+                        </FieldGroup>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </FieldSet>
+                    );
+                  }}
+                </form.Field>
+              )}
+            </form.Subscribe>
           </FieldGroup>
         </form>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" form="create-expense-form" type="submit">
+        <Button
+          className="w-full"
+          disabled={createExpenseMutation.isPending}
+          form="create-expense-form"
+          type="submit"
+        >
+          {createExpenseMutation.isPending && <Spinner />}
           Dodaj
         </Button>
       </CardFooter>

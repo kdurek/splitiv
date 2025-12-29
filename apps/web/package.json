@@ -20,7 +20,7 @@
     "@splitiv/auth": "workspace:*",
     "@splitiv/db": "workspace:*",
     "@tailwindcss/vite": "^4.1.18",
-    "@tanstack/react-form": "^1.27.3",
+    "@tanstack/react-form": "^1.27.4",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-router": "^1.141.6",
     "better-auth": "catalog:",

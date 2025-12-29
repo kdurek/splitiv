@@ -94,7 +94,7 @@ function RouteComponent() {
               type="submit"
             >
               {isPending && <Spinner />}
-              {isPending ? "Logowanie..." : "Zaloguj"}
+              Zaloguj
             </Button>
           </div>
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">

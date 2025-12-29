@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "prisma": "catalog:",
-    "@types/pg": "^8.15.6",
+    "@types/pg": "^8.16.0",
     "@splitiv/config": "workspace:*"
   },
   "peerDependencies": {

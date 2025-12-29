@@ -1,5 +1,6 @@
 import { ORPCError } from "@orpc/client";
 import prisma from "@splitiv/db";
+import { env } from "@splitiv/env/server";
 import webPush from "web-push";
 
 export const createPushSubscription = async (
@@ -47,22 +48,10 @@ export async function sendPush(
   body: string,
   url?: string
 ) {
-  if (
-    !(
-      import.meta.env.WEB_PUSH_EMAIL &&
-      import.meta.env.WEB_PUSH_PUBLIC_KEY &&
-      import.meta.env.WEB_PUSH_PRIVATE_KEY
-    )
-  ) {
-    throw new ORPCError("BAD_REQUEST", {
-      message: "Nieprawidłowe dane subskrypcji",
-    });
-  }
-
   webPush.setVapidDetails(
-    `mailto:${import.meta.env.WEB_PUSH_EMAIL}`,
-    import.meta.env.WEB_PUSH_PUBLIC_KEY,
-    import.meta.env.WEB_PUSH_PRIVATE_KEY
+    `mailto:${env.WEB_PUSH_EMAIL}`,
+    env.WEB_PUSH_PUBLIC_KEY,
+    env.WEB_PUSH_PRIVATE_KEY
   );
   const users = typeof userIds === "string" ? [userIds] : userIds;
   const subscriptions = await prisma.pushSubscription.findMany({

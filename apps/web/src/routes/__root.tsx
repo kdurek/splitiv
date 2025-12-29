@@ -15,10 +15,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { orpc } from "@/utils/orpc";
 import "../index.css";
 
-export type RouterAppContext = {
+export interface RouterAppContext {
   orpc: typeof orpc;
   queryClient: QueryClient;
-};
+}
 
 setDefaultOptions({
   locale: pl,

@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "dotenv": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@splitiv/env": "workspace:*"
   },
   "devDependencies": {
     "turbo": "^2.6.3",
@@ -55,7 +56,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "typescript": "catalog:",
-    "@types/bun": "catalog:"
+    "@types/bun": "catalog:",
+    "@splitiv/config": "workspace:*"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [

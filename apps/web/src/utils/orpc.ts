@@ -2,6 +2,7 @@ import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import type { AppRouterClient } from "@splitiv/api/routers/index";
+import { env } from "@splitiv/env/web";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { toast } from "sonner";
@@ -22,7 +23,7 @@ export const queryClient = new QueryClient({
 });
 
 export const link = new RPCLink({
-  url: `${import.meta.env.VITE_SERVER_URL}/rpc`,
+  url: `${env.VITE_SERVER_URL}/rpc`,
   fetch(_url, options) {
     return fetch(_url, {
       ...options,

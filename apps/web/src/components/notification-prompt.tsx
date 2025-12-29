@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@splitiv/env/web";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -29,24 +30,20 @@ export function NotificationPrompt() {
       return;
     }
 
-    const VITE_WEB_PUSH_PUBLIC_KEY = import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY;
-    if (!VITE_WEB_PUSH_PUBLIC_KEY) {
-      console.error("VITE_WEB_PUSH_PUBLIC_KEY is not set.");
-      return;
-    }
-
     const handleSubscribe = async (reg: ServiceWorkerRegistration) => {
       try {
         const pushSubscription = await reg.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: base64ToUint8Array(VITE_WEB_PUSH_PUBLIC_KEY),
+          applicationServerKey: base64ToUint8Array(
+            env.VITE_WEB_PUSH_PUBLIC_KEY
+          ),
         });
         await createPushSubscriptionMutation.mutateAsync({ pushSubscription });
         console.info("Web push subscribed!");
         toast.dismiss(); // Dismiss the notification prompt
       } catch (error) {
         console.error("Failed to subscribe to web push:", error);
-        toast.error("Failed to enable notifications.");
+        toast.error("Nie udało się włączyć powiadomień");
       }
     };
 

@@ -18,7 +18,8 @@
       "!**/.alchemy",
       "!**/.svelte-kit",
       "!**/wrangler.jsonc",
-      "!**/.source"
+      "!**/.source",
+      "!**/convex/_generated"
     ]
   },
   "extends": ["ultracite/core", "ultracite/react", "ultracite/remix"],

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port=3001",
+    "dev": "vite dev",
     "build": "vite build",
     "serve": "vite preview",
     "start": "vite",
@@ -16,6 +16,7 @@
     "@orpc/client": "catalog:",
     "@orpc/tanstack-query": "^1.13.0",
     "@prisma/client": "catalog:",
+    "@splitiv/env": "workspace:*",
     "@splitiv/api": "workspace:*",
     "@splitiv/auth": "workspace:*",
     "@splitiv/db": "workspace:*",

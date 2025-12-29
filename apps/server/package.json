@@ -19,6 +19,7 @@
     "decimal.js": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:",
+    "@splitiv/env": "workspace:*",
     "@splitiv/api": "workspace:*",
     "@splitiv/auth": "workspace:*",
     "@splitiv/db": "workspace:*"

@@ -1,0 +1,19 @@
+{
+  "name": "@splitiv/env",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": "./src/server.ts",
+    "./web": "./src/web.ts"
+  },
+  "dependencies": {
+    "zod": "catalog:",
+    "@t3-oss/env-core": "^0.13.10",
+    "dotenv": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/bun": "catalog:",
+    "@splitiv/config": "workspace:*"
+  }
+}

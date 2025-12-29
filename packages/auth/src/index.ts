@@ -1,4 +1,5 @@
 import prisma from "@splitiv/db";
+import { env } from "@splitiv/env/server";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import type { GoogleProfile } from "better-auth/social-providers";
@@ -8,26 +9,23 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  trustedOrigins: [process.env.CORS_ORIGIN || ""],
+  trustedOrigins: [env.CORS_ORIGIN],
   emailAndPassword: {
     enabled: true,
   },
   socialProviders: {
-    google:
-      process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-        ? {
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            mapProfileToUser: (profile: GoogleProfile) => ({
-              name: profile.name,
-              email: profile.email,
-              emailVerified: profile.email_verified,
-              image: profile.picture,
-              firstName: profile.given_name,
-              lastName: profile.family_name,
-            }),
-          }
-        : undefined,
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      mapProfileToUser: (profile: GoogleProfile) => ({
+        name: profile.name,
+        email: profile.email,
+        emailVerified: profile.email_verified,
+        image: profile.picture,
+        firstName: profile.given_name,
+        lastName: profile.family_name,
+      }),
+    },
   },
   user: {
     additionalFields: {

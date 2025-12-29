@@ -6,6 +6,8 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+const navigateFallbackDenylist: RegExp[] = [/^\/api\//];
+
 export default defineConfig({
   plugins: [
     devtools(),
@@ -45,7 +47,7 @@ export default defineConfig({
         importScripts: ["/sw-push.js"],
         clientsClaim: true,
         skipWaiting: true,
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist,
         cleanupOutdatedCaches: true,
       },
     }),
@@ -54,6 +56,9 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    port: 3001,
   },
   esbuild: {
     drop:

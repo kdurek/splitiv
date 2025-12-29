@@ -2,12 +2,12 @@ import type { ReactNode } from "react";
 import { Fragment, useMemo } from "react";
 import { cn } from "@/lib/utils";
 
-type QueryLike<TItem> = {
+interface QueryLike<TItem> {
   data?: TItem[];
   isPending: boolean;
-};
+}
 
-type ListProps<TItem> = {
+interface ListProps<TItem> {
   query: QueryLike<TItem>;
   children: (item: TItem, index: number) => ReactNode;
   getKey: (item: TItem, index: number) => string | number;
@@ -15,7 +15,7 @@ type ListProps<TItem> = {
   loadingCount?: number;
   empty?: ReactNode;
   className?: string;
-};
+}
 
 const List = <TItem,>({
   query,

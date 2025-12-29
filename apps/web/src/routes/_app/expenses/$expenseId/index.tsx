@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/item";
 import { Label } from "@/components/ui/label";
 import { NumberField, NumberFieldInput } from "@/components/ui/number-field";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { orpc, queryClient } from "@/utils/orpc";
 
@@ -262,9 +263,11 @@ function ExpenseDeleteModal({ expense }: { expense: Expense }) {
         <DrawerFooter>
           <Button
             className={buttonVariants({ variant: "destructive" })}
+            disabled={deleteExpenseMutation.isPending}
             onClick={() => deleteExpenseMutation.mutate({ id: expense.id })}
             type="button"
           >
+            {deleteExpenseMutation.isPending && <Spinner />}
             Potwierdź
           </Button>
           <DrawerClose asChild>

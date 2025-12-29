@@ -14,6 +14,7 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **Prisma** - TypeScript-first ORM
 - **PostgreSQL** - Database engine
 - **Authentication** - Better-Auth
+- **Biome** - Linting and formatting
 - **Husky** - Git hooks for code quality
 - **PWA** - Progressive Web App support
 - **Turborepo** - Optimized monorepo build system
@@ -36,13 +37,13 @@ This project uses PostgreSQL with Prisma.
 3. Generate the Prisma client and push the schema:
 
 ```bash
-bun db:push
+bun run db:push
 ```
 
 Then, run the development server:
 
 ```bash
-bun dev
+bun run dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
@@ -63,11 +64,12 @@ splitiv/
 
 ## Available Scripts
 
-- `bun dev`: Start all applications in development mode
-- `bun build`: Build all applications
-- `bun dev:web`: Start only the web application
-- `bun dev:server`: Start only the server
-- `bun check-types`: Check TypeScript types across all apps
-- `bun db:push`: Push schema changes to database
-- `bun db:studio`: Open database studio UI
-- `cd apps/web && bun generate-pwa-assets`: Generate PWA assets
+- `bun run dev`: Start all applications in development mode
+- `bun run build`: Build all applications
+- `bun run dev:web`: Start only the web application
+- `bun run dev:server`: Start only the server
+- `bun run check-types`: Check TypeScript types across all apps
+- `bun run db:push`: Push schema changes to database
+- `bun run db:studio`: Open database studio UI
+- `bun run check`: Run Biome formatting and linting
+- `cd apps/web && bun run generate-pwa-assets`: Generate PWA assets

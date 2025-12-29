@@ -5,12 +5,12 @@ import { useInView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
 import { Spinner } from "./ui/spinner";
 
-type InfinitePage<TItem> = {
+interface InfinitePage<TItem> {
   items: TItem[];
   nextCursor?: unknown;
-};
+}
 
-type InfiniteQueryLike<TItem> = {
+interface InfiniteQueryLike<TItem> {
   data?: {
     pages: InfinitePage<TItem>[];
   };
@@ -18,9 +18,9 @@ type InfiniteQueryLike<TItem> = {
   hasNextPage?: boolean;
   isFetchingNextPage?: boolean;
   isPending: boolean;
-};
+}
 
-type InfiniteListProps<TItem> = {
+interface InfiniteListProps<TItem> {
   query: InfiniteQueryLike<TItem>;
   children: (item: TItem, index: number) => ReactNode;
   getKey: (item: TItem, index: number) => string | number;
@@ -30,7 +30,7 @@ type InfiniteListProps<TItem> = {
   className?: string;
   rootMargin?: string;
   threshold?: number | number[];
-};
+}
 
 const InfiniteList = <TItem,>({
   query,

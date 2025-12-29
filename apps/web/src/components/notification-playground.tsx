@@ -1,3 +1,4 @@
+import { env } from "@splitiv/env/web";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -56,18 +57,13 @@ export function NotificationPlayground() {
   }, []);
 
   const subscribeButtonOnClick = async () => {
-    if (!import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY) {
-      throw new Error("Environment variables supplied not sufficient.");
-    }
     if (!registration) {
       toast.error("No SW registration available.");
       return;
     }
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: base64ToUint8Array(
-        import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY
-      ),
+      applicationServerKey: base64ToUint8Array(env.VITE_WEB_PUSH_PUBLIC_KEY),
     });
     createPushSubscriptionMutation.mutate({
       pushSubscription: sub,

@@ -1,14 +1,15 @@
+import { env } from "@splitiv/env/web";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
-type SocialLoginButtonProps = {
+interface SocialLoginButtonProps {
   provider: string;
   icon: React.ReactNode;
   disabled?: boolean;
   callbackURL: string;
-};
+}
 
 export function SignInSocialButton(props: SocialLoginButtonProps) {
   const providerLabel =
@@ -21,7 +22,7 @@ export function SignInSocialButton(props: SocialLoginButtonProps) {
       await authClient.signIn.social(
         {
           provider: props.provider,
-          callbackURL: `${import.meta.env.VITE_BASE_URL}${props.callbackURL}`,
+          callbackURL: `${env.VITE_BASE_URL}${props.callbackURL}`,
         },
         {
           onError: ({ error }) => {

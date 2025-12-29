@@ -3,7 +3,6 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
-      "**",
       "!**/.next",
       "!**/dist",
       "!**/.turbo",
@@ -47,6 +46,7 @@
         "noMagicNumbers": "off"
       },
       "nursery": {
+        "noUndeclaredEnvVars": "off",
         "noLeakedRender": "off"
       }
     }

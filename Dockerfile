@@ -62,7 +62,7 @@ ENV NODE_ENV=production
 
 USER bun
 EXPOSE 3000
-ENTRYPOINT [ "bun", "run", "/splitiv/apps/server/dist/index.js" ]
+ENTRYPOINT [ "bun", "run", "/splitiv/apps/server/dist/index.mjs" ]
 
 FROM nginx:1.29.4-alpine AS web
 

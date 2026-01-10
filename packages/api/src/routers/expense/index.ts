@@ -3,6 +3,7 @@ import { protectedProcedure } from "@splitiv/api";
 import type { User } from "@splitiv/auth";
 import prisma from "@splitiv/db";
 import type { ExpenseWhereInput } from "@splitiv/db/prisma/generated/models";
+import { searchExpenses } from "@splitiv/db/prisma/generated/sql";
 import Decimal from "decimal.js";
 import removeAccents from "remove-accents";
 import { z } from "zod";
@@ -79,7 +80,7 @@ export const expenseRouter = {
       })
     )
     .handler(async ({ input, context }) => {
-      const statusWhere: ExpenseWhereInput =
+      const baseWhere: ExpenseWhereInput =
         input.status === "active"
           ? {
               OR: [
@@ -157,50 +158,28 @@ export const expenseRouter = {
               ],
             };
 
-      const queryWhere: ExpenseWhereInput | undefined = input.query
-        ? {
-            OR: [
-              {
-                name: {
-                  contains: input.query,
-                  mode: "insensitive",
-                },
-              },
-              {
-                name: {
-                  contains: removeAccents(input.query),
-                  mode: "insensitive",
-                },
-              },
-              {
-                description: {
-                  contains: input.query,
-                  mode: "insensitive",
-                },
-              },
-              {
-                description: {
-                  contains: removeAccents(input.query),
-                  mode: "insensitive",
-                },
-              },
-            ],
-          }
-        : {};
+      let queryWhere: ExpenseWhereInput = {};
 
-      const count = await prisma.expense.count({
-        where: {
-          groupId: context.user.activeGroupId,
-          AND: [statusWhere, queryWhere],
-        },
-      });
+      if (input.query) {
+        const searchPattern = `%${removeAccents(input.query).toLowerCase()}%`;
+        const searchResults = await prisma.$queryRawTyped(
+          searchExpenses(context.user.activeGroupId, searchPattern)
+        );
+        const matchingIds = searchResults.map((r) => r.id);
+
+        if (matchingIds.length === 0) {
+          return { items: [], nextCursor: undefined };
+        }
+
+        queryWhere = { id: { in: matchingIds } };
+      }
 
       const items = await prisma.expense.findMany({
         take: input.limit + 1,
         cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           groupId: context.user.activeGroupId,
-          AND: [statusWhere, queryWhere],
+          AND: [baseWhere, queryWhere],
         },
         select: {
           id: true,
@@ -223,7 +202,6 @@ export const expenseRouter = {
       return {
         items,
         nextCursor,
-        count,
       };
     }),
 

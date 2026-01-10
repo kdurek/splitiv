@@ -49,15 +49,11 @@ export function ExpenseCardSkeleton() {
 export function ExpenseCard({
   expense,
 }: {
-  expense?: Pick<
+  expense: Pick<
     Expense,
     "id" | "name" | "description" | "amount" | "createdAt"
   >;
 }) {
-  if (!expense) {
-    return <ExpenseCardSkeleton />;
-  }
-
   return (
     <Link params={{ expenseId: expense.id }} to="/expenses/$expenseId">
       <Card>

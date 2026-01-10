@@ -74,6 +74,8 @@ export const expenseRouter = {
         cursor: z.string().nullish(),
         status: z.enum(["active", "archive"]),
         query: z.string().optional(),
+        payerIds: z.string().array().optional(),
+        debtorIds: z.string().array().optional(),
       })
     )
     .handler(async ({ input, context }) => {
@@ -82,8 +84,20 @@ export const expenseRouter = {
           ? {
               OR: [
                 {
+                  payerId:
+                    input.payerIds && input.payerIds.length > 0
+                      ? {
+                          in: input.payerIds,
+                        }
+                      : {},
                   debts: {
                     some: {
+                      debtorId:
+                        input.debtorIds && input.debtorIds.length > 0
+                          ? {
+                              in: input.debtorIds,
+                            }
+                          : {},
                       settled: {
                         not: {
                           equals: prisma.expenseDebt.fields.amount,
@@ -93,8 +107,20 @@ export const expenseRouter = {
                   },
                 },
                 {
+                  payerId:
+                    input.payerIds && input.payerIds.length > 0
+                      ? {
+                          in: input.payerIds,
+                        }
+                      : {},
                   debts: {
                     some: {
+                      debtorId:
+                        input.debtorIds && input.debtorIds.length > 0
+                          ? {
+                              in: input.debtorIds,
+                            }
+                          : {},
                       settled: {
                         lt: prisma.expenseDebt.fields.amount,
                       },
@@ -106,7 +132,21 @@ export const expenseRouter = {
           : {
               OR: [
                 {
+                  payerId:
+                    input.payerIds && input.payerIds.length > 0
+                      ? {
+                          in: input.payerIds,
+                        }
+                      : {},
                   debts: {
+                    some: {
+                      debtorId:
+                        input.debtorIds && input.debtorIds.length > 0
+                          ? {
+                              in: input.debtorIds,
+                            }
+                          : {},
+                    },
                     every: {
                       settled: {
                         equals: prisma.expenseDebt.fields.amount,

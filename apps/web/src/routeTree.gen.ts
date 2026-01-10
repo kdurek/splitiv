@@ -16,7 +16,6 @@ import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppExpensesIndexRouteImport } from './routes/_app/expenses/index'
-import { Route as AppUsersUserIdRouteImport } from './routes/_app/users/$userId'
 import { Route as AppExpensesCreateRouteImport } from './routes/_app/expenses/create'
 import { Route as AppExpensesExpenseIdIndexRouteImport } from './routes/_app/expenses/$expenseId/index'
 
@@ -53,11 +52,6 @@ const AppExpensesIndexRoute = AppExpensesIndexRouteImport.update({
   path: '/expenses/',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppUsersUserIdRoute = AppUsersUserIdRouteImport.update({
-  id: '/users/$userId',
-  path: '/users/$userId',
-  getParentRoute: () => AppRouteRoute,
-} as any)
 const AppExpensesCreateRoute = AppExpensesCreateRouteImport.update({
   id: '/expenses/create',
   path: '/expenses/create',
@@ -75,7 +69,6 @@ export interface FileRoutesByFullPath {
   '/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
   '/expenses/create': typeof AppExpensesCreateRoute
-  '/users/$userId': typeof AppUsersUserIdRoute
   '/expenses': typeof AppExpensesIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/expenses/$expenseId': typeof AppExpensesExpenseIdIndexRoute
@@ -85,7 +78,6 @@ export interface FileRoutesByTo {
   '/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
   '/expenses/create': typeof AppExpensesCreateRoute
-  '/users/$userId': typeof AppUsersUserIdRoute
   '/expenses': typeof AppExpensesIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/expenses/$expenseId': typeof AppExpensesExpenseIdIndexRoute
@@ -98,7 +90,6 @@ export interface FileRoutesById {
   '/_auth/signup': typeof AuthSignupRoute
   '/_app/': typeof AppIndexRoute
   '/_app/expenses/create': typeof AppExpensesCreateRoute
-  '/_app/users/$userId': typeof AppUsersUserIdRoute
   '/_app/expenses/': typeof AppExpensesIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/expenses/$expenseId/': typeof AppExpensesExpenseIdIndexRoute
@@ -110,7 +101,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/'
     | '/expenses/create'
-    | '/users/$userId'
     | '/expenses'
     | '/settings'
     | '/expenses/$expenseId'
@@ -120,7 +110,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/'
     | '/expenses/create'
-    | '/users/$userId'
     | '/expenses'
     | '/settings'
     | '/expenses/$expenseId'
@@ -132,7 +121,6 @@ export interface FileRouteTypes {
     | '/_auth/signup'
     | '/_app/'
     | '/_app/expenses/create'
-    | '/_app/users/$userId'
     | '/_app/expenses/'
     | '/_app/settings/'
     | '/_app/expenses/$expenseId/'
@@ -194,13 +182,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppExpensesIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/_app/users/$userId': {
-      id: '/_app/users/$userId'
-      path: '/users/$userId'
-      fullPath: '/users/$userId'
-      preLoaderRoute: typeof AppUsersUserIdRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
     '/_app/expenses/create': {
       id: '/_app/expenses/create'
       path: '/expenses/create'
@@ -221,7 +202,6 @@ declare module '@tanstack/react-router' {
 interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppExpensesCreateRoute: typeof AppExpensesCreateRoute
-  AppUsersUserIdRoute: typeof AppUsersUserIdRoute
   AppExpensesIndexRoute: typeof AppExpensesIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppExpensesExpenseIdIndexRoute: typeof AppExpensesExpenseIdIndexRoute
@@ -230,7 +210,6 @@ interface AppRouteRouteChildren {
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppExpensesCreateRoute: AppExpensesCreateRoute,
-  AppUsersUserIdRoute: AppUsersUserIdRoute,
   AppExpensesIndexRoute: AppExpensesIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppExpensesExpenseIdIndexRoute: AppExpensesExpenseIdIndexRoute,

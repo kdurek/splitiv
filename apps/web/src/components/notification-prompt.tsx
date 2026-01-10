@@ -1,5 +1,3 @@
-"use client";
-
 import { env } from "@splitiv/env/web";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";

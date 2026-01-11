@@ -14,7 +14,7 @@
   },
   "scripts": {
     "db:push": "prisma db push",
-    "db:generate": "prisma generate --sql",
+    "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:start": "docker compose up -d",

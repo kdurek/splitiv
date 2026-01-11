@@ -3,11 +3,11 @@ import { protectedProcedure } from "@splitiv/api";
 import type { User } from "@splitiv/auth";
 import prisma from "@splitiv/db";
 import type { ExpenseWhereInput } from "@splitiv/db/prisma/generated/models";
-import { searchExpenses } from "@splitiv/db/prisma/generated/sql";
 import Decimal from "decimal.js";
-import removeAccents from "remove-accents";
 import { z } from "zod";
+
 import { sendPush } from "../../utils/push-subscription";
+import { searchExpenses } from "../../utils/search-expenses";
 import { expenseDebtRouter } from "./debt";
 import { expenseLogRouter } from "./log";
 
@@ -161,9 +161,9 @@ export const expenseRouter = {
       let queryWhere: ExpenseWhereInput = {};
 
       if (input.query) {
-        const searchPattern = `%${removeAccents(input.query).toLowerCase()}%`;
-        const searchResults = await prisma.$queryRawTyped(
-          searchExpenses(context.user.activeGroupId, searchPattern)
+        const searchResults = await searchExpenses(
+          context.user.activeGroupId,
+          input.query
         );
         const matchingIds = searchResults.map((r) => r.id);
 

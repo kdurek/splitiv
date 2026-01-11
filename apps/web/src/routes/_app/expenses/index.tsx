@@ -30,13 +30,14 @@ function renderValue(
   groupMembers: { label: string; value: string }[]
 ) {
   if (value.length === 0) {
-    return "Wybierz płatników...";
+    return "Wybierz osoby...";
   }
 
-  const firstPayer = groupMembers.find((member) => member.value === value[0]);
-  const additionalPayers =
-    value.length > 1 ? ` (+${value.length - 1} więcej)` : "";
-  return firstPayer?.label + additionalPayers;
+  if (value.length === 1) {
+    return groupMembers.find((member) => member.value === value[0])?.label;
+  }
+
+  return `${value.length} wybranych`;
 }
 
 export const Route = createFileRoute("/_app/expenses/")({

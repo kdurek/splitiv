@@ -80,83 +80,37 @@ export const expenseRouter = {
       })
     )
     .handler(async ({ input, context }) => {
-      const baseWhere: ExpenseWhereInput =
-        input.status === "active"
-          ? {
-              OR: [
-                {
-                  payerId:
-                    input.payerIds && input.payerIds.length > 0
-                      ? {
-                          in: input.payerIds,
-                        }
-                      : {},
-                  debts: {
-                    some: {
-                      debtorId:
-                        input.debtorIds && input.debtorIds.length > 0
-                          ? {
-                              in: input.debtorIds,
-                            }
-                          : {},
-                      settled: {
-                        not: {
-                          equals: prisma.expenseDebt.fields.amount,
-                        },
-                      },
-                    },
-                  },
-                },
-                {
-                  payerId:
-                    input.payerIds && input.payerIds.length > 0
-                      ? {
-                          in: input.payerIds,
-                        }
-                      : {},
-                  debts: {
-                    some: {
-                      debtorId:
-                        input.debtorIds && input.debtorIds.length > 0
-                          ? {
-                              in: input.debtorIds,
-                            }
-                          : {},
-                      settled: {
-                        lt: prisma.expenseDebt.fields.amount,
-                      },
-                    },
-                  },
-                },
-              ],
-            }
-          : {
-              OR: [
-                {
-                  payerId:
-                    input.payerIds && input.payerIds.length > 0
-                      ? {
-                          in: input.payerIds,
-                        }
-                      : {},
-                  debts: {
-                    some: {
-                      debtorId:
-                        input.debtorIds && input.debtorIds.length > 0
-                          ? {
-                              in: input.debtorIds,
-                            }
-                          : {},
-                    },
-                    every: {
-                      settled: {
-                        equals: prisma.expenseDebt.fields.amount,
-                      },
-                    },
-                  },
-                },
-              ],
-            };
+      const { payerIds, debtorIds, status } = input;
+
+      const hasPayerFilter = payerIds && payerIds.length > 0;
+      const hasDebtorFilter = debtorIds && debtorIds.length > 0;
+      const isActive = status === "active";
+      const isArchive = status === "archive";
+
+      const baseWhere: ExpenseWhereInput = {
+        // Filter by payer
+        ...(hasPayerFilter && { payerId: { in: payerIds } }),
+
+        debts: {
+          // Active: at least one debt not fully settled
+          ...(isActive && {
+            some: {
+              ...(hasDebtorFilter && { debtorId: { in: debtorIds } }),
+              settled: { lt: prisma.expenseDebt.fields.amount },
+            },
+          }),
+
+          // Archive: all debts fully settled
+          ...(isArchive && {
+            ...(hasDebtorFilter && {
+              some: { debtorId: { in: debtorIds } },
+            }),
+            every: {
+              settled: { equals: prisma.expenseDebt.fields.amount },
+            },
+          }),
+        },
+      };
 
       let queryWhere: ExpenseWhereInput = {};
 

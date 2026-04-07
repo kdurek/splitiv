@@ -17,6 +17,7 @@ catalog:
   "@tanstack/eslint-plugin-router": ^1.161.6
   "@tanstack/react-devtools": ^0.10.1
   "@tanstack/react-form-devtools": ^0.2.20
+  "@tanstack/react-form": ^1.28.6
   "@tanstack/react-form-start": ^1.28.6
   "@tanstack/react-query": ^5.96.2
   "@tanstack/react-query-devtools": ^5.96.2
@@ -34,6 +35,7 @@ catalog:
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
   date-fns: ^4.1.0
+  decimal.js: ^10.5.0
   drizzle-kit: beta
   drizzle-orm: beta
   eslint-plugin-react-hooks: ^7.0.1
@@ -43,6 +45,7 @@ catalog:
   nitro: ^3.0.260311-beta
   postgres: ^3.4.9
   react: ^19.2.4
+  react-aria-components: ^1.10.1
   react-dom: ^19.2.4
   shadcn: ^4.1.2
   sonner: ^2.0.7

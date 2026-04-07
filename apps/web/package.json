@@ -28,6 +28,7 @@
     "nanoid": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-intersection-observer": "catalog:",
     "sonner": "catalog:",
     "zod": "catalog:"
   },

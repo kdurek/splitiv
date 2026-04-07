@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as GuestRouteRouteImport } from './routes/_guest/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as GuestSignupRouteImport } from './routes/_guest/signup'
 import { Route as GuestLoginRouteImport } from './routes/_guest/login'
-import { Route as AuthAppRouteRouteImport } from './routes/_auth/app/route'
-import { Route as AuthAppIndexRouteImport } from './routes/_auth/app/index'
+import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
+import { Route as AuthExpensesRouteRouteImport } from './routes/_auth/expenses/route'
+import { Route as AuthExpensesIndexRouteImport } from './routes/_auth/expenses/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AuthExpensesCreateRouteImport } from './routes/_auth/expenses/create'
 
 const GuestRouteRoute = GuestRouteRouteImport.update({
   id: '/_guest',
@@ -26,10 +28,10 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const GuestSignupRoute = GuestSignupRouteImport.update({
   id: '/signup',
@@ -41,67 +43,99 @@ const GuestLoginRoute = GuestLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => GuestRouteRoute,
 } as any)
-const AuthAppRouteRoute = AuthAppRouteRouteImport.update({
-  id: '/app',
-  path: '/app',
+const AuthSettingsRoute = AuthSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthAppIndexRoute = AuthAppIndexRouteImport.update({
+const AuthExpensesRouteRoute = AuthExpensesRouteRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthExpensesIndexRoute = AuthExpensesIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthAppRouteRoute,
+  getParentRoute: () => AuthExpensesRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthExpensesCreateRoute = AuthExpensesCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthExpensesRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/app': typeof AuthAppRouteRouteWithChildren
+  '/': typeof AuthIndexRoute
+  '/expenses': typeof AuthExpensesRouteRouteWithChildren
+  '/settings': typeof AuthSettingsRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/expenses/create': typeof AuthExpensesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/app/': typeof AuthAppIndexRoute
+  '/expenses/': typeof AuthExpensesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof AuthIndexRoute
+  '/settings': typeof AuthSettingsRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/expenses/create': typeof AuthExpensesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/app': typeof AuthAppIndexRoute
+  '/expenses': typeof AuthExpensesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_guest': typeof GuestRouteRouteWithChildren
-  '/_auth/app': typeof AuthAppRouteRouteWithChildren
+  '/_auth/expenses': typeof AuthExpensesRouteRouteWithChildren
+  '/_auth/settings': typeof AuthSettingsRoute
   '/_guest/login': typeof GuestLoginRoute
   '/_guest/signup': typeof GuestSignupRoute
+  '/_auth/': typeof AuthIndexRoute
+  '/_auth/expenses/create': typeof AuthExpensesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/_auth/app/': typeof AuthAppIndexRoute
+  '/_auth/expenses/': typeof AuthExpensesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/login' | '/signup' | '/api/auth/$' | '/app/'
+  fullPaths:
+    | '/'
+    | '/expenses'
+    | '/settings'
+    | '/login'
+    | '/signup'
+    | '/expenses/create'
+    | '/api/auth/$'
+    | '/expenses/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/api/auth/$' | '/app'
+  to:
+    | '/'
+    | '/settings'
+    | '/login'
+    | '/signup'
+    | '/expenses/create'
+    | '/api/auth/$'
+    | '/expenses'
   id:
     | '__root__'
-    | '/'
     | '/_auth'
     | '/_guest'
-    | '/_auth/app'
+    | '/_auth/expenses'
+    | '/_auth/settings'
     | '/_guest/login'
     | '/_guest/signup'
+    | '/_auth/'
+    | '/_auth/expenses/create'
     | '/api/auth/$'
-    | '/_auth/app/'
+    | '/_auth/expenses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   GuestRouteRoute: typeof GuestRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -123,12 +157,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_auth/': {
+      id: '/_auth/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_guest/signup': {
       id: '/_guest/signup'
@@ -144,19 +178,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestLoginRouteImport
       parentRoute: typeof GuestRouteRoute
     }
-    '/_auth/app': {
-      id: '/_auth/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AuthAppRouteRouteImport
+    '/_auth/settings': {
+      id: '/_auth/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthSettingsRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/app/': {
-      id: '/_auth/app/'
+    '/_auth/expenses': {
+      id: '/_auth/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof AuthExpensesRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/expenses/': {
+      id: '/_auth/expenses/'
       path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AuthAppIndexRouteImport
-      parentRoute: typeof AuthAppRouteRoute
+      fullPath: '/expenses/'
+      preLoaderRoute: typeof AuthExpensesIndexRouteImport
+      parentRoute: typeof AuthExpensesRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -165,27 +206,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/expenses/create': {
+      id: '/_auth/expenses/create'
+      path: '/create'
+      fullPath: '/expenses/create'
+      preLoaderRoute: typeof AuthExpensesCreateRouteImport
+      parentRoute: typeof AuthExpensesRouteRoute
+    }
   }
 }
 
-interface AuthAppRouteRouteChildren {
-  AuthAppIndexRoute: typeof AuthAppIndexRoute
+interface AuthExpensesRouteRouteChildren {
+  AuthExpensesCreateRoute: typeof AuthExpensesCreateRoute
+  AuthExpensesIndexRoute: typeof AuthExpensesIndexRoute
 }
 
-const AuthAppRouteRouteChildren: AuthAppRouteRouteChildren = {
-  AuthAppIndexRoute: AuthAppIndexRoute,
+const AuthExpensesRouteRouteChildren: AuthExpensesRouteRouteChildren = {
+  AuthExpensesCreateRoute: AuthExpensesCreateRoute,
+  AuthExpensesIndexRoute: AuthExpensesIndexRoute,
 }
 
-const AuthAppRouteRouteWithChildren = AuthAppRouteRoute._addFileChildren(
-  AuthAppRouteRouteChildren,
-)
+const AuthExpensesRouteRouteWithChildren =
+  AuthExpensesRouteRoute._addFileChildren(AuthExpensesRouteRouteChildren)
 
 interface AuthRouteRouteChildren {
-  AuthAppRouteRoute: typeof AuthAppRouteRouteWithChildren
+  AuthExpensesRouteRoute: typeof AuthExpensesRouteRouteWithChildren
+  AuthSettingsRoute: typeof AuthSettingsRoute
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthAppRouteRoute: AuthAppRouteRouteWithChildren,
+  AuthExpensesRouteRoute: AuthExpensesRouteRouteWithChildren,
+  AuthSettingsRoute: AuthSettingsRoute,
+  AuthIndexRoute: AuthIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
@@ -207,7 +260,6 @@ const GuestRouteRouteWithChildren = GuestRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   GuestRouteRoute: GuestRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

@@ -26,7 +26,7 @@ function LoginForm() {
         },
         {
           onError: ({ error }) => {
-            toast.error(error.message || "An error occurred while signing in.");
+            toast.error(error.message || "Wystąpił błąd podczas logowania.");
           },
           // better-auth seems to trigger a hard navigation on login,
           // so we don't have to revalidate & navigate ourselves
@@ -62,11 +62,11 @@ function LoginForm() {
               </div>
               <span className="sr-only">Acme Inc.</span>
             </Link>
-            <h1 className="text-xl font-bold">Welcome back to Acme Inc.</h1>
+            <h1 className="text-xl font-bold">Witaj z powrotem w Splitiv</h1>
           </div>
           <div className="flex flex-col gap-5">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Adres e-mail</Label>
               <Input
                 id="email"
                 name="email"
@@ -77,23 +77,23 @@ function LoginForm() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Hasło</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter password here"
+                placeholder="Wpisz hasło"
                 readOnly={isPending}
                 required
               />
             </div>
             <Button type="submit" className="mt-2 w-full" size="lg" disabled={isPending}>
               {isPending && <LoaderCircleIcon className="animate-spin" />}
-              {isPending ? "Logging in..." : "Login"}
+              {isPending ? "Logowanie..." : "Zaloguj się"}
             </Button>
           </div>
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-            <span className="relative z-10 bg-background px-2 text-muted-foreground">Or</span>
+            <span className="relative z-10 bg-background px-2 text-muted-foreground">Lub</span>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <SignInSocialButton
@@ -113,9 +113,9 @@ function LoginForm() {
       </form>
 
       <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
+        Nie masz konta?{" "}
         <Link to="/signup" className="underline underline-offset-4">
-          Sign up
+          Zarejestruj się
         </Link>
       </div>
     </div>

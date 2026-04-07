@@ -25,7 +25,7 @@ export function SignOutButton() {
       variant="destructive"
       size="lg"
     >
-      Sign out
+      Wyloguj
     </Button>
   );
 }

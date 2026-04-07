@@ -25,7 +25,7 @@ export function SignInSocialButton(props: SocialLoginButtonProps) {
         },
         {
           onError: ({ error }) => {
-            toast.error(error.message || `An error occurred during ${providerLabel} sign-in.`);
+            toast.error(error.message || `Wystąpił błąd podczas logowania przez ${providerLabel}.`);
           },
         },
       ),
@@ -40,7 +40,7 @@ export function SignInSocialButton(props: SocialLoginButtonProps) {
       onClick={() => mutation.mutate()}
     >
       {props.icon}
-      Login with {providerLabel}
+      Zaloguj przez {providerLabel}
     </Button>
   );
 }

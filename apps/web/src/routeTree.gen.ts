@@ -19,6 +19,7 @@ import { Route as AuthExpensesRouteRouteImport } from './routes/_auth/expenses/r
 import { Route as AuthExpensesIndexRouteImport } from './routes/_auth/expenses/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthExpensesCreateRouteImport } from './routes/_auth/expenses/create'
+import { Route as AuthExpensesExpenseIdRouteImport } from './routes/_auth/expenses/$expenseId'
 
 const GuestRouteRoute = GuestRouteRouteImport.update({
   id: '/_guest',
@@ -68,6 +69,11 @@ const AuthExpensesCreateRoute = AuthExpensesCreateRouteImport.update({
   path: '/create',
   getParentRoute: () => AuthExpensesRouteRoute,
 } as any)
+const AuthExpensesExpenseIdRoute = AuthExpensesExpenseIdRouteImport.update({
+  id: '/$expenseId',
+  path: '/$expenseId',
+  getParentRoute: () => AuthExpensesRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthSettingsRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/expenses/$expenseId': typeof AuthExpensesExpenseIdRoute
   '/expenses/create': typeof AuthExpensesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/expenses/': typeof AuthExpensesIndexRoute
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthSettingsRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
+  '/expenses/$expenseId': typeof AuthExpensesExpenseIdRoute
   '/expenses/create': typeof AuthExpensesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/expenses': typeof AuthExpensesIndexRoute
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/_guest/login': typeof GuestLoginRoute
   '/_guest/signup': typeof GuestSignupRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/expenses/$expenseId': typeof AuthExpensesExpenseIdRoute
   '/_auth/expenses/create': typeof AuthExpensesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/expenses/': typeof AuthExpensesIndexRoute
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/expenses/$expenseId'
     | '/expenses/create'
     | '/api/auth/$'
     | '/expenses/'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/expenses/$expenseId'
     | '/expenses/create'
     | '/api/auth/$'
     | '/expenses'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/_guest/login'
     | '/_guest/signup'
     | '/_auth/'
+    | '/_auth/expenses/$expenseId'
     | '/_auth/expenses/create'
     | '/api/auth/$'
     | '/_auth/expenses/'
@@ -213,15 +225,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExpensesCreateRouteImport
       parentRoute: typeof AuthExpensesRouteRoute
     }
+    '/_auth/expenses/$expenseId': {
+      id: '/_auth/expenses/$expenseId'
+      path: '/$expenseId'
+      fullPath: '/expenses/$expenseId'
+      preLoaderRoute: typeof AuthExpensesExpenseIdRouteImport
+      parentRoute: typeof AuthExpensesRouteRoute
+    }
   }
 }
 
 interface AuthExpensesRouteRouteChildren {
+  AuthExpensesExpenseIdRoute: typeof AuthExpensesExpenseIdRoute
   AuthExpensesCreateRoute: typeof AuthExpensesCreateRoute
   AuthExpensesIndexRoute: typeof AuthExpensesIndexRoute
 }
 
 const AuthExpensesRouteRouteChildren: AuthExpensesRouteRouteChildren = {
+  AuthExpensesExpenseIdRoute: AuthExpensesExpenseIdRoute,
   AuthExpensesCreateRoute: AuthExpensesCreateRoute,
   AuthExpensesIndexRoute: AuthExpensesIndexRoute,
 }

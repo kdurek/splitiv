@@ -1,0 +1,376 @@
+<!doctype html>
+
+<html class="dark" lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#e7e4ec",
+              secondary: "#9d9da6",
+              "inverse-surface": "#fcf8fb",
+              "on-secondary-container": "#bfbec8",
+              primary: "#c0c1ff",
+              "on-tertiary": "#4a536c",
+              "on-error": "#490013",
+              "secondary-fixed": "#e3e1ec",
+              "primary-container": "#2f2ebe",
+              "on-primary": "#2724b8",
+              "tertiary-fixed": "#ced6f5",
+              "primary-fixed-dim": "#d1d0ff",
+              "inverse-primary": "#494bd7",
+              "tertiary-container": "#ced6f5",
+              "tertiary-dim": "#c0c9e6",
+              background: "#0e0e10",
+              "surface-tint": "#c0c1ff",
+              error: "#ec7c8a",
+              "surface-container-high": "#1f1f24",
+              "surface-container-low": "#131316",
+              "surface-variant": "#25252b",
+              "on-tertiary-container": "#424a63",
+              "secondary-container": "#3a3b43",
+              "tertiary-fixed-dim": "#c0c9e6",
+              "on-tertiary-fixed": "#2f384f",
+              "on-tertiary-fixed-variant": "#4b546d",
+              "on-primary-fixed": "#2622b7",
+              tertiary: "#dee5ff",
+              "on-secondary": "#1f2027",
+              "on-secondary-fixed-variant": "#5a5b63",
+              outline: "#75757c",
+              "inverse-on-surface": "#565457",
+              "primary-fixed": "#e1e0ff",
+              "on-surface": "#e7e4ec",
+              "error-container": "#7f2737",
+              "surface-container-highest": "#25252b",
+              "surface-bright": "#2b2c32",
+              "on-primary-container": "#ccccff",
+              "primary-dim": "#b0b2ff",
+              "on-error-container": "#ff97a3",
+              "error-dim": "#b95463",
+              surface: "#0e0e10",
+              "on-primary-fixed-variant": "#4647d3",
+              "on-secondary-fixed": "#3e3f47",
+              "surface-container": "#19191d",
+              "on-surface-variant": "#acaab1",
+              "secondary-dim": "#9d9da6",
+              "surface-dim": "#0e0e10",
+              "surface-container-lowest": "#000000",
+              "secondary-fixed-dim": "#d4d3dd",
+              "outline-variant": "#47474e",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+            borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      body {
+        background-color: #0e0e10;
+        color: #e7e4ec;
+        font-family: "Inter", sans-serif;
+      }
+      .glass-panel {
+        background: rgba(37, 37, 43, 0.8);
+        backdrop-filter: blur(20px);
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen pb-32">
+    <!-- TopAppBar -->
+    <header
+      class="sticky top-0 z-50 flex w-full items-center justify-between bg-[#0e0e10] px-6 pt-8 pb-4 dark:bg-[#0e0e10]"
+    >
+      <div class="flex items-center gap-4">
+        <button
+          class="text-[#acaab1] transition-opacity duration-200 hover:opacity-80 active:scale-95"
+        >
+          <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+        </button>
+        <h1 class="font-['Inter'] text-lg font-semibold tracking-tight text-[#e7e4ec]">
+          Team Dinner
+        </h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <button
+          class="text-[#c0c1ff] transition-opacity duration-200 hover:opacity-80 active:scale-95"
+        >
+          <span class="material-symbols-outlined" data-icon="edit">edit</span>
+        </button>
+        <div
+          class="bg-surface-container-high ring-outline-variant/20 h-8 w-8 overflow-hidden rounded-full ring-1"
+        >
+          <img
+            alt="User avatar"
+            data-alt="Close up portrait of a professional man with a neutral expression in a high-end studio lighting setup"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSC-7-IC4PoA0YsKpEfg3lY7afnXjEVnv031gomkD7JtRtmxWxLuTGyNu9PJ9LHaALCxs1r6NJE58hS1i1xce4R6uLynlDp56Cj8-7lL4AM1pVdowyJtAT8sypaiuOWxMXsW7Q370ZNyakXc6F1H94uN9zT18Vu7v5OYvvRsUHEEvXuNhrE3OAJ6UraeKVgrhEbQPOA8DB0dzNhWst_iLAp4xyygPQUtKZ53h4AsdQPmoaseNKvQ_o2GIyY93un2hi__PDtxLJK4xA"
+          />
+        </div>
+      </div>
+    </header>
+    <main class="mx-auto mt-12 max-w-2xl space-y-16 px-6">
+      <!-- Hero Section: The Total -->
+      <section class="space-y-2">
+        <label
+          class="text-on-surface-variant font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Łączna kwota</label
+        >
+        <div class="flex items-baseline gap-2">
+          <span class="text-display-md text-on-surface text-6xl font-extrabold tracking-tighter"
+            >428,50 zł</span
+          >
+          <span class="font-medium text-primary">PLN</span>
+        </div>
+        <div class="mt-6 flex items-center gap-6">
+          <div class="flex flex-col">
+            <span class="text-on-surface-variant text-[10px] font-medium tracking-widest uppercase"
+              >Zapłacone przez</span
+            >
+            <span class="text-on-surface font-semibold">Alex Rivera</span>
+          </div>
+          <div class="bg-outline-variant/15 h-8 w-px"></div>
+          <div class="flex flex-col">
+            <span class="text-on-surface-variant text-[10px] font-medium tracking-widest uppercase"
+              >Data</span
+            >
+            <span class="text-on-surface font-semibold">Oct 24, 2023</span>
+          </div>
+        </div>
+      </section>
+      <!-- Bento Grid for Debt Records -->
+      <section class="space-y-8">
+        <div class="flex items-end justify-between">
+          <h2 class="text-headline-sm font-semibold tracking-tight">Długi z wydatku</h2>
+          <span class="text-label-sm text-on-surface-variant">3 Uczestnicy</span>
+        </div>
+        <div class="grid grid-cols-1 gap-4">
+          <!-- Debtor Card 1 -->
+          <div class="bg-surface-container space-y-6 rounded-xl p-6">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="bg-surface-container-highest text-primary-dim flex h-10 w-10 items-center justify-center rounded-full"
+                >
+                  <span class="material-symbols-outlined" data-icon="person">person</span>
+                </div>
+                <div>
+                  <h3 class="text-on-surface font-semibold">Jordan Smith</h3>
+                  <p class="text-on-surface-variant text-xs">W pełni rozliczone</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-on-surface block text-lg font-bold">142,83 zł</span>
+                <span class="text-[10px] font-bold tracking-widest text-primary uppercase"
+                  >Zapłacone</span
+                >
+              </div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="space-y-2">
+              <div class="bg-surface-container-lowest h-1.5 w-full overflow-hidden rounded-full">
+                <div class="h-full w-full bg-primary"></div>
+              </div>
+              <div
+                class="text-on-surface-variant flex justify-between text-[10px] font-medium tracking-wider uppercase"
+              >
+                <span>Rozliczone: 142,83 zł</span>
+                <span>100%</span>
+              </div>
+            </div>
+          </div>
+          <!-- Debtor Card 2 -->
+          <div class="bg-surface-container space-y-6 rounded-xl p-6">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="bg-surface-container-highest flex h-10 w-10 items-center justify-center rounded-full text-secondary"
+                >
+                  <span class="material-symbols-outlined" data-icon="person">person</span>
+                </div>
+                <div>
+                  <h3 class="text-on-surface font-semibold">Sarah Chen</h3>
+                  <p class="text-on-surface-variant text-xs">Saldo oczekujące</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-on-surface block text-lg font-bold">142,83 zł</span>
+                <span class="text-error text-[10px] font-bold tracking-widest uppercase"
+                  >W CZĘŚCI ZAPŁACONE</span
+                >
+              </div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="space-y-2">
+              <div class="bg-surface-container-lowest h-1.5 w-full overflow-hidden rounded-full">
+                <div class="h-full w-[45%] bg-primary"></div>
+              </div>
+              <div
+                class="text-on-surface-variant flex justify-between text-[10px] font-medium tracking-wider uppercase"
+              >
+                <span>Rozliczone: 65,00 zł</span>
+                <span>45%</span>
+              </div>
+            </div>
+          </div>
+          <!-- Debtor Card 3 -->
+          <div class="bg-surface-container-high space-y-6 rounded-xl p-6 ring-1 ring-primary/10">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="bg-surface-container-highest flex h-10 w-10 items-center justify-center rounded-full text-secondary"
+                >
+                  <span class="material-symbols-outlined" data-icon="person">person</span>
+                </div>
+                <div>
+                  <h3 class="text-on-surface font-semibold">Marcus T.</h3>
+                  <p class="text-on-surface-variant text-xs">Brak wpłat</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-on-surface block text-lg font-bold">142,84 zł</span>
+                <span class="text-error text-[10px] font-bold tracking-widest uppercase"
+                  >NIEOPŁACONE</span
+                >
+              </div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="space-y-2">
+              <div class="bg-surface-container-lowest h-1.5 w-full overflow-hidden rounded-full">
+                <div class="h-full w-[0%] bg-primary"></div>
+              </div>
+              <div
+                class="text-on-surface-variant flex justify-between text-[10px] font-medium tracking-wider uppercase"
+              >
+                <span>Rozliczone: 0,00 zł</span>
+                <span>0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Settlement Log Section -->
+      <section class="space-y-8">
+        <h2 class="text-headline-sm font-semibold tracking-tight">Log rozliczeń</h2>
+        <div
+          class="before:bg-outline-variant/15 relative space-y-12 before:absolute before:top-2 before:bottom-2 before:left-[19px] before:w-[1px] before:content-['']"
+        >
+          <!-- Log Item 1 -->
+          <div class="relative pl-12">
+            <div
+              class="bg-surface-container-lowest absolute top-1 left-0 z-10 flex h-10 w-10 items-center justify-center rounded-full border-4 border-background"
+            >
+              <span
+                class="material-symbols-outlined text-sm text-primary"
+                data-icon="check_circle"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >check_circle</span
+              >
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-baseline justify-between">
+                <h4 class="text-on-surface font-semibold">Jordan Smith rozliczył(a) cały dług</h4>
+                <span class="text-label-sm text-on-surface-variant">Wczoraj</span>
+              </div>
+              <p class="text-body-md text-on-surface-variant mt-1">Gotówka</p>
+              <div class="mt-2 font-mono text-sm text-primary">+142,83 zł</div>
+            </div>
+          </div>
+          <!-- Log Item 2 -->
+          <div class="relative pl-12">
+            <div
+              class="bg-surface-container-lowest absolute top-1 left-0 z-10 flex h-10 w-10 items-center justify-center rounded-full border-4 border-background"
+            >
+              <span class="material-symbols-outlined text-sm text-secondary" data-icon="pending"
+                >pending</span
+              >
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-baseline justify-between">
+                <h4 class="text-on-surface font-semibold">Sarah Chen zapłacił(a) częściowo</h4>
+                <span class="text-label-sm text-on-surface-variant">Oct 25</span>
+              </div>
+              <p class="text-body-md text-on-surface-variant mt-1">Gotówka</p>
+              <div class="text-on-surface mt-2 font-mono text-sm">+65,00 zł</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Floating Action Button for Settlement (Contextual) -->
+    <button
+      class="text-on-primary fixed right-6 bottom-28 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-[0_20px_40px_rgba(39,36,184,0.3)] duration-200 hover:brightness-105 active:scale-90"
+    >
+      <span class="material-symbols-outlined" data-icon="add_card">add_card</span>
+    </button>
+    <!-- BottomNavBar -->
+    <nav
+      class="fixed right-0 bottom-6 left-0 left-1/2 z-50 mx-auto flex w-[90%] max-w-md -translate-x-1/2 items-center justify-around rounded-full bg-[#25252b]/80 px-4 py-3 shadow-[0_20px_40px_rgba(231,228,236,0.08)] backdrop-blur-xl dark:bg-[#25252b]/80"
+    >
+      <a
+        class="flex flex-col items-center justify-center px-5 py-2 text-[#acaab1] transition-colors duration-200 hover:text-[#e7e4ec] active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Dashboard</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center rounded-full bg-[#2f2ebe] px-5 py-2 text-[#c0c1ff] duration-200 active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Expenses</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center px-5 py-2 text-[#acaab1] transition-colors duration-200 hover:text-[#e7e4ec] active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined" data-icon="group">group</span>
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Groups</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center px-5 py-2 text-[#acaab1] transition-colors duration-200 hover:text-[#e7e4ec] active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined" data-icon="payments">payments</span>
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Settle</span
+        >
+      </a>
+    </nav>
+  </body>
+</html>

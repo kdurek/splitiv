@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -83,7 +83,11 @@ function ExpensesIndex() {
 
 function ExpenseRow({ item, isArchived }: { item: ExpenseItem; isArchived: boolean }) {
   return (
-    <div className={`flex items-start justify-between ${isArchived ? "opacity-60" : ""}`}>
+    <Link
+      to="/expenses/$expenseId"
+      params={{ expenseId: item.id }}
+      className={`flex items-start justify-between ${isArchived ? "opacity-60" : ""}`}
+    >
       <div className="flex gap-4">
         <div className="space-y-1">
           <h4 className="font-semibold">{item.name}</h4>
@@ -107,6 +111,6 @@ function ExpenseRow({ item, isArchived }: { item: ExpenseItem; isArchived: boole
           </p>
         ) : null}
       </div>
-    </div>
+    </Link>
   );
 }

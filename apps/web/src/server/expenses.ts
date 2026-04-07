@@ -1,6 +1,6 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { expense, expenseDebt, user } from "@repo/db/schema";
+import { expense, expenseDebt, expenseLog, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, exists, not, sql } from "drizzle-orm";
 
@@ -71,4 +71,56 @@ export const $getExpenses = createServerFn({ method: "GET" })
       items,
       nextCursor: hasMore ? cursor + PAGE_SIZE : null,
     };
+  });
+
+export const $getExpense = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .inputValidator((input: { expenseId: string }) => input)
+  .handler(async ({ data }) => {
+    const { expenseId } = data;
+
+    const [expenseData] = await db
+      .select({
+        id: expense.id,
+        name: expense.name,
+        description: expense.description,
+        amount: expense.amount,
+        createdAt: expense.createdAt,
+        payerName: user.name,
+        payerId: expense.payerId,
+      })
+      .from(expense)
+      .innerJoin(user, eq(user.id, expense.payerId))
+      .where(eq(expense.id, expenseId))
+      .limit(1);
+
+    if (!expenseData) throw new Error("Expense not found");
+
+    const debts = await db
+      .select({
+        id: expenseDebt.id,
+        amount: expenseDebt.amount,
+        settled: expenseDebt.settled,
+        debtorId: expenseDebt.debtorId,
+        debtorName: user.name,
+      })
+      .from(expenseDebt)
+      .innerJoin(user, eq(user.id, expenseDebt.debtorId))
+      .where(eq(expenseDebt.expenseId, expenseId));
+
+    const logs = await db
+      .select({
+        id: expenseLog.id,
+        amount: expenseLog.amount,
+        createdAt: expenseLog.createdAt,
+        debtorName: user.name,
+        debtId: expenseLog.debtId,
+      })
+      .from(expenseLog)
+      .innerJoin(expenseDebt, eq(expenseDebt.id, expenseLog.debtId))
+      .innerJoin(user, eq(user.id, expenseDebt.debtorId))
+      .where(eq(expenseDebt.expenseId, expenseId))
+      .orderBy(desc(expenseLog.createdAt));
+
+    return { expense: expenseData, debts, logs };
   });

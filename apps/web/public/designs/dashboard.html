@@ -1,0 +1,432 @@
+<!doctype html>
+
+<html class="dark" lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Ledger Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#e7e4ec",
+              secondary: "#9d9da6",
+              "inverse-surface": "#fcf8fb",
+              "on-secondary-container": "#bfbec8",
+              primary: "#c0c1ff",
+              "on-tertiary": "#4a536c",
+              "on-error": "#490013",
+              "secondary-fixed": "#e3e1ec",
+              "primary-container": "#2f2ebe",
+              "on-primary": "#2724b8",
+              "tertiary-fixed": "#ced6f5",
+              "primary-fixed-dim": "#d1d0ff",
+              "inverse-primary": "#494bd7",
+              "tertiary-container": "#ced6f5",
+              "tertiary-dim": "#c0c9e6",
+              background: "#0e0e10",
+              "surface-tint": "#c0c1ff",
+              error: "#ec7c8a",
+              "surface-container-high": "#1f1f24",
+              "surface-container-low": "#131316",
+              "surface-variant": "#25252b",
+              "on-tertiary-container": "#424a63",
+              "secondary-container": "#3a3b43",
+              "tertiary-fixed-dim": "#c0c9e6",
+              "on-tertiary-fixed": "#2f384f",
+              "on-tertiary-fixed-variant": "#4b546d",
+              "on-primary-fixed": "#2622b7",
+              tertiary: "#dee5ff",
+              "on-secondary": "#1f2027",
+              "on-secondary-fixed-variant": "#5a5b63",
+              outline: "#75757c",
+              "inverse-on-surface": "#565457",
+              "primary-fixed": "#e1e0ff",
+              "on-surface": "#e7e4ec",
+              "error-container": "#7f2737",
+              "surface-container-highest": "#25252b",
+              "surface-bright": "#2b2c32",
+              "on-primary-container": "#ccccff",
+              "primary-dim": "#b0b2ff",
+              "on-error-container": "#ff97a3",
+              "error-dim": "#b95463",
+              surface: "#0e0e10",
+              "on-primary-fixed-variant": "#4647d3",
+              "on-secondary-fixed": "#3e3f47",
+              "surface-container": "#19191d",
+              "on-surface-variant": "#acaab1",
+              "secondary-dim": "#9d9da6",
+              "surface-dim": "#0e0e10",
+              "surface-container-lowest": "#000000",
+              "secondary-fixed-dim": "#d4d3dd",
+              "outline-variant": "#47474e",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+            borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        vertical-align: middle;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="text-on-surface selection:bg-primary-container selection:text-on-primary-container bg-background"
+  >
+    <!-- TopAppBar -->
+    <header class="fixed top-0 right-0 left-0 z-40 bg-[#0e0e10] dark:bg-[#0e0e10]">
+      <div class="flex w-full items-center justify-between px-6 pt-8 pb-4">
+        <button
+          class="text-[#c0c1ff] transition-opacity duration-200 hover:opacity-80 active:scale-95"
+        >
+          <span class="material-symbols-outlined text-2xl">grid_view</span>
+        </button>
+        <h1 class="text-xl font-bold tracking-tighter text-[#e7e4ec]">Ledger</h1>
+        <div class="transition-opacity duration-200 hover:opacity-80 active:scale-95">
+          <div
+            class="bg-surface-container-highest border-outline-variant/15 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border"
+          >
+            <img
+              alt="User profile"
+              class="h-full w-full object-cover"
+              data-alt="Close-up portrait of a professional man with clean lighting and neutral background, high-end editorial photography style"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBarRPCQEeeFxgIGeCrqAfnNA4gUCA-dd3U1U9ZTUd8PumpcOljL2iZCvCVImRts8Aq5CJcvkubkBRtYbjhfkFhG1OQsrlykt-dQonjNYW4IMpd1xHtoanNIrWShZiBrd-OnF3z-0sRR7FlncAEsEXuVMlMFnYWreykPZeg4igkelmtgycOYZ-g0Pmt9kbnlzTXSoxhqZPY8prshMEMbARhPjE_KQLIbE3sUrA9MRpgI3NxWo6co60EONdcBojCkfaFTDUdCUORu2co"
+            />
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="mx-auto max-w-4xl space-y-12 px-6 pt-24 pb-32">
+      <!-- Hero Balance Section -->
+      <section class="mt-12 space-y-8">
+        <div class="space-y-1">
+          <span
+            class="text-on-surface-variant font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+            >Całkowity bilans netto</span
+          >
+          <div class="flex items-baseline gap-2">
+            <h2 class="text-[2.75rem] leading-none font-extrabold tracking-tight text-primary">
+              +1 240,50 zł
+            </h2>
+            <span class="text-sm font-medium text-secondary">PLN</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <!-- You are owed -->
+          <div class="bg-surface-container rounded-xl border-l-4 border-primary/40 p-6">
+            <span
+              class="text-on-surface-variant mb-4 block font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+              >Należności</span
+            >
+            <div class="text-on-surface mb-6 text-2xl font-bold">1 450,00 zł</div>
+            <div class="space-y-3">
+              <!-- Person 1 -->
+              <div class="group/row flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="border-outline-variant/20 h-8 w-8 overflow-hidden rounded-full border"
+                  >
+                    <img
+                      alt="Dorota G."
+                      class="h-full w-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzKXMk15yJBTuKbeyUCBTBlgpaDXPZH3k1OEY0nF-GqLNXg3aHipjGDTOMxUHY_VANM2r60f4TCjomYnlsrTKnckpZsLJdvFy2GNANhnCZbXjygOd54g4FlbbVxxcuJKVJPOnF9-X_jdCqx4RIk7sWYR8BtfPegIpWa7y1HHku5pr6cmJpz9IZKLOEMMk5Quq0ooV41XKAtiNOw5EgfqzbhDxh3tQ1ehVKdZI_8SVJgx4os4VUzq7cVLzg-L2Vmj-fGzZLzvufmLqt"
+                    />
+                  </div>
+                  <span class="text-on-surface text-sm font-medium">Dorota G.</span>
+                </div>
+                <span class="text-sm font-bold text-primary">450,00 zł</span>
+              </div>
+              <!-- Person 2 -->
+              <div class="group/row flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="border-outline-variant/20 h-8 w-8 overflow-hidden rounded-full border"
+                  >
+                    <img
+                      alt="Izabela G."
+                      class="h-full w-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmkA9-Ik5hhJ9wMnHAF8nIyVfkSS4ge6K3LBOo0G5eaoRf4cyUZUpNtYr2AvoR3s15nBhjmQ7jBGb0lmY8oros1z5ghZK_ACAZuvr4mucK9G1VYa8eI0Fwd0bYIbgMjkMLoVCZkRtUE34wDhE3hxZsUVEPVp4fLLMuWPaKt1w5XsSRhp-vTHaZzxn2ISjOzOFzA5UfRChhttV1n1debgqVyFMXR78rAoFkGOSMyIhlH-E2tNEg2KTjnkc-l0GQo8ncHhulWZ5mP5Eg"
+                    />
+                  </div>
+                  <span class="text-on-surface text-sm font-medium">Izabela G.</span>
+                </div>
+                <span class="text-sm font-bold text-primary">320,00 zł</span>
+              </div>
+              <!-- Indicator for more -->
+              <div class="border-outline-variant/10 border-t pt-2">
+                <button
+                  class="text-[10px] font-bold tracking-widest text-secondary uppercase transition-colors hover:text-primary"
+                >
+                  +3 WIĘCEJ OSÓB
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- You owe -->
+          <div class="bg-surface-container border-error/40 rounded-xl border-l-4 p-6">
+            <span
+              class="text-on-surface-variant mb-4 block font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+              >Zobowiązania</span
+            >
+            <div class="text-on-surface mb-6 text-2xl font-bold">209,50 zł</div>
+            <div class="space-y-3">
+              <!-- Person 1 -->
+              <div class="group/row flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="border-outline-variant/20 h-8 w-8 overflow-hidden rounded-full border"
+                  >
+                    <img
+                      alt="Julian Marcus"
+                      class="h-full w-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBarRPCQEeeFxgIGeCrqAfnNA4gUCA-dd3U1U9ZTUd8PumpcOljL2iZCvCVImRts8Aq5CJcvkubkBRtYbjhfkFhG1OQsrlykt-dQonjNYW4IMpd1xHtoanNIrWShZiBrd-OnF3z-0sRR7FlncAEsEXuVMlMFnYWreykPZeg4igkelmtgycOYZ-g0Pmt9kbnlzTXSoxhqZPY8prshMEMbARhPjE_KQLIbE3sUrA9MRpgI3NxWo6co60EONdcBojCkfaFTDUdCUORu2co"
+                    />
+                  </div>
+                  <span class="text-on-surface text-sm font-medium">Julian Marcus</span>
+                </div>
+                <span class="text-error text-sm font-bold">120,00 zł</span>
+              </div>
+              <!-- Person 2 -->
+              <div class="group/row flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="border-outline-variant/20 h-8 w-8 overflow-hidden rounded-full border"
+                  >
+                    <img
+                      alt="Alex Rivera"
+                      class="h-full w-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2eT3E4L_C7L6q89vWv9YvW1F_Z9L5W0U5W0X5W0Y5W0Z5W0a5W0b5W0c5W0d5W0e5W0f5W0g5W0h5W0i5W0j5W0k5W0l5W0m5W0n5W0o5W0p5W0q5W0r5W0s5W0t5W0u5W0v5W0w5W0x5W0y5W0z5W0_5W10"
+                    />
+                  </div>
+                  <span class="text-on-surface text-sm font-medium">Alex Rivera</span>
+                </div>
+                <span class="text-error text-sm font-bold">89,50 zł</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Quick Settle Bento Section -->
+      <section class="space-y-4">
+        <h3 class="font-['Inter'] text-lg font-semibold tracking-tight text-[#e7e4ec]">
+          Szybkie rozliczenie
+        </h3>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <!-- Settle Card 1 -->
+          <div
+            class="bg-surface-container-high group hover:bg-surface-variant cursor-pointer rounded-xl p-5 transition-colors"
+          >
+            <div class="mb-4 flex items-start justify-between">
+              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <span class="material-symbols-outlined text-primary">payments</span>
+              </div>
+              <span class="text-xs font-bold text-primary">ZAPŁAĆ</span>
+            </div>
+            <p class="text-on-surface text-sm font-medium">Czynsz za Sierpień</p>
+            <p class="text-on-surface-variant text-xs">dla Julian Marcus</p>
+            <div
+              class="border-outline-variant/10 mt-4 flex items-center justify-between border-t pt-4"
+            >
+              <span class="text-on-surface text-lg font-bold">850,00 zł</span>
+              <span
+                class="material-symbols-outlined text-primary transition-transform group-hover:translate-x-1"
+                >arrow_forward</span
+              >
+            </div>
+          </div>
+          <!-- Settle Card 2 -->
+          <div
+            class="bg-surface-container-high group hover:bg-surface-variant cursor-pointer rounded-xl p-5 transition-colors"
+          >
+            <div class="mb-4 flex items-start justify-between">
+              <div
+                class="bg-tertiary-container/10 flex h-10 w-10 items-center justify-center rounded-lg"
+              >
+                <span class="material-symbols-outlined text-tertiary-dim">receipt_long</span>
+              </div>
+              <span class="text-on-surface-variant text-xs font-bold">PROŚBA</span>
+            </div>
+            <p class="text-on-surface text-sm font-medium">Obiad @ Soma</p>
+            <p class="text-on-surface-variant text-xs">od 4 osób</p>
+            <div
+              class="border-outline-variant/10 mt-4 flex items-center justify-between border-t pt-4"
+            >
+              <span class="text-on-surface text-lg font-bold">42,50 zł</span>
+              <span
+                class="material-symbols-outlined text-on-surface-variant transition-transform group-hover:translate-x-1"
+                >arrow_forward</span
+              >
+            </div>
+          </div>
+          <!-- Mini Stats Card -->
+        </div>
+      </section>
+      <!-- Active Groups List -->
+      <section class="space-y-6">
+        <div class="flex items-end justify-between">
+          <h3 class="font-['Inter'] text-lg font-semibold tracking-tight text-[#e7e4ec]">
+            Aktywne grupy
+          </h3>
+          <button class="text-xs font-bold tracking-widest text-primary uppercase hover:underline">
+            Zobacz wszystkie
+          </button>
+        </div>
+        <div class="space-y-4">
+          <!-- Group Item 1 -->
+          <div
+            class="bg-surface-container hover:bg-surface-container-high group flex cursor-pointer items-center gap-4 rounded-xl p-4 transition-colors"
+          >
+            <div class="bg-surface-variant h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg">
+              <img
+                class="h-full w-full object-cover opacity-80 transition-opacity group-hover:opacity-100"
+                data-alt="A small group of friends laughing and drinking coffee together in a modern brightly lit apartment"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM9AohGgjJjgz_aIOLhsV0-zANOnLR571X9XiHI98vWWBjs2We5SoXaPZ-lEi8vBYVoGu-S5-BktfBzG_cs7urYkMlPRZbtfgPSpTPngG2zvwCVMFLi0w6kEbyZyeHIPd57l8Zk7oKGhP8kyPEQZ8Z7BYRtaOrBxV14wdqqQQ7RyQ1gqnPkEshCKH5Yx7XvtH6f4VZIk0kUnXDMXFBwqbuu5xJXzp8Hem4pv9ijFF4tLIwZ_VOuKhgNi1OYk6fIyfBkd6PI7X2Jttp"
+              />
+            </div>
+            <div class="flex-grow">
+              <h4 class="text-on-surface font-semibold">Iceland Roadtrip</h4>
+              <p class="text-on-surface-variant text-xs tracking-tighter uppercase">
+                4 Członków • Ostatnia aktywność 2h temu
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-on-surface-variant text-[10px] font-medium tracking-widest uppercase">
+                Należne Tobie
+              </p>
+              <p class="font-bold text-primary">342,00 zł</p>
+            </div>
+          </div>
+          <!-- Group Item 2 -->
+          <div
+            class="bg-surface-container hover:bg-surface-container-high group flex cursor-pointer items-center gap-4 rounded-xl p-4 transition-colors"
+          >
+            <div class="bg-surface-variant h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg">
+              <img
+                class="h-full w-full object-cover opacity-80 transition-opacity group-hover:opacity-100"
+                data-alt="Minimalist modern kitchen with clean lines and high-end appliances, soft morning light"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9csN_QdQlBKZTsRFaD9cWqlU4dualOznVvvznhAXx9Is_XWy6d4JQTrXCb0Mp0QPbTCLVqi8aEdpgkW5wyYg6LSUn3SngOLS3Sp-H5AqW9BS5n5_5vLAH0HCQLVF7oHmkq6IYxQrSR6ztKMtKSu5fuvykBDzOyxCd7Jx1sq8h7YpmYlx1yiEaR3pOz9IcFNmccvcdNRRSy-CSKY1b1KJNSyekBuhuEDueXCJ65i5hHbb3KCEB4LEafK0pF8ad7d3Whx3DBf1z1Su6"
+              />
+            </div>
+            <div class="flex-grow">
+              <h4 class="text-on-surface font-semibold">The Penthouse</h4>
+              <p class="text-on-surface-variant text-xs tracking-tighter uppercase">
+                3 Członków • Ostatnia aktywność 1d temu
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-on-surface-variant text-[10px] font-medium tracking-widest uppercase">
+                Wisisz
+              </p>
+              <p class="text-error font-bold">112,50 zł</p>
+            </div>
+          </div>
+          <!-- Group Item 3 -->
+          <div
+            class="bg-surface-container hover:bg-surface-container-high group flex cursor-pointer items-center gap-4 rounded-xl p-4 transition-colors"
+          >
+            <div class="bg-surface-variant h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg">
+              <img
+                class="h-full w-full object-cover opacity-80 transition-opacity group-hover:opacity-100"
+                data-alt="Wide shot of a trendy restaurant interior with warm lighting and people dining in the distance"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZBXDYbmFrpjnMzqXVGfvW8dAADAkyAzOeqFyiyQMHEZPsIcvrdEB9rYKwWzWwpsVlEv59yTCV4EjiwEs0Sj_WB-1tMp1ciVYCwW39uPQXcmABjMIrjvylRBPcmHMCbQWwX6nfgFoUTvRiImxzyAXwYMqieMOA3u4VmtWNWiqrOiVvaeHuXkUh8IwWw4nLU4CMOWqQZyzr5aAfq_-r38KdFyW0KE23-euN-1e3vUkOD8Sj1ARTj4JdSWGtuqyTA-NryT1-AJpMWGah"
+              />
+            </div>
+            <div class="flex-grow">
+              <h4 class="text-on-surface font-semibold">Weekly Football</h4>
+              <p class="text-on-surface-variant text-xs tracking-tighter uppercase">
+                12 Członków • Ostatnia aktywność 4d temu
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="text-on-surface-variant text-[10px] font-medium tracking-widest uppercase">
+                Rozliczone
+              </p>
+              <p class="font-bold text-secondary">0,00 zł</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- FAB for adding new expense (Contextual) -->
+    <button
+      class="to-primary-dim text-on-primary fixed right-6 bottom-24 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary shadow-xl transition-transform active:scale-95"
+    >
+      <span class="material-symbols-outlined text-3xl">add</span>
+    </button>
+    <!-- BottomNavBar -->
+    <nav
+      class="fixed right-0 bottom-6 left-0 left-1/2 z-50 mx-auto flex w-[90%] max-w-md -translate-x-1/2 items-center justify-around rounded-full bg-[#25252b]/80 px-4 py-3 shadow-[0_20px_40px_rgba(231,228,236,0.08)] backdrop-blur-xl dark:bg-[#25252b]/80"
+    >
+      <!-- Active: Dashboard -->
+      <a
+        class="flex flex-col items-center justify-center rounded-full bg-[#2f2ebe] px-5 py-2 text-[#c0c1ff] duration-200 active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1"
+          >dashboard</span
+        >
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Panel</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center px-5 py-2 text-[#acaab1] transition-colors duration-200 hover:text-[#e7e4ec] active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Wydatki</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center px-5 py-2 text-[#acaab1] transition-colors duration-200 hover:text-[#e7e4ec] active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined">group</span>
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Grupy</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center px-5 py-2 text-[#acaab1] transition-colors duration-200 hover:text-[#e7e4ec] active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined">payments</span>
+        <span class="label-sm mt-1 font-['Inter'] text-[10px] font-medium tracking-widest uppercase"
+          >Rozlicz</span
+        >
+      </a>
+    </nav>
+  </body>
+</html>

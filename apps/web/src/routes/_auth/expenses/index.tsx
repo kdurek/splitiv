@@ -6,6 +6,21 @@ import { useInView } from "react-intersection-observer";
 import { $getExpenses } from "~/server/expenses";
 
 export const Route = createFileRoute("/_auth/expenses/")({
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.prefetchInfiniteQuery({
+        queryKey: ["expenses", "active"],
+        queryFn: ({ pageParam }) =>
+          $getExpenses({ data: { tab: "active", cursor: pageParam as number } }),
+        initialPageParam: 0,
+      }),
+      context.queryClient.prefetchInfiniteQuery({
+        queryKey: ["expenses", "archived"],
+        queryFn: ({ pageParam }) =>
+          $getExpenses({ data: { tab: "archived", cursor: pageParam as number } }),
+        initialPageParam: 0,
+      }),
+    ]),
   component: ExpensesIndex,
 });
 

@@ -2,7 +2,7 @@ import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { group, user, userGroup } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
-import { eq, notInArray } from "drizzle-orm";
+import { and, eq, notInArray } from "drizzle-orm";
 
 export const $getGroupsData = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
@@ -43,6 +43,16 @@ export const $setActiveGroup = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .inputValidator((input: { groupId: string }) => input)
   .handler(async ({ context, data }) => {
+    const [membership] = await db
+      .select({ groupId: userGroup.groupId })
+      .from(userGroup)
+      .where(and(eq(userGroup.userId, context.user.id), eq(userGroup.groupId, data.groupId)))
+      .limit(1);
+
+    if (!membership) {
+      throw new Error("Brak uprawnień");
+    }
+
     await db.update(user).set({ activeGroupId: data.groupId }).where(eq(user.id, context.user.id));
   });
 

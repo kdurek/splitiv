@@ -76,8 +76,13 @@ export const $getExpenses = createServerFn({ method: "GET" })
 export const $getExpense = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .inputValidator((input: { expenseId: string }) => input)
-  .handler(async ({ data }) => {
+  .handler(async ({ context, data }) => {
     const { expenseId } = data;
+    const activeGroupId = context.user.activeGroupId;
+
+    if (!activeGroupId) {
+      throw new Error("Expense not found");
+    }
 
     const [expenseData] = await db
       .select({
@@ -91,7 +96,7 @@ export const $getExpense = createServerFn({ method: "GET" })
       })
       .from(expense)
       .innerJoin(user, eq(user.id, expense.payerId))
-      .where(eq(expense.id, expenseId))
+      .where(and(eq(expense.id, expenseId), eq(expense.groupId, activeGroupId)))
       .limit(1);
 
     if (!expenseData) throw new Error("Expense not found");

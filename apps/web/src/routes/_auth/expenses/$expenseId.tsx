@@ -21,6 +21,10 @@ function formatDate(date: string | Date) {
 
 function ExpenseDetail() {
   const { expense, debts, logs } = Route.useLoaderData();
+  const debtById = new Map(debts.map((debt) => [debt.id, debt] as const));
+  const settledAfterLogById = new Map(
+    debts.map((debt) => [debt.id, Number(debt.settled)] as const),
+  );
 
   return (
     <div className="space-y-12 px-4 pt-4 pb-8">
@@ -124,9 +128,16 @@ function ExpenseDetail() {
           <div className="relative space-y-8 before:absolute before:top-2 before:bottom-2 before:left-4.75 before:w-px before:bg-border">
             {logs.map((log) => {
               const logAmount = Number(log.amount);
-              const debt = debts.find((d) => d.id === log.debtId);
+              const debt = debtById.get(log.debtId);
               const debtAmount = debt ? Number(debt.amount) : null;
-              const isFullPayment = debtAmount !== null && logAmount >= debtAmount;
+              const settledAfterLog = settledAfterLogById.get(log.debtId) ?? 0;
+              const settledBeforeLog = settledAfterLog - logAmount;
+              const isFullPayment =
+                debtAmount !== null &&
+                settledAfterLog >= debtAmount &&
+                settledBeforeLog < debtAmount;
+
+              settledAfterLogById.set(log.debtId, settledBeforeLog);
 
               return (
                 <div key={log.id} className="relative pl-12">

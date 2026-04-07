@@ -36,12 +36,39 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      mapProfileToUser: (profile) => ({
+        firstName: profile.given_name,
+        lastName: profile.family_name,
+      }),
     },
   },
 
   // https://www.better-auth.com/docs/authentication/email-password
   emailAndPassword: {
     enabled: true,
+  },
+
+  user: {
+    additionalFields: {
+      firstName: {
+        type: "string",
+        input: false,
+      },
+      lastName: {
+        type: "string",
+        input: false,
+      },
+      activeGroupId: {
+        type: "string",
+        input: false,
+      },
+    },
+  },
+
+  account: {
+    accountLinking: {
+      enabled: true,
+    },
   },
 
   experimental: {

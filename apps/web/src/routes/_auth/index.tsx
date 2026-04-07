@@ -1,20 +1,6 @@
-import { authMiddleware } from "@repo/auth/tanstack/middleware";
-import { db } from "@repo/db";
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 
-const $getExpenses = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .handler(async () => {
-    const expenses = await db.query.expense.findMany({
-      limit: 5,
-      orderBy: (expense, { desc }) => [desc(expense.createdAt)],
-      with: {
-        payer: { columns: { name: true } },
-      },
-    });
-    return expenses;
-  });
+import { $getExpenses } from "~/server/expenses";
 
 export const Route = createFileRoute("/_auth/")({
   loader: () => $getExpenses(),

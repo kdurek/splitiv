@@ -56,6 +56,7 @@ export const $getExpenses = createServerFn({ method: "GET" })
         amount: expense.amount,
         createdAt: expense.createdAt,
         payerName: user.name,
+        payerImage: user.image,
         myDebt: sql<string>`(${myDebt})`,
       })
       .from(expense)
@@ -97,6 +98,7 @@ export const $getExpense = createServerFn({ method: "GET" })
         amount: expense.amount,
         createdAt: expense.createdAt,
         payerName: user.name,
+        payerImage: user.image,
         payerId: expense.payerId,
       })
       .from(expense)
@@ -115,6 +117,7 @@ export const $getExpense = createServerFn({ method: "GET" })
         settled: expenseDebt.settled,
         debtorId: expenseDebt.debtorId,
         debtorName: user.name,
+        debtorImage: user.image,
       })
       .from(expenseDebt)
       .innerJoin(user, eq(user.id, expenseDebt.debtorId))

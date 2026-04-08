@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ReceiptIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -90,12 +91,15 @@ function ExpenseRow({ item, isArchived }: { item: ExpenseItem; isArchived: boole
       params={{ expenseId: item.id }}
       className={`flex items-start justify-between ${isArchived ? "opacity-60" : ""}`}
     >
-      <div className="flex gap-4">
+      <div className="flex items-center gap-3">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+          <ReceiptIcon className="size-5" />
+        </div>
         <div className="space-y-1">
           <h4 className="font-semibold">{item.name}</h4>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
-              ZAPŁACONE PRZEZ
+              Zapłacił(a)
             </span>
             <span className="text-xs font-medium">{item.payerName}</span>
           </div>

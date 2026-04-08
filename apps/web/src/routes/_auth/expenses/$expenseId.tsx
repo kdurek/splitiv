@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
+import { UserAvatar } from "~/components/user-avatar";
 import { expenseQueryOptions } from "~/server/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/$expenseId")({
@@ -52,9 +53,17 @@ function ExpenseDetail() {
         <div className="flex items-center gap-6 pt-2">
           <div className="flex flex-col gap-0.5">
             <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
-              Zapłacone przez
+              Zapłacił(a)
             </span>
-            <span className="font-semibold">{expense.payerName}</span>
+            <div className="flex items-center gap-1.5">
+              <UserAvatar
+                name={expense.payerName}
+                image={expense.payerImage}
+                size="sm"
+                shape="square"
+              />
+              <span className="font-semibold">{expense.payerName}</span>
+            </div>
           </div>
           <div className="h-8 w-px bg-border" />
           <div className="flex flex-col gap-0.5">
@@ -83,15 +92,23 @@ function ExpenseDetail() {
             return (
               <div key={debt.id} className="space-y-4 rounded-xl bg-muted/40 p-5">
                 <div className="flex items-start justify-between">
-                  <div className="space-y-0.5">
-                    <p className="font-semibold">{debt.debtorName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {isFullySettled
-                        ? "W pełni rozliczone"
-                        : isPartial
-                          ? "Saldo oczekujące"
-                          : "Brak wpłat"}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <UserAvatar
+                      name={debt.debtorName}
+                      image={debt.debtorImage}
+                      size="lg"
+                      shape="square"
+                    />
+                    <div className="space-y-0.5">
+                      <p className="font-semibold">{debt.debtorName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {isFullySettled
+                          ? "W pełni rozliczone"
+                          : isPartial
+                            ? "Saldo oczekujące"
+                            : "Brak wpłat"}
+                      </p>
+                    </div>
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-bold">{formatAmount(debt.amount)}</p>

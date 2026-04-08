@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
+import { UserAvatar } from "~/components/user-avatar";
 import { dashboardBalanceQueryOptions } from "~/server/dashboard/queries";
 
 export const Route = createFileRoute("/_auth/")({
@@ -8,33 +9,25 @@ export const Route = createFileRoute("/_auth/")({
   component: AppIndex,
 });
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
-
 function formatAmount(amount: string) {
   return `${Number(amount).toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
 }
 
 function PersonRow({
   name,
+  image,
   amount,
   variant,
 }: {
   name: string;
+  image: string | null;
   amount: string;
   variant: "owed" | "owe";
 }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
-          {getInitials(name)}
-        </div>
+        <UserAvatar name={name} image={image} size="md" shape="square" />
         <span className="text-sm font-medium">{name}</span>
       </div>
       <span
@@ -87,6 +80,7 @@ function AppIndex() {
                 <PersonRow
                   key={person.userId}
                   name={person.name}
+                  image={person.image}
                   amount={person.amount}
                   variant="owed"
                 />
@@ -109,6 +103,7 @@ function AppIndex() {
                 <PersonRow
                   key={person.userId}
                   name={person.name}
+                  image={person.image}
                   amount={person.amount}
                   variant="owe"
                 />

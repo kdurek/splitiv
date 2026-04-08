@@ -18,6 +18,7 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       .select({
         debtorId: expenseDebt.debtorId,
         debtorName: user.name,
+        debtorImage: user.image,
         total: sql<string>`sum(${expenseDebt.amount} - ${expenseDebt.settled})`,
       })
       .from(expenseDebt)
@@ -30,12 +31,13 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
           sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
         ),
       )
-      .groupBy(expenseDebt.debtorId, user.name);
+      .groupBy(expenseDebt.debtorId, user.name, user.image);
 
     const youOweRows = await db
       .select({
         payerId: expense.payerId,
         payerName: user.name,
+        payerImage: user.image,
         total: sql<string>`sum(${expenseDebt.amount} - ${expenseDebt.settled})`,
       })
       .from(expenseDebt)
@@ -48,7 +50,7 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
           sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
         ),
       )
-      .groupBy(expense.payerId, user.name);
+      .groupBy(expense.payerId, user.name, user.image);
 
     const totalOwedToYou = owedToYouRows.reduce((sum, row) => sum + Number(row.total), 0);
     const totalYouOwe = youOweRows.reduce((sum, row) => sum + Number(row.total), 0);
@@ -58,11 +60,13 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       owedToYou: owedToYouRows.map((row) => ({
         userId: row.debtorId,
         name: row.debtorName,
+        image: row.debtorImage,
         amount: Number(row.total).toFixed(2),
       })),
       youOwe: youOweRows.map((row) => ({
         userId: row.payerId,
         name: row.payerName,
+        image: row.payerImage,
         amount: Number(row.total).toFixed(2),
       })),
       totalOwedToYou: totalOwedToYou.toFixed(2),

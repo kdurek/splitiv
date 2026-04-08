@@ -3,12 +3,18 @@ import { db } from "@repo/db";
 import { expense, expenseDebt, expenseLog, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, exists, not, sql } from "drizzle-orm";
+import { z } from "zod";
 
 const PAGE_SIZE = 10;
 
 export const $getExpenses = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .inputValidator((input: { tab: "active" | "archived"; cursor: number }) => input)
+  .inputValidator(
+    z.object({
+      tab: z.enum(["active", "archived"]),
+      cursor: z.number().int().min(0),
+    }),
+  )
   .handler(async ({ context, data }) => {
     const currentUser = context.user;
     const { tab, cursor } = data;
@@ -75,9 +81,8 @@ export const $getExpenses = createServerFn({ method: "GET" })
 
 export const $getExpense = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .inputValidator((input: { expenseId: string }) => input)
+  .inputValidator(z.object({ expenseId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
-    const { expenseId } = data;
     const activeGroupId = context.user.activeGroupId;
 
     if (!activeGroupId) {
@@ -96,10 +101,12 @@ export const $getExpense = createServerFn({ method: "GET" })
       })
       .from(expense)
       .innerJoin(user, eq(user.id, expense.payerId))
-      .where(and(eq(expense.id, expenseId), eq(expense.groupId, activeGroupId)))
+      .where(and(eq(expense.id, data.expenseId), eq(expense.groupId, activeGroupId)))
       .limit(1);
 
-    if (!expenseData) throw new Error("Expense not found");
+    if (!expenseData) {
+      throw new Error("Expense not found");
+    }
 
     const debts = await db
       .select({
@@ -111,7 +118,7 @@ export const $getExpense = createServerFn({ method: "GET" })
       })
       .from(expenseDebt)
       .innerJoin(user, eq(user.id, expenseDebt.debtorId))
-      .where(eq(expenseDebt.expenseId, expenseId));
+      .where(eq(expenseDebt.expenseId, data.expenseId));
 
     const logs = await db
       .select({
@@ -124,7 +131,7 @@ export const $getExpense = createServerFn({ method: "GET" })
       .from(expenseLog)
       .innerJoin(expenseDebt, eq(expenseDebt.id, expenseLog.debtId))
       .innerJoin(user, eq(user.id, expenseDebt.debtorId))
-      .where(eq(expenseDebt.expenseId, expenseId))
+      .where(eq(expenseDebt.expenseId, data.expenseId))
       .orderBy(desc(expenseLog.createdAt));
 
     return { expense: expenseData, debts, logs };

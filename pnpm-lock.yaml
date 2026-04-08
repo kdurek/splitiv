@@ -85,7 +85,7 @@ catalogs:
       specifier: ^1.0.0
       version: 1.0.0
     better-auth:
-      specifier: ^1.5.6
+      specifier: ^1.6.0
       version: 1.6.0
     class-variance-authority:
       specifier: ^0.7.1

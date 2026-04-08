@@ -5,30 +5,35 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { CheckIcon, ChevronDownIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { SignOutButton } from "~/components/sign-out-button";
-import { $addUserToGroup, $getGroupsData, $setActiveGroup } from "~/server/groups";
+import {
+  addUserToActiveGroupMutationOptions,
+  setActiveGroupMutationOptions,
+} from "~/server/groups/mutations";
+import { groupsQueryOptions } from "~/server/groups/queries";
 
 export const Route = createFileRoute("/_auth/settings")({
-  loader: () => $getGroupsData(),
+  loader: ({ context }) => context.queryClient.ensureQueryData(groupsQueryOptions()),
   component: SettingsPage,
 });
 
 function SettingsPage() {
-  const { currentUser, currentGroup, currentGroupMembers, usersNotInGroup, userGroups } =
-    Route.useLoaderData();
-  const router = useRouter();
+  const {
+    data: { currentUser, currentGroup, currentGroupMembers, usersNotInGroup, userGroups },
+  } = useSuspenseQuery(groupsQueryOptions());
+  const queryClient = useQueryClient();
 
   const isAdmin = currentUser?.id === currentGroup?.adminId;
 
   const switchGroupMutation = useMutation({
-    mutationFn: (groupId: string) => $setActiveGroup({ data: { groupId } }),
+    ...setActiveGroupMutationOptions(),
     onSuccess: async () => {
-      await router.invalidate();
+      await queryClient.invalidateQueries();
       toast.success("Zmieniono aktywną grupę");
     },
     onError: (error) => {
@@ -37,10 +42,9 @@ function SettingsPage() {
   });
 
   const addUserMutation = useMutation({
-    mutationFn: (userId: string) =>
-      $addUserToGroup({ data: { userId, groupId: currentGroup!.id } }),
+    ...addUserToActiveGroupMutationOptions(),
     onSuccess: async () => {
-      await router.invalidate();
+      await queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast.success("Pomyślnie dodano użytkownika do grupy");
     },
     onError: (error) => {
@@ -115,7 +119,12 @@ function SettingsPage() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {usersNotInGroup.map((u) => (
-                    <DropdownMenuItem key={u.id} onClick={() => addUserMutation.mutate(u.id)}>
+                    <DropdownMenuItem
+                      key={u.id}
+                      onClick={() =>
+                        addUserMutation.mutate({ groupId: currentGroup.id, userId: u.id })
+                      }
+                    >
                       {u.name}
                     </DropdownMenuItem>
                   ))}

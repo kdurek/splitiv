@@ -14,7 +14,6 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       return { owedToYou: [], youOwe: [], totalOwedToYou: "0", totalYouOwe: "0", netBalance: "0" };
     }
 
-    // Debts owed TO you: you paid, others owe you
     const owedToYouRows = await db
       .select({
         debtorId: expenseDebt.debtorId,
@@ -33,7 +32,6 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       )
       .groupBy(expenseDebt.debtorId, user.name);
 
-    // Debts you owe: others paid, you owe them
     const youOweRows = await db
       .select({
         payerId: expense.payerId,
@@ -52,20 +50,20 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       )
       .groupBy(expense.payerId, user.name);
 
-    const totalOwedToYou = owedToYouRows.reduce((sum, r) => sum + Number(r.total), 0);
-    const totalYouOwe = youOweRows.reduce((sum, r) => sum + Number(r.total), 0);
+    const totalOwedToYou = owedToYouRows.reduce((sum, row) => sum + Number(row.total), 0);
+    const totalYouOwe = youOweRows.reduce((sum, row) => sum + Number(row.total), 0);
     const netBalance = (totalOwedToYou - totalYouOwe).toFixed(2);
 
     return {
-      owedToYou: owedToYouRows.map((r) => ({
-        userId: r.debtorId,
-        name: r.debtorName,
-        amount: Number(r.total).toFixed(2),
+      owedToYou: owedToYouRows.map((row) => ({
+        userId: row.debtorId,
+        name: row.debtorName,
+        amount: Number(row.total).toFixed(2),
       })),
-      youOwe: youOweRows.map((r) => ({
-        userId: r.payerId,
-        name: r.payerName,
-        amount: Number(r.total).toFixed(2),
+      youOwe: youOweRows.map((row) => ({
+        userId: row.payerId,
+        name: row.payerName,
+        amount: Number(row.total).toFixed(2),
       })),
       totalOwedToYou: totalOwedToYou.toFixed(2),
       totalYouOwe: totalYouOwe.toFixed(2),

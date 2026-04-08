@@ -3,23 +3,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
-import { $getExpenses } from "~/server/expenses";
+import { expensesInfiniteQueryOptions } from "~/server/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/")({
   loader: ({ context }) =>
     Promise.all([
-      context.queryClient.prefetchInfiniteQuery({
-        queryKey: ["expenses", "active"],
-        queryFn: ({ pageParam }) =>
-          $getExpenses({ data: { tab: "active", cursor: pageParam as number } }),
-        initialPageParam: 0,
-      }),
-      context.queryClient.prefetchInfiniteQuery({
-        queryKey: ["expenses", "archived"],
-        queryFn: ({ pageParam }) =>
-          $getExpenses({ data: { tab: "archived", cursor: pageParam as number } }),
-        initialPageParam: 0,
-      }),
+      context.queryClient.prefetchInfiniteQuery(expensesInfiniteQueryOptions("active")),
+      context.queryClient.prefetchInfiniteQuery(expensesInfiniteQueryOptions("archived")),
     ]),
   component: ExpensesIndex,
 });
@@ -42,12 +32,9 @@ function ExpensesIndex() {
   const [tab, setTab] = useState<Tab>("active");
   const { ref, inView } = useInView();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery({
-    queryKey: ["expenses", tab],
-    queryFn: ({ pageParam }) => $getExpenses({ data: { tab, cursor: pageParam } }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery(
+    expensesInfiniteQueryOptions(tab),
+  );
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -62,7 +49,7 @@ function ExpensesIndex() {
       <h1 className="text-lg font-semibold tracking-tight">Wydatki</h1>
 
       <div className="flex rounded-lg bg-muted p-1">
-        {(["active", "archived"] as Tab[]).map((t) => (
+        {(["active", "archived"] satisfies Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}

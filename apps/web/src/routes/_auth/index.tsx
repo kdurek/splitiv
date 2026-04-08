@@ -1,9 +1,10 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { $getDashboardBalance } from "~/server/dashboard";
+import { dashboardBalanceQueryOptions } from "~/server/dashboard/queries";
 
 export const Route = createFileRoute("/_auth/")({
-  loader: () => $getDashboardBalance(),
+  loader: ({ context }) => context.queryClient.ensureQueryData(dashboardBalanceQueryOptions()),
   component: AppIndex,
 });
 
@@ -46,7 +47,9 @@ function PersonRow({
 }
 
 function AppIndex() {
-  const { owedToYou, youOwe, totalOwedToYou, totalYouOwe, netBalance } = Route.useLoaderData();
+  const {
+    data: { owedToYou, youOwe, totalOwedToYou, totalYouOwe, netBalance },
+  } = useSuspenseQuery(dashboardBalanceQueryOptions());
 
   const net = Number(netBalance);
   const isPositive = net >= 0;

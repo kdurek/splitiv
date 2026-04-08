@@ -1,9 +1,11 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { $getExpense } from "~/server/expenses";
+import { expenseQueryOptions } from "~/server/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/$expenseId")({
-  loader: ({ params }) => $getExpense({ data: { expenseId: params.expenseId } }),
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(expenseQueryOptions(params.expenseId)),
   component: ExpenseDetail,
 });
 
@@ -20,7 +22,10 @@ function formatDate(date: string | Date) {
 }
 
 function ExpenseDetail() {
-  const { expense, debts, logs } = Route.useLoaderData();
+  const { expenseId } = Route.useParams();
+  const {
+    data: { expense, debts, logs },
+  } = useSuspenseQuery(expenseQueryOptions(expenseId));
   const debtById = new Map(debts.map((debt) => [debt.id, debt] as const));
   const settledAfterLogById = new Map(
     debts.map((debt) => [debt.id, Number(debt.settled)] as const),

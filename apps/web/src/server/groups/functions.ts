@@ -1,11 +1,25 @@
-import { authMiddleware } from "@repo/auth/tanstack/middleware";
+import { freshAuthMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { group, user, userGroup } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { and, eq, notInArray } from "drizzle-orm";
+import { z } from "zod";
+
+export async function _getGroupForUser(userId: string, groupId: string) {
+  const [membership] = await db
+    .select({
+      group: { id: group.id, name: group.name, adminId: group.adminId },
+    })
+    .from(userGroup)
+    .innerJoin(group, eq(group.id, userGroup.groupId))
+    .where(and(eq(userGroup.userId, userId), eq(userGroup.groupId, groupId)))
+    .limit(1);
+
+  return membership?.group ?? null;
+}
 
 export const $getGroupsData = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([freshAuthMiddleware])
   .handler(async ({ context }) => {
     const currentUser = context.user;
 
@@ -16,7 +30,7 @@ export const $getGroupsData = createServerFn({ method: "GET" })
       .where(eq(userGroup.userId, currentUser.id));
 
     const currentGroup = currentUser.activeGroupId
-      ? (userGroups.find((g) => g.id === currentUser.activeGroupId) ?? null)
+      ? (userGroups.find((candidate) => candidate.id === currentUser.activeGroupId) ?? null)
       : null;
 
     const currentGroupMembers = currentGroup
@@ -27,7 +41,7 @@ export const $getGroupsData = createServerFn({ method: "GET" })
           .where(eq(userGroup.groupId, currentGroup.id))
       : [];
 
-    const memberIds = currentGroupMembers.map((m) => m.userId);
+    const memberIds = currentGroupMembers.map((member) => member.userId);
     const usersNotInGroup =
       currentGroup && memberIds.length > 0
         ? await db
@@ -40,27 +54,23 @@ export const $getGroupsData = createServerFn({ method: "GET" })
   });
 
 export const $setActiveGroup = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .inputValidator((input: { groupId: string }) => input)
+  .middleware([freshAuthMiddleware])
+  .inputValidator(z.object({ groupId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
-    const [membership] = await db
-      .select({ groupId: userGroup.groupId })
-      .from(userGroup)
-      .where(and(eq(userGroup.userId, context.user.id), eq(userGroup.groupId, data.groupId)))
-      .limit(1);
+    const targetGroup = await _getGroupForUser(context.user.id, data.groupId);
 
-    if (!membership) {
+    if (!targetGroup) {
       throw new Error("Brak uprawnień");
     }
 
     await db.update(user).set({ activeGroupId: data.groupId }).where(eq(user.id, context.user.id));
   });
 
-export const $addUserToGroup = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .inputValidator((input: { userId: string; groupId: string }) => input)
+export const $addUserToActiveGroup = createServerFn({ method: "POST" })
+  .middleware([freshAuthMiddleware])
+  .inputValidator(z.object({ userId: z.string().min(1), groupId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
-    const [targetGroup] = await db.select().from(group).where(eq(group.id, data.groupId));
+    const targetGroup = await _getGroupForUser(context.user.id, data.groupId);
 
     if (!targetGroup || targetGroup.adminId !== context.user.id) {
       throw new Error("Brak uprawnień");

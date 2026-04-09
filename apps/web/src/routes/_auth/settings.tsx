@@ -11,6 +11,7 @@ import { CheckIcon, ChevronDownIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { SignOutButton } from "~/components/sign-out-button";
+import { UserAvatar } from "~/components/user-avatar";
 import {
   addUserToActiveGroupMutationOptions,
   setActiveGroupMutationOptions,
@@ -53,55 +54,58 @@ function SettingsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-8 p-4 pt-6">
       {/* Active group */}
-      <section className="rounded-2xl border bg-card p-4">
-        <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+      <section className="space-y-3">
+        <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
           Aktywna grupa
         </p>
-        {userGroups.length > 0 ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="outline" className="w-full justify-between" />}
-            >
-              <span>{currentGroup?.name ?? "Wybierz grupę"}</span>
-              <ChevronDownIcon className="size-4 opacity-50" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {userGroups.map((g) => (
-                <DropdownMenuItem
-                  key={g.id}
-                  disabled={switchGroupMutation.isPending}
-                  onClick={() => {
-                    if (g.id !== currentGroup?.id) switchGroupMutation.mutate(g.id);
-                  }}
-                >
-                  {g.name}
-                  {g.id === currentGroup?.id && <CheckIcon className="ml-auto size-3.5" />}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <p className="text-sm text-muted-foreground">Nie należysz do żadnej grupy.</p>
-        )}
+        <div className="rounded-xl border-l-4 border-primary/40 bg-card p-5">
+          {userGroups.length > 0 ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button variant="outline" className="w-full justify-between" />}
+              >
+                <span>{currentGroup?.name ?? "Wybierz grupę"}</span>
+                <ChevronDownIcon className="size-4 opacity-50" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {userGroups.map((group) => (
+                  <DropdownMenuItem
+                    key={group.id}
+                    disabled={switchGroupMutation.isPending}
+                    onClick={() => {
+                      if (group.id !== currentGroup?.id) switchGroupMutation.mutate(group.id);
+                    }}
+                  >
+                    {group.name}
+                    {group.id === currentGroup?.id && <CheckIcon className="ml-auto size-3.5" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <p className="text-sm text-muted-foreground">Nie należysz do żadnej grupy.</p>
+          )}
+        </div>
       </section>
 
       {/* Group members — admin only */}
       {currentGroup && isAdmin && (
-        <section className="rounded-2xl border bg-card p-4">
-          <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        <section className="space-y-3">
+          <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
             Członkowie grupy
           </p>
-          <div className="grid gap-3">
-            <ol className="grid gap-1.5">
-              {currentGroupMembers.map((member) => (
-                <li key={member.userId} className="flex items-center gap-2 text-sm">
-                  <div className="size-1.5 rounded-full bg-foreground/40" />
-                  {member.name}
-                </li>
-              ))}
-            </ol>
+          <div className="space-y-2">
+            {currentGroupMembers.map((member) => (
+              <div
+                key={member.userId}
+                className="flex items-center gap-3 rounded-xl bg-muted/40 px-4 py-3"
+              >
+                <UserAvatar name={member.name} image={member.image} size="md" shape="square" />
+                <span className="text-sm font-medium">{member.name}</span>
+              </div>
+            ))}
 
             {usersNotInGroup.length > 0 && (
               <DropdownMenu>
@@ -136,14 +140,24 @@ function SettingsPage() {
       )}
 
       {/* Account */}
-      <section className="rounded-2xl border bg-card p-4">
-        <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+      <section className="space-y-3">
+        <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
           Konto
         </p>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-medium">{currentUser?.name}</span>
-            <span className="text-xs text-muted-foreground">{currentUser?.email}</span>
+        <div className="space-y-4 rounded-xl border-l-4 border-destructive/40 bg-card p-5">
+          <div className="flex items-center gap-3">
+            {currentUser?.name && (
+              <UserAvatar
+                name={currentUser.name}
+                image={currentUser.image}
+                size="lg"
+                shape="square"
+              />
+            )}
+            <div className="flex flex-col gap-0.5">
+              <span className="font-semibold">{currentUser?.name}</span>
+              <span className="text-xs text-muted-foreground">{currentUser?.email}</span>
+            </div>
           </div>
           <SignOutButton />
         </div>

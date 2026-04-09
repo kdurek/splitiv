@@ -35,7 +35,7 @@ export const $getGroupsData = createServerFn({ method: "GET" })
 
     const currentGroupMembers = currentGroup
       ? await db
-          .select({ userId: user.id, name: user.name })
+          .select({ userId: user.id, name: user.name, image: user.image })
           .from(userGroup)
           .innerJoin(user, eq(user.id, userGroup.userId))
           .where(eq(userGroup.groupId, currentGroup.id))

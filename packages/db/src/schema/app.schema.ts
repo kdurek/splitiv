@@ -48,6 +48,8 @@ export const expense = pgTable(
   (table) => [
     index("expense_group_id_idx").on(table.groupId),
     index("expense_payer_id_idx").on(table.payerId),
+    index("expense_name_trgm_idx").using("gin", table.name.op("gin_trgm_ops")),
+    index("expense_description_trgm_idx").using("gin", table.description.op("gin_trgm_ops")),
   ],
 );
 

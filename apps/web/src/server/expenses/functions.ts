@@ -2,7 +2,7 @@ import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { expense, expenseDebt, expenseLog, group, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, exists, not, sql } from "drizzle-orm";
+import { and, desc, eq, exists, not, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
 export const $getDebtsToUser = createServerFn({ method: "GET" })
@@ -44,11 +44,13 @@ export const $getExpenses = createServerFn({ method: "GET" })
     z.object({
       tab: z.enum(["active", "archived"]),
       cursor: z.number().int().min(0),
+      q: z.string().optional(),
     }),
   )
   .handler(async ({ context, data }) => {
     const currentUser = context.user;
-    const { tab, cursor } = data;
+    const { tab, cursor, q } = data;
+    const searchWords = q && q.length >= 3 ? q.trim().split(/\s+/).filter(Boolean) : [];
     const groupId = currentUser.activeGroupId;
 
     if (!groupId) {
@@ -96,6 +98,12 @@ export const $getExpenses = createServerFn({ method: "GET" })
         and(
           eq(expense.groupId, groupId),
           tab === "active" ? hasUnsettledDebt : not(hasUnsettledDebt),
+          ...searchWords.map((word) =>
+            or(
+              sql`lower(unaccent(${expense.name})) like '%' || lower(unaccent(${word})) || '%'`,
+              sql`${expense.description} is not null and lower(unaccent(${expense.description})) like '%' || lower(unaccent(${word})) || '%'`,
+            ),
+          ),
         ),
       )
       .orderBy(desc(expense.createdAt))

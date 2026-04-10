@@ -2,10 +2,10 @@ import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
 import { $getDebtsToUser, $getExpense, $getExpenses } from "./functions";
 
-export const expensesInfiniteQueryOptions = (tab: "active" | "archived") =>
+export const expensesInfiniteQueryOptions = (tab: "active" | "archived", q?: string) =>
   infiniteQueryOptions({
-    queryKey: ["expenses", tab],
-    queryFn: ({ pageParam }) => $getExpenses({ data: { tab, cursor: pageParam } }),
+    queryKey: ["expenses", tab, q ?? ""],
+    queryFn: ({ pageParam }) => $getExpenses({ data: { tab, cursor: pageParam, q } }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });

@@ -1,17 +1,20 @@
+import { Input } from "@repo/ui/components/input";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ReceiptIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ReceiptIcon, SearchIcon, XIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { z } from "zod";
 
 import { expensesInfiniteQueryOptions } from "~/server/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/")({
+  validateSearch: z.object({
+    q: z.string().optional(),
+    t: z.enum(["active", "archived"]).optional(),
+  }),
   loader: ({ context }) =>
-    Promise.all([
-      context.queryClient.prefetchInfiniteQuery(expensesInfiniteQueryOptions("active")),
-      context.queryClient.prefetchInfiniteQuery(expensesInfiniteQueryOptions("archived")),
-    ]),
+    context.queryClient.prefetchInfiniteQuery(expensesInfiniteQueryOptions("active")),
   component: ExpensesIndex,
 });
 
@@ -30,11 +33,28 @@ function formatAmount(amount: string) {
 }
 
 function ExpensesIndex() {
-  const [tab, setTab] = useState<Tab>("active");
+  const { q, t } = Route.useSearch();
+  const navigate = useNavigate({ from: "/expenses/" });
+  const tab: Tab = t ?? "active";
   const { ref, inView } = useInView();
 
+  const [inputValue, setInputValue] = useState(q ?? "");
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const trimmed = inputValue.trim();
+      navigate({
+        search: (prev) => ({ ...prev, q: trimmed.length >= 3 ? trimmed : undefined }),
+        replace: true,
+      });
+    }, 300);
+    return () => clearTimeout(debounceRef.current);
+  }, [inputValue, navigate]);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery(
-    expensesInfiniteQueryOptions(tab),
+    expensesInfiniteQueryOptions(tab, q),
   );
 
   useEffect(() => {
@@ -49,11 +69,35 @@ function ExpensesIndex() {
     <div className="space-y-6 p-4">
       <h1 className="text-lg font-semibold tracking-tight">Wydatki</h1>
 
+      <div className="relative">
+        <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Szukaj wydatków..."
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          className="pr-9 pl-9"
+        />
+        {inputValue && (
+          <button
+            onClick={() => setInputValue("")}
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <XIcon className="size-4" />
+          </button>
+        )}
+      </div>
+
       <div className="flex rounded-lg bg-muted p-1">
         {(["active", "archived"] satisfies Tab[]).map((t) => (
           <button
             key={t}
-            onClick={() => setTab(t)}
+            onClick={() =>
+              navigate({
+                search: (prev) => ({ ...prev, t: t === "active" ? undefined : t }),
+                replace: true,
+              })
+            }
             className={`flex-1 rounded-md py-2 text-xs font-bold tracking-wider uppercase transition-all ${
               tab === t
                 ? "bg-primary text-primary-foreground shadow-sm"

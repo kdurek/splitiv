@@ -6,7 +6,6 @@
 - Prefer shared `@repo/ui` components; add primitives via shadcn CLI (`pnpm ui add <component>`).
 - Use `lucide-react` for UI icons (use `Icon` suffix, e.g. `import { Loader2Icon } from "lucide-react"`); for brand icons use `@icons-pack/react-simple-icons` (e.g. `SiGithub`).
 - Use shared pnpm catalog versions (`pnpm-workspace.yaml`) via `catalog:`.
-- For TanStack libraries, consult latest docs via `pnpm tanstack <command>` (see [Workflow](.agents/workflow.md#tanstack-cli)).
 - Don't build after every little change. If `pnpm lint` passes; assume changes work.
 
 ## Topic-specific Guidelines
@@ -26,7 +25,8 @@ skills:
 - task: "general TanStack Router and @tanstack/react-router docs for routes, layouts, route tree, and navigation"
   load: "apps/web/node_modules/@tanstack/react-router/dist/llms/index.js"
 - task: "general TanStack Start and @tanstack/react-start docs for app structure, patterns, and server features"
-load: "apps/web/node_modules/@tanstack/react-start/skills/react-start/SKILL.md"
+  load: "apps/web/node_modules/@tanstack/react-start/skills/react-start/SKILL.md"
+
 <!-- intent-skills:end -->
 
 ## TanStack Docs

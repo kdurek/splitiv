@@ -1,6 +1,6 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { expense, expenseDebt, expenseLog, user } from "@repo/db/schema";
+import { expense, expenseDebt, expenseLog, group, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, exists, not, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -100,9 +100,11 @@ export const $getExpense = createServerFn({ method: "GET" })
         payerName: user.name,
         payerImage: user.image,
         payerId: expense.payerId,
+        groupAdminId: group.adminId,
       })
       .from(expense)
       .innerJoin(user, eq(user.id, expense.payerId))
+      .innerJoin(group, eq(group.id, expense.groupId))
       .where(and(eq(expense.id, data.expenseId), eq(expense.groupId, activeGroupId)))
       .limit(1);
 

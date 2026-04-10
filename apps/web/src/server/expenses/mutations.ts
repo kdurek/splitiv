@@ -214,3 +214,51 @@ export const $undoDebtLog = createServerFn({ method: "POST" })
         .where(eq(expenseDebt.id, debt.id));
     });
   });
+
+export const $deleteExpense = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(z.object({ expenseId: z.string().min(1) }))
+  .handler(async ({ context, data }) => {
+    const currentUserId = context.user.id;
+
+    const [expenseData] = await db
+      .select({ payerId: expense.payerId, groupId: expense.groupId })
+      .from(expense)
+      .where(eq(expense.id, data.expenseId))
+      .limit(1);
+
+    if (!expenseData) throw new Error("Expense not found");
+
+    const [groupData] = await db
+      .select({ adminId: group.adminId })
+      .from(group)
+      .where(eq(group.id, expenseData.groupId))
+      .limit(1);
+
+    if (!groupData) throw new Error("Group not found");
+
+    const [debtorCheck] = await db
+      .select({ one: sql`1` })
+      .from(expenseDebt)
+      .where(
+        and(eq(expenseDebt.expenseId, data.expenseId), eq(expenseDebt.debtorId, currentUserId)),
+      )
+      .limit(1);
+
+    const canDelete =
+      currentUserId === expenseData.payerId || currentUserId === groupData.adminId || !!debtorCheck;
+
+    if (!canDelete) throw new Error("Not authorized to delete this expense");
+
+    // Check that no expense logs exist (only payer's auto-settled debt is allowed, which has no logs)
+    const [logCheck] = await db
+      .select({ one: sql`1` })
+      .from(expenseLog)
+      .innerJoin(expenseDebt, eq(expenseDebt.id, expenseLog.debtId))
+      .where(eq(expenseDebt.expenseId, data.expenseId))
+      .limit(1);
+
+    if (logCheck) throw new Error("Cannot delete expense with recorded payments");
+
+    await db.delete(expense).where(eq(expense.id, data.expenseId));
+  });

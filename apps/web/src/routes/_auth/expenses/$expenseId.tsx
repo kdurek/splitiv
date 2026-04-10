@@ -1,3 +1,4 @@
+import { authQueryOptions } from "@repo/auth/tanstack/queries";
 import { Button } from "@repo/ui/components/button";
 import {
   DrawerBackdrop,
@@ -12,12 +13,12 @@ import { Label } from "@repo/ui/components/label";
 import { NumberField, NumberFieldInput } from "@repo/ui/components/number-field";
 import { useForm, useStore } from "@tanstack/react-form";
 import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Loader2Icon, RotateCcwIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
 
 import { UserAvatar } from "~/components/user-avatar";
-import { $settleDebt, $undoDebtLog } from "~/server/expenses/mutations";
+import { $deleteExpense, $settleDebt, $undoDebtLog } from "~/server/expenses/mutations";
 import { expenseQueryOptions } from "~/server/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/$expenseId")({
@@ -308,11 +309,135 @@ function DebtCard({ debt }: { debt: Debt }) {
   );
 }
 
+function DeleteExpenseDrawer({
+  expenseId,
+  expenseName,
+  expenseAmount,
+  hasLogs,
+}: {
+  expenseId: string;
+  expenseName: string;
+  expenseAmount: string;
+  hasLogs: boolean;
+}) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [open, setOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleDelete = async () => {
+    setIsSubmitting(true);
+    try {
+      await $deleteExpense({ data: { expenseId } });
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      navigate({ to: "/expenses" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <DrawerRoot open={open} onOpenChange={setOpen}>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="w-full cursor-pointer rounded-xl border border-destructive/40 bg-destructive/5 py-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+      >
+        Usuń wydatek
+      </button>
+
+      <DrawerPortal>
+        <DrawerBackdrop />
+        <DrawerViewport>
+          <DrawerPopup>
+            <DrawerContent className="mx-auto w-full max-w-lg">
+              <p className="mb-4 text-lg font-semibold tracking-tight">Usuń wydatek</p>
+              {hasLogs ? (
+                <>
+                  <div className="mb-6 space-y-3">
+                    <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                      <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
+                      <p>
+                        Nie można usunąć wydatku, który ma zarejestrowane wpłaty. Najpierw cofnij
+                        wszystkie wpłaty.
+                      </p>
+                    </div>
+                  </div>
+                  <DrawerClose
+                    render={
+                      <Button type="button" variant="outline" className="w-full">
+                        Zamknij
+                      </Button>
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  <div className="mb-6 space-y-3">
+                    <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                      <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
+                      <p>
+                        Ta akcja jest nieodwracalna. Wydatek i wszystkie powiązane długi zostaną
+                        usunięte.
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-muted/40 p-3 text-sm">
+                      <p className="text-muted-foreground">Wydatek</p>
+                      <p className="font-semibold">{expenseName}</p>
+                    </div>
+                    <div className="rounded-lg bg-muted/40 p-3 text-sm">
+                      <p className="text-muted-foreground">Kwota</p>
+                      <p className="font-semibold">{formatAmount(expenseAmount)}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="destructive"
+                      className="w-full"
+                      onClick={handleDelete}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2Icon className="size-4 animate-spin" />
+                          Usuwanie...
+                        </>
+                      ) : (
+                        "Usuń wydatek"
+                      )}
+                    </Button>
+                    <DrawerClose
+                      render={
+                        <Button type="button" variant="outline" className="w-full">
+                          Anuluj
+                        </Button>
+                      }
+                    />
+                  </div>
+                </>
+              )}
+            </DrawerContent>
+          </DrawerPopup>
+        </DrawerViewport>
+      </DrawerPortal>
+    </DrawerRoot>
+  );
+}
+
 function ExpenseDetail() {
   const { expenseId } = Route.useParams();
   const {
     data: { expense, debts, logs },
   } = useSuspenseQuery(expenseQueryOptions(expenseId));
+  const { data: currentUser } = useSuspenseQuery(authQueryOptions());
+
+  const currentUserId = currentUser?.id;
+  const debtorIds = new Set(debts.map((d) => d.debtorId));
+  const canDelete =
+    currentUserId === expense.payerId ||
+    currentUserId === expense.groupAdminId ||
+    (currentUserId != null && debtorIds.has(currentUserId));
   const debtById = new Map(debts.map((debt) => [debt.id, debt] as const));
   const settledAfterLogById = new Map(
     debts.map((debt) => [debt.id, Number(debt.settled)] as const),
@@ -456,6 +581,16 @@ function ExpenseDetail() {
             })}
           </div>
         </section>
+      )}
+
+      {/* Delete Expense */}
+      {canDelete && (
+        <DeleteExpenseDrawer
+          expenseId={expenseId}
+          expenseName={expense.name}
+          expenseAmount={expense.amount}
+          hasLogs={logs.length > 0}
+        />
       )}
     </div>
   );

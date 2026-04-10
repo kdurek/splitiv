@@ -1,7 +1,23 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from "@repo/ui/components/button";
+import {
+  DrawerBackdrop,
+  DrawerClose,
+  DrawerContent,
+  DrawerPopup,
+  DrawerPortal,
+  DrawerRoot,
+  DrawerViewport,
+} from "@repo/ui/components/drawer";
+import { Label } from "@repo/ui/components/label";
+import { NumberField, NumberFieldInput } from "@repo/ui/components/number-field";
+import { useForm, useStore } from "@tanstack/react-form";
+import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { Loader2Icon } from "lucide-react";
+import * as React from "react";
 
 import { UserAvatar } from "~/components/user-avatar";
+import { $settleDebt } from "~/server/expenses/mutations";
 import { expenseQueryOptions } from "~/server/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/$expenseId")({
@@ -20,6 +36,179 @@ function formatDate(date: string | Date) {
     month: "short",
     year: "numeric",
   });
+}
+
+type Debt = {
+  id: string;
+  amount: string;
+  settled: string;
+  debtorId: string;
+  debtorName: string;
+  debtorImage: string | null;
+};
+
+function SettleDebtForm({ debt, onSuccess }: { debt: Debt; onSuccess: () => void }) {
+  const remaining = Number(debt.amount) - Number(debt.settled);
+
+  const form = useForm({
+    defaultValues: { amount: remaining },
+    onSubmit: async ({ value }) => {
+      await $settleDebt({
+        data: { debtId: debt.id, amount: value.amount.toFixed(2) },
+      });
+      onSuccess();
+    },
+  });
+
+  const isSubmitting = useStore(form.store, (s) => s.isSubmitting);
+
+  return (
+    <DrawerContent className="mx-auto w-full max-w-lg">
+      <p className="mb-4 text-lg font-semibold tracking-tight">Rozlicz dług — {debt.debtorName}</p>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-4"
+      >
+        <form.Field name="amount">
+          {(field) => (
+            <div className="space-y-2">
+              <Label htmlFor={field.name}>Kwota do rozliczenia</Label>
+              <div className="relative">
+                <NumberField
+                  aria-label="Kwota do rozliczenia"
+                  value={field.state.value}
+                  onChange={(v) => field.handleChange(isNaN(v) ? 0 : v)}
+                  onBlur={field.handleBlur}
+                  minValue={0.01}
+                  maxValue={remaining}
+                  formatOptions={{
+                    style: "decimal",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }}
+                >
+                  <NumberFieldInput id={field.name} className="pr-10" />
+                </NumberField>
+                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground">
+                  zł
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Pozostało do spłaty: {formatAmount(remaining.toFixed(2))}
+              </p>
+            </div>
+          )}
+        </form.Field>
+
+        <div className="flex flex-col gap-2 pt-2">
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2Icon className="size-4 animate-spin" />
+                Zapisywanie...
+              </>
+            ) : (
+              "Rozlicz"
+            )}
+          </Button>
+          <DrawerClose
+            render={
+              <Button type="button" variant="outline" className="w-full">
+                Anuluj
+              </Button>
+            }
+          />
+        </div>
+      </form>
+    </DrawerContent>
+  );
+}
+
+function SettleDebtDrawer({ debt, expenseId }: { debt: Debt; expenseId: string }) {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = React.useState(false);
+  const [formKey, setFormKey] = React.useState(0);
+
+  const handleOpen = () => {
+    setFormKey((k) => k + 1);
+    setOpen(true);
+  };
+
+  const handleSuccess = () => {
+    setOpen(false);
+    queryClient.invalidateQueries({ queryKey: ["expense", expenseId] });
+  };
+
+  return (
+    <DrawerRoot open={open} onOpenChange={setOpen}>
+      <button type="button" onClick={handleOpen} className="w-full cursor-pointer text-left">
+        <DebtCard debt={debt} />
+      </button>
+
+      <DrawerPortal>
+        <DrawerBackdrop />
+        <DrawerViewport>
+          <DrawerPopup>
+            <SettleDebtForm key={formKey} debt={debt} onSuccess={handleSuccess} />
+          </DrawerPopup>
+        </DrawerViewport>
+      </DrawerPortal>
+    </DrawerRoot>
+  );
+}
+
+function DebtCard({ debt }: { debt: Debt }) {
+  const amount = Number(debt.amount);
+  const settled = Number(debt.settled);
+  const percent = amount > 0 ? Math.round((settled / amount) * 100) : 0;
+  const isFullySettled = settled >= amount;
+  const isPartial = settled > 0 && settled < amount;
+
+  return (
+    <div className="space-y-4 rounded-xl bg-muted/40 p-5">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-3">
+          <UserAvatar name={debt.debtorName} image={debt.debtorImage} size="lg" shape="square" />
+          <div className="space-y-0.5">
+            <p className="font-semibold">{debt.debtorName}</p>
+            <p className="text-xs text-muted-foreground">
+              {isFullySettled
+                ? "W pełni rozliczone"
+                : isPartial
+                  ? "Saldo oczekujące"
+                  : "Brak wpłat"}
+            </p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-lg font-bold">{formatAmount(debt.amount)}</p>
+          <p
+            className={`text-[10px] font-bold tracking-widest uppercase ${
+              isFullySettled ? "text-primary" : "text-destructive"
+            }`}
+          >
+            {isFullySettled ? "Zapłacone" : isPartial ? "W części zapłacone" : "Nieopłacone"}
+          </p>
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-background">
+          <div
+            className="h-full rounded-full bg-primary transition-all"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+        <div className="flex justify-between text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
+          <span>Rozliczone: {formatAmount(debt.settled)}</span>
+          <span>{percent}%</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function ExpenseDetail() {
@@ -83,62 +272,17 @@ function ExpenseDetail() {
         </div>
         <div className="space-y-3">
           {debts.map((debt) => {
-            const amount = Number(debt.amount);
-            const settled = Number(debt.settled);
-            const percent = amount > 0 ? Math.round((settled / amount) * 100) : 0;
-            const isFullySettled = settled >= amount;
-            const isPartial = settled > 0 && settled < amount;
+            const isFullySettled = Number(debt.settled) >= Number(debt.amount);
 
-            return (
-              <div key={debt.id} className="space-y-4 rounded-xl bg-muted/40 p-5">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <UserAvatar
-                      name={debt.debtorName}
-                      image={debt.debtorImage}
-                      size="lg"
-                      shape="square"
-                    />
-                    <div className="space-y-0.5">
-                      <p className="font-semibold">{debt.debtorName}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {isFullySettled
-                          ? "W pełni rozliczone"
-                          : isPartial
-                            ? "Saldo oczekujące"
-                            : "Brak wpłat"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold">{formatAmount(debt.amount)}</p>
-                    <p
-                      className={`text-[10px] font-bold tracking-widest uppercase ${
-                        isFullySettled ? "text-primary" : "text-destructive"
-                      }`}
-                    >
-                      {isFullySettled
-                        ? "Zapłacone"
-                        : isPartial
-                          ? "W części zapłacone"
-                          : "Nieopłacone"}
-                    </p>
-                  </div>
+            if (isFullySettled) {
+              return (
+                <div key={debt.id} className="cursor-default">
+                  <DebtCard debt={debt} />
                 </div>
-                <div className="space-y-1.5">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-background">
-                    <div
-                      className="h-full rounded-full bg-primary transition-all"
-                      style={{ width: `${percent}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
-                    <span>Rozliczone: {formatAmount(debt.settled)}</span>
-                    <span>{percent}%</span>
-                  </div>
-                </div>
-              </div>
-            );
+              );
+            }
+
+            return <SettleDebtDrawer key={debt.id} debt={debt} expenseId={expenseId} />;
           })}
         </div>
       </section>

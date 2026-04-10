@@ -1,8 +1,8 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { expense, expenseDebt, userGroup } from "@repo/db/schema";
+import { expense, expenseDebt, expenseLog, group, userGroup } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
-import { eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { ulid } from "ulid";
 import { z } from "zod";
 
@@ -73,4 +73,73 @@ export const $createExpense = createServerFn({ method: "POST" })
     });
 
     return { expenseId };
+  });
+
+export const $settleDebt = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(
+    z.object({
+      debtId: z.string().min(1),
+      amount: z.string().regex(/^\d+(\.\d{1,2})?$/),
+    }),
+  )
+  .handler(async ({ context, data }) => {
+    const currentUserId = context.user.id;
+
+    const [debt] = await db
+      .select({
+        id: expenseDebt.id,
+        debtorId: expenseDebt.debtorId,
+        amount: expenseDebt.amount,
+        settled: expenseDebt.settled,
+        expenseId: expenseDebt.expenseId,
+      })
+      .from(expenseDebt)
+      .where(eq(expenseDebt.id, data.debtId))
+      .limit(1);
+
+    if (!debt) throw new Error("Debt not found");
+
+    const [expenseData] = await db
+      .select({ payerId: expense.payerId, groupId: expense.groupId })
+      .from(expense)
+      .where(eq(expense.id, debt.expenseId))
+      .limit(1);
+
+    if (!expenseData) throw new Error("Expense not found");
+
+    const [groupData] = await db
+      .select({ adminId: group.adminId })
+      .from(group)
+      .where(eq(group.id, expenseData.groupId))
+      .limit(1);
+
+    if (!groupData) throw new Error("Group not found");
+
+    const canSettle =
+      currentUserId === debt.debtorId ||
+      currentUserId === expenseData.payerId ||
+      currentUserId === groupData.adminId;
+
+    if (!canSettle) throw new Error("Not authorized to settle this debt");
+
+    const remaining = parseFloat(debt.amount) - parseFloat(debt.settled);
+    const settleAmount = parseFloat(data.amount);
+
+    if (settleAmount <= 0 || settleAmount > remaining) {
+      throw new Error("Invalid settlement amount");
+    }
+
+    await db.transaction(async (tx) => {
+      await tx.insert(expenseLog).values({
+        id: ulid(),
+        debtId: debt.id,
+        amount: data.amount,
+      });
+
+      await tx
+        .update(expenseDebt)
+        .set({ settled: sql`${expenseDebt.settled} + ${data.amount}` })
+        .where(and(eq(expenseDebt.id, debt.id)));
+    });
   });

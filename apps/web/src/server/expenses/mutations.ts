@@ -215,6 +215,57 @@ export const $undoDebtLog = createServerFn({ method: "POST" })
     });
   });
 
+export const $settleDebts = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(
+    z.object({
+      debts: z
+        .array(
+          z.object({
+            debtId: z.string().min(1),
+            amount: z.string().regex(/^\d+(\.\d{1,2})?$/),
+          }),
+        )
+        .min(1),
+    }),
+  )
+  .handler(async ({ context, data }) => {
+    const currentUserId = context.user.id;
+
+    for (const item of data.debts) {
+      const [debt] = await db
+        .select({
+          debtorId: expenseDebt.debtorId,
+          amount: expenseDebt.amount,
+          settled: expenseDebt.settled,
+        })
+        .from(expenseDebt)
+        .where(eq(expenseDebt.id, item.debtId))
+        .limit(1);
+
+      if (!debt) throw new Error(`Debt ${item.debtId} not found`);
+      if (debt.debtorId !== currentUserId) throw new Error("Not authorized");
+
+      const remaining = parseFloat(debt.amount) - parseFloat(debt.settled);
+      const settleAmount = parseFloat(item.amount);
+      if (settleAmount <= 0 || settleAmount > remaining) {
+        throw new Error("Invalid settlement amount");
+      }
+    }
+
+    await db.transaction(async (tx) => {
+      for (const item of data.debts) {
+        await tx
+          .insert(expenseLog)
+          .values({ id: ulid(), debtId: item.debtId, amount: item.amount });
+        await tx
+          .update(expenseDebt)
+          .set({ settled: sql`${expenseDebt.settled} + ${item.amount}` })
+          .where(eq(expenseDebt.id, item.debtId));
+      }
+    });
+  });
+
 export const $deleteExpense = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ expenseId: z.string().min(1) }))

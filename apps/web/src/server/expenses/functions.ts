@@ -5,6 +5,37 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, exists, not, sql } from "drizzle-orm";
 import { z } from "zod";
 
+export const $getDebtsToUser = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .inputValidator(z.object({ targetUserId: z.string().min(1) }))
+  .handler(async ({ context, data }) => {
+    const currentUser = context.user;
+    const activeGroupId = currentUser.activeGroupId;
+
+    if (!activeGroupId) return [];
+
+    return db
+      .select({
+        debtId: expenseDebt.id,
+        amount: expenseDebt.amount,
+        settled: expenseDebt.settled,
+        expenseId: expense.id,
+        expenseName: expense.name,
+        expenseCreatedAt: expense.createdAt,
+      })
+      .from(expenseDebt)
+      .innerJoin(expense, eq(expense.id, expenseDebt.expenseId))
+      .where(
+        and(
+          eq(expenseDebt.debtorId, currentUser.id),
+          eq(expense.payerId, data.targetUserId),
+          eq(expense.groupId, activeGroupId),
+          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
+        ),
+      )
+      .orderBy(desc(expense.createdAt));
+  });
+
 const PAGE_SIZE = 10;
 
 export const $getExpenses = createServerFn({ method: "GET" })

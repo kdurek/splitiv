@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { UserAvatar } from "~/components/user-avatar";
 import { dashboardBalanceQueryOptions } from "~/server/dashboard/queries";
@@ -100,13 +100,19 @@ function AppIndex() {
           ) : (
             <div className="flex flex-col gap-3">
               {youOwe.map((person) => (
-                <PersonRow
+                <Link
                   key={person.userId}
-                  name={person.name}
-                  image={person.image}
-                  amount={person.amount}
-                  variant="owe"
-                />
+                  to="/settle/$userId"
+                  params={{ userId: person.userId }}
+                  className="block"
+                >
+                  <PersonRow
+                    name={person.name}
+                    image={person.image}
+                    amount={person.amount}
+                    variant="owe"
+                  />
+                </Link>
               ))}
             </div>
           )}

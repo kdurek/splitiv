@@ -68,6 +68,7 @@ export const $createExpense = createServerFn({ method: "POST" })
           expenseId,
           debtorId: debt.debtorId,
           amount: debt.amount,
+          settled: debt.debtorId === data.payerId ? debt.amount : "0",
         })),
       );
     });

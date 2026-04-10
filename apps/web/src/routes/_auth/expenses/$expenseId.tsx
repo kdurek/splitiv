@@ -434,7 +434,7 @@ function ExpenseDetail() {
 
   const currentUserId = currentUser?.id;
   const debtorIds = new Set(debts.map((d) => d.debtorId));
-  const canDelete =
+  const canManage =
     currentUserId === expense.payerId ||
     currentUserId === expense.groupAdminId ||
     (currentUserId != null && debtorIds.has(currentUserId));
@@ -503,8 +503,12 @@ function ExpenseDetail() {
         <div className="space-y-3">
           {debts.map((debt) => {
             const isFullySettled = Number(debt.settled) >= Number(debt.amount);
+            const canSettleDebt =
+              currentUserId === expense.payerId ||
+              currentUserId === expense.groupAdminId ||
+              currentUserId === debt.debtorId;
 
-            if (isFullySettled) {
+            if (isFullySettled || !canSettleDebt) {
               return (
                 <div key={debt.id} className="cursor-default">
                   <DebtCard debt={debt} />
@@ -533,6 +537,10 @@ function ExpenseDetail() {
                 settledAfterLog >= debtAmount &&
                 settledBeforeLog < debtAmount;
               const isUndoable = mostRecentLogIdByDebtId.get(log.debtId) === log.id;
+              const canUndoLog =
+                currentUserId === expense.payerId ||
+                currentUserId === expense.groupAdminId ||
+                currentUserId === debt?.debtorId;
 
               settledAfterLogById.set(log.debtId, settledBeforeLog);
 
@@ -553,7 +561,7 @@ function ExpenseDetail() {
                         <span className="text-xs text-muted-foreground">
                           {formatDate(log.createdAt)}
                         </span>
-                        {isUndoable && (
+                        {isUndoable && canUndoLog && !isFullPayment && (
                           <RotateCcwIcon className="size-3.5 shrink-0 text-muted-foreground" />
                         )}
                       </div>
@@ -569,7 +577,7 @@ function ExpenseDetail() {
 
               return (
                 <div key={log.id} className="relative pl-12">
-                  {isUndoable ? (
+                  {isUndoable && canUndoLog ? (
                     <UndoLogDrawer log={log} expenseId={expenseId}>
                       {logContent}
                     </UndoLogDrawer>
@@ -584,7 +592,7 @@ function ExpenseDetail() {
       )}
 
       {/* Delete Expense */}
-      {canDelete && (
+      {canManage && (
         <DeleteExpenseDrawer
           expenseId={expenseId}
           expenseName={expense.name}

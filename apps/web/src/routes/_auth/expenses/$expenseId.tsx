@@ -13,11 +13,11 @@ import { NumberField, NumberFieldInput } from "@repo/ui/components/number-field"
 import { useForm, useStore } from "@tanstack/react-form";
 import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, RotateCcwIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
 
 import { UserAvatar } from "~/components/user-avatar";
-import { $settleDebt } from "~/server/expenses/mutations";
+import { $settleDebt, $undoDebtLog } from "~/server/expenses/mutations";
 import { expenseQueryOptions } from "~/server/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/$expenseId")({
@@ -161,6 +161,103 @@ function SettleDebtDrawer({ debt, expenseId }: { debt: Debt; expenseId: string }
   );
 }
 
+type Log = {
+  id: string;
+  amount: string;
+  createdAt: string | Date;
+  debtorName: string;
+  debtId: string;
+};
+
+function UndoLogDrawer({
+  log,
+  expenseId,
+  children,
+}: {
+  log: Log;
+  expenseId: string;
+  children: React.ReactNode;
+}) {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleUndo = async () => {
+    setIsSubmitting(true);
+    try {
+      await $undoDebtLog({ data: { logId: log.id } });
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["expense", expenseId] });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <DrawerRoot open={open} onOpenChange={setOpen}>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="w-full cursor-pointer text-left"
+      >
+        {children}
+      </button>
+
+      <DrawerPortal>
+        <DrawerBackdrop />
+        <DrawerViewport>
+          <DrawerPopup>
+            <DrawerContent className="mx-auto w-full max-w-lg">
+              <p className="mb-4 text-lg font-semibold tracking-tight">Cofnij wpłatę</p>
+              <div className="mb-6 space-y-3">
+                <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                  <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
+                  <p>
+                    Ta akcja jest nieodwracalna. Wpłata zostanie usunięta z historii, a dług
+                    zostanie przywrócony.
+                  </p>
+                </div>
+                <div className="rounded-lg bg-muted/40 p-3 text-sm">
+                  <p className="text-muted-foreground">Dłużnik</p>
+                  <p className="font-semibold">{log.debtorName}</p>
+                </div>
+                <div className="rounded-lg bg-muted/40 p-3 text-sm">
+                  <p className="text-muted-foreground">Kwota</p>
+                  <p className="font-semibold">{formatAmount(log.amount)}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="destructive"
+                  className="w-full"
+                  onClick={handleUndo}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2Icon className="size-4 animate-spin" />
+                      Cofanie...
+                    </>
+                  ) : (
+                    "Cofnij wpłatę"
+                  )}
+                </Button>
+                <DrawerClose
+                  render={
+                    <Button type="button" variant="outline" className="w-full">
+                      Anuluj
+                    </Button>
+                  }
+                />
+              </div>
+            </DrawerContent>
+          </DrawerPopup>
+        </DrawerViewport>
+      </DrawerPortal>
+    </DrawerRoot>
+  );
+}
+
 function DebtCard({ debt }: { debt: Debt }) {
   const amount = Number(debt.amount);
   const settled = Number(debt.settled);
@@ -220,6 +317,14 @@ function ExpenseDetail() {
   const settledAfterLogById = new Map(
     debts.map((debt) => [debt.id, Number(debt.settled)] as const),
   );
+
+  // Most recent log per debt (logs are already ordered newest-first)
+  const mostRecentLogIdByDebtId = new Map<string, string>();
+  for (const log of logs) {
+    if (!mostRecentLogIdByDebtId.has(log.debtId)) {
+      mostRecentLogIdByDebtId.set(log.debtId, log.id);
+    }
+  }
 
   return (
     <div className="space-y-12 px-4 pt-4 pb-8">
@@ -302,11 +407,12 @@ function ExpenseDetail() {
                 debtAmount !== null &&
                 settledAfterLog >= debtAmount &&
                 settledBeforeLog < debtAmount;
+              const isUndoable = mostRecentLogIdByDebtId.get(log.debtId) === log.id;
 
               settledAfterLogById.set(log.debtId, settledBeforeLog);
 
-              return (
-                <div key={log.id} className="relative pl-12">
+              const logContent = (
+                <>
                   <div className="absolute top-1 left-0 flex size-10 items-center justify-center rounded-full bg-muted">
                     <span
                       className={`size-2 rounded-full ${isFullPayment ? "bg-primary" : "bg-muted-foreground"}`}
@@ -318,9 +424,14 @@ function ExpenseDetail() {
                         {log.debtorName}{" "}
                         {isFullPayment ? "rozliczył(a) cały dług" : "wpłacił(a) częściowo"}
                       </p>
-                      <span className="text-xs text-muted-foreground">
-                        {formatDate(log.createdAt)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">
+                          {formatDate(log.createdAt)}
+                        </span>
+                        {isUndoable && (
+                          <RotateCcwIcon className="size-3.5 shrink-0 text-muted-foreground" />
+                        )}
+                      </div>
                     </div>
                     <p
                       className={`font-mono text-sm font-medium ${isFullPayment ? "text-primary" : "text-foreground"}`}
@@ -328,6 +439,18 @@ function ExpenseDetail() {
                       +{formatAmount(log.amount)}
                     </p>
                   </div>
+                </>
+              );
+
+              return (
+                <div key={log.id} className="relative pl-12">
+                  {isUndoable ? (
+                    <UndoLogDrawer log={log} expenseId={expenseId}>
+                      {logContent}
+                    </UndoLogDrawer>
+                  ) : (
+                    logContent
+                  )}
                 </div>
               );
             })}

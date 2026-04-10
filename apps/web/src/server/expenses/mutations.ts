@@ -2,7 +2,7 @@ import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { expense, expenseDebt, expenseLog, group, userGroup } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
-import { and, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { ulid } from "ulid";
 import { z } from "zod";
 
@@ -141,5 +141,75 @@ export const $settleDebt = createServerFn({ method: "POST" })
         .update(expenseDebt)
         .set({ settled: sql`${expenseDebt.settled} + ${data.amount}` })
         .where(and(eq(expenseDebt.id, debt.id)));
+    });
+  });
+
+export const $undoDebtLog = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(z.object({ logId: z.string().min(1) }))
+  .handler(async ({ context, data }) => {
+    const currentUserId = context.user.id;
+
+    const [log] = await db
+      .select({ id: expenseLog.id, amount: expenseLog.amount, debtId: expenseLog.debtId })
+      .from(expenseLog)
+      .where(eq(expenseLog.id, data.logId))
+      .limit(1);
+
+    if (!log) throw new Error("Log not found");
+
+    const [debt] = await db
+      .select({
+        id: expenseDebt.id,
+        debtorId: expenseDebt.debtorId,
+        expenseId: expenseDebt.expenseId,
+      })
+      .from(expenseDebt)
+      .where(eq(expenseDebt.id, log.debtId))
+      .limit(1);
+
+    if (!debt) throw new Error("Debt not found");
+
+    const [expenseData] = await db
+      .select({ payerId: expense.payerId, groupId: expense.groupId })
+      .from(expense)
+      .where(eq(expense.id, debt.expenseId))
+      .limit(1);
+
+    if (!expenseData) throw new Error("Expense not found");
+
+    const [groupData] = await db
+      .select({ adminId: group.adminId })
+      .from(group)
+      .where(eq(group.id, expenseData.groupId))
+      .limit(1);
+
+    if (!groupData) throw new Error("Group not found");
+
+    const canUndo =
+      currentUserId === debt.debtorId ||
+      currentUserId === expenseData.payerId ||
+      currentUserId === groupData.adminId;
+
+    if (!canUndo) throw new Error("Not authorized to undo this log");
+
+    // Verify this is the most recent log for the debt
+    const [mostRecentLog] = await db
+      .select({ id: expenseLog.id })
+      .from(expenseLog)
+      .where(eq(expenseLog.debtId, log.debtId))
+      .orderBy(desc(expenseLog.createdAt))
+      .limit(1);
+
+    if (!mostRecentLog || mostRecentLog.id !== data.logId) {
+      throw new Error("Only the most recent log entry can be undone");
+    }
+
+    await db.transaction(async (tx) => {
+      await tx.delete(expenseLog).where(eq(expenseLog.id, data.logId));
+      await tx
+        .update(expenseDebt)
+        .set({ settled: sql`${expenseDebt.settled} - ${log.amount}` })
+        .where(eq(expenseDebt.id, debt.id));
     });
   });

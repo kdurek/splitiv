@@ -25,11 +25,11 @@
     "drizzle-orm": "catalog:",
     "lucide-react": "catalog:",
     "motion": "catalog:",
-    "nanoid": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-intersection-observer": "catalog:",
     "sonner": "catalog:",
+    "ulid": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

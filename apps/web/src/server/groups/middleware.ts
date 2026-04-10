@@ -1,8 +1,9 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
+import { db } from "@repo/db";
+import { group, userGroup } from "@repo/db/schema";
 import { createMiddleware } from "@tanstack/react-start";
 import { setResponseStatus } from "@tanstack/react-start/server";
-
-import { _getGroupForUser } from "./functions";
+import { and, eq } from "drizzle-orm";
 
 export const activeGroupMiddleware = createMiddleware()
   .middleware([authMiddleware])
@@ -15,7 +16,13 @@ export const activeGroupMiddleware = createMiddleware()
       throw new Error("Brak aktywnej grupy");
     }
 
-    const activeGroup = await _getGroupForUser(user.id, activeGroupId);
+    const [membership] = await db
+      .select({ group: { id: group.id, name: group.name, adminId: group.adminId } })
+      .from(userGroup)
+      .innerJoin(group, eq(group.id, userGroup.groupId))
+      .where(and(eq(userGroup.userId, user.id), eq(userGroup.groupId, activeGroupId)))
+      .limit(1);
+    const activeGroup = membership?.group ?? null;
 
     if (!activeGroup) {
       setResponseStatus(403);

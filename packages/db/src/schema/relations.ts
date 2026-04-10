@@ -4,11 +4,7 @@ import * as schema from "./";
 
 export const relations = defineRelationsPart(schema, (r) => ({
   user: {
-    pushSubscriptions: r.many.pushSubscription({
-      from: r.user.id,
-      to: r.pushSubscription.userId,
-    }),
-    groups: r.many.userGroup({
+    userGroups: r.many.userGroup({
       from: r.user.id,
       to: r.userGroup.userId,
     }),
@@ -16,13 +12,17 @@ export const relations = defineRelationsPart(schema, (r) => ({
       from: r.user.id,
       to: r.expense.payerId,
     }),
-    debts: r.many.expenseDebt({
+    expenseDebts: r.many.expenseDebt({
       from: r.user.id,
       to: r.expenseDebt.debtorId,
     }),
+    pushSubscriptions: r.many.pushSubscription({
+      from: r.user.id,
+      to: r.pushSubscription.userId,
+    }),
   },
   group: {
-    members: r.many.userGroup({
+    userGroups: r.many.userGroup({
       from: r.group.id,
       to: r.userGroup.groupId,
     }),
@@ -42,15 +42,15 @@ export const relations = defineRelationsPart(schema, (r) => ({
     }),
   },
   expense: {
-    payer: r.one.user({
-      from: r.expense.payerId,
-      to: r.user.id,
-    }),
     group: r.one.group({
       from: r.expense.groupId,
       to: r.group.id,
     }),
-    debts: r.many.expenseDebt({
+    payer: r.one.user({
+      from: r.expense.payerId,
+      to: r.user.id,
+    }),
+    expenseDebts: r.many.expenseDebt({
       from: r.expense.id,
       to: r.expenseDebt.expenseId,
     }),
@@ -64,13 +64,13 @@ export const relations = defineRelationsPart(schema, (r) => ({
       from: r.expenseDebt.debtorId,
       to: r.user.id,
     }),
-    logs: r.many.expenseLog({
+    expenseLogs: r.many.expenseLog({
       from: r.expenseDebt.id,
       to: r.expenseLog.debtId,
     }),
   },
   expenseLog: {
-    debt: r.one.expenseDebt({
+    expenseDebt: r.one.expenseDebt({
       from: r.expenseLog.debtId,
       to: r.expenseDebt.id,
     }),

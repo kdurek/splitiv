@@ -114,9 +114,6 @@ catalogs:
     motion:
       specifier: ^12.38.0
       version: 12.38.0
-    nanoid:
-      specifier: ^5.1.7
-      version: 5.1.7
     nitro:
       specifier: ^3.0.260311-beta
       version: 3.0.260311-beta
@@ -153,6 +150,9 @@ catalogs:
     typescript:
       specifier: ^6.0.2
       version: 6.0.2
+    ulid:
+      specifier: ^3.0.2
+      version: 3.0.2
     vite-plus:
       specifier: latest
       version: 0.1.16
@@ -232,9 +232,6 @@ importers:
       motion:
         specifier: 'catalog:'
         version: 12.38.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      nanoid:
-        specifier: 'catalog:'
-        version: 5.1.7
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -247,6 +244,9 @@ importers:
       sonner:
         specifier: 'catalog:'
         version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      ulid:
+        specifier: 'catalog:'
+        version: 3.0.2
       zod:
         specifier: 'catalog:'
         version: 4.3.6
@@ -348,12 +348,12 @@ importers:
       drizzle-orm:
         specifier: 'catalog:'
         version: 1.0.0-beta.20(@opentelemetry/api@1.9.1)(@types/mssql@9.1.11(@azure/core-client@1.10.1))(mssql@11.0.1(@azure/core-client@1.10.1))(postgres@3.4.9)(zod@4.3.6)
-      nanoid:
-        specifier: 'catalog:'
-        version: 5.1.7
       postgres:
         specifier: 'catalog:'
         version: 3.4.9
+      ulid:
+        specifier: 'catalog:'
+        version: 3.0.2
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*
@@ -4568,11 +4568,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.7:
-    resolution: {integrity: sha512-ua3NDgISf6jdwezAheMOk4mbE1LXjm1DfMUDMuJf4AqxLFK3ccGpgWizwa5YV7Yz9EpXwEaWoRXSb/BnV0t5dQ==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
   nanostores@1.2.0:
     resolution: {integrity: sha512-F0wCzbsH80G7XXo0Jd9/AVQC7ouWY6idUCTnMwW5t/Rv9W8qmO6endavDwg7TNp5GbugwSukFMVZqzPSrSMndg==}
     engines: {node: ^20.0.0 || >=22.0.0}
@@ -5255,6 +5250,10 @@ packages:
 
   ufo@1.6.3:
     resolution: {integrity: sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==}
+
+  ulid@3.0.2:
+    resolution: {integrity: sha512-yu26mwteFYzBAot7KVMqFGCVpsF6g8wXfJzQUHvu1no3+rRRSFcSV2nKeYvNPLD2J4b08jYBDhHUjeH0ygIl9w==}
+    hasBin: true
 
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
@@ -9927,8 +9926,6 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanoid@5.1.7: {}
-
   nanostores@1.2.0: {}
 
   native-duplexpair@1.0.0: {}
@@ -10813,6 +10810,8 @@ snapshots:
   typescript@6.0.2: {}
 
   ufo@1.6.3: {}
+
+  ulid@3.0.2: {}
 
   undici-types@7.16.0: {}
 

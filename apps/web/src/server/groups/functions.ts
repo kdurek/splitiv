@@ -5,7 +5,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, eq, notInArray } from "drizzle-orm";
 import { z } from "zod";
 
-export async function _getGroupForUser(userId: string, groupId: string) {
+async function getGroupForUser(userId: string, groupId: string) {
   const [membership] = await db
     .select({
       group: { id: group.id, name: group.name, adminId: group.adminId },
@@ -57,7 +57,7 @@ export const $setActiveGroup = createServerFn({ method: "POST" })
   .middleware([freshAuthMiddleware])
   .inputValidator(z.object({ groupId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
-    const targetGroup = await _getGroupForUser(context.user.id, data.groupId);
+    const targetGroup = await getGroupForUser(context.user.id, data.groupId);
 
     if (!targetGroup) {
       throw new Error("Brak uprawnień");
@@ -70,7 +70,7 @@ export const $addUserToActiveGroup = createServerFn({ method: "POST" })
   .middleware([freshAuthMiddleware])
   .inputValidator(z.object({ userId: z.string().min(1), groupId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
-    const targetGroup = await _getGroupForUser(context.user.id, data.groupId);
+    const targetGroup = await getGroupForUser(context.user.id, data.groupId);
 
     if (!targetGroup || targetGroup.adminId !== context.user.id) {
       throw new Error("Brak uprawnień");

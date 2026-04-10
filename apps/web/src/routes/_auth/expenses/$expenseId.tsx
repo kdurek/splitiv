@@ -561,7 +561,7 @@ function ExpenseDetail() {
                         <span className="text-xs text-muted-foreground">
                           {formatDate(log.createdAt)}
                         </span>
-                        {isUndoable && canUndoLog && !isFullPayment && (
+                        {isUndoable && canUndoLog && (
                           <RotateCcwIcon className="size-3.5 shrink-0 text-muted-foreground" />
                         )}
                       </div>

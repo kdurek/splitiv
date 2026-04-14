@@ -2,7 +2,7 @@ import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { expense, expenseDebt, expenseLog, group, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, exists, not, or, sql } from "drizzle-orm";
+import { and, desc, eq, exists, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { parseSearchQuery } from "../../lib/search";
@@ -44,14 +44,13 @@ export const $getExpenses = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .inputValidator(
     z.object({
-      tab: z.enum(["active", "archived"]),
       cursor: z.number().int().min(0),
       q: z.string().optional(),
     }),
   )
   .handler(async ({ context, data }) => {
     const currentUser = context.user;
-    const { tab, cursor, q } = data;
+    const { cursor, q } = data;
     const searchWords = parseSearchQuery(q);
     const groupId = currentUser.activeGroupId;
 
@@ -93,13 +92,13 @@ export const $getExpenses = createServerFn({ method: "GET" })
         payerName: user.name,
         payerImage: user.image,
         myDebt: sql<string>`(${myDebt})`,
+        isActive: sql<boolean>`(${hasUnsettledDebt})`,
       })
       .from(expense)
       .innerJoin(user, eq(user.id, expense.payerId))
       .where(
         and(
           eq(expense.groupId, groupId),
-          tab === "active" ? hasUnsettledDebt : not(hasUnsettledDebt),
           ...searchWords.map((word) =>
             or(
               sql`lower(unaccent(${expense.name})) like '%' || lower(unaccent(${word})) || '%'`,
@@ -113,7 +112,10 @@ export const $getExpenses = createServerFn({ method: "GET" })
       .offset(cursor);
 
     const hasMore = rows.length > PAGE_SIZE;
-    const items = hasMore ? rows.slice(0, PAGE_SIZE) : rows;
+    const items = (hasMore ? rows.slice(0, PAGE_SIZE) : rows).map((row) => ({
+      ...row,
+      isActive: Boolean(row.isActive),
+    }));
 
     return {
       items,

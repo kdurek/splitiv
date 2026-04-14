@@ -11,14 +11,11 @@ import { expensesInfiniteQueryOptions } from "~/server/expenses/queries";
 export const Route = createFileRoute("/_auth/expenses/")({
   validateSearch: z.object({
     q: z.string().optional(),
-    t: z.enum(["active", "archived"]).optional(),
   }),
   loader: ({ context }) =>
-    context.queryClient.prefetchInfiniteQuery(expensesInfiniteQueryOptions("active")),
+    context.queryClient.prefetchInfiniteQuery(expensesInfiniteQueryOptions()),
   component: ExpensesIndex,
 });
-
-type Tab = "active" | "archived";
 
 type ExpenseItem = {
   id: string;
@@ -26,6 +23,7 @@ type ExpenseItem = {
   amount: string;
   payerName: string;
   myDebt: string;
+  isActive: boolean;
 };
 
 function formatAmount(amount: string) {
@@ -33,9 +31,8 @@ function formatAmount(amount: string) {
 }
 
 function ExpensesIndex() {
-  const { q, t } = Route.useSearch();
+  const { q } = Route.useSearch();
   const navigate = useNavigate({ from: "/expenses/" });
-  const tab: Tab = t ?? "active";
   const { ref, inView } = useInView();
 
   const [inputValue, setInputValue] = useState(q ?? "");
@@ -54,7 +51,7 @@ function ExpensesIndex() {
   }, [inputValue, navigate]);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery(
-    expensesInfiniteQueryOptions(tab, q),
+    expensesInfiniteQueryOptions(q),
   );
 
   useEffect(() => {
@@ -88,27 +85,6 @@ function ExpensesIndex() {
         )}
       </div>
 
-      <div className="flex rounded-lg bg-muted p-1">
-        {(["active", "archived"] satisfies Tab[]).map((t) => (
-          <button
-            key={t}
-            onClick={() =>
-              navigate({
-                search: (prev) => ({ ...prev, t: t === "active" ? undefined : t }),
-                replace: true,
-              })
-            }
-            className={`flex-1 rounded-md py-2 text-xs font-bold tracking-wider uppercase transition-all ${
-              tab === t
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {t === "active" ? "Aktywne" : "Archiwalne"}
-          </button>
-        ))}
-      </div>
-
       <div className="space-y-6 pt-2 pb-4">
         {status === "pending" && (
           <p className="py-8 text-center text-sm text-muted-foreground">Ładowanie...</p>
@@ -117,7 +93,7 @@ function ExpensesIndex() {
           <p className="py-8 text-center text-sm text-muted-foreground">Brak wydatków.</p>
         )}
         {items.map((item) => (
-          <ExpenseRow key={item.id} item={item} isArchived={tab === "archived"} />
+          <ExpenseRow key={item.id} item={item} />
         ))}
         {isFetchingNextPage && (
           <p className="py-4 text-center text-sm text-muted-foreground">Ładowanie...</p>
@@ -128,7 +104,8 @@ function ExpensesIndex() {
   );
 }
 
-function ExpenseRow({ item, isArchived }: { item: ExpenseItem; isArchived: boolean }) {
+function ExpenseRow({ item }: { item: ExpenseItem }) {
+  const isArchived = !item.isActive;
   return (
     <Link
       to="/expenses/$expenseId"

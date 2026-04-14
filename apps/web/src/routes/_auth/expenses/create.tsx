@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@repo/ui/components/select";
 import { Textarea } from "@repo/ui/components/textarea";
+import { cn } from "@repo/ui/lib/utils";
 import { useForm, useStore } from "@tanstack/react-form";
 import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -221,7 +222,10 @@ function CreateExpensePage() {
             <Label>Uczestnicy</Label>
             {method === "custom" && remaining !== null && (
               <span
-                className={`text-xs font-semibold tabular-nums ${remaining === 0 ? "text-primary" : "text-destructive"}`}
+                className={cn(
+                  "text-xs font-semibold tabular-nums",
+                  remaining === 0 ? "text-primary" : "text-destructive",
+                )}
               >
                 Pozostało: {fmtAmount(Math.abs(remaining))}
                 {remaining < 0 ? " (nadpłata)" : ""}

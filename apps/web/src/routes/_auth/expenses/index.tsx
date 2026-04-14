@@ -1,4 +1,5 @@
 import { Input } from "@repo/ui/components/input";
+import { cn } from "@repo/ui/lib/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ReceiptIcon, SearchIcon, XIcon } from "lucide-react";
@@ -110,7 +111,7 @@ function ExpenseRow({ item }: { item: ExpenseItem }) {
     <Link
       to="/expenses/$expenseId"
       params={{ expenseId: item.id }}
-      className={`flex items-start justify-between ${isArchived ? "opacity-60" : ""}`}
+      className={cn("flex items-start justify-between", isArchived ? "opacity-60" : "")}
     >
       <div className="flex items-center gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">

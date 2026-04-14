@@ -1,4 +1,5 @@
 import { authQueryOptions } from "@repo/auth/tanstack/queries";
+import { cn } from "@repo/ui/lib/utils";
 import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import { HomeIcon, ReceiptIcon, PlusCircleIcon, HandCoinsIcon, SettingsIcon } from "lucide-react";
 
@@ -62,9 +63,10 @@ function AppLayout() {
             <Link
               key={to}
               to={to}
-              className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 text-xs transition-colors ${
-                active ? "text-primary" : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={cn(
+                "flex flex-1 flex-col items-center justify-center gap-1 py-2 text-xs transition-colors",
+                active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+              )}
             >
               <Icon className="size-5" />
               {label}

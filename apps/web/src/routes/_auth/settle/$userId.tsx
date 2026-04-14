@@ -10,6 +10,7 @@ import {
 } from "@repo/ui/components/drawer";
 import { Label } from "@repo/ui/components/label";
 import { NumberField, NumberFieldInput } from "@repo/ui/components/number-field";
+import { cn } from "@repo/ui/lib/utils";
 import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { CheckIcon, Loader2Icon, PencilIcon, ReceiptIcon } from "lucide-react";
@@ -217,9 +218,12 @@ function SettlePage() {
                     navigate({ to: "/settle/$userId", params: { userId: person.userId } });
                   }
                 }}
-                className={`flex shrink-0 flex-col items-center gap-2 rounded-2xl border p-3 transition-all ${
-                  person.userId === userId ? "border-primary bg-primary/5" : "border-border bg-card"
-                }`}
+                className={cn(
+                  "flex shrink-0 flex-col items-center gap-2 rounded-2xl border p-3 transition-all",
+                  person.userId === userId
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-card",
+                )}
               >
                 <UserAvatar name={person.name} image={person.image} size="lg" shape="square" />
                 <div className="text-center">
@@ -253,9 +257,11 @@ function SettlePage() {
               return (
                 <div
                   key={debt.debtId}
-                  className={`flex items-center gap-3 px-4 py-3 transition-opacity ${
-                    i < debts.length - 1 ? "border-b border-border/60" : ""
-                  } ${!isSelected ? "opacity-40" : ""}`}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 transition-opacity",
+                    i < debts.length - 1 ? "border-b border-border/60" : "",
+                    !isSelected ? "opacity-40" : "",
+                  )}
                 >
                   <button
                     type="button"
@@ -263,12 +269,16 @@ function SettlePage() {
                     className="shrink-0"
                   >
                     <div
-                      className={`relative flex size-10 items-center justify-center rounded-xl transition-colors ${
-                        isSelected ? "bg-primary/15" : "bg-muted"
-                      }`}
+                      className={cn(
+                        "relative flex size-10 items-center justify-center rounded-xl transition-colors",
+                        isSelected ? "bg-primary/15" : "bg-muted",
+                      )}
                     >
                       <ReceiptIcon
-                        className={`size-5 transition-colors ${isSelected ? "text-primary" : "text-muted-foreground"}`}
+                        className={cn(
+                          "size-5 transition-colors",
+                          isSelected ? "text-primary" : "text-muted-foreground",
+                        )}
                       />
                       {isSelected && (
                         <div className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary">
@@ -303,9 +313,10 @@ function SettlePage() {
                       <p className="text-sm font-bold">{formatAmount(displayAmount)}</p>
                     </div>
                     <p
-                      className={`text-[10px] font-bold tracking-widest uppercase ${
-                        isSelected ? "text-primary" : "text-muted-foreground"
-                      }`}
+                      className={cn(
+                        "text-[10px] font-bold tracking-widest uppercase",
+                        isSelected ? "text-primary" : "text-muted-foreground",
+                      )}
                     >
                       {isSelected ? (isCustom ? "CZĘŚCIOWO" : "WYBRANO") : "ODZNACZONO"}
                     </p>

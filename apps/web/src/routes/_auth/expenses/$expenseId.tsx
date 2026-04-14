@@ -11,6 +11,7 @@ import {
 } from "@repo/ui/components/drawer";
 import { Label } from "@repo/ui/components/label";
 import { NumberField, NumberFieldInput } from "@repo/ui/components/number-field";
+import { cn } from "@repo/ui/lib/utils";
 import { useForm, useStore } from "@tanstack/react-form";
 import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -285,9 +286,10 @@ function DebtCard({ debt }: { debt: Debt }) {
         <div className="text-right">
           <p className="text-lg font-bold">{formatAmount(debt.amount)}</p>
           <p
-            className={`text-[10px] font-bold tracking-widest uppercase ${
-              isFullySettled ? "text-primary" : "text-destructive"
-            }`}
+            className={cn(
+              "text-[10px] font-bold tracking-widest uppercase",
+              isFullySettled ? "text-primary" : "text-destructive",
+            )}
           >
             {isFullySettled ? "Zapłacone" : isPartial ? "W części zapłacone" : "Nieopłacone"}
           </p>
@@ -548,7 +550,10 @@ function ExpenseDetail() {
                 <>
                   <div className="absolute top-1 left-0 flex size-10 items-center justify-center rounded-full bg-muted">
                     <span
-                      className={`size-2 rounded-full ${isFullPayment ? "bg-primary" : "bg-muted-foreground"}`}
+                      className={cn(
+                        "size-2 rounded-full",
+                        isFullPayment ? "bg-primary" : "bg-muted-foreground",
+                      )}
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -567,7 +572,10 @@ function ExpenseDetail() {
                       </div>
                     </div>
                     <p
-                      className={`font-mono text-sm font-medium ${isFullPayment ? "text-primary" : "text-foreground"}`}
+                      className={cn(
+                        "font-mono text-sm font-medium",
+                        isFullPayment ? "text-primary" : "text-foreground",
+                      )}
                     >
                       +{formatAmount(log.amount)}
                     </p>

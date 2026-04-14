@@ -1,3 +1,4 @@
+import { cn } from "@repo/ui/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -31,7 +32,10 @@ function PersonRow({
         <span className="text-sm font-medium">{name}</span>
       </div>
       <span
-        className={`text-sm font-bold ${variant === "owed" ? "text-primary" : "text-destructive"}`}
+        className={cn(
+          "text-sm font-bold",
+          variant === "owed" ? "text-primary" : "text-destructive",
+        )}
       >
         {formatAmount(amount)}
       </span>
@@ -56,7 +60,10 @@ function AppIndex() {
         </span>
         <div className="flex items-baseline gap-2">
           <h2
-            className={`text-4xl leading-none font-extrabold tracking-tight ${isPositive ? "text-primary" : "text-destructive"}`}
+            className={cn(
+              "text-4xl leading-none font-extrabold tracking-tight",
+              isPositive ? "text-primary" : "text-destructive",
+            )}
           >
             {isPositive ? "+" : ""}
             {formatAmount(netBalance)}

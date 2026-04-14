@@ -17,6 +17,7 @@ import { Route as GuestLoginRouteImport } from './routes/_guest/login'
 import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthAdminRouteImport } from './routes/_auth/admin'
 import { Route as AuthExpensesRouteRouteImport } from './routes/_auth/expenses/route'
+import { Route as AuthSettleIndexRouteImport } from './routes/_auth/settle/index'
 import { Route as AuthExpensesIndexRouteImport } from './routes/_auth/expenses/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthSettleUserIdRouteImport } from './routes/_auth/settle/$userId'
@@ -61,6 +62,11 @@ const AuthExpensesRouteRoute = AuthExpensesRouteRouteImport.update({
   path: '/expenses',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthSettleIndexRoute = AuthSettleIndexRouteImport.update({
+  id: '/settle/',
+  path: '/settle/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthExpensesIndexRoute = AuthExpensesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/settle/$userId': typeof AuthSettleUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/expenses/': typeof AuthExpensesIndexRoute
+  '/settle/': typeof AuthSettleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AuthIndexRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/settle/$userId': typeof AuthSettleUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/expenses': typeof AuthExpensesIndexRoute
+  '/settle': typeof AuthSettleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/_auth/settle/$userId': typeof AuthSettleUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/expenses/': typeof AuthExpensesIndexRoute
+  '/_auth/settle/': typeof AuthSettleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/settle/$userId'
     | '/api/auth/$'
     | '/expenses/'
+    | '/settle/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/settle/$userId'
     | '/api/auth/$'
     | '/expenses'
+    | '/settle'
   id:
     | '__root__'
     | '/_auth'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/_auth/settle/$userId'
     | '/api/auth/$'
     | '/_auth/expenses/'
+    | '/_auth/settle/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -235,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExpensesRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/settle/': {
+      id: '/_auth/settle/'
+      path: '/settle'
+      fullPath: '/settle/'
+      preLoaderRoute: typeof AuthSettleIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/expenses/': {
       id: '/_auth/expenses/'
       path: '/'
@@ -294,6 +313,7 @@ interface AuthRouteRouteChildren {
   AuthSettingsRoute: typeof AuthSettingsRoute
   AuthIndexRoute: typeof AuthIndexRoute
   AuthSettleUserIdRoute: typeof AuthSettleUserIdRoute
+  AuthSettleIndexRoute: typeof AuthSettleIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -302,6 +322,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthSettingsRoute: AuthSettingsRoute,
   AuthIndexRoute: AuthIndexRoute,
   AuthSettleUserIdRoute: AuthSettleUserIdRoute,
+  AuthSettleIndexRoute: AuthSettleIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

@@ -6,6 +6,7 @@
     "dev": "vp dev",
     "preview": "vp preview",
     "start": "node .output/server/index.mjs",
+    "test": "vp test",
     "ui": "vpx shadcn@latest"
   },
   "dependencies": {
@@ -52,6 +53,7 @@
     "nitro": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vitest": "catalog:"
   }
 }

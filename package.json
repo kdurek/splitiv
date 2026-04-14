@@ -7,6 +7,7 @@
     "build:web": "vp run web#build",
     "dev": "pnpm run --recursive --parallel dev",
     "dev:web": "vp run --filter=@repo/web dev",
+    "test": "vp test",
     "lint": "vp lint --type-aware --type-check",
     "lint:fix": "vp lint --type-aware --type-check --fix",
     "format": "vp fmt",

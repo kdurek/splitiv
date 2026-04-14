@@ -14,7 +14,7 @@ import { cn } from "@repo/ui/lib/utils";
 import { useForm, useStore } from "@tanstack/react-form";
 import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, MinusIcon, PlusIcon } from "lucide-react";
 
 import { UserAvatar } from "~/components/user-avatar";
 import { distributeByRatio } from "~/lib/distribute";
@@ -243,23 +243,47 @@ function CreateExpensePage() {
                 >
                   <UserAvatar name={member.name} image={member.image} size="sm" shape="square" />
                   <span className="min-w-0 flex-1 truncate text-sm font-medium">{member.name}</span>
-                  {method === "ratio" && (
+                  {method === "ratio" && computedAmount !== undefined && computedAmount > 0 && (
                     <span className="text-xs text-muted-foreground tabular-nums">
-                      {computedAmount !== undefined ? fmtAmount(computedAmount) : "—"}
+                      {fmtAmount(computedAmount)}
                     </span>
                   )}
                   {method === "ratio" ? (
                     <form.Field name={`debtors[${index}].ratio`}>
                       {(field) => (
-                        <NumberField
-                          aria-label={`Udział ${member.name}`}
-                          value={field.state.value}
-                          onChange={(v) => field.handleChange(isNaN(v) ? 0 : Math.round(v))}
-                          onBlur={field.handleBlur}
-                          minValue={0}
-                        >
-                          <NumberFieldInput className="w-20 text-center" />
-                        </NumberField>
+                        <div className="flex items-center justify-center gap-1">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                              "size-8 shrink-0",
+                              field.state.value === 0 && "opacity-30",
+                            )}
+                            aria-label="Zmniejsz udział"
+                            onClick={() => field.handleChange(Math.max(0, field.state.value - 1))}
+                          >
+                            <MinusIcon className="size-4" />
+                          </Button>
+                          <span
+                            className={cn(
+                              "w-8 text-center text-sm tabular-nums",
+                              field.state.value === 0 && "text-muted-foreground",
+                            )}
+                          >
+                            {field.state.value}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="size-8 shrink-0"
+                            aria-label="Zwiększ udział"
+                            onClick={() => field.handleChange(field.state.value + 1)}
+                          >
+                            <PlusIcon className="size-4" />
+                          </Button>
+                        </div>
                       )}
                     </form.Field>
                   ) : (

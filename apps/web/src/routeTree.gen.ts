@@ -15,6 +15,7 @@ import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as GuestSignupRouteImport } from './routes/_guest/signup'
 import { Route as GuestLoginRouteImport } from './routes/_guest/login'
 import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
+import { Route as AuthAdminRouteImport } from './routes/_auth/admin'
 import { Route as AuthExpensesRouteRouteImport } from './routes/_auth/expenses/route'
 import { Route as AuthExpensesIndexRouteImport } from './routes/_auth/expenses/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -48,6 +49,11 @@ const GuestLoginRoute = GuestLoginRouteImport.update({
 const AuthSettingsRoute = AuthSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthAdminRoute = AuthAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthExpensesRouteRoute = AuthExpensesRouteRouteImport.update({
@@ -84,6 +90,7 @@ const AuthExpensesExpenseIdRoute = AuthExpensesExpenseIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/expenses': typeof AuthExpensesRouteRouteWithChildren
+  '/admin': typeof AuthAdminRoute
   '/settings': typeof AuthSettingsRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof AuthIndexRoute
+  '/admin': typeof AuthAdminRoute
   '/settings': typeof AuthSettingsRoute
   '/login': typeof GuestLoginRoute
   '/signup': typeof GuestSignupRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_guest': typeof GuestRouteRouteWithChildren
   '/_auth/expenses': typeof AuthExpensesRouteRouteWithChildren
+  '/_auth/admin': typeof AuthAdminRoute
   '/_auth/settings': typeof AuthSettingsRoute
   '/_guest/login': typeof GuestLoginRoute
   '/_guest/signup': typeof GuestSignupRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/expenses'
+    | '/admin'
     | '/settings'
     | '/login'
     | '/signup'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/settings'
     | '/login'
     | '/signup'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_guest'
     | '/_auth/expenses'
+    | '/_auth/admin'
     | '/_auth/settings'
     | '/_guest/login'
     | '/_guest/signup'
@@ -207,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthSettingsRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/admin': {
+      id: '/_auth/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthAdminRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/expenses': {
@@ -271,6 +290,7 @@ const AuthExpensesRouteRouteWithChildren =
 
 interface AuthRouteRouteChildren {
   AuthExpensesRouteRoute: typeof AuthExpensesRouteRouteWithChildren
+  AuthAdminRoute: typeof AuthAdminRoute
   AuthSettingsRoute: typeof AuthSettingsRoute
   AuthIndexRoute: typeof AuthIndexRoute
   AuthSettleUserIdRoute: typeof AuthSettleUserIdRoute
@@ -278,6 +298,7 @@ interface AuthRouteRouteChildren {
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthExpensesRouteRoute: AuthExpensesRouteRouteWithChildren,
+  AuthAdminRoute: AuthAdminRoute,
   AuthSettingsRoute: AuthSettingsRoute,
   AuthIndexRoute: AuthIndexRoute,
   AuthSettleUserIdRoute: AuthSettleUserIdRoute,

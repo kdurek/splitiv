@@ -5,6 +5,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, exists, not, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
+import { parseSearchQuery } from "../../lib/search";
+
 export const $getDebtsToUser = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ targetUserId: z.string().min(1) }))
@@ -50,7 +52,7 @@ export const $getExpenses = createServerFn({ method: "GET" })
   .handler(async ({ context, data }) => {
     const currentUser = context.user;
     const { tab, cursor, q } = data;
-    const searchWords = q && q.length >= 3 ? q.trim().split(/\s+/).filter(Boolean) : [];
+    const searchWords = parseSearchQuery(q);
     const groupId = currentUser.activeGroupId;
 
     if (!groupId) {

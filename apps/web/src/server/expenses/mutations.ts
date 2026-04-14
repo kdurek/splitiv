@@ -1,10 +1,15 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { expense, expenseDebt, expenseLog, group, userGroup } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq, sql } from "drizzle-orm";
-import { ulid } from "ulid";
 import { z } from "zod";
+
+import {
+  createExpenseHandler,
+  deleteExpenseHandler,
+  settleDebtHandler,
+  settleDebtsHandler,
+  undoDebtLogHandler,
+} from "./handlers";
 
 export const $createExpense = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -24,57 +29,7 @@ export const $createExpense = createServerFn({ method: "POST" })
         .min(1),
     }),
   )
-  .handler(async ({ context, data }) => {
-    const groupId = context.user.activeGroupId;
-    if (!groupId) throw new Error("No active group");
-
-    // Verify debt amounts sum to total
-    const debtSum = data.debts.reduce((acc, d) => acc + parseFloat(d.amount), 0).toFixed(2);
-    if (debtSum !== parseFloat(data.amount).toFixed(2)) {
-      throw new Error("Debt amounts must sum to the total expense amount");
-    }
-
-    // Verify all referenced users are members of the active group
-    const members = await db
-      .select({ userId: userGroup.userId })
-      .from(userGroup)
-      .where(eq(userGroup.groupId, groupId));
-    const memberIds = new Set(members.map((m) => m.userId));
-
-    if (!memberIds.has(data.payerId)) {
-      throw new Error("Payer is not a member of the active group");
-    }
-    for (const debt of data.debts) {
-      if (!memberIds.has(debt.debtorId)) {
-        throw new Error("Debtor is not a member of the active group");
-      }
-    }
-
-    const expenseId = ulid();
-
-    await db.transaction(async (tx) => {
-      await tx.insert(expense).values({
-        id: expenseId,
-        name: data.title,
-        description: data.description ?? null,
-        payerId: data.payerId,
-        amount: data.amount,
-        groupId,
-      });
-
-      await tx.insert(expenseDebt).values(
-        data.debts.map((debt) => ({
-          id: ulid(),
-          expenseId,
-          debtorId: debt.debtorId,
-          amount: debt.amount,
-          settled: debt.debtorId === data.payerId ? debt.amount : "0",
-        })),
-      );
-    });
-
-    return { expenseId };
-  });
+  .handler(({ context, data }) => createExpenseHandler(db, context.user, data));
 
 export const $settleDebt = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -84,136 +39,12 @@ export const $settleDebt = createServerFn({ method: "POST" })
       amount: z.string().regex(/^\d+(\.\d{1,2})?$/),
     }),
   )
-  .handler(async ({ context, data }) => {
-    const currentUserId = context.user.id;
-
-    const [debt] = await db
-      .select({
-        id: expenseDebt.id,
-        debtorId: expenseDebt.debtorId,
-        amount: expenseDebt.amount,
-        settled: expenseDebt.settled,
-        expenseId: expenseDebt.expenseId,
-      })
-      .from(expenseDebt)
-      .where(eq(expenseDebt.id, data.debtId))
-      .limit(1);
-
-    if (!debt) throw new Error("Debt not found");
-
-    const [expenseData] = await db
-      .select({ payerId: expense.payerId, groupId: expense.groupId })
-      .from(expense)
-      .where(eq(expense.id, debt.expenseId))
-      .limit(1);
-
-    if (!expenseData) throw new Error("Expense not found");
-
-    const [groupData] = await db
-      .select({ adminId: group.adminId })
-      .from(group)
-      .where(eq(group.id, expenseData.groupId))
-      .limit(1);
-
-    if (!groupData) throw new Error("Group not found");
-
-    const canSettle =
-      currentUserId === debt.debtorId ||
-      currentUserId === expenseData.payerId ||
-      currentUserId === groupData.adminId;
-
-    if (!canSettle) throw new Error("Not authorized to settle this debt");
-
-    const remaining = parseFloat(debt.amount) - parseFloat(debt.settled);
-    const settleAmount = parseFloat(data.amount);
-
-    if (settleAmount <= 0 || settleAmount > remaining) {
-      throw new Error("Invalid settlement amount");
-    }
-
-    await db.transaction(async (tx) => {
-      await tx.insert(expenseLog).values({
-        id: ulid(),
-        debtId: debt.id,
-        amount: data.amount,
-      });
-
-      await tx
-        .update(expenseDebt)
-        .set({ settled: sql`${expenseDebt.settled} + ${data.amount}` })
-        .where(and(eq(expenseDebt.id, debt.id)));
-    });
-  });
+  .handler(({ context, data }) => settleDebtHandler(db, context.user, data));
 
 export const $undoDebtLog = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ logId: z.string().min(1) }))
-  .handler(async ({ context, data }) => {
-    const currentUserId = context.user.id;
-
-    const [log] = await db
-      .select({ id: expenseLog.id, amount: expenseLog.amount, debtId: expenseLog.debtId })
-      .from(expenseLog)
-      .where(eq(expenseLog.id, data.logId))
-      .limit(1);
-
-    if (!log) throw new Error("Log not found");
-
-    const [debt] = await db
-      .select({
-        id: expenseDebt.id,
-        debtorId: expenseDebt.debtorId,
-        expenseId: expenseDebt.expenseId,
-      })
-      .from(expenseDebt)
-      .where(eq(expenseDebt.id, log.debtId))
-      .limit(1);
-
-    if (!debt) throw new Error("Debt not found");
-
-    const [expenseData] = await db
-      .select({ payerId: expense.payerId, groupId: expense.groupId })
-      .from(expense)
-      .where(eq(expense.id, debt.expenseId))
-      .limit(1);
-
-    if (!expenseData) throw new Error("Expense not found");
-
-    const [groupData] = await db
-      .select({ adminId: group.adminId })
-      .from(group)
-      .where(eq(group.id, expenseData.groupId))
-      .limit(1);
-
-    if (!groupData) throw new Error("Group not found");
-
-    const canUndo =
-      currentUserId === debt.debtorId ||
-      currentUserId === expenseData.payerId ||
-      currentUserId === groupData.adminId;
-
-    if (!canUndo) throw new Error("Not authorized to undo this log");
-
-    // Verify this is the most recent log for the debt
-    const [mostRecentLog] = await db
-      .select({ id: expenseLog.id })
-      .from(expenseLog)
-      .where(eq(expenseLog.debtId, log.debtId))
-      .orderBy(desc(expenseLog.createdAt))
-      .limit(1);
-
-    if (!mostRecentLog || mostRecentLog.id !== data.logId) {
-      throw new Error("Only the most recent log entry can be undone");
-    }
-
-    await db.transaction(async (tx) => {
-      await tx.delete(expenseLog).where(eq(expenseLog.id, data.logId));
-      await tx
-        .update(expenseDebt)
-        .set({ settled: sql`${expenseDebt.settled} - ${log.amount}` })
-        .where(eq(expenseDebt.id, debt.id));
-    });
-  });
+  .handler(({ context, data }) => undoDebtLogHandler(db, context.user, data));
 
 export const $settleDebts = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -229,87 +60,9 @@ export const $settleDebts = createServerFn({ method: "POST" })
         .min(1),
     }),
   )
-  .handler(async ({ context, data }) => {
-    const currentUserId = context.user.id;
-
-    for (const item of data.debts) {
-      const [debt] = await db
-        .select({
-          debtorId: expenseDebt.debtorId,
-          amount: expenseDebt.amount,
-          settled: expenseDebt.settled,
-        })
-        .from(expenseDebt)
-        .where(eq(expenseDebt.id, item.debtId))
-        .limit(1);
-
-      if (!debt) throw new Error(`Debt ${item.debtId} not found`);
-      if (debt.debtorId !== currentUserId) throw new Error("Not authorized");
-
-      const remaining = parseFloat(debt.amount) - parseFloat(debt.settled);
-      const settleAmount = parseFloat(item.amount);
-      if (settleAmount <= 0 || settleAmount > remaining) {
-        throw new Error("Invalid settlement amount");
-      }
-    }
-
-    await db.transaction(async (tx) => {
-      for (const item of data.debts) {
-        await tx
-          .insert(expenseLog)
-          .values({ id: ulid(), debtId: item.debtId, amount: item.amount });
-        await tx
-          .update(expenseDebt)
-          .set({ settled: sql`${expenseDebt.settled} + ${item.amount}` })
-          .where(eq(expenseDebt.id, item.debtId));
-      }
-    });
-  });
+  .handler(({ context, data }) => settleDebtsHandler(db, context.user, data));
 
 export const $deleteExpense = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ expenseId: z.string().min(1) }))
-  .handler(async ({ context, data }) => {
-    const currentUserId = context.user.id;
-
-    const [expenseData] = await db
-      .select({ payerId: expense.payerId, groupId: expense.groupId })
-      .from(expense)
-      .where(eq(expense.id, data.expenseId))
-      .limit(1);
-
-    if (!expenseData) throw new Error("Expense not found");
-
-    const [groupData] = await db
-      .select({ adminId: group.adminId })
-      .from(group)
-      .where(eq(group.id, expenseData.groupId))
-      .limit(1);
-
-    if (!groupData) throw new Error("Group not found");
-
-    const [debtorCheck] = await db
-      .select({ one: sql`1` })
-      .from(expenseDebt)
-      .where(
-        and(eq(expenseDebt.expenseId, data.expenseId), eq(expenseDebt.debtorId, currentUserId)),
-      )
-      .limit(1);
-
-    const canDelete =
-      currentUserId === expenseData.payerId || currentUserId === groupData.adminId || !!debtorCheck;
-
-    if (!canDelete) throw new Error("Not authorized to delete this expense");
-
-    // Check that no expense logs exist (only payer's auto-settled debt is allowed, which has no logs)
-    const [logCheck] = await db
-      .select({ one: sql`1` })
-      .from(expenseLog)
-      .innerJoin(expenseDebt, eq(expenseDebt.id, expenseLog.debtId))
-      .where(eq(expenseDebt.expenseId, data.expenseId))
-      .limit(1);
-
-    if (logCheck) throw new Error("Cannot delete expense with recorded payments");
-
-    await db.delete(expense).where(eq(expense.id, data.expenseId));
-  });
+  .handler(({ context, data }) => deleteExpenseHandler(db, context.user, data));

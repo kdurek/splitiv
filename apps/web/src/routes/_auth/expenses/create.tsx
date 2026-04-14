@@ -17,6 +17,7 @@ import { Loader2Icon } from "lucide-react";
 
 import { UserAvatar } from "~/components/user-avatar";
 import { distributeByRatio } from "~/lib/distribute";
+import { isExpenseSubmitDisabled } from "~/lib/expense-form";
 import { $createExpense } from "~/server/expenses/mutations";
 import { groupsQueryOptions } from "~/server/groups/queries";
 
@@ -77,17 +78,10 @@ function CreateExpensePage() {
   const debtors = useStore(form.store, (s) => s.values.debtors);
   const isSubmitting = useStore(form.store, (s) => s.isSubmitting);
 
-  const isSubmitDisabled = useStore(form.store, (s) => {
-    const v = s.values;
-    if (s.isSubmitting || !v.title.trim() || v.amount <= 0) return true;
-    if (v.method === "ratio") return !v.debtors.some((d) => d.ratio > 0);
-    if (v.method === "custom") {
-      const totalCents = Math.round(v.amount * 100);
-      const allocCents = Math.round(v.debtors.reduce((sum, d) => sum + d.custom, 0) * 100);
-      return totalCents !== allocCents || allocCents === 0;
-    }
-    return false;
-  });
+  const isSubmitDisabled = useStore(
+    form.store,
+    (s) => s.isSubmitting || isExpenseSubmitDisabled(s.values),
+  );
 
   const remaining =
     method === "custom"

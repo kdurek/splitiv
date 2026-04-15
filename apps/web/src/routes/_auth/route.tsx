@@ -9,9 +9,8 @@ const NAV_ITEMS: Array<{
   to: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  exact?: boolean;
 }> = [
-  { to: "/", label: "Główna", icon: HomeIcon, exact: true },
+  { to: "/", label: "Główna", icon: HomeIcon },
   { to: "/expenses", label: "Wydatki", icon: ReceiptIcon },
   { to: "/expenses/create", label: "Dodaj", icon: PlusCircleIcon },
   { to: "/settle", label: "Rozlicz", icon: HandCoinsIcon },
@@ -32,7 +31,7 @@ export const Route = createFileRoute("/_auth")({
 });
 
 function AppLayout() {
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -55,10 +54,8 @@ function AppLayout() {
       </main>
 
       <nav className="fixed right-0 bottom-0 left-0 z-10 flex h-16 items-center border-t bg-background">
-        {NAV_ITEMS.map(({ to, label, icon: Icon, exact }) => {
-          const active = exact
-            ? location.pathname === to
-            : location.pathname === to || location.pathname.startsWith(to + "/");
+        {NAV_ITEMS.map(({ to, label, icon: Icon }) => {
+          const active = pathname === to;
           return (
             <Link
               key={to}

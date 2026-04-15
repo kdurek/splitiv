@@ -38,6 +38,37 @@ export const $getDebtsToUser = createServerFn({ method: "GET" })
       .orderBy(desc(expense.createdAt));
   });
 
+export const $getDebtsFromUser = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .inputValidator(z.object({ targetUserId: z.string().min(1) }))
+  .handler(async ({ context, data }) => {
+    const currentUser = context.user;
+    const activeGroupId = context.session.activeOrganizationId;
+
+    if (!activeGroupId) return [];
+
+    return db
+      .select({
+        debtId: expenseDebt.id,
+        amount: expenseDebt.amount,
+        settled: expenseDebt.settled,
+        expenseId: expense.id,
+        expenseName: expense.name,
+        expenseCreatedAt: expense.createdAt,
+      })
+      .from(expenseDebt)
+      .innerJoin(expense, eq(expense.id, expenseDebt.expenseId))
+      .where(
+        and(
+          eq(expenseDebt.debtorId, data.targetUserId),
+          eq(expense.payerId, currentUser.id),
+          eq(expense.groupId, activeGroupId),
+          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
+        ),
+      )
+      .orderBy(desc(expense.createdAt));
+  });
+
 const PAGE_SIZE = 10;
 
 export const $getExpenses = createServerFn({ method: "GET" })

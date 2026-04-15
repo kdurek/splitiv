@@ -1,6 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
-import { $getDebtsToUser, $getExpense, $getExpenses } from "./functions";
+import { $getDebtsFromUser, $getDebtsToUser, $getExpense, $getExpenses } from "./functions";
 
 export const expensesInfiniteQueryOptions = (q?: string) =>
   infiniteQueryOptions({
@@ -20,4 +20,10 @@ export const debtsToUserQueryOptions = (targetUserId: string) =>
   queryOptions({
     queryKey: ["debts-to-user", targetUserId],
     queryFn: ({ signal }) => $getDebtsToUser({ data: { targetUserId }, signal }),
+  });
+
+export const debtsFromUserQueryOptions = (targetUserId: string) =>
+  queryOptions({
+    queryKey: ["debts-from-user", targetUserId],
+    queryFn: ({ signal }) => $getDebtsFromUser({ data: { targetUserId }, signal }),
   });

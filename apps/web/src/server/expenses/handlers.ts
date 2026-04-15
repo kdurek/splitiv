@@ -132,13 +132,31 @@ export async function settleDebtsHandler(
         debtorId: expenseDebt.debtorId,
         amount: expenseDebt.amount,
         settled: expenseDebt.settled,
+        expenseId: expenseDebt.expenseId,
       })
       .from(expenseDebt)
       .where(eq(expenseDebt.id, item.debtId))
       .limit(1);
 
     if (!debt) throw new Error(`Debt ${item.debtId} not found`);
-    if (debt.debtorId !== user.id) throw new Error("Not authorized");
+
+    const [expenseData] = await db
+      .select({ payerId: expense.payerId, groupId: expense.groupId })
+      .from(expense)
+      .where(eq(expense.id, debt.expenseId))
+      .limit(1);
+
+    if (!expenseData) throw new Error("Expense not found");
+
+    const [ownerMember] = await db
+      .select({ userId: member.userId })
+      .from(member)
+      .where(and(eq(member.organizationId, expenseData.groupId), eq(member.role, "owner")))
+      .limit(1);
+
+    if (!canSettleDebt(user.id, debt.debtorId, expenseData.payerId, ownerMember?.userId ?? "")) {
+      throw new Error("Not authorized");
+    }
 
     const remaining = parseFloat(debt.amount) - parseFloat(debt.settled);
     const settleAmount = parseFloat(item.amount);

@@ -196,14 +196,12 @@ describe("settleDebtHandler", () => {
   it("allows the group owner to settle the debt", async () => {
     // Create a separate org where U3 is owner and U1 is payer (not owner)
     const adminGroupId = "group-admin-test";
-    await db
-      .insert(organization)
-      .values({
-        id: adminGroupId,
-        name: "Admin Group",
-        slug: "admin-group",
-        createdAt: new Date(),
-      });
+    await db.insert(organization).values({
+      id: adminGroupId,
+      name: "Admin Group",
+      slug: "admin-group",
+      createdAt: new Date(),
+    });
     await db.insert(member).values([
       {
         id: "ma1",
@@ -478,5 +476,150 @@ describe("settleDebtsHandler", () => {
         },
       ),
     ).rejects.toThrow("Not authorized");
+  });
+
+  it("allows the payer to settle debts owed to them", async () => {
+    const { expenseId } = await createExpenseHandler(
+      db,
+      { id: U1, activeOrganizationId: G1 },
+      {
+        title: "Dinner",
+        payerId: U1,
+        amount: "10.00",
+        debts: [
+          { debtorId: U1, amount: "5.00" },
+          { debtorId: U2, amount: "5.00" },
+        ],
+      },
+    );
+    const [bobDebt] = await db
+      .select()
+      .from(expenseDebt)
+      .where(and(eq(expenseDebt.expenseId, expenseId), eq(expenseDebt.debtorId, U2)));
+
+    await settleDebtsHandler(
+      db,
+      { id: U1, activeOrganizationId: G1 },
+      { debts: [{ debtId: bobDebt.id, amount: "5.00" }] },
+    );
+
+    const [updated] = await db.select().from(expenseDebt).where(eq(expenseDebt.id, bobDebt.id));
+    expect(updated.settled).toBe("5.00");
+  });
+
+  it("allows the group owner to settle any debt", async () => {
+    // G1 owner is U1; settle Bob's debt as U1 (who is also payer here — use a separate org)
+    const ownerOnlyGroupId = "group-owner-only";
+    await db.insert(organization).values({
+      id: ownerOnlyGroupId,
+      name: "Owner Only Group",
+      slug: "owner-only-group",
+      createdAt: new Date(),
+    });
+    await db.insert(member).values([
+      {
+        id: "mo1",
+        organizationId: ownerOnlyGroupId,
+        userId: U1,
+        role: "member",
+        createdAt: new Date(),
+      },
+      {
+        id: "mo2",
+        organizationId: ownerOnlyGroupId,
+        userId: U2,
+        role: "member",
+        createdAt: new Date(),
+      },
+      {
+        id: "mo3",
+        organizationId: ownerOnlyGroupId,
+        userId: U3,
+        role: "owner",
+        createdAt: new Date(),
+      },
+    ]);
+    const { expenseId } = await createExpenseHandler(
+      db,
+      { id: U1, activeOrganizationId: ownerOnlyGroupId },
+      {
+        title: "Trip",
+        payerId: U1,
+        amount: "10.00",
+        debts: [
+          { debtorId: U1, amount: "5.00" },
+          { debtorId: U2, amount: "5.00" },
+        ],
+      },
+    );
+    const [bobDebt] = await db
+      .select()
+      .from(expenseDebt)
+      .where(and(eq(expenseDebt.expenseId, expenseId), eq(expenseDebt.debtorId, U2)));
+
+    await settleDebtsHandler(
+      db,
+      { id: U3, activeOrganizationId: ownerOnlyGroupId },
+      { debts: [{ debtId: bobDebt.id, amount: "5.00" }] },
+    );
+
+    const [updated] = await db.select().from(expenseDebt).where(eq(expenseDebt.id, bobDebt.id));
+    expect(updated.settled).toBe("5.00");
+  });
+
+  it("throws when settle amount exceeds remaining", async () => {
+    const { expenseId } = await createExpenseHandler(
+      db,
+      { id: U1, activeOrganizationId: G1 },
+      {
+        title: "Lunch",
+        payerId: U1,
+        amount: "10.00",
+        debts: [
+          { debtorId: U1, amount: "5.00" },
+          { debtorId: U2, amount: "5.00" },
+        ],
+      },
+    );
+    const [bobDebt] = await db
+      .select()
+      .from(expenseDebt)
+      .where(and(eq(expenseDebt.expenseId, expenseId), eq(expenseDebt.debtorId, U2)));
+
+    await expect(
+      settleDebtsHandler(
+        db,
+        { id: U2, activeOrganizationId: G1 },
+        { debts: [{ debtId: bobDebt.id, amount: "99.00" }] },
+      ),
+    ).rejects.toThrow("Invalid settlement amount");
+  });
+
+  it("throws when settle amount is zero", async () => {
+    const { expenseId } = await createExpenseHandler(
+      db,
+      { id: U1, activeOrganizationId: G1 },
+      {
+        title: "Lunch",
+        payerId: U1,
+        amount: "10.00",
+        debts: [
+          { debtorId: U1, amount: "5.00" },
+          { debtorId: U2, amount: "5.00" },
+        ],
+      },
+    );
+    const [bobDebt] = await db
+      .select()
+      .from(expenseDebt)
+      .where(and(eq(expenseDebt.expenseId, expenseId), eq(expenseDebt.debtorId, U2)));
+
+    await expect(
+      settleDebtsHandler(
+        db,
+        { id: U2, activeOrganizationId: G1 },
+        { debts: [{ debtId: bobDebt.id, amount: "0.00" }] },
+      ),
+    ).rejects.toThrow("Invalid settlement amount");
   });
 });

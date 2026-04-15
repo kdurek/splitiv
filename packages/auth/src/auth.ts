@@ -3,6 +3,7 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { db } from "@repo/db";
 import * as schema from "@repo/db/schema";
 import { betterAuth } from "better-auth/minimal";
+import { organization } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 export const auth = betterAuth({
@@ -17,7 +18,8 @@ export const auth = betterAuth({
   }),
 
   // https://www.better-auth.com/docs/integrations/tanstack#usage-tips
-  plugins: [tanstackStartCookies()],
+  // https://www.better-auth.com/docs/plugins/organization
+  plugins: [tanstackStartCookies(), organization()],
 
   // https://www.better-auth.com/docs/concepts/session-management#session-caching
   session: {
@@ -51,10 +53,6 @@ export const auth = betterAuth({
         input: false,
       },
       lastName: {
-        type: "string",
-        input: false,
-      },
-      activeGroupId: {
         type: "string",
         input: false,
       },

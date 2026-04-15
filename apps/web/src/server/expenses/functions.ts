@@ -1,6 +1,6 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { expense, expenseDebt, expenseLog, group, user } from "@repo/db/schema";
+import { expense, expenseDebt, expenseLog, member, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, exists, or, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -12,7 +12,7 @@ export const $getDebtsToUser = createServerFn({ method: "GET" })
   .inputValidator(z.object({ targetUserId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
     const currentUser = context.user;
-    const activeGroupId = currentUser.activeGroupId;
+    const activeGroupId = context.session.activeOrganizationId;
 
     if (!activeGroupId) return [];
 
@@ -52,7 +52,7 @@ export const $getExpenses = createServerFn({ method: "GET" })
     const currentUser = context.user;
     const { cursor, q } = data;
     const searchWords = parseSearchQuery(q);
-    const groupId = currentUser.activeGroupId;
+    const groupId = context.session.activeOrganizationId;
 
     if (!groupId) {
       return { items: [], nextCursor: null };
@@ -127,7 +127,7 @@ export const $getExpense = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ expenseId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
-    const activeGroupId = context.user.activeGroupId;
+    const activeGroupId = context.session.activeOrganizationId;
 
     if (!activeGroupId) {
       throw new Error("Expense not found");
@@ -143,17 +143,22 @@ export const $getExpense = createServerFn({ method: "GET" })
         payerName: user.name,
         payerImage: user.image,
         payerId: expense.payerId,
-        groupAdminId: group.adminId,
+        groupId: expense.groupId,
       })
       .from(expense)
       .innerJoin(user, eq(user.id, expense.payerId))
-      .innerJoin(group, eq(group.id, expense.groupId))
       .where(and(eq(expense.id, data.expenseId), eq(expense.groupId, activeGroupId)))
       .limit(1);
 
     if (!expenseData) {
       throw new Error("Expense not found");
     }
+
+    const [ownerMember] = await db
+      .select({ userId: member.userId })
+      .from(member)
+      .where(and(eq(member.organizationId, expenseData.groupId), eq(member.role, "owner")))
+      .limit(1);
 
     const debts = await db
       .select({
@@ -182,5 +187,9 @@ export const $getExpense = createServerFn({ method: "GET" })
       .where(eq(expenseDebt.expenseId, data.expenseId))
       .orderBy(desc(expenseLog.createdAt));
 
-    return { expense: expenseData, debts, logs };
+    return {
+      expense: { ...expenseData, groupOwnerId: ownerMember?.userId ?? "" },
+      debts,
+      logs,
+    };
   });

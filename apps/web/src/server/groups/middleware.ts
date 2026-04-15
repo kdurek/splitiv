@@ -1,26 +1,27 @@
+import { auth } from "@repo/auth/auth";
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { group, userGroup } from "@repo/db/schema";
+import { member, organization } from "@repo/db/schema";
 import { createMiddleware } from "@tanstack/react-start";
-import { setResponseStatus } from "@tanstack/react-start/server";
+import { getRequest, setResponseStatus } from "@tanstack/react-start/server";
 import { and, eq } from "drizzle-orm";
 
 export const activeGroupMiddleware = createMiddleware()
   .middleware([authMiddleware])
   .server(async ({ context, next }) => {
-    const user = context?.user;
-    const activeGroupId = user?.activeGroupId;
+    const { user, session } = context;
+    const activeGroupId = session.activeOrganizationId;
 
-    if (!user || !activeGroupId) {
+    if (!activeGroupId) {
       setResponseStatus(400);
       throw new Error("Brak aktywnej grupy");
     }
 
     const [membership] = await db
-      .select({ group: { id: group.id, name: group.name, adminId: group.adminId } })
-      .from(userGroup)
-      .innerJoin(group, eq(group.id, userGroup.groupId))
-      .where(and(eq(userGroup.userId, user.id), eq(userGroup.groupId, activeGroupId)))
+      .select({ group: { id: organization.id, name: organization.name } })
+      .from(member)
+      .innerJoin(organization, eq(organization.id, member.organizationId))
+      .where(and(eq(member.userId, user.id), eq(member.organizationId, activeGroupId)))
       .limit(1);
     const activeGroup = membership?.group ?? null;
 
@@ -29,13 +30,21 @@ export const activeGroupMiddleware = createMiddleware()
       throw new Error("Brak uprawnień");
     }
 
-    return next({ context: { user, activeGroup, activeGroupId } });
+    return next({ context: { user, session, activeGroup, activeGroupId } });
   });
 
 export const activeGroupAdminMiddleware = createMiddleware()
   .middleware([authMiddleware, activeGroupMiddleware])
   .server(async ({ context, next }) => {
-    if (!context || context.activeGroup.adminId !== context.user.id) {
+    const { success } = await auth.api.hasPermission({
+      body: {
+        permissions: { organization: ["update"] },
+        organizationId: context.activeGroupId,
+      },
+      headers: getRequest().headers,
+    });
+
+    if (!success) {
       setResponseStatus(403);
       throw new Error("Brak uprawnień");
     }

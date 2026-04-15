@@ -11,11 +11,12 @@ import { auth } from "../auth";
  * consider using authMiddleware from middleware.ts instead.
  */
 export const $getUser = createServerFn({ method: "GET" }).handler(async () => {
-  const user = await _getUser();
-  return user;
+  const result = await _getSession();
+  if (!result) return null;
+  return { ...result.user, activeOrganizationId: result.session.activeOrganizationId ?? null };
 });
 
-interface GetUserServerQuery {
+interface GetSessionQuery {
   disableCookieCache?: boolean | undefined;
   disableRefresh?: boolean | undefined;
 }
@@ -25,18 +26,19 @@ interface GetUserServerQuery {
  *
  * For server app logic, consider using authMiddleware instead.
  */
-export const _getUser = createServerOnlyFn(async (query?: GetUserServerQuery) => {
-  const session = await auth.api.getSession({
+export const _getSession = createServerOnlyFn(async (query?: GetSessionQuery) => {
+  const sessionResponse = await auth.api.getSession({
     headers: getRequest().headers,
     query,
     returnHeaders: true,
   });
 
   // Forward any Set-Cookie headers to the client, e.g. for session/cache refresh
-  const cookies = session.headers?.getSetCookie();
+  const cookies = sessionResponse.headers?.getSetCookie();
   if (cookies?.length) {
     setResponseHeader("Set-Cookie", cookies);
   }
 
-  return session.response?.user || null;
+  if (!sessionResponse.response) return null;
+  return { user: sessionResponse.response.user, session: sessionResponse.response.session };
 });

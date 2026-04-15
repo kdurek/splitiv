@@ -5,15 +5,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
+import { Input } from "@repo/ui/components/input";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckIcon, ChevronDownIcon, PlusIcon } from "lucide-react";
+import * as React from "react";
 import { toast } from "sonner";
 
 import { SignOutButton } from "~/components/sign-out-button";
 import { UserAvatar } from "~/components/user-avatar";
 import {
-  addUserToActiveGroupMutationOptions,
+  addMemberByEmailMutationOptions,
   setActiveGroupMutationOptions,
 } from "~/server/groups/mutations";
 import { groupsQueryOptions } from "~/server/groups/queries";
@@ -25,11 +27,10 @@ export const Route = createFileRoute("/_auth/settings")({
 
 function SettingsPage() {
   const {
-    data: { currentUser, currentGroup, currentGroupMembers, usersNotInGroup, userGroups },
+    data: { currentUser, currentGroup, currentGroupMembers, userGroups, isOwner },
   } = useSuspenseQuery(groupsQueryOptions());
   const queryClient = useQueryClient();
-
-  const isAdmin = currentUser?.id === currentGroup?.adminId;
+  const [email, setEmail] = React.useState("");
 
   const switchGroupMutation = useMutation({
     ...setActiveGroupMutationOptions(),
@@ -42,9 +43,10 @@ function SettingsPage() {
     },
   });
 
-  const addUserMutation = useMutation({
-    ...addUserToActiveGroupMutationOptions(),
+  const addMemberMutation = useMutation({
+    ...addMemberByEmailMutationOptions(),
     onSuccess: async () => {
+      setEmail("");
       await queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast.success("Pomyślnie dodano użytkownika do grupy");
     },
@@ -52,6 +54,12 @@ function SettingsPage() {
       toast.error("Nie udało się dodać użytkownika", { description: error.message });
     },
   });
+
+  const handleAddMember = (e: { preventDefault(): void }) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    addMemberMutation.mutate(email.trim());
+  };
 
   return (
     <div className="flex flex-col gap-8 p-4 pt-6">
@@ -90,51 +98,40 @@ function SettingsPage() {
         </div>
       </section>
 
-      {/* Group members — admin only */}
-      {currentGroup && isAdmin && (
+      {/* Group members — owner only */}
+      {currentGroup && isOwner && (
         <section className="space-y-3">
           <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
             Członkowie grupy
           </p>
           <div className="space-y-2">
-            {currentGroupMembers.map((member) => (
+            {currentGroupMembers.map((m) => (
               <div
-                key={member.userId}
+                key={m.userId}
                 className="flex items-center gap-3 rounded-xl bg-muted/40 px-4 py-3"
               >
-                <UserAvatar name={member.name} image={member.image} size="md" shape="square" />
-                <span className="text-sm font-medium">{member.name}</span>
+                <UserAvatar name={m.name} image={m.image} size="md" shape="square" />
+                <span className="text-sm font-medium">{m.name}</span>
               </div>
             ))}
 
-            {usersNotInGroup.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start gap-2"
-                      disabled={addUserMutation.isPending}
-                    />
-                  }
-                >
-                  <PlusIcon className="size-4" />
-                  Dodaj użytkownika
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {usersNotInGroup.map((u) => (
-                    <DropdownMenuItem
-                      key={u.id}
-                      onClick={() =>
-                        addUserMutation.mutate({ groupId: currentGroup.id, userId: u.id })
-                      }
-                    >
-                      {u.name}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            <form onSubmit={handleAddMember} className="flex gap-2 pt-1">
+              <Input
+                type="email"
+                placeholder="Adres email użytkownika"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={addMemberMutation.isPending}
+              />
+              <Button
+                type="submit"
+                variant="outline"
+                size="icon"
+                disabled={addMemberMutation.isPending || !email.trim()}
+              >
+                <PlusIcon className="size-4" />
+              </Button>
+            </form>
           </div>
         </section>
       )}

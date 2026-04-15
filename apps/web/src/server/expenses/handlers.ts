@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = any;
-type UserCtx = { id: string; activeGroupId: string | null };
+type UserCtx = { id: string; activeOrganizationId: string | null };
 
-import { expense, expenseDebt, expenseLog, group, userGroup } from "@repo/db/schema";
+import { expense, expenseDebt, expenseLog, member } from "@repo/db/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { ulid } from "ulid";
 
@@ -19,7 +19,7 @@ export async function createExpenseHandler(
     debts: { debtorId: string; amount: string }[];
   },
 ) {
-  const groupId = user.activeGroupId;
+  const groupId = user.activeOrganizationId;
   if (!groupId) throw new Error("No active group");
 
   const debtSum = data.debts.reduce((acc, d) => acc + parseFloat(d.amount), 0).toFixed(2);
@@ -28,9 +28,9 @@ export async function createExpenseHandler(
   }
 
   const members = await db
-    .select({ userId: userGroup.userId })
-    .from(userGroup)
-    .where(eq(userGroup.groupId, groupId));
+    .select({ userId: member.userId })
+    .from(member)
+    .where(eq(member.organizationId, groupId));
   const memberIds = new Set(members.map((m: { userId: string }) => m.userId));
 
   if (!memberIds.has(data.payerId)) {
@@ -95,15 +95,13 @@ export async function settleDebtHandler(
 
   if (!expenseData) throw new Error("Expense not found");
 
-  const [groupData] = await db
-    .select({ adminId: group.adminId })
-    .from(group)
-    .where(eq(group.id, expenseData.groupId))
+  const [ownerMember] = await db
+    .select({ userId: member.userId })
+    .from(member)
+    .where(and(eq(member.organizationId, expenseData.groupId), eq(member.role, "owner")))
     .limit(1);
 
-  if (!groupData) throw new Error("Group not found");
-
-  if (!canSettleDebt(user.id, debt.debtorId, expenseData.payerId, groupData.adminId)) {
+  if (!canSettleDebt(user.id, debt.debtorId, expenseData.payerId, ownerMember?.userId ?? "")) {
     throw new Error("Not authorized to settle this debt");
   }
 
@@ -189,15 +187,13 @@ export async function undoDebtLogHandler(db: Db, user: UserCtx, data: { logId: s
 
   if (!expenseData) throw new Error("Expense not found");
 
-  const [groupData] = await db
-    .select({ adminId: group.adminId })
-    .from(group)
-    .where(eq(group.id, expenseData.groupId))
+  const [ownerMember] = await db
+    .select({ userId: member.userId })
+    .from(member)
+    .where(and(eq(member.organizationId, expenseData.groupId), eq(member.role, "owner")))
     .limit(1);
 
-  if (!groupData) throw new Error("Group not found");
-
-  if (!canUndoLog(user.id, debt.debtorId, expenseData.payerId, groupData.adminId)) {
+  if (!canUndoLog(user.id, debt.debtorId, expenseData.payerId, ownerMember?.userId ?? "")) {
     throw new Error("Not authorized to undo this log");
   }
 
@@ -230,13 +226,11 @@ export async function deleteExpenseHandler(db: Db, user: UserCtx, data: { expens
 
   if (!expenseData) throw new Error("Expense not found");
 
-  const [groupData] = await db
-    .select({ adminId: group.adminId })
-    .from(group)
-    .where(eq(group.id, expenseData.groupId))
+  const [ownerMember] = await db
+    .select({ userId: member.userId })
+    .from(member)
+    .where(and(eq(member.organizationId, expenseData.groupId), eq(member.role, "owner")))
     .limit(1);
-
-  if (!groupData) throw new Error("Group not found");
 
   const [debtorCheck] = await db
     .select({ one: sql`1` })
@@ -244,7 +238,7 @@ export async function deleteExpenseHandler(db: Db, user: UserCtx, data: { expens
     .where(and(eq(expenseDebt.expenseId, data.expenseId), eq(expenseDebt.debtorId, user.id)))
     .limit(1);
 
-  if (!canDeleteExpense(user.id, expenseData.payerId, groupData.adminId, !!debtorCheck)) {
+  if (!canDeleteExpense(user.id, expenseData.payerId, ownerMember?.userId ?? "", !!debtorCheck)) {
     throw new Error("Not authorized to delete this expense");
   }
 

@@ -18,13 +18,16 @@ const NAV_ITEMS: Array<{
 
 export const Route = createFileRoute("/_auth")({
   component: AppLayout,
-  beforeLoad: async ({ context }) => {
+  beforeLoad: async ({ context, location }) => {
     const user = await context.queryClient.ensureQueryData({
       ...authQueryOptions(),
       revalidateIfStale: true,
     });
     if (!user) {
       throw redirect({ to: "/login" });
+    }
+    if (!user.activeOrganizationId && location.pathname !== "/group/select") {
+      throw redirect({ to: "/group/select" });
     }
     return { user };
   },

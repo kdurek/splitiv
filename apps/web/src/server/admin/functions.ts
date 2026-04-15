@@ -1,29 +1,32 @@
-import { authMiddleware } from "@repo/auth/tanstack/middleware";
+import { auth } from "@repo/auth/auth";
+import { freshAuthMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { expense, expenseDebt, group, user } from "@repo/db/schema";
+import { expense, expenseDebt, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { and, eq, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
 const creditor = alias(user, "creditor");
 
 export const $getAdminBalance = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
+  .middleware([freshAuthMiddleware])
   .handler(async ({ context }) => {
-    const currentUser = context.user;
-    const activeGroupId = currentUser.activeGroupId;
+    const activeGroupId = context.session.activeOrganizationId;
 
     if (!activeGroupId) {
       return [];
     }
 
-    const [activeGroup] = await db
-      .select({ adminId: group.adminId })
-      .from(group)
-      .where(eq(group.id, activeGroupId))
-      .limit(1);
+    const { success } = await auth.api.hasPermission({
+      body: {
+        permissions: { organization: ["update"] },
+        organizationId: activeGroupId,
+      },
+      headers: getRequest().headers,
+    });
 
-    if (!activeGroup || activeGroup.adminId !== currentUser.id) {
+    if (!success) {
       throw new Error("Forbidden");
     }
 

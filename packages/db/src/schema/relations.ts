@@ -4,9 +4,13 @@ import * as schema from "./";
 
 export const relations = defineRelationsPart(schema, (r) => ({
   user: {
-    userGroups: r.many.userGroup({
+    members: r.many.member({
       from: r.user.id,
-      to: r.userGroup.userId,
+      to: r.member.userId,
+    }),
+    invitations: r.many.invitation({
+      from: r.user.id,
+      to: r.invitation.inviterId,
     }),
     expenses: r.many.expense({
       from: r.user.id,
@@ -21,30 +25,44 @@ export const relations = defineRelationsPart(schema, (r) => ({
       to: r.pushSubscription.userId,
     }),
   },
-  group: {
-    userGroups: r.many.userGroup({
-      from: r.group.id,
-      to: r.userGroup.groupId,
+  organization: {
+    members: r.many.member({
+      from: r.organization.id,
+      to: r.member.organizationId,
+    }),
+    invitations: r.many.invitation({
+      from: r.organization.id,
+      to: r.invitation.organizationId,
     }),
     expenses: r.many.expense({
-      from: r.group.id,
+      from: r.organization.id,
       to: r.expense.groupId,
     }),
   },
-  userGroup: {
+  member: {
     user: r.one.user({
-      from: r.userGroup.userId,
+      from: r.member.userId,
       to: r.user.id,
     }),
-    group: r.one.group({
-      from: r.userGroup.groupId,
-      to: r.group.id,
+    organization: r.one.organization({
+      from: r.member.organizationId,
+      to: r.organization.id,
+    }),
+  },
+  invitation: {
+    organization: r.one.organization({
+      from: r.invitation.organizationId,
+      to: r.organization.id,
+    }),
+    user: r.one.user({
+      from: r.invitation.inviterId,
+      to: r.user.id,
     }),
   },
   expense: {
-    group: r.one.group({
+    organization: r.one.organization({
       from: r.expense.groupId,
-      to: r.group.id,
+      to: r.organization.id,
     }),
     payer: r.one.user({
       from: r.expense.payerId,

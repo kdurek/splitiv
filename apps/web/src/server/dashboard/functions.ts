@@ -8,7 +8,7 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
     const currentUser = context.user;
-    const activeGroupId = currentUser.activeGroupId;
+    const activeGroupId = context.session.activeOrganizationId;
 
     if (!activeGroupId) {
       return { owedToYou: [], youOwe: [], totalOwedToYou: "0", totalYouOwe: "0", netBalance: "0" };

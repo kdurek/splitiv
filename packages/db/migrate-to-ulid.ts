@@ -23,7 +23,6 @@ import {
   session,
   account,
   verification,
-  group,
   expense,
   expenseDebt,
   expenseLog,
@@ -76,7 +75,8 @@ async function main() {
   const [users, groups, expenses, debts, logs, sessions, accounts, verifications] =
     await Promise.all([
       db.select({ id: user.id, createdAt: user.createdAt }).from(user),
-      db.select({ id: group.id, createdAt: group.createdAt }).from(group),
+      // group table was removed in the org refactor migration
+      Promise.resolve([] as { id: string; createdAt: Date }[]),
       db.select({ id: expense.id, createdAt: expense.createdAt }).from(expense),
       db.select({ id: expenseDebt.id, createdAt: expenseDebt.createdAt }).from(expenseDebt),
       db.select({ id: expenseLog.id, createdAt: expenseLog.createdAt }).from(expenseLog),

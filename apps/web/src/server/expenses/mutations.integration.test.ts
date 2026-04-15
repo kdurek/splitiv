@@ -1,4 +1,4 @@
-import { expense, expenseDebt, expenseLog, group, user, userGroup } from "@repo/db/schema";
+import { expense, expenseDebt, expenseLog, member, organization, user } from "@repo/db/schema";
 import { and, eq } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
@@ -34,17 +34,19 @@ afterAll(async () => {
 beforeEach(async () => {
   await truncate();
 
-  // Seed minimal data: 3 users, 1 group, all members
+  // Seed minimal data: 3 users, 1 organization, all members
   await db.insert(user).values([
     { id: U1, name: "Alice", email: "alice@test.com", emailVerified: true },
     { id: U2, name: "Bob", email: "bob@test.com", emailVerified: true },
     { id: U3, name: "Charlie", email: "charlie@test.com", emailVerified: true },
   ]);
-  await db.insert(group).values({ id: G1, name: "Test Group", adminId: U1 });
-  await db.insert(userGroup).values([
-    { userId: U1, groupId: G1 },
-    { userId: U2, groupId: G1 },
-    { userId: U3, groupId: G1 },
+  await db
+    .insert(organization)
+    .values({ id: G1, name: "Test Group", slug: "test-group", createdAt: new Date() });
+  await db.insert(member).values([
+    { id: "m1", organizationId: G1, userId: U1, role: "owner", createdAt: new Date() },
+    { id: "m2", organizationId: G1, userId: U2, role: "member", createdAt: new Date() },
+    { id: "m3", organizationId: G1, userId: U3, role: "member", createdAt: new Date() },
   ]);
 });
 
@@ -56,7 +58,7 @@ describe("createExpenseHandler", () => {
   it("creates expense and debts, auto-settles payer's own share", async () => {
     const { expenseId } = await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: G1 },
+      { id: U1, activeOrganizationId: G1 },
       {
         title: "Groceries",
         payerId: U1,
@@ -84,11 +86,11 @@ describe("createExpenseHandler", () => {
     expect(bobDebt?.settled).toBe("0");
   });
 
-  it("throws when activeGroupId is null", async () => {
+  it("throws when activeOrganizationId is null", async () => {
     await expect(
       createExpenseHandler(
         db,
-        { id: U1, activeGroupId: null },
+        { id: U1, activeOrganizationId: null },
         {
           title: "Test",
           payerId: U1,
@@ -103,7 +105,7 @@ describe("createExpenseHandler", () => {
     await expect(
       createExpenseHandler(
         db,
-        { id: U1, activeGroupId: G1 },
+        { id: U1, activeOrganizationId: G1 },
         {
           title: "Test",
           payerId: U1,
@@ -121,7 +123,7 @@ describe("createExpenseHandler", () => {
     await expect(
       createExpenseHandler(
         db,
-        { id: U1, activeGroupId: G1 },
+        { id: U1, activeOrganizationId: G1 },
         {
           title: "Test",
           payerId: "outsider",
@@ -136,7 +138,7 @@ describe("createExpenseHandler", () => {
     await expect(
       createExpenseHandler(
         db,
-        { id: U1, activeGroupId: G1 },
+        { id: U1, activeOrganizationId: G1 },
         {
           title: "Test",
           payerId: U1,
@@ -156,7 +158,7 @@ describe("settleDebtHandler", () => {
   async function seedExpenseWithDebt() {
     const { expenseId } = await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: G1 },
+      { id: U1, activeOrganizationId: G1 },
       {
         title: "Lunch",
         payerId: U1,
@@ -174,7 +176,7 @@ describe("settleDebtHandler", () => {
   it("records a log and updates settled amount", async () => {
     const { debtId } = await seedExpenseWithDebt();
 
-    await settleDebtHandler(db, { id: U2, activeGroupId: G1 }, { debtId, amount: "5.00" });
+    await settleDebtHandler(db, { id: U2, activeOrganizationId: G1 }, { debtId, amount: "5.00" });
 
     const [updated] = await db.select().from(expenseDebt).where(eq(expenseDebt.id, debtId));
     expect(updated.settled).toBe("5.00");
@@ -187,22 +189,41 @@ describe("settleDebtHandler", () => {
   it("allows the payer to settle the debt", async () => {
     const { debtId } = await seedExpenseWithDebt();
     await expect(
-      settleDebtHandler(db, { id: U1, activeGroupId: G1 }, { debtId, amount: "10.00" }),
+      settleDebtHandler(db, { id: U1, activeOrganizationId: G1 }, { debtId, amount: "10.00" }),
     ).resolves.not.toThrow();
   });
 
-  it("allows the group admin to settle the debt", async () => {
-    // Create a separate group where U3 is admin and U1 is payer (not admin)
+  it("allows the group owner to settle the debt", async () => {
+    // Create a separate org where U3 is owner and U1 is payer (not owner)
     const adminGroupId = "group-admin-test";
-    await db.insert(group).values({ id: adminGroupId, name: "Admin Group", adminId: U3 });
-    await db.insert(userGroup).values([
-      { userId: U1, groupId: adminGroupId },
-      { userId: U2, groupId: adminGroupId },
-      { userId: U3, groupId: adminGroupId },
+    await db
+      .insert(organization)
+      .values({
+        id: adminGroupId,
+        name: "Admin Group",
+        slug: "admin-group",
+        createdAt: new Date(),
+      });
+    await db.insert(member).values([
+      {
+        id: "ma1",
+        organizationId: adminGroupId,
+        userId: U1,
+        role: "member",
+        createdAt: new Date(),
+      },
+      {
+        id: "ma2",
+        organizationId: adminGroupId,
+        userId: U2,
+        role: "member",
+        createdAt: new Date(),
+      },
+      { id: "ma3", organizationId: adminGroupId, userId: U3, role: "owner", createdAt: new Date() },
     ]);
     const { expenseId } = await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: adminGroupId },
+      { id: U1, activeOrganizationId: adminGroupId },
       {
         title: "Dinner",
         payerId: U1,
@@ -222,7 +243,7 @@ describe("settleDebtHandler", () => {
     await expect(
       settleDebtHandler(
         db,
-        { id: U3, activeGroupId: adminGroupId },
+        { id: U3, activeOrganizationId: adminGroupId },
         { debtId: adminGroupDebtId, amount: "5.00" },
       ),
     ).resolves.not.toThrow();
@@ -231,21 +252,25 @@ describe("settleDebtHandler", () => {
   it("blocks an outsider from settling", async () => {
     const { debtId } = await seedExpenseWithDebt();
     await expect(
-      settleDebtHandler(db, { id: U3, activeGroupId: G1 }, { debtId, amount: "5.00" }),
+      settleDebtHandler(
+        db,
+        { id: "outsider", activeOrganizationId: G1 },
+        { debtId, amount: "5.00" },
+      ),
     ).rejects.toThrow("Not authorized to settle this debt");
   });
 
   it("throws when settle amount exceeds remaining", async () => {
     const { debtId } = await seedExpenseWithDebt();
     await expect(
-      settleDebtHandler(db, { id: U2, activeGroupId: G1 }, { debtId, amount: "99.00" }),
+      settleDebtHandler(db, { id: U2, activeOrganizationId: G1 }, { debtId, amount: "99.00" }),
     ).rejects.toThrow("Invalid settlement amount");
   });
 
   it("throws when settle amount is zero", async () => {
     const { debtId } = await seedExpenseWithDebt();
     await expect(
-      settleDebtHandler(db, { id: U2, activeGroupId: G1 }, { debtId, amount: "0.00" }),
+      settleDebtHandler(db, { id: U2, activeOrganizationId: G1 }, { debtId, amount: "0.00" }),
     ).rejects.toThrow("Invalid settlement amount");
   });
 });
@@ -258,7 +283,7 @@ describe("undoDebtLogHandler", () => {
   async function seedDebtWithLog() {
     const { expenseId } = await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: G1 },
+      { id: U1, activeOrganizationId: G1 },
       {
         title: "Party",
         payerId: U1,
@@ -272,7 +297,7 @@ describe("undoDebtLogHandler", () => {
     const [bobDebt] = await db.select().from(expenseDebt).where(eq(expenseDebt.debtorId, U2));
     await settleDebtHandler(
       db,
-      { id: U2, activeGroupId: G1 },
+      { id: U2, activeOrganizationId: G1 },
       { debtId: bobDebt.id, amount: "10.00" },
     );
     const [log] = await db.select().from(expenseLog).where(eq(expenseLog.debtId, bobDebt.id));
@@ -282,7 +307,7 @@ describe("undoDebtLogHandler", () => {
   it("removes the log and reverses the settled amount", async () => {
     const { debtId, logId } = await seedDebtWithLog();
 
-    await undoDebtLogHandler(db, { id: U2, activeGroupId: G1 }, { logId });
+    await undoDebtLogHandler(db, { id: U2, activeOrganizationId: G1 }, { logId });
 
     const [updated] = await db.select().from(expenseDebt).where(eq(expenseDebt.id, debtId));
     expect(updated.settled).toBe("0.00");
@@ -293,18 +318,18 @@ describe("undoDebtLogHandler", () => {
 
   it("blocks an outsider from undoing", async () => {
     const { logId } = await seedDebtWithLog();
-    await expect(undoDebtLogHandler(db, { id: U3, activeGroupId: G1 }, { logId })).rejects.toThrow(
-      "Not authorized to undo this log",
-    );
+    await expect(
+      undoDebtLogHandler(db, { id: "outsider", activeOrganizationId: G1 }, { logId }),
+    ).rejects.toThrow("Not authorized to undo this log");
   });
 
   it("throws when trying to undo a non-recent log", async () => {
     const { debtId, logId: firstLogId } = await seedDebtWithLog();
     // Add a second settlement — firstLog is no longer most recent
-    await settleDebtHandler(db, { id: U2, activeGroupId: G1 }, { debtId, amount: "5.00" });
+    await settleDebtHandler(db, { id: U2, activeOrganizationId: G1 }, { debtId, amount: "5.00" });
 
     await expect(
-      undoDebtLogHandler(db, { id: U2, activeGroupId: G1 }, { logId: firstLogId }),
+      undoDebtLogHandler(db, { id: U2, activeOrganizationId: G1 }, { logId: firstLogId }),
     ).rejects.toThrow("Only the most recent log entry can be undone");
   });
 });
@@ -317,7 +342,7 @@ describe("deleteExpenseHandler", () => {
   async function seedUnsettledExpense() {
     const { expenseId } = await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: G1 },
+      { id: U1, activeOrganizationId: G1 },
       {
         title: "Coffee",
         payerId: U1,
@@ -333,7 +358,7 @@ describe("deleteExpenseHandler", () => {
 
   it("deletes an expense with no payment logs", async () => {
     const { expenseId } = await seedUnsettledExpense();
-    await deleteExpenseHandler(db, { id: U1, activeGroupId: G1 }, { expenseId });
+    await deleteExpenseHandler(db, { id: U1, activeOrganizationId: G1 }, { expenseId });
 
     const rows = await db.select().from(expense).where(eq(expense.id, expenseId));
     expect(rows).toHaveLength(0);
@@ -342,14 +367,14 @@ describe("deleteExpenseHandler", () => {
   it("allows a debtor to delete the expense", async () => {
     const { expenseId } = await seedUnsettledExpense();
     await expect(
-      deleteExpenseHandler(db, { id: U2, activeGroupId: G1 }, { expenseId }),
+      deleteExpenseHandler(db, { id: U2, activeOrganizationId: G1 }, { expenseId }),
     ).resolves.not.toThrow();
   });
 
   it("blocks an outsider from deleting", async () => {
     const { expenseId } = await seedUnsettledExpense();
     await expect(
-      deleteExpenseHandler(db, { id: U3, activeGroupId: G1 }, { expenseId }),
+      deleteExpenseHandler(db, { id: "outsider", activeOrganizationId: G1 }, { expenseId }),
     ).rejects.toThrow("Not authorized to delete this expense");
   });
 
@@ -358,12 +383,12 @@ describe("deleteExpenseHandler", () => {
     const [bobDebt] = await db.select().from(expenseDebt).where(eq(expenseDebt.debtorId, U2));
     await settleDebtHandler(
       db,
-      { id: U2, activeGroupId: G1 },
+      { id: U2, activeOrganizationId: G1 },
       { debtId: bobDebt.id, amount: "3.00" },
     );
 
     await expect(
-      deleteExpenseHandler(db, { id: U1, activeGroupId: G1 }, { expenseId }),
+      deleteExpenseHandler(db, { id: U1, activeOrganizationId: G1 }, { expenseId }),
     ).rejects.toThrow("Cannot delete expense with recorded payments");
   });
 });
@@ -377,7 +402,7 @@ describe("settleDebtsHandler", () => {
     // Create two expenses where U2 is a debtor
     const { expenseId: e1 } = await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: G1 },
+      { id: U1, activeOrganizationId: G1 },
       {
         title: "Exp1",
         payerId: U1,
@@ -390,7 +415,7 @@ describe("settleDebtsHandler", () => {
     );
     const { expenseId: e2 } = await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: G1 },
+      { id: U1, activeOrganizationId: G1 },
       {
         title: "Exp2",
         payerId: U1,
@@ -413,7 +438,7 @@ describe("settleDebtsHandler", () => {
 
     await settleDebtsHandler(
       db,
-      { id: U2, activeGroupId: G1 },
+      { id: U2, activeOrganizationId: G1 },
       {
         debts: [
           { debtId: bobD1.id, amount: "5.00" },
@@ -431,7 +456,7 @@ describe("settleDebtsHandler", () => {
   it("blocks settling another user's debt", async () => {
     await createExpenseHandler(
       db,
-      { id: U1, activeGroupId: G1 },
+      { id: U1, activeOrganizationId: G1 },
       {
         title: "Test",
         payerId: U1,
@@ -447,7 +472,7 @@ describe("settleDebtsHandler", () => {
     await expect(
       settleDebtsHandler(
         db,
-        { id: U3, activeGroupId: G1 },
+        { id: U3, activeOrganizationId: G1 },
         {
           debts: [{ debtId: bobDebt.id, amount: "5.00" }],
         },

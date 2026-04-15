@@ -29,7 +29,13 @@ export const $createExpense = createServerFn({ method: "POST" })
         .min(1),
     }),
   )
-  .handler(({ context, data }) => createExpenseHandler(db, context.user, data));
+  .handler(({ context, data }) =>
+    createExpenseHandler(
+      db,
+      { id: context.user.id, activeOrganizationId: context.session.activeOrganizationId ?? null },
+      data,
+    ),
+  );
 
 export const $settleDebt = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -39,12 +45,24 @@ export const $settleDebt = createServerFn({ method: "POST" })
       amount: z.string().regex(/^\d+(\.\d{1,2})?$/),
     }),
   )
-  .handler(({ context, data }) => settleDebtHandler(db, context.user, data));
+  .handler(({ context, data }) =>
+    settleDebtHandler(
+      db,
+      { id: context.user.id, activeOrganizationId: context.session.activeOrganizationId ?? null },
+      data,
+    ),
+  );
 
 export const $undoDebtLog = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ logId: z.string().min(1) }))
-  .handler(({ context, data }) => undoDebtLogHandler(db, context.user, data));
+  .handler(({ context, data }) =>
+    undoDebtLogHandler(
+      db,
+      { id: context.user.id, activeOrganizationId: context.session.activeOrganizationId ?? null },
+      data,
+    ),
+  );
 
 export const $settleDebts = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -60,9 +78,21 @@ export const $settleDebts = createServerFn({ method: "POST" })
         .min(1),
     }),
   )
-  .handler(({ context, data }) => settleDebtsHandler(db, context.user, data));
+  .handler(({ context, data }) =>
+    settleDebtsHandler(
+      db,
+      { id: context.user.id, activeOrganizationId: context.session.activeOrganizationId ?? null },
+      data,
+    ),
+  );
 
 export const $deleteExpense = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ expenseId: z.string().min(1) }))
-  .handler(({ context, data }) => deleteExpenseHandler(db, context.user, data));
+  .handler(({ context, data }) =>
+    deleteExpenseHandler(
+      db,
+      { id: context.user.id, activeOrganizationId: context.session.activeOrganizationId ?? null },
+      data,
+    ),
+  );

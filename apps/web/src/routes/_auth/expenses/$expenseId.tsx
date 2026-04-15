@@ -438,7 +438,7 @@ function ExpenseDetail() {
   const debtorIds = new Set(debts.map((d) => d.debtorId));
   const canManage =
     currentUserId === expense.payerId ||
-    currentUserId === expense.groupAdminId ||
+    currentUserId === expense.groupOwnerId ||
     (currentUserId != null && debtorIds.has(currentUserId));
   const debtById = new Map(debts.map((debt) => [debt.id, debt] as const));
   const settledAfterLogById = new Map(
@@ -507,7 +507,7 @@ function ExpenseDetail() {
             const isFullySettled = Number(debt.settled) >= Number(debt.amount);
             const canSettleDebt =
               currentUserId === expense.payerId ||
-              currentUserId === expense.groupAdminId ||
+              currentUserId === expense.groupOwnerId ||
               currentUserId === debt.debtorId;
 
             if (isFullySettled || !canSettleDebt) {
@@ -541,7 +541,7 @@ function ExpenseDetail() {
               const isUndoable = mostRecentLogIdByDebtId.get(log.debtId) === log.id;
               const canUndoLog =
                 currentUserId === expense.payerId ||
-                currentUserId === expense.groupAdminId ||
+                currentUserId === expense.groupOwnerId ||
                 currentUserId === debt?.debtorId;
 
               settledAfterLogById.set(log.debtId, settledBeforeLog);

@@ -1,30 +1,6 @@
-import { pgTable, text, timestamp, numeric, primaryKey, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, numeric, index } from "drizzle-orm/pg-core";
 
-import { user } from "./auth.schema";
-
-export const group = pgTable("group", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  adminId: text("admin_id").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
-
-export const userGroup = pgTable(
-  "user_group",
-  {
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "restrict" }),
-    groupId: text("group_id")
-      .notNull()
-      .references(() => group.id, { onDelete: "cascade" }),
-  },
-  (table) => [primaryKey({ columns: [table.userId, table.groupId], name: "user_group_pkey" })],
-);
+import { organization, user } from "./auth.schema";
 
 export const expense = pgTable(
   "expense",
@@ -33,7 +9,7 @@ export const expense = pgTable(
     name: text("name").notNull(),
     groupId: text("group_id")
       .notNull()
-      .references(() => group.id, { onDelete: "cascade" }),
+      .references(() => organization.id, { onDelete: "cascade" }),
     payerId: text("payer_id")
       .notNull()
       .references(() => user.id, { onDelete: "restrict" }),

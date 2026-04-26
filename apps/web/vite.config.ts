@@ -48,6 +48,17 @@ export default defineConfig({
       // fixes SSR issues with Vite 8:
       // https://discord.com/channels/719702312431386674/1490005967067414608/1490634230458224751
       traceDeps: ["react", "react-dom"],
+      routeRules: {
+        "/assets/**": {
+          headers: { "cache-control": "public, max-age=31536000, immutable" },
+        },
+        "/sw.js": {
+          headers: { "cache-control": "public, max-age=0, must-revalidate" },
+        },
+        "/manifest.webmanifest": {
+          headers: { "cache-control": "public, max-age=3600" },
+        },
+      },
     }),
     viteReact(),
     // https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#react-compiler

@@ -13,6 +13,9 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { useEffect } from "react";
+
+import { registerServiceWorker } from "~/lib/register-sw";
 
 import appCss from "~/styles.css?url";
 
@@ -34,7 +37,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
       {
         title: "Splitiv",
@@ -43,13 +46,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         name: "description",
         content: "Group expense management app",
       },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Splitiv" },
+      { name: "theme-color", content: "#ffffff" },
+      {
+        name: "theme-color",
+        media: "(prefers-color-scheme: dark)",
+        content: "#252525",
+      },
     ],
     links: [
-      // Replace with your icons here, or remove if you have a favicon.ico in public/
-      {
-        rel: "icon",
-        href: "/favicon.ico",
-      },
+      { rel: "icon", href: "/favicon.ico" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon-180x180.png" },
       { rel: "stylesheet", href: appCss },
     ],
   }),
@@ -57,6 +68,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument({ children }: { readonly children: React.ReactNode }) {
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
   return (
     // suppress since we're updating the "dark" class in a custom script below
     <html lang="en" suppressHydrationWarning>

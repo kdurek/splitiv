@@ -52,11 +52,11 @@ function AppLayout() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto pb-16">
+      <main className="flex-1 overflow-y-auto pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <Outlet />
       </main>
 
-      <nav className="fixed right-0 bottom-0 left-0 z-10 flex h-16 items-center border-t bg-background">
+      <nav className="fixed right-0 bottom-0 left-0 z-10 flex h-[calc(4rem+env(safe-area-inset-bottom))] items-center border-t bg-background pb-[env(safe-area-inset-bottom)]">
         {NAV_ITEMS.map(({ to, label, icon: Icon }) => {
           const active = pathname === to;
           return (

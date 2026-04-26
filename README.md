@@ -1,4 +1,4 @@
-# splitiv-plus
+# splitiv
 
 > [!IMPORTANT]
 > This template requires [Vite+ `vp`](https://viteplus.dev/guide/#install-vp) and [pnpm](https://pnpm.io/installation) to be installed.

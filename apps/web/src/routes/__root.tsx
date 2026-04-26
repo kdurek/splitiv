@@ -37,18 +37,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "splitiv-plus",
+        title: "Splitiv",
       },
       {
         name: "description",
-        content: "A TanStack Start project scaffolded with create-mugnavo.",
+        content: "Group expense management app",
       },
     ],
     links: [
       // Replace with your icons here, or remove if you have a favicon.ico in public/
       {
         rel: "icon",
-        href: "https://mugnavo.com/favicon.ico",
+        href: "/favicon.ico",
       },
       { rel: "stylesheet", href: appCss },
     ],

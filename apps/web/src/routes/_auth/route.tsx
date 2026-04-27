@@ -39,7 +39,9 @@ function AppLayout() {
   return (
     <div className="flex min-h-svh flex-col">
       <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-background px-4">
-        <span className="text-lg font-semibold tracking-tight">Splitiv</span>
+        <Link to="/" className="text-lg font-semibold tracking-tight">
+          Splitiv
+        </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Link

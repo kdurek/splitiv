@@ -1,33 +1,16 @@
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@repo/ui/components/dropdown-menu";
 import { Input } from "@repo/ui/components/input";
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  BellOffIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  PlusIcon,
-  RefreshCwIcon,
-  SendIcon,
-} from "lucide-react";
+import { BellOffIcon, PlusIcon, RefreshCwIcon, SendIcon } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
 import { PushToggle } from "~/components/push-toggle";
-import { SignOutButton } from "~/components/sign-out-button";
 import { UserAvatar } from "~/components/user-avatar";
 import { getPushSupport } from "~/lib/push-client";
-import {
-  addMemberByEmailMutationOptions,
-  setActiveGroupMutationOptions,
-} from "~/server/groups/mutations";
+import { addMemberByEmailMutationOptions } from "~/server/groups/mutations";
 import { groupsQueryOptions } from "~/server/groups/queries";
 import { sendTestPushNotificationMutationOptions } from "~/server/notifications/mutations";
 import { pushSubscriptionStatusQueryOptions } from "~/server/notifications/queries";
@@ -39,21 +22,10 @@ export const Route = createFileRoute("/_auth/settings")({
 
 function SettingsPage() {
   const {
-    data: { currentUser, currentGroup, currentGroupMembers, userGroups, isOwner },
+    data: { currentGroup, currentGroupMembers, isOwner },
   } = useSuspenseQuery(groupsQueryOptions());
   const queryClient = useQueryClient();
   const [email, setEmail] = React.useState("");
-
-  const switchGroupMutation = useMutation({
-    ...setActiveGroupMutationOptions(),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries();
-      toast.success("Zmieniono aktywną grupę");
-    },
-    onError: (error) => {
-      toast.error("Nie udało się zmienić grupy", { description: error.message });
-    },
-  });
 
   const addMemberMutation = useMutation({
     ...addMemberByEmailMutationOptions(),
@@ -75,41 +47,6 @@ function SettingsPage() {
 
   return (
     <div className="flex flex-col gap-8 p-4 pt-6">
-      {/* Active group */}
-      <section className="space-y-3">
-        <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
-          Aktywna grupa
-        </p>
-        <div className="rounded-xl border-l-4 border-primary/40 bg-card p-5">
-          {userGroups.length > 0 ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<Button variant="outline" className="w-full justify-between" />}
-              >
-                <span>{currentGroup?.name ?? "Wybierz grupę"}</span>
-                <ChevronDownIcon className="size-4 opacity-50" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {userGroups.map((group) => (
-                  <DropdownMenuItem
-                    key={group.id}
-                    disabled={switchGroupMutation.isPending}
-                    onClick={() => {
-                      if (group.id !== currentGroup?.id) switchGroupMutation.mutate(group.id);
-                    }}
-                  >
-                    {group.name}
-                    {group.id === currentGroup?.id && <CheckIcon className="ml-auto size-3.5" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <p className="text-sm text-muted-foreground">Nie należysz do żadnej grupy.</p>
-          )}
-        </div>
-      </section>
-
       {/* Group members — owner only */}
       {currentGroup && isOwner && (
         <section className="space-y-3">
@@ -155,30 +92,6 @@ function SettingsPage() {
         </p>
         <div className="rounded-xl border-l-4 border-primary/40 bg-card p-5">
           <PushToggle />
-        </div>
-      </section>
-
-      {/* Account */}
-      <section className="space-y-3">
-        <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
-          Konto
-        </p>
-        <div className="space-y-4 rounded-xl border-l-4 border-destructive/40 bg-card p-5">
-          <div className="flex items-center gap-3">
-            {currentUser?.name && (
-              <UserAvatar
-                name={currentUser.name}
-                image={currentUser.image}
-                size="lg"
-                shape="square"
-              />
-            )}
-            <div className="flex flex-col gap-0.5">
-              <span className="font-semibold">{currentUser?.name}</span>
-              <span className="text-xs text-muted-foreground">{currentUser?.email}</span>
-            </div>
-          </div>
-          <SignOutButton />
         </div>
       </section>
 

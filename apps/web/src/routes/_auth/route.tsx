@@ -1,11 +1,42 @@
+import { authClient } from "@repo/auth/auth-client";
 import { authQueryOptions } from "@repo/auth/tanstack/queries";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@repo/ui/components/dropdown-menu";
 import { cn } from "@repo/ui/lib/utils";
-import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
-import { HomeIcon, ReceiptIcon, PlusCircleIcon, HandCoinsIcon, SettingsIcon } from "lucide-react";
+import { useMutation, useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+  useLocation,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
+import {
+  CheckIcon,
+  HomeIcon,
+  ReceiptIcon,
+  PlusCircleIcon,
+  HandCoinsIcon,
+  LogOutIcon,
+  SettingsIcon,
+} from "lucide-react";
+import { toast } from "sonner";
 
 import { NotificationBell } from "~/components/notification-bell";
 import { PushPermissionBanner } from "~/components/push-permission-banner";
 import { ThemeToggle } from "~/components/theme-toggle";
+import { UserAvatar } from "~/components/user-avatar";
+import { setActiveGroupMutationOptions } from "~/server/groups/mutations";
+import { groupsQueryOptions } from "~/server/groups/queries";
 import { unreadNotificationCountQueryOptions } from "~/server/notifications/queries";
 
 const NAV_ITEMS: Array<{
@@ -33,9 +64,103 @@ export const Route = createFileRoute("/_auth")({
       throw redirect({ to: "/group/select" });
     }
     void context.queryClient.prefetchQuery(unreadNotificationCountQueryOptions());
+    void context.queryClient.prefetchQuery(groupsQueryOptions());
     return { user };
   },
 });
+
+function UserDropdown() {
+  const { data: user } = useSuspenseQuery(authQueryOptions());
+  const { data: groupsData } = useSuspenseQuery(groupsQueryOptions());
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const navigate = useNavigate();
+
+  if (!user) return null;
+
+  const { currentGroup, userGroups } = groupsData;
+
+  const switchGroupMutation = useMutation({
+    ...setActiveGroupMutationOptions(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries();
+      toast.success("Zmieniono aktywną grupę");
+      navigate({ to: "/" });
+    },
+    onError: (error) => {
+      toast.error("Nie udało się zmienić grupy", { description: error.message });
+    },
+  });
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onResponse: async () => {
+          queryClient.setQueryData(authQueryOptions().queryKey, null);
+          await router.invalidate();
+        },
+      },
+    });
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <button
+            type="button"
+            className="cursor-pointer rounded-lg ring-offset-background transition-opacity outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          />
+        }
+      >
+        <UserAvatar name={user.name} image={user.image} size="md" shape="square" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <div className="flex items-center gap-3 px-3 py-2.5">
+          <UserAvatar name={user.name} image={user.image} size="md" shape="square" />
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-medium">{user.name}</span>
+            <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+          </div>
+        </div>
+        <DropdownMenuSeparator />
+        {userGroups.length > 0 && (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Grupy</DropdownMenuLabel>
+              {userGroups.map((group) => (
+                <DropdownMenuItem
+                  key={group.id}
+                  disabled={switchGroupMutation.isPending}
+                  onClick={() => {
+                    if (group.id !== currentGroup?.id) switchGroupMutation.mutate(group.id);
+                  }}
+                >
+                  {group.name}
+                  {group.id === currentGroup?.id && <CheckIcon className="ml-auto size-3.5" />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        <DropdownMenuGroup>
+          <DropdownMenuItem render={<Link to="/settings" />}>
+            <SettingsIcon />
+            Ustawienia
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
+            <LogOutIcon />
+            Wyloguj
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 function AppLayout() {
   const { pathname } = useLocation();
@@ -49,13 +174,7 @@ function AppLayout() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <NotificationBell />
-          <Link
-            to="/settings"
-            className="inline-flex size-9 items-center justify-center rounded-md border border-input bg-background text-sm shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            <SettingsIcon className="h-[1.2rem] w-[1.2rem]" />
-            <span className="sr-only">Ustawienia</span>
-          </Link>
+          <UserDropdown />
         </div>
       </header>
 

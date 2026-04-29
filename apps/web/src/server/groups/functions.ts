@@ -1,44 +1,47 @@
 import { auth } from "@repo/auth/auth";
 import { freshAuthMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { member, organization, user } from "@repo/db/schema";
+import { member } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, setResponseHeader } from "@tanstack/react-start/server";
 import { and, eq } from "drizzle-orm";
 import { ulid } from "ulid";
 import { z } from "zod";
 
+import { addMemberByEmailHandler, getGroupsDataHandler } from "./handlers";
 import { activeGroupAdminMiddleware } from "./middleware";
+
+export const $createGroup = createServerFn({ method: "POST" })
+  .middleware([freshAuthMiddleware])
+  .inputValidator(z.object({ name: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    const slug = `${data.name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")}-${ulid().slice(-6).toLowerCase()}`;
+
+    const response = await auth.api.createOrganization({
+      body: { name: data.name, slug },
+      headers: getRequest().headers,
+      returnHeaders: true,
+    });
+
+    const cookies = (response as any).headers?.getSetCookie?.();
+    if (cookies?.length) {
+      setResponseHeader("Set-Cookie", cookies);
+    }
+
+    return { id: response.response.id };
+  });
 
 export const $getGroupsData = createServerFn({ method: "GET" })
   .middleware([freshAuthMiddleware])
   .handler(async ({ context }) => {
-    const currentUser = context.user;
-    const activeGroupId = context.session.activeOrganizationId;
-
-    const userGroups = await db
-      .select({ id: organization.id, name: organization.name })
-      .from(member)
-      .innerJoin(organization, eq(organization.id, member.organizationId))
-      .where(eq(member.userId, currentUser.id));
-
-    const currentGroup = activeGroupId
-      ? (userGroups.find((g) => g.id === activeGroupId) ?? null)
-      : null;
-
-    const currentGroupMembers = currentGroup
-      ? await db
-          .select({ userId: user.id, name: user.name, image: user.image, role: member.role })
-          .from(member)
-          .innerJoin(user, eq(user.id, member.userId))
-          .where(eq(member.organizationId, currentGroup.id))
-      : [];
-
-    const isOwner = currentGroup
-      ? currentGroupMembers.some((m) => m.userId === currentUser.id && m.role === "owner")
-      : false;
-
-    return { currentUser, currentGroup, currentGroupMembers, userGroups, isOwner };
+    const data = await getGroupsDataHandler(db, {
+      id: context.user.id,
+      activeOrganizationId: context.session.activeOrganizationId ?? null,
+    });
+    return { ...data, currentUser: context.user };
   });
 
 export const $setActiveGroup = createServerFn({ method: "POST" })
@@ -72,33 +75,5 @@ export const $addMemberByEmail = createServerFn({ method: "POST" })
   .middleware([activeGroupAdminMiddleware])
   .inputValidator(z.object({ email: z.email() }))
   .handler(async ({ context, data }) => {
-    const { activeGroupId } = context;
-
-    const [targetUser] = await db
-      .select({ id: user.id })
-      .from(user)
-      .where(eq(user.email, data.email))
-      .limit(1);
-
-    if (!targetUser) {
-      throw new Error("Nie znaleziono użytkownika o podanym adresie email");
-    }
-
-    const [existing] = await db
-      .select({ id: member.id })
-      .from(member)
-      .where(and(eq(member.userId, targetUser.id), eq(member.organizationId, activeGroupId)))
-      .limit(1);
-
-    if (existing) {
-      throw new Error("Użytkownik jest już członkiem tej grupy");
-    }
-
-    await db.insert(member).values({
-      id: ulid(),
-      organizationId: activeGroupId,
-      userId: targetUser.id,
-      role: "member",
-      createdAt: new Date(),
-    });
+    await addMemberByEmailHandler(db, context.user.id, context.activeGroupId, data.email);
   });

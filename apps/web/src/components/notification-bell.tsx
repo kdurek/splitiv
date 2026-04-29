@@ -28,7 +28,7 @@ export function NotificationBell() {
     <Link
       to="/notifications"
       aria-label="Powiadomienia"
-      className="relative inline-flex size-9 items-center justify-center rounded-md border border-input bg-background text-sm shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+      className="relative inline-flex size-9 items-center justify-center rounded-lg border border-input bg-background text-sm shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
     >
       <BellIcon className="h-[1.2rem] w-[1.2rem]" />
       {unread > 0 && (

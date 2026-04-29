@@ -1,4 +1,11 @@
 import { Button } from "@repo/ui/components/button";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@repo/ui/components/empty";
 import { cn } from "@repo/ui/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -93,10 +100,15 @@ function NotificationsPage() {
       </div>
 
       {notifications.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <BellIcon className="size-10 text-muted-foreground/40" />
-          <p className="text-sm text-muted-foreground">Brak powiadomień.</p>
-        </div>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <BellIcon />
+            </EmptyMedia>
+            <EmptyTitle>Brak powiadomień</EmptyTitle>
+            <EmptyDescription>Nie masz żadnych powiadomień.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <div className="flex flex-col gap-2">
           {notifications.map((notif) => {

@@ -1,3 +1,10 @@
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@repo/ui/components/empty";
 import { Input } from "@repo/ui/components/input";
 import { cn } from "@repo/ui/lib/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -91,7 +98,17 @@ function ExpensesIndex() {
           <p className="py-8 text-center text-sm text-muted-foreground">Ładowanie...</p>
         )}
         {status === "success" && items.length === 0 && (
-          <p className="py-8 text-center text-sm text-muted-foreground">Brak wydatków.</p>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <ReceiptIcon />
+              </EmptyMedia>
+              <EmptyTitle>Brak wydatków</EmptyTitle>
+              <EmptyDescription>
+                {q ? "Brak wyników dla podanej frazy." : "Nie ma jeszcze żadnych wydatków."}
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
         {items.map((item) => (
           <ExpenseRow key={item.id} item={item} />

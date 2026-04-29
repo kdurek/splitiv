@@ -1,5 +1,13 @@
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@repo/ui/components/empty";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { CheckIcon } from "lucide-react";
 
 import { UserAvatar } from "~/components/user-avatar";
 import { adminBalanceQueryOptions } from "~/server/admin/queries";
@@ -50,7 +58,15 @@ function AdminPage() {
       </section>
 
       {creditors.length === 0 ? (
-        <p className="py-8 text-center text-sm text-muted-foreground">Wszystkie rozliczone.</p>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <CheckIcon />
+            </EmptyMedia>
+            <EmptyTitle>Wszystkie rozliczone</EmptyTitle>
+            <EmptyDescription>Brak aktywnych długów w grupie.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <div className="flex flex-col gap-4">
           {creditors.map(([creditorId, { creditorName, creditorImage, debts }]) => {

@@ -1,3 +1,4 @@
+import { Empty, EmptyDescription } from "@repo/ui/components/empty";
 import { cn } from "@repo/ui/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -80,7 +81,9 @@ function AppIndex() {
           </span>
           <div className="mb-5 text-2xl font-bold">{formatAmount(totalOwedToYou)}</div>
           {owedToYou.length === 0 ? (
-            <p className="text-xs text-muted-foreground">Nikt Ci nie jest winien pieniędzy.</p>
+            <Empty className="p-0">
+              <EmptyDescription>Nikt Ci nie jest winien pieniędzy.</EmptyDescription>
+            </Empty>
           ) : (
             <div className="flex flex-col gap-3">
               {owedToYou.map((person) => (
@@ -103,7 +106,9 @@ function AppIndex() {
           </span>
           <div className="mb-5 text-2xl font-bold">{formatAmount(totalYouOwe)}</div>
           {youOwe.length === 0 ? (
-            <p className="text-xs text-muted-foreground">Nie jesteś nikomu winien pieniędzy.</p>
+            <Empty className="p-0">
+              <EmptyDescription>Nie jesteś nikomu winien pieniędzy.</EmptyDescription>
+            </Empty>
           ) : (
             <div className="flex flex-col gap-3">
               {youOwe.map((person) => (

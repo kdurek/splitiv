@@ -8,6 +8,13 @@ import {
   DrawerRoot,
   DrawerViewport,
 } from "@repo/ui/components/drawer";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@repo/ui/components/empty";
 import { Label } from "@repo/ui/components/label";
 import { NumberField, NumberFieldInput } from "@repo/ui/components/number-field";
 import { cn } from "@repo/ui/lib/utils";
@@ -377,9 +384,15 @@ function SettlePage() {
       {/* Debt sections */}
       <div className="space-y-6 px-4">
         {debtsTo.length === 0 && debtsFrom.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">
-            Brak długów do rozliczenia.
-          </p>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <CheckIcon />
+              </EmptyMedia>
+              <EmptyTitle>Brak długów</EmptyTitle>
+              <EmptyDescription>Nie ma nic do rozliczenia z tą osobą.</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <>
             {debtsFrom.length > 0 && (

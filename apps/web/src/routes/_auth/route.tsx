@@ -3,7 +3,10 @@ import { cn } from "@repo/ui/lib/utils";
 import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import { HomeIcon, ReceiptIcon, PlusCircleIcon, HandCoinsIcon, SettingsIcon } from "lucide-react";
 
+import { NotificationBell } from "~/components/notification-bell";
+import { PushPermissionBanner } from "~/components/push-permission-banner";
 import { ThemeToggle } from "~/components/theme-toggle";
+import { unreadNotificationCountQueryOptions } from "~/server/notifications/queries";
 
 const NAV_ITEMS: Array<{
   to: string;
@@ -29,6 +32,7 @@ export const Route = createFileRoute("/_auth")({
     if (!user.activeOrganizationId && location.pathname !== "/group/select") {
       throw redirect({ to: "/group/select" });
     }
+    void context.queryClient.prefetchQuery(unreadNotificationCountQueryOptions());
     return { user };
   },
 });
@@ -44,6 +48,7 @@ function AppLayout() {
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <NotificationBell />
           <Link
             to="/settings"
             className="inline-flex size-9 items-center justify-center rounded-md border border-input bg-background text-sm shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -53,6 +58,8 @@ function AppLayout() {
           </Link>
         </div>
       </header>
+
+      <PushPermissionBanner />
 
       <main className="flex-1 overflow-y-auto pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <Outlet />

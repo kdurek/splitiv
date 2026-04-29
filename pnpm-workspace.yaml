@@ -58,6 +58,8 @@ catalog:
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plus: latest
   vitest: npm:@voidzero-dev/vite-plus-test@latest
+  web-push: ^3.6.7
+  "@types/web-push": ^3.6.4
   zod: ^4.3.6
 
 catalogMode: prefer

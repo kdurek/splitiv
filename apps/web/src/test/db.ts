@@ -38,7 +38,7 @@ export async function createTestDb() {
   async function truncate() {
     await db.execute(
       // Truncate in dependency order; CASCADE handles any remaining FK refs
-      `TRUNCATE "expense_log", "expense_debt", "expense", "invitation", "member", "organization",
+      `TRUNCATE "notification", "expense_log", "expense_debt", "expense", "invitation", "member", "organization",
                "session", "account", "verification", "push_subscription", "user" CASCADE`,
     );
   }

@@ -17,12 +17,15 @@ import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Loader2Icon, RotateCcwIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
+import { z } from "zod";
 
 import { UserAvatar } from "~/components/user-avatar";
 import { $deleteExpense, $settleDebt, $undoDebtLog } from "~/server/expenses/mutations";
 import { expenseQueryOptions } from "~/server/expenses/queries";
+import { $markNotificationRead } from "~/server/notifications/functions";
 
 export const Route = createFileRoute("/_auth/expenses/$expenseId")({
+  validateSearch: z.object({ n: z.string().optional() }),
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(expenseQueryOptions(params.expenseId)),
   component: ExpenseDetail,
@@ -429,10 +432,27 @@ function DeleteExpenseDrawer({
 
 function ExpenseDetail() {
   const { expenseId } = Route.useParams();
+  const { n: notificationId } = Route.useSearch();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     data: { expense, debts, logs },
   } = useSuspenseQuery(expenseQueryOptions(expenseId));
   const { data: currentUser } = useSuspenseQuery(authQueryOptions());
+
+  // Mark notification read when arriving via push click
+  React.useEffect(() => {
+    if (!notificationId) return;
+    void $markNotificationRead({ data: { id: notificationId } }).then(() => {
+      void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    });
+    void navigate({
+      to: "/expenses/$expenseId",
+      params: { expenseId },
+      search: {},
+      replace: true,
+    });
+  }, [notificationId, expenseId, navigate, queryClient]);
 
   const currentUserId = currentUser?.id;
   const debtorIds = new Set(debts.map((d) => d.debtorId));

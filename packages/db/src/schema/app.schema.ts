@@ -79,6 +79,31 @@ export const pushSubscription = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [index("push_subscription_user_id_idx").on(table.userId)],
+);
+
+export const notification = pgTable(
+  "notification",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    expenseId: text("expense_id").references(() => expense.id, { onDelete: "set null" }),
+    readAt: timestamp("read_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("notification_user_id_idx").on(table.userId),
+    index("notification_user_org_idx").on(table.userId, table.organizationId),
+    index("notification_user_unread_idx").on(table.userId, table.readAt),
+  ],
 );

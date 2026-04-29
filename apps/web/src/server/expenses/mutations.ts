@@ -32,7 +32,11 @@ export const $createExpense = createServerFn({ method: "POST" })
   .handler(({ context, data }) =>
     createExpenseHandler(
       db,
-      { id: context.user.id, activeOrganizationId: context.session.activeOrganizationId ?? null },
+      {
+        id: context.user.id,
+        name: context.user.name,
+        activeOrganizationId: context.session.activeOrganizationId ?? null,
+      },
       data,
     ),
   );

@@ -24,6 +24,10 @@ export const relations = defineRelationsPart(schema, (r) => ({
       from: r.user.id,
       to: r.pushSubscription.userId,
     }),
+    notifications: r.many.notification({
+      from: r.user.id,
+      to: r.notification.userId,
+    }),
   },
   organization: {
     members: r.many.member({
@@ -37,6 +41,10 @@ export const relations = defineRelationsPart(schema, (r) => ({
     expenses: r.many.expense({
       from: r.organization.id,
       to: r.expense.groupId,
+    }),
+    notifications: r.many.notification({
+      from: r.organization.id,
+      to: r.notification.organizationId,
     }),
   },
   member: {
@@ -72,6 +80,10 @@ export const relations = defineRelationsPart(schema, (r) => ({
       from: r.expense.id,
       to: r.expenseDebt.expenseId,
     }),
+    notifications: r.many.notification({
+      from: r.expense.id,
+      to: r.notification.expenseId,
+    }),
   },
   expenseDebt: {
     expense: r.one.expense({
@@ -97,6 +109,20 @@ export const relations = defineRelationsPart(schema, (r) => ({
     user: r.one.user({
       from: r.pushSubscription.userId,
       to: r.user.id,
+    }),
+  },
+  notification: {
+    user: r.one.user({
+      from: r.notification.userId,
+      to: r.user.id,
+    }),
+    organization: r.one.organization({
+      from: r.notification.organizationId,
+      to: r.organization.id,
+    }),
+    expense: r.one.expense({
+      from: r.notification.expenseId,
+      to: r.expense.id,
     }),
   },
 }));

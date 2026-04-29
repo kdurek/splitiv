@@ -1,12 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = any;
-type UserCtx = { id: string; activeOrganizationId: string | null };
+type UserCtx = { id: string; name?: string; activeOrganizationId: string | null };
 
 import { expense, expenseDebt, expenseLog, member } from "@repo/db/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { ulid } from "ulid";
 
 import { canDeleteExpense, canSettleDebt, canUndoLog } from "../../lib/permissions";
+import { dispatchNotification } from "../notifications/events";
 
 export async function createExpenseHandler(
   db: Db,
@@ -44,6 +45,9 @@ export async function createExpenseHandler(
 
   const expenseId = ulid();
 
+  const recipientIds = data.debts.map((d) => d.debtorId).filter((id) => id !== user.id);
+  const uniqueRecipientIds = [...new Set(recipientIds)];
+
   await db.transaction(async (tx: Db) => {
     await tx.insert(expense).values({
       id: expenseId,
@@ -63,6 +67,16 @@ export async function createExpenseHandler(
         settled: debt.debtorId === data.payerId ? debt.amount : "0",
       })),
     );
+  });
+
+  await dispatchNotification(db, {
+    type: "expense_created",
+    orgId: groupId,
+    actorName: user.name ?? "Ktoś",
+    expenseName: data.title,
+    amount: data.amount,
+    expenseId,
+    recipientIds: uniqueRecipientIds,
   });
 
   return { expenseId };

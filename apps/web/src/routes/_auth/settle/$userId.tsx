@@ -306,7 +306,12 @@ function SettlePage() {
     setIsSubmitting(true);
     try {
       await $settleDebts({ data: { debts: selected } });
-      queryClient.invalidateQueries({ queryKey: ["dashboard-balance"] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["dashboard-balance"] }),
+        queryClient.invalidateQueries({ queryKey: ["debts-to-user", userId] }),
+        queryClient.invalidateQueries({ queryKey: ["debts-from-user", userId] }),
+        queryClient.invalidateQueries({ queryKey: ["expenses"] }),
+      ]);
       navigate({ to: "/" });
     } finally {
       setIsSubmitting(false);

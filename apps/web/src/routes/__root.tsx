@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 import { registerServiceWorker } from "~/lib/register-sw";
 
@@ -69,7 +70,24 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { readonly children: React.ReactNode }) {
   useEffect(() => {
-    registerServiceWorker();
+    registerServiceWorker(() => {
+      toast("New version available", {
+        duration: Infinity,
+        action: {
+          label: "Update",
+          onClick: () => {
+            navigator.serviceWorker.addEventListener(
+              "controllerchange",
+              () => window.location.reload(),
+              { once: true },
+            );
+            navigator.serviceWorker.ready.then((registration) => {
+              registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+            });
+          },
+        },
+      });
+    });
   }, []);
 
   return (

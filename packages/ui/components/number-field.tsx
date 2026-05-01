@@ -23,6 +23,7 @@ function NumberFieldInput({
         event.currentTarget.select();
         onFocus?.(event);
       }}
+      onContextMenu={(e) => e.preventDefault()}
       {...props}
     />
   );

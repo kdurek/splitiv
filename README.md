@@ -1,9 +1,11 @@
-# splitiv
+# [TanStarter Plus](https://github.com/mugnavo/tanstarter-plus)
 
 > [!IMPORTANT]
 > This template requires [Vite+ `vp`](https://viteplus.dev/guide/#install-vp) and [pnpm](https://pnpm.io/installation) to be installed.
 
-This project was scaffolded with `create-mugnavo` from commit [`e016093`](https://github.com/mugnavo/tanstarter-plus/tree/e01609314f46ff533eeaadbe386ec1c32e86be38). See the [template changelog](https://github.com/mugnavo/tanstarter-plus/compare/e01609314f46ff533eeaadbe386ec1c32e86be38...main) for newer changes.
+<!-- scaffold:description -->
+
+A minimal monorepo starter for 🏝️ TanStack Start, based on [mugnavo/tanstarter](https://github.com/mugnavo/tanstarter).
 
 ```
 pnpm create mugnavo -t monorepo
@@ -13,8 +15,8 @@ pnpm create mugnavo -t monorepo
 - [React 19](https://react.dev) + [React Compiler](https://react.dev/learn/react-compiler)
 - TanStack [Start](https://tanstack.com/start/latest) + [Router](https://tanstack.com/router/latest) + [Query](https://tanstack.com/query/latest) + [Form](https://tanstack.com/form/latest)
 - [Vite 8](https://vite.dev/) + [Nitro v3](https://nitro.build/)
-- [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) + [Base UI](https://base-ui.com/) (base-maia, [`--preset b1ZOKpgEC`](https://ui.shadcn.com/create?preset=b1ZOKpgEC&base=base&template=start))
-- [Drizzle ORM v1](https://orm.drizzle.team/docs/relations-v1-v2) (beta) + PostgreSQL
+- [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) + [Base UI](https://base-ui.com/) (base-luma, [`--preset b1aIaoaxs`](https://ui.shadcn.com/create?preset=b1aIaoaxs&base=base&template=start&pointer=true))
+- [Drizzle ORM v1](https://orm.drizzle.team/docs/relations-v1-v2) + PostgreSQL
 - [Better Auth](https://www.better-auth.com/)
 
 ```sh
@@ -53,7 +55,7 @@ pnpm create mugnavo -t monorepo
    pnpm create mugnavo -t monorepo
    ```
 
-2. Create `.env` files in [`/apps/web`](./apps/web/.env.example) and [`/packages/db`](./packages/db/.env.example) based on their respective `.env.example` files.
+2. Create a `.env` file in `/apps/web` based on [`.env.example`](./apps/web/.env.example).
 
 3. Generate the initial migration with drizzle-kit, then apply to your database:
 
@@ -96,11 +98,10 @@ Vite+ has support for [caching](https://viteplus.dev/guide/cache) via Vite Task.
 
 ## Issue watchlist
 
-- [Template changelog](https://github.com/mugnavo/tanstarter-plus/compare/e01609314f46ff533eeaadbe386ec1c32e86be38...main) - Track template updates since this project was created.
 - [Router/Start issues](https://github.com/TanStack/router/issues) - TanStack Start is in RC.
 - [Devtools releases](https://github.com/TanStack/devtools/releases) - TanStack Devtools is in alpha and may still have breaking changes.
 - [Nitro v3 beta](https://nitro.build/blog/v3-beta) - This template is configured with Nitro v3 beta by default.
-- [Drizzle ORM v1 Beta](https://orm.drizzle.team/docs/relations-v1-v2) - Drizzle ORM v1 is in beta with relations v2.
+- [Drizzle ORM v1 RC](https://orm.drizzle.team/docs/relations-v1-v2) - Drizzle ORM v1 is in RC with relations v2.
 - [Better Auth experimental Drizzle adapter](https://github.com/better-auth/better-auth/pull/6913) - We're using a separate branch of Better Auth's Drizzle adapter that supports Drizzle relations v2.
 - [Vite+ issues](https://github.com/voidzero-dev/vite-plus/issues) - Vite+ is in alpha.
 

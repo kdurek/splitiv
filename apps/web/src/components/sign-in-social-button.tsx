@@ -30,7 +30,7 @@ export function SignInSocialButton(props: SocialLoginButtonProps) {
 
   return (
     <Button
-      variant="outline"
+      variant="secondary"
       className="w-full"
       type="button"
       disabled={mutation.isSuccess || mutation.isPending || props.disabled}

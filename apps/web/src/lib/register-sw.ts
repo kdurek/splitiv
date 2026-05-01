@@ -1,29 +1,29 @@
-export function registerServiceWorker(onUpdateFound?: () => void) {
+export function registerServiceWorker() {
   if (typeof window === "undefined") return;
   if (!("serviceWorker" in navigator)) return;
 
   const register = async () => {
     const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
 
-    let notified = false;
-
-    const notifyIfWaiting = () => {
-      if (notified) return;
+    const applyUpdate = () => {
       if (registration.waiting && registration.active) {
-        notified = true;
-        onUpdateFound?.();
+        navigator.serviceWorker.addEventListener(
+          "controllerchange",
+          () => window.location.reload(),
+          { once: true },
+        );
+        registration.waiting.postMessage({ type: "SKIP_WAITING" });
       }
     };
 
     const trackWorker = (worker: ServiceWorker) => {
       worker.addEventListener("statechange", () => {
-        if (worker.state === "installed") notifyIfWaiting();
+        if (worker.state === "installed") applyUpdate();
       });
     };
 
-    notifyIfWaiting();
+    applyUpdate();
 
-    // SW might already be installing when we get here (missed updatefound)
     if (registration.installing) trackWorker(registration.installing);
 
     registration.addEventListener("updatefound", () => {

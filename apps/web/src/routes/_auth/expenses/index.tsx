@@ -10,7 +10,7 @@ import { cn } from "@repo/ui/lib/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ReceiptIcon, SearchIcon, XIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { z } from "zod";
 
@@ -46,17 +46,20 @@ function ExpensesIndex() {
   const [inputValue, setInputValue] = useState(q ?? "");
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  useEffect(() => {
-    clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      const trimmed = inputValue.trim();
-      navigate({
-        search: (prev) => ({ ...prev, q: trimmed.length >= 3 ? trimmed : undefined }),
-        replace: true,
-      });
-    }, 300);
-    return () => clearTimeout(debounceRef.current);
-  }, [inputValue, navigate]);
+  const handleSearch = useCallback(
+    (value: string) => {
+      setInputValue(value);
+      clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        const trimmed = value.trim();
+        navigate({
+          search: (prev) => ({ ...prev, q: trimmed.length >= 3 ? trimmed : undefined }),
+          replace: true,
+        });
+      }, 300);
+    },
+    [navigate],
+  );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery(
     expensesInfiniteQueryOptions(q),
@@ -80,12 +83,12 @@ function ExpensesIndex() {
           type="text"
           placeholder="Szukaj wydatków..."
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
           className="pr-9 pl-9"
         />
         {inputValue && (
           <button
-            onClick={() => setInputValue("")}
+            onClick={() => handleSearch("")}
             className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
             <XIcon className="size-4" />

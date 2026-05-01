@@ -6,31 +6,37 @@ export function registerServiceWorker(onUpdateFound?: () => void) {
     const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
 
     let notified = false;
+
     const notifyIfWaiting = () => {
       if (notified) return;
-      if (registration.waiting && navigator.serviceWorker.controller) {
+      if (registration.waiting && registration.active) {
         notified = true;
         onUpdateFound?.();
       }
     };
 
+    const trackWorker = (worker: ServiceWorker) => {
+      worker.addEventListener("statechange", () => {
+        if (worker.state === "installed") notifyIfWaiting();
+      });
+    };
+
     notifyIfWaiting();
 
+    // SW might already be installing when we get here (missed updatefound)
+    if (registration.installing) trackWorker(registration.installing);
+
     registration.addEventListener("updatefound", () => {
-      const newWorker = registration.installing;
-      if (!newWorker) return;
-      newWorker.addEventListener("statechange", () => {
-        if (newWorker.state === "installed") {
-          notifyIfWaiting();
-        }
-      });
+      if (registration.installing) trackWorker(registration.installing);
     });
 
+    const checkForUpdate = () => registration.update().catch(() => {});
+
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") {
-        registration.update();
-      }
+      if (document.visibilityState === "visible") checkForUpdate();
     });
+
+    window.addEventListener("focus", checkForUpdate);
   };
 
   if (document.readyState === "complete") {

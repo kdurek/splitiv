@@ -150,16 +150,15 @@ function CreateExpensePage() {
                 <NumberField
                   aria-label="Kwota"
                   value={field.state.value}
-                  onChange={(v) => field.handleChange(isNaN(v) ? 0 : v)}
-                  onBlur={field.handleBlur}
-                  minValue={0}
-                  formatOptions={{
+                  onValueChange={(v) => field.handleChange(v ?? 0)}
+                  min={0}
+                  format={{
                     style: "decimal",
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   }}
                 >
-                  <NumberFieldInput className="pr-10" />
+                  <NumberFieldInput className="pr-10" onBlur={field.handleBlur} />
                 </NumberField>
                 <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground">
                   zł
@@ -296,16 +295,15 @@ function CreateExpensePage() {
                           <NumberField
                             aria-label={`Kwota ${member.name}`}
                             value={field.state.value}
-                            onChange={(v) => field.handleChange(isNaN(v) ? 0 : v)}
-                            onBlur={field.handleBlur}
-                            minValue={0}
-                            formatOptions={{
+                            onValueChange={(v) => field.handleChange(v ?? 0)}
+                            min={0}
+                            format={{
                               style: "decimal",
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                             }}
                           >
-                            <NumberFieldInput className="w-28 pr-8" />
+                            <NumberFieldInput className="w-28 pr-8" onBlur={field.handleBlur} />
                           </NumberField>
                           <span className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-xs text-muted-foreground">
                             zł

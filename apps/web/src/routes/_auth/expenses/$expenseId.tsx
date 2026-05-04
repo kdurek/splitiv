@@ -86,17 +86,16 @@ function SettleDebtForm({ debt, onSuccess }: { debt: Debt; onSuccess: () => void
                 <NumberField
                   aria-label="Kwota do rozliczenia"
                   value={field.state.value}
-                  onChange={(v) => field.handleChange(isNaN(v) ? 0 : v)}
-                  onBlur={field.handleBlur}
-                  minValue={0.01}
-                  maxValue={remaining}
-                  formatOptions={{
+                  onValueChange={(v) => field.handleChange(v ?? 0)}
+                  min={0.01}
+                  max={remaining}
+                  format={{
                     style: "decimal",
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   }}
                 >
-                  <NumberFieldInput id={field.name} className="pr-10" />
+                  <NumberFieldInput id={field.name} className="pr-10" onBlur={field.handleBlur} />
                 </NumberField>
                 <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground">
                   zł

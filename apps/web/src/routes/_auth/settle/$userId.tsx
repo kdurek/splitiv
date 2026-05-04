@@ -99,10 +99,10 @@ function EditAmountDrawer({
                     <NumberField
                       aria-label="Kwota do rozliczenia"
                       value={value}
-                      onChange={(v) => setValue(isNaN(v) ? 0 : v)}
-                      minValue={0.01}
-                      maxValue={maxAmount}
-                      formatOptions={{
+                      onValueChange={(v) => setValue(v ?? 0)}
+                      min={0.01}
+                      max={maxAmount}
+                      format={{
                         style: "decimal",
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,

@@ -6,12 +6,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { formDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import {
-  createRootRouteWithContext,
-  HeadContent,
-  ScriptOnce,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
 
@@ -73,20 +68,12 @@ function RootDocument({ children }: { readonly children: React.ReactNode }) {
   }, []);
 
   return (
-    // suppress since we're updating the "dark" class in a custom script below
+    // suppress since we're updating the "dark" class in ThemeProvider
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        <ScriptOnce>
-          {/* Apply theme early to avoid FOUC */}
-          {`document.documentElement.classList.toggle(
-            'dark',
-            localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-            )`}
-        </ScriptOnce>
-
         <ThemeProvider>
           {children}
           <Toaster richColors />

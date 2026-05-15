@@ -1,13 +1,27 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = any;
 type UserCtx = { id: string; name?: string; activeOrganizationId: string | null };
+type ExpenseDebtInput = { debtorId: string; amount: string };
 
 import { expense, expenseDebt, expenseLog, member } from "@repo/db/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { ulid } from "ulid";
 
 import { canDeleteExpense, canSettleDebt, canUndoLog } from "../../lib/permissions";
-import { dispatchNotification } from "../notifications/events";
+import {
+  insertNotificationRows,
+  sendNotificationPushes,
+  type NotificationEvent,
+} from "../notifications/events";
+
+function getExpenseNotificationRecipientIds(
+  data: { payerId: string; debts: ExpenseDebtInput[] },
+  actorId: string,
+) {
+  return [...new Set([data.payerId, ...data.debts.map((debt) => debt.debtorId)])].filter(
+    (id) => id !== actorId,
+  );
+}
 
 export async function createExpenseHandler(
   db: Db,
@@ -17,7 +31,7 @@ export async function createExpenseHandler(
     description?: string;
     payerId: string;
     amount: string;
-    debts: { debtorId: string; amount: string }[];
+    debts: ExpenseDebtInput[];
   },
 ) {
   const groupId = user.activeOrganizationId;
@@ -45,10 +59,18 @@ export async function createExpenseHandler(
 
   const expenseId = ulid();
 
-  const recipientIds = data.debts.map((d) => d.debtorId).filter((id) => id !== user.id);
-  const uniqueRecipientIds = [...new Set(recipientIds)];
+  const recipientIds = getExpenseNotificationRecipientIds(data, user.id);
+  const notificationEvent = {
+    type: "expense_created",
+    orgId: groupId,
+    actorName: user.name ?? "Ktoś",
+    expenseName: data.title,
+    amount: data.amount,
+    expenseId,
+    recipientIds,
+  } satisfies NotificationEvent;
 
-  await db.transaction(async (tx: Db) => {
+  const notificationRows = await db.transaction(async (tx: Db) => {
     await tx.insert(expense).values({
       id: expenseId,
       name: data.title,
@@ -67,17 +89,11 @@ export async function createExpenseHandler(
         settled: debt.debtorId === data.payerId ? debt.amount : "0",
       })),
     );
+
+    return insertNotificationRows(tx, notificationEvent);
   });
 
-  await dispatchNotification(db, {
-    type: "expense_created",
-    orgId: groupId,
-    actorName: user.name ?? "Ktoś",
-    expenseName: data.title,
-    amount: data.amount,
-    expenseId,
-    recipientIds: uniqueRecipientIds,
-  });
+  sendNotificationPushes(notificationRows);
 
   return { expenseId };
 }

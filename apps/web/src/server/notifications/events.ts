@@ -50,9 +50,9 @@ function buildRows(event: NotificationEvent): DispatchRow[] {
   }));
 }
 
-export async function dispatchNotification(db: Db, event: NotificationEvent) {
+export async function insertNotificationRows(db: Db, event: NotificationEvent) {
   const rows = buildRows(event);
-  if (rows.length === 0) return;
+  if (rows.length === 0) return [];
 
   await db.insert(notification).values(
     rows.map(({ id, userId, organizationId, type, title, body, expenseId }) => ({
@@ -66,14 +66,31 @@ export async function dispatchNotification(db: Db, event: NotificationEvent) {
     })),
   );
 
-  void Promise.allSettled(
-    rows.map((row) =>
-      sendPushToUsers([row.userId], {
-        title: row.title,
-        body: row.body,
-        url: row.url,
-        notificationId: row.id,
-      }),
-    ),
-  );
+  return rows;
+}
+
+export function sendNotificationPushes(rows: DispatchRow[]) {
+  if (rows.length === 0) return;
+
+  try {
+    void Promise.allSettled(
+      rows.map((row) =>
+        sendPushToUsers([row.userId], {
+          title: row.title,
+          body: row.body,
+          url: row.url,
+          notificationId: row.id,
+        }),
+      ),
+    ).catch((error) => {
+      console.error("[push] notification dispatch failed:", error);
+    });
+  } catch (error) {
+    console.error("[push] notification dispatch failed:", error);
+  }
+}
+
+export async function dispatchNotification(db: Db, event: NotificationEvent) {
+  const rows = await insertNotificationRows(db, event);
+  sendNotificationPushes(rows);
 }

@@ -1,4 +1,12 @@
-import { expense, expenseDebt, expenseLog, member, organization, user } from "@repo/db/schema";
+import {
+  expense,
+  expenseDebt,
+  expenseLog,
+  member,
+  notification,
+  organization,
+  user,
+} from "@repo/db/schema";
 import { and, eq } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
@@ -15,6 +23,8 @@ import {
 const U1 = "user-alice";
 const U2 = "user-bob";
 const U3 = "user-charlie";
+const U4 = "user-diana";
+const U5 = "user-eric";
 const G1 = "group-main";
 
 type TestDb = Awaited<ReturnType<typeof createTestDb>>["db"];
@@ -34,11 +44,13 @@ afterAll(async () => {
 beforeEach(async () => {
   await truncate();
 
-  // Seed minimal data: 3 users, 1 organization, all members
+  // Seed minimal data: 5 users, 1 organization, all members
   await db.insert(user).values([
     { id: U1, name: "Alice", email: "alice@test.com", emailVerified: true },
     { id: U2, name: "Bob", email: "bob@test.com", emailVerified: true },
     { id: U3, name: "Charlie", email: "charlie@test.com", emailVerified: true },
+    { id: U4, name: "Diana", email: "diana@test.com", emailVerified: true },
+    { id: U5, name: "Eric", email: "eric@test.com", emailVerified: true },
   ]);
   await db
     .insert(organization)
@@ -47,6 +59,8 @@ beforeEach(async () => {
     { id: "m1", organizationId: G1, userId: U1, role: "owner", createdAt: new Date() },
     { id: "m2", organizationId: G1, userId: U2, role: "member", createdAt: new Date() },
     { id: "m3", organizationId: G1, userId: U3, role: "member", createdAt: new Date() },
+    { id: "m4", organizationId: G1, userId: U4, role: "member", createdAt: new Date() },
+    { id: "m5", organizationId: G1, userId: U5, role: "member", createdAt: new Date() },
   ]);
 });
 
@@ -84,6 +98,60 @@ describe("createExpenseHandler", () => {
     expect(payerDebt?.settled).toBe("5.00");
     // Bob's share is unsettled
     expect(bobDebt?.settled).toBe("0");
+  });
+
+  it("notifies all other debtors when the creator is payer and debtor", async () => {
+    const { expenseId } = await createExpenseHandler(
+      db,
+      { id: U1, name: "Alice", activeOrganizationId: G1 },
+      {
+        title: "Dinner",
+        payerId: U1,
+        amount: "100.00",
+        debts: [
+          { debtorId: U1, amount: "25.00" },
+          { debtorId: U2, amount: "25.00" },
+          { debtorId: U3, amount: "25.00" },
+          { debtorId: U4, amount: "25.00" },
+        ],
+      },
+    );
+
+    const rows = await db
+      .select({
+        userId: notification.userId,
+        organizationId: notification.organizationId,
+        expenseId: notification.expenseId,
+      })
+      .from(notification)
+      .where(eq(notification.expenseId, expenseId));
+
+    expect(rows).toHaveLength(3);
+    expect(rows.map((row) => row.userId).sort()).toEqual([U2, U3, U4]);
+    expect(rows.every((row) => row.organizationId === G1)).toBe(true);
+  });
+
+  it("notifies a non-actor payer even when the payer is not a debtor", async () => {
+    const { expenseId } = await createExpenseHandler(
+      db,
+      { id: U1, name: "Alice", activeOrganizationId: G1 },
+      {
+        title: "Taxi",
+        payerId: U2,
+        amount: "30.00",
+        debts: [
+          { debtorId: U3, amount: "15.00" },
+          { debtorId: U4, amount: "15.00" },
+        ],
+      },
+    );
+
+    const rows = await db
+      .select({ userId: notification.userId })
+      .from(notification)
+      .where(eq(notification.expenseId, expenseId));
+
+    expect(rows.map((row) => row.userId).sort()).toEqual([U2, U3, U4]);
   });
 
   it("throws when activeOrganizationId is null", async () => {

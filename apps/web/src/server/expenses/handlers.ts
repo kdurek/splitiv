@@ -57,6 +57,11 @@ export async function createExpenseHandler(
     }
   }
 
+  const hasOtherDebtor = data.debts.some((d) => d.debtorId !== data.payerId);
+  if (!hasOtherDebtor) {
+    throw new Error("Expense must involve at least one person other than the payer");
+  }
+
   const expenseId = ulid();
 
   const recipientIds = getExpenseNotificationRecipientIds(data, user.id);

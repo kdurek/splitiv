@@ -5,10 +5,11 @@ import { isExpenseSubmitDisabled } from "./expense-form";
 const base = {
   title: "Zakupy",
   amount: 10.0,
+  payerId: "user1",
   method: "ratio" as const,
   debtors: [
-    { ratio: 1, custom: 0 },
-    { ratio: 1, custom: 0 },
+    { userId: "user1", ratio: 1, custom: 0 },
+    { userId: "user2", ratio: 1, custom: 0 },
   ],
 };
 
@@ -39,22 +40,34 @@ describe("isExpenseSubmitDisabled — ratio mode", () => {
     const v = {
       ...base,
       debtors: [
-        { ratio: 0, custom: 0 },
-        { ratio: 0, custom: 0 },
+        { userId: "user1", ratio: 0, custom: 0 },
+        { userId: "user2", ratio: 0, custom: 0 },
       ],
     };
     expect(isExpenseSubmitDisabled(v)).toBe(true);
   });
 
-  it("enabled when only one debtor has ratio > 0", () => {
+  it("enabled when only one non-payer debtor has ratio > 0", () => {
     const v = {
       ...base,
       debtors: [
-        { ratio: 3, custom: 0 },
-        { ratio: 0, custom: 0 },
+        { userId: "user1", ratio: 0, custom: 0 },
+        { userId: "user2", ratio: 3, custom: 0 },
       ],
     };
     expect(isExpenseSubmitDisabled(v)).toBe(false);
+  });
+
+  it("disabled when only debtor with ratio > 0 is the payer", () => {
+    const v = {
+      ...base,
+      payerId: "user1",
+      debtors: [
+        { userId: "user1", ratio: 1, custom: 0 },
+        { userId: "user2", ratio: 0, custom: 0 },
+      ],
+    };
+    expect(isExpenseSubmitDisabled(v)).toBe(true);
   });
 });
 
@@ -64,8 +77,8 @@ describe("isExpenseSubmitDisabled — custom mode", () => {
       ...base,
       method: "custom" as const,
       debtors: [
-        { ratio: 0, custom: 6.0 },
-        { ratio: 0, custom: 4.0 },
+        { userId: "user1", ratio: 0, custom: 6.0 },
+        { userId: "user2", ratio: 0, custom: 4.0 },
       ],
     };
     expect(isExpenseSubmitDisabled(v)).toBe(false);
@@ -76,8 +89,8 @@ describe("isExpenseSubmitDisabled — custom mode", () => {
       ...base,
       method: "custom" as const,
       debtors: [
-        { ratio: 0, custom: 5.0 },
-        { ratio: 0, custom: 3.0 },
+        { userId: "user1", ratio: 0, custom: 5.0 },
+        { userId: "user2", ratio: 0, custom: 3.0 },
       ],
     };
     expect(isExpenseSubmitDisabled(v)).toBe(true);
@@ -89,8 +102,21 @@ describe("isExpenseSubmitDisabled — custom mode", () => {
       amount: 10.0,
       method: "custom" as const,
       debtors: [
-        { ratio: 0, custom: 0 },
-        { ratio: 0, custom: 0 },
+        { userId: "user1", ratio: 0, custom: 0 },
+        { userId: "user2", ratio: 0, custom: 0 },
+      ],
+    };
+    expect(isExpenseSubmitDisabled(v)).toBe(true);
+  });
+
+  it("disabled when only debtor with custom > 0 is the payer", () => {
+    const v = {
+      ...base,
+      payerId: "user1",
+      method: "custom" as const,
+      debtors: [
+        { userId: "user1", ratio: 0, custom: 10.0 },
+        { userId: "user2", ratio: 0, custom: 0 },
       ],
     };
     expect(isExpenseSubmitDisabled(v)).toBe(true);
@@ -101,11 +127,12 @@ describe("isExpenseSubmitDisabled — custom mode", () => {
     const v = {
       title: "Test",
       amount: 10.0,
+      payerId: "user1",
       method: "custom" as const,
       debtors: [
-        { ratio: 0, custom: 3.34 },
-        { ratio: 0, custom: 3.33 },
-        { ratio: 0, custom: 3.33 },
+        { userId: "user1", ratio: 0, custom: 3.34 },
+        { userId: "user2", ratio: 0, custom: 3.33 },
+        { userId: "user3", ratio: 0, custom: 3.33 },
       ],
     };
     expect(isExpenseSubmitDisabled(v)).toBe(false);
@@ -116,11 +143,12 @@ describe("isExpenseSubmitDisabled — custom mode", () => {
     const v = {
       title: "Test",
       amount: 1.1,
+      payerId: "user1",
       method: "custom" as const,
       debtors: [
-        { ratio: 0, custom: 0.37 },
-        { ratio: 0, custom: 0.37 },
-        { ratio: 0, custom: 0.36 },
+        { userId: "user1", ratio: 0, custom: 0.37 },
+        { userId: "user2", ratio: 0, custom: 0.37 },
+        { userId: "user3", ratio: 0, custom: 0.36 },
       ],
     };
     expect(isExpenseSubmitDisabled(v)).toBe(false);

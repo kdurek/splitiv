@@ -31,13 +31,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { NotificationBell } from "~/components/notification-bell";
-import { PushPermissionBanner } from "~/components/push-permission-banner";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { UserAvatar } from "~/components/user-avatar";
-import { setActiveGroupMutationOptions } from "~/server/groups/mutations";
-import { groupsQueryOptions } from "~/server/groups/queries";
-import { unreadNotificationCountQueryOptions } from "~/server/notifications/queries";
+import { setActiveGroupMutationOptions, groupsQueryOptions } from "~/groups/functions";
+import { NotificationBell } from "~/notifications/components/notification-bell";
+import { PushPermissionBanner } from "~/notifications/components/push-permission-banner";
+import { unreadNotificationCountQueryOptions } from "~/notifications/queries";
 
 const NAV_ITEMS: Array<{
   to: string;

@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { dashboardBalanceQueryOptions } from "~/server/dashboard/queries";
+import { dashboardBalanceQueryOptions } from "~/dashboard/functions";
 
 export const Route = createFileRoute("/_auth/settle/")({
   beforeLoad: async ({ context }) => {

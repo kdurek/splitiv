@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { BellIcon } from "lucide-react";
 import { useEffect } from "react";
 
-import { unreadNotificationCountQueryOptions } from "~/notifications/queries";
+import { unreadNotificationCountQueryOptions } from "#/notifications/queries";
 
 export function NotificationBell() {
   const queryClient = useQueryClient();

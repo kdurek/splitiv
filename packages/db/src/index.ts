@@ -9,7 +9,8 @@ const client = postgres(process.env.DATABASE_URL as string);
 
 export const db = drizzle({
   client,
-  // authRelations must come first, since it's using defineRelations as the main relation
+  // authRelations uses defineRelationsPart,
+  // so it must come after the main relations.
   // https://orm.drizzle.team/docs/relations-v2#relations-parts
-  relations: { ...authRelations, ...relations },
+  relations: { ...relations, ...authRelations },
 });

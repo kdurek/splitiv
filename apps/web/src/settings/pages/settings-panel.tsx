@@ -6,13 +6,13 @@ import { BellOffIcon, PlusIcon, RefreshCwIcon, SendIcon } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { UserAvatar } from "~/components/user-avatar";
-import { addMemberByEmailMutationOptions } from "~/groups/mutations";
-import { groupsQueryOptions } from "~/groups/queries";
-import { PushToggle } from "~/notifications/components/push-toggle";
-import { sendTestPushNotificationMutationOptions } from "~/notifications/mutations";
-import { getPushSupport } from "~/notifications/push-client";
-import { pushSubscriptionStatusQueryOptions } from "~/notifications/queries";
+import { UserAvatar } from "#/components/user-avatar";
+import { addMemberByEmailMutationOptions } from "#/groups/mutations";
+import { groupsQueryOptions } from "#/groups/queries";
+import { PushToggle } from "#/notifications/components/push-toggle";
+import { sendTestPushNotificationMutationOptions } from "#/notifications/mutations";
+import { getPushSupport } from "#/notifications/push-client";
+import { pushSubscriptionStatusQueryOptions } from "#/notifications/queries";
 
 const BANNER_DISMISSED_KEY = "splitiv:push-prompt-dismissed";
 

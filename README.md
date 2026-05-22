@@ -1,11 +1,9 @@
-# [TanStarter Plus](https://github.com/mugnavo/tanstarter-plus)
+# splitiv
 
 > [!IMPORTANT]
 > This template requires [Vite+ `vp`](https://viteplus.dev/guide/#install-vp) and [pnpm](https://pnpm.io/installation) to be installed.
 
-<!-- scaffold:description -->
-
-A minimal monorepo starter for 🏝️ TanStack Start, based on [mugnavo/tanstarter](https://github.com/mugnavo/tanstarter).
+This project was scaffolded with `create-mugnavo` from commit [`e016093`](https://github.com/mugnavo/tanstarter-plus/tree/e01609314f46ff533eeaadbe386ec1c32e86be38). See the [template changelog](https://github.com/mugnavo/tanstarter-plus/compare/e01609314f46ff533eeaadbe386ec1c32e86be38...main) for newer changes.
 
 ```
 pnpm create mugnavo -t monorepo
@@ -98,6 +96,7 @@ Vite+ has support for [caching](https://viteplus.dev/guide/cache) via Vite Task.
 
 ## Issue watchlist
 
+- [Template changelog](https://github.com/mugnavo/tanstarter-plus/compare/e01609314f46ff533eeaadbe386ec1c32e86be38...main) - Track template updates since this project was created.
 - [Router/Start issues](https://github.com/TanStack/router/issues) - TanStack Start is in RC.
 - [Devtools releases](https://github.com/TanStack/devtools/releases) - TanStack Devtools is in alpha and may still have breaking changes.
 - [Nitro v3 beta](https://nitro.build/blog/v3-beta) - This template is configured with Nitro v3 beta by default.
@@ -139,3 +138,8 @@ Code in this template is public domain via [Unlicense](./LICENSE). Feel free to 
 - [@tanstack/intent](https://tanstack.com/intent/latest/docs/getting-started/quick-start-consumers) - Up-to-date skills for your AI agents, auto-synchronized from your installed dependencies.
 - [awesome-tanstack-start](https://github.com/Balastrong/awesome-tanstack-start) - A curated list of awesome resources for TanStack Start.
 - [shadcn/ui Directory](https://ui.shadcn.com/docs/directory), [MCP](https://ui.shadcn.com/docs/mcp), [shoogle.dev](https://shoogle.dev/) - Component directories & registries for shadcn/ui.
+
+## Related templates
+
+- [mugnavo/tanstarter](https://github.com/mugnavo/tanstarter) - The original minimal version that this template is based on.
+- [tsu-moe/tsu-stack](https://github.com/tsu-moe/tsu-stack) - An opinionated and batteries-included monorepo template from Luzefiru, built on tanstarter-plus, with Paraglide.js (i18n), Hono, oRPC, and more.

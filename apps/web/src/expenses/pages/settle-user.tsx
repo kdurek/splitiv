@@ -30,10 +30,10 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import { UserAvatar } from "~/components/user-avatar";
-import { dashboardBalanceQueryOptions } from "~/dashboard/queries";
-import { $settleDebts } from "~/expenses/functions";
-import { debtsFromUserQueryOptions, debtsToUserQueryOptions } from "~/expenses/queries";
+import { UserAvatar } from "#/components/user-avatar";
+import { dashboardBalanceQueryOptions } from "#/dashboard/queries";
+import { $settleDebts } from "#/expenses/functions";
+import { debtsFromUserQueryOptions, debtsToUserQueryOptions } from "#/expenses/queries";
 
 function formatAmount(amount: string) {
   return `${Number(amount).toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
@@ -43,7 +43,7 @@ function formatDate(date: string | Date) {
   return new Date(date).toLocaleDateString("pl-PL", { day: "numeric", month: "long" });
 }
 
-type DebtItem = Awaited<ReturnType<typeof import("~/expenses/functions").$getDebtsToUser>>[number];
+type DebtItem = Awaited<ReturnType<typeof import("#/expenses/functions").$getDebtsToUser>>[number];
 
 function getRemaining(debt: DebtItem) {
   return (Number(debt.amount) - Number(debt.settled)).toFixed(2);

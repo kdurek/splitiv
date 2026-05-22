@@ -9,15 +9,15 @@ import { toast } from "sonner";
 import {
   subscribePushMutationOptions,
   unsubscribePushMutationOptions,
-} from "~/notifications/mutations";
+} from "#/notifications/mutations";
 import {
   getPushSupport,
   subscribeToPush,
   subscriptionToPayload,
   unsubscribeFromPush,
   getSubscription,
-} from "~/notifications/push-client";
-import { pushSubscriptionStatusQueryOptions } from "~/notifications/queries";
+} from "#/notifications/push-client";
+import { pushSubscriptionStatusQueryOptions } from "#/notifications/queries";
 
 export function PushToggle() {
   const queryClient = useQueryClient();

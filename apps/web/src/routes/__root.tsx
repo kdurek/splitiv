@@ -10,9 +10,9 @@ import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/reac
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
 
-import { registerServiceWorker } from "~/notifications/register-sw";
+import { registerServiceWorker } from "#/notifications/register-sw";
 
-import appCss from "~/styles.css?url";
+import appCss from "#/styles.css?url";
 
 interface MyRouterContext {
   queryClient: QueryClient;

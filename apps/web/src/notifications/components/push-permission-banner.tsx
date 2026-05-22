@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { subscribePushMutationOptions } from "~/notifications/mutations";
+import { subscribePushMutationOptions } from "#/notifications/mutations";
 import {
   getSubscription,
   getPushSupport,
   subscribeToPush,
   subscriptionToPayload,
-} from "~/notifications/push-client";
+} from "#/notifications/push-client";
 
 const DISMISSED_KEY = "splitiv:push-prompt-dismissed";
 

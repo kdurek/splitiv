@@ -17,11 +17,11 @@ import { toast } from "sonner";
 import {
   markAllNotificationsReadMutationOptions,
   markNotificationReadMutationOptions,
-} from "~/notifications/mutations";
+} from "#/notifications/mutations";
 import {
   notificationsQueryOptions,
   unreadNotificationCountQueryOptions,
-} from "~/notifications/queries";
+} from "#/notifications/queries";
 
 type NotificationRow = {
   id: string;

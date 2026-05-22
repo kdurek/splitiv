@@ -8,8 +8,8 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 
-import { adminBalanceQueryOptions } from "~/admin/queries";
-import { UserAvatar } from "~/components/user-avatar";
+import { adminBalanceQueryOptions } from "#/admin/queries";
+import { UserAvatar } from "#/components/user-avatar";
 
 function formatAmount(amount: string) {
   return `${Number(amount).toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;

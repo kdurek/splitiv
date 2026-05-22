@@ -3,7 +3,10 @@
   "compilerOptions": {
     "types": ["node", "vite/client"],
     "paths": {
-      "~/*": ["./src/*"],
+      // See:
+      // https://github.com/mugnavo/tanstarter/pull/77
+      // https://github.com/mugnavo/tanstarter/pull/76
+      "#/*": ["./src/*"],
 
       // for shadcn CLI
       "@repo/ui/*": ["../../packages/ui/*"]

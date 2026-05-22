@@ -16,11 +16,11 @@ import { useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2Icon, MinusIcon, PlusIcon } from "lucide-react";
 
-import { UserAvatar } from "~/components/user-avatar";
-import { $createExpense } from "~/expenses/functions";
-import { distributeByRatio } from "~/expenses/utils/distribute";
-import { isExpenseSubmitDisabled } from "~/expenses/utils/expense-form";
-import { groupsQueryOptions } from "~/groups/queries";
+import { UserAvatar } from "#/components/user-avatar";
+import { $createExpense } from "#/expenses/functions";
+import { distributeByRatio } from "#/expenses/utils/distribute";
+import { isExpenseSubmitDisabled } from "#/expenses/utils/expense-form";
+import { groupsQueryOptions } from "#/groups/queries";
 
 function fmtAmount(n: number) {
   return n.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";

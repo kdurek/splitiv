@@ -37,6 +37,10 @@
   // set oxfmt as default formatter
   "editor.defaultFormatter": "oxc.oxc-vscode",
 
+  // format on save and paste
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+
   // vite+ for npm scripts
   "npm.scriptRunner": "vp"
 }

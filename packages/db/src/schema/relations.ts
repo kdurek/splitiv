@@ -1,8 +1,8 @@
-import { defineRelationsPart } from "drizzle-orm";
+import { defineRelations } from "drizzle-orm";
 
 import * as schema from "./";
 
-export const relations = defineRelationsPart(schema, (r) => ({
+export const relations = defineRelations(schema, (r) => ({
   user: {
     members: r.many.member({
       from: r.user.id,

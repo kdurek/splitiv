@@ -1,32 +1,39 @@
 import { SiGoogle } from "@icons-pack/react-simple-icons";
 import { authClient } from "@repo/auth/auth-client";
-import { useMutation } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { authQueryOptions } from "@repo/auth/tanstack/queries";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { GalleryVerticalEndIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import { SignInSocialButton } from "./sign-in-social-button";
+import { SignInSocialButton } from "../components/sign-in-social-button";
 
-interface LoginFormProps {
+interface SignupFormProps {
   redirectUrl: string;
 }
 
-export function LoginForm({ redirectUrl }: LoginFormProps) {
-  const { mutate: emailLoginMutate, isPending } = useMutation({
-    mutationFn: async (data: { email: string; password: string }) =>
-      await authClient.signIn.email(
+export function SignupForm({ redirectUrl }: SignupFormProps) {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const { mutate: signupMutate, isPending } = useMutation({
+    mutationFn: async (data: { name: string; email: string; password: string }) => {
+      await authClient.signUp.email(
         {
           ...data,
           callbackURL: redirectUrl,
         },
         {
           onError: ({ error }) => {
-            toast.error(error.message || "Wystąpił błąd podczas logowania.");
+            toast.error(error.message || "Wystąpił błąd podczas rejestracji.");
           },
-          // better-auth seems to trigger a hard navigation on login,
-          // so we don't have to revalidate & navigate ourselves
+          onSuccess: () => {
+            queryClient.removeQueries({ queryKey: authQueryOptions().queryKey });
+            navigate({ to: redirectUrl });
+          },
         },
-      ),
+      );
+    },
   });
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -34,12 +41,19 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
     if (isPending) return;
 
     const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirm_password") as string;
 
-    if (!email || !password) return;
+    if (!name || !email || !password || !confirmPassword) return;
 
-    emailLoginMutate({ email, password });
+    if (password !== confirmPassword) {
+      toast.error("Hasła nie są identyczne.");
+      return;
+    }
+
+    signupMutate({ name, email, password });
   };
 
   return (
@@ -53,7 +67,7 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
               </div>
               <span className="sr-only">Splitiv</span>
             </Link>
-            <h1 className="text-xl font-bold">Witaj z powrotem w Splitiv</h1>
+            <h1 className="text-xl font-bold">Zarejestruj się w Splitiv</h1>
           </div>
           <div className="grid gap-4">
             <SignInSocialButton

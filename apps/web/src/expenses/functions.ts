@@ -1,7 +1,6 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { expense, expenseDebt, expenseLog, member, user } from "@repo/db/schema";
-import { infiniteQueryOptions, mutationOptions, queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, exists, or, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -12,8 +11,8 @@ import {
   settleDebtHandler,
   settleDebtsHandler,
   undoDebtLogHandler,
-} from "./handlers";
-import { parseSearchQuery } from "./search";
+} from "./service";
+import { parseSearchQuery } from "./utils/search";
 
 export const $getDebtsToUser = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
@@ -322,49 +321,3 @@ export const $deleteExpense = createServerFn({ method: "POST" })
       data,
     ),
   );
-
-export const expensesInfiniteQueryOptions = (q?: string) =>
-  infiniteQueryOptions({
-    queryKey: ["expenses", q ?? ""],
-    queryFn: ({ pageParam }) => $getExpenses({ data: { cursor: pageParam, q } }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-  });
-
-export const expenseQueryOptions = (expenseId: string) =>
-  queryOptions({
-    queryKey: ["expense", expenseId],
-    queryFn: ({ signal }) => $getExpense({ data: { expenseId }, signal }),
-  });
-
-export const debtsToUserQueryOptions = (targetUserId: string) =>
-  queryOptions({
-    queryKey: ["debts-to-user", targetUserId],
-    queryFn: ({ signal }) => $getDebtsToUser({ data: { targetUserId }, signal }),
-  });
-
-export const debtsFromUserQueryOptions = (targetUserId: string) =>
-  queryOptions({
-    queryKey: ["debts-from-user", targetUserId],
-    queryFn: ({ signal }) => $getDebtsFromUser({ data: { targetUserId }, signal }),
-  });
-
-export const settleDebtMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (data: { debtId: string; amount: string }) => $settleDebt({ data }),
-  });
-
-export const settleDebtsMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (debts: { debtId: string; amount: string }[]) => $settleDebts({ data: { debts } }),
-  });
-
-export const undoDebtLogMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (logId: string) => $undoDebtLog({ data: { logId } }),
-  });
-
-export const deleteExpenseMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (expenseId: string) => $deleteExpense({ data: { expenseId } }),
-  });

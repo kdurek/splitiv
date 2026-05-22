@@ -2,7 +2,6 @@ import { auth } from "@repo/auth/auth";
 import { freshAuthMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { expense, expenseDebt, user } from "@repo/db/schema";
-import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { and, eq, sql } from "drizzle-orm";
@@ -71,10 +70,4 @@ export const $getAdminBalance = createServerFn({ method: "GET" })
       creditorImage: row.creditorImage,
       amount: Number(row.total).toFixed(2),
     }));
-  });
-
-export const adminBalanceQueryOptions = () =>
-  queryOptions({
-    queryKey: ["admin-balance"],
-    queryFn: ({ signal }) => $getAdminBalance({ signal }),
   });

@@ -17,7 +17,7 @@ import {
   settleDebtHandler,
   settleDebtsHandler,
   undoDebtLogHandler,
-} from "./handlers";
+} from "./service";
 
 // IDs used across all tests
 const U1 = "user-alice";

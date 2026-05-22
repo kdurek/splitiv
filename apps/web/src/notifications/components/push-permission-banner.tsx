@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { subscribePushMutationOptions } from "~/notifications/functions";
+import { subscribePushMutationOptions } from "~/notifications/mutations";
 import {
   getSubscription,
   getPushSupport,

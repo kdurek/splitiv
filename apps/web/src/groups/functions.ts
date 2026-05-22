@@ -2,15 +2,14 @@ import { auth } from "@repo/auth/auth";
 import { freshAuthMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { member } from "@repo/db/schema";
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, setResponseHeader } from "@tanstack/react-start/server";
 import { and, eq } from "drizzle-orm";
 import { ulid } from "ulid";
 import { z } from "zod";
 
-import { addMemberByEmailHandler, getGroupsDataHandler } from "./handlers";
 import { activeGroupAdminMiddleware } from "./middleware";
+import { addMemberByEmailHandler, getGroupsDataHandler } from "./service";
 
 export const $createGroup = createServerFn({ method: "POST" })
   .middleware([freshAuthMiddleware])
@@ -77,25 +76,4 @@ export const $addMemberByEmail = createServerFn({ method: "POST" })
   .inputValidator(z.object({ email: z.email() }))
   .handler(async ({ context, data }) => {
     await addMemberByEmailHandler(db, context.user.id, context.activeGroupId, data.email);
-  });
-
-export const setActiveGroupMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (groupId: string) => $setActiveGroup({ data: { groupId } }),
-  });
-
-export const addMemberByEmailMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (email: string) => $addMemberByEmail({ data: { email } }),
-  });
-
-export const createGroupMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (name: string) => $createGroup({ data: { name } }),
-  });
-
-export const groupsQueryOptions = () =>
-  queryOptions({
-    queryKey: ["groups"],
-    queryFn: ({ signal }) => $getGroupsData({ signal }),
   });

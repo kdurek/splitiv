@@ -25,11 +25,8 @@ import { Loader2Icon, UsersIcon } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import {
-  createGroupMutationOptions,
-  groupsQueryOptions,
-  setActiveGroupMutationOptions,
-} from "~/groups/functions";
+import { createGroupMutationOptions, setActiveGroupMutationOptions } from "~/groups/mutations";
+import { groupsQueryOptions } from "~/groups/queries";
 
 function CreateGroupDrawer() {
   const [open, setOpen] = React.useState(false);

@@ -8,7 +8,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 
-import { adminBalanceQueryOptions } from "~/admin/functions";
+import { adminBalanceQueryOptions } from "~/admin/queries";
 import { UserAvatar } from "~/components/user-avatar";
 
 function formatAmount(amount: string) {

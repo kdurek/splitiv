@@ -7,9 +7,10 @@ import * as React from "react";
 import { toast } from "sonner";
 
 import { UserAvatar } from "~/components/user-avatar";
-import { addMemberByEmailMutationOptions, groupsQueryOptions } from "~/groups/functions";
+import { addMemberByEmailMutationOptions } from "~/groups/mutations";
+import { groupsQueryOptions } from "~/groups/queries";
 import { PushToggle } from "~/notifications/components/push-toggle";
-import { sendTestPushNotificationMutationOptions } from "~/notifications/functions";
+import { sendTestPushNotificationMutationOptions } from "~/notifications/mutations";
 import { getPushSupport } from "~/notifications/push-client";
 import { pushSubscriptionStatusQueryOptions } from "~/notifications/queries";
 

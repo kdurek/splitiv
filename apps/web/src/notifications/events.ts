@@ -6,7 +6,7 @@ type Db = any;
 import { notification } from "@repo/db/schema";
 import { ulid } from "ulid";
 
-import { sendPushToUsers } from "./handlers";
+import { sendPushToUsers } from "./service";
 
 export type NotificationEvent = {
   type: "expense_created";

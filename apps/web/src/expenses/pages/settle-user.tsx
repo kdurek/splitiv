@@ -31,12 +31,9 @@ import {
 import { useState } from "react";
 
 import { UserAvatar } from "~/components/user-avatar";
-import { dashboardBalanceQueryOptions } from "~/dashboard/functions";
-import {
-  $settleDebts,
-  debtsFromUserQueryOptions,
-  debtsToUserQueryOptions,
-} from "~/expenses/functions";
+import { dashboardBalanceQueryOptions } from "~/dashboard/queries";
+import { $settleDebts } from "~/expenses/functions";
+import { debtsFromUserQueryOptions, debtsToUserQueryOptions } from "~/expenses/queries";
 
 function formatAmount(amount: string) {
   return `${Number(amount).toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;

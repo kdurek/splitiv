@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import {
   markAllNotificationsReadMutationOptions,
   markNotificationReadMutationOptions,
-} from "~/notifications/functions";
+} from "~/notifications/mutations";
 import {
   notificationsQueryOptions,
   unreadNotificationCountQueryOptions,

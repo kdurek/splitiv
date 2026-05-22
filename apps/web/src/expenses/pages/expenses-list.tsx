@@ -13,7 +13,7 @@ import { ReceiptIcon, SearchIcon, XIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
-import { expensesInfiniteQueryOptions } from "~/expenses/functions";
+import { expensesInfiniteQueryOptions } from "~/expenses/queries";
 
 type ExpenseItem = {
   id: string;

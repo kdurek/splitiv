@@ -33,7 +33,8 @@ import { toast } from "sonner";
 
 import { ThemeToggle } from "~/components/theme-toggle";
 import { UserAvatar } from "~/components/user-avatar";
-import { setActiveGroupMutationOptions, groupsQueryOptions } from "~/groups/functions";
+import { setActiveGroupMutationOptions } from "~/groups/mutations";
+import { groupsQueryOptions } from "~/groups/queries";
 import { NotificationBell } from "~/notifications/components/notification-bell";
 import { PushPermissionBanner } from "~/notifications/components/push-permission-banner";
 import { unreadNotificationCountQueryOptions } from "~/notifications/queries";

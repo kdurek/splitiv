@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { createTestDb } from "../test/db";
-import { addMemberByEmailHandler, getGroupsDataHandler } from "./handlers";
+import { addMemberByEmailHandler, getGroupsDataHandler } from "./service";
 
 const U1 = "user-alice";
 const U2 = "user-bob";

@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { ExpensesList } from "~/expenses/components/expenses-list";
-import { expensesInfiniteQueryOptions } from "~/expenses/functions";
+import { ExpensesList } from "~/expenses/pages/expenses-list";
+import { expensesInfiniteQueryOptions } from "~/expenses/queries";
 
 export const Route = createFileRoute("/_auth/expenses/")({
   validateSearch: z.object({

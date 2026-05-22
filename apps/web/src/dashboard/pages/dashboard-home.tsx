@@ -3,7 +3,7 @@ import { cn } from "@repo/ui/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { UserAvatar } from "~/components/user-avatar";
-import { dashboardBalanceQueryOptions } from "~/dashboard/functions";
+import { dashboardBalanceQueryOptions } from "~/dashboard/queries";
 
 function formatAmount(amount: string) {
   return `${Number(amount).toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;

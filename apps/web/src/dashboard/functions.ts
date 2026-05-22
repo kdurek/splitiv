@@ -1,7 +1,6 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
 import { expense, expenseDebt, user } from "@repo/db/schema";
-import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { and, eq, sql } from "drizzle-orm";
 
@@ -74,10 +73,4 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       totalYouOwe: totalYouOwe.toFixed(2),
       netBalance,
     };
-  });
-
-export const dashboardBalanceQueryOptions = () =>
-  queryOptions({
-    queryKey: ["dashboard-balance"],
-    queryFn: ({ signal }) => $getDashboardBalance({ signal }),
   });

@@ -1,6 +1,5 @@
 import { authMiddleware } from "@repo/auth/tanstack/middleware";
 import { db } from "@repo/db";
-import { mutationOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -12,7 +11,7 @@ import {
   markNotificationReadHandler,
   subscribePushHandler,
   unsubscribePushHandler,
-} from "./handlers";
+} from "./service";
 
 export const $getNotifications = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
@@ -67,36 +66,10 @@ export const $checkPushSubscription = createServerFn({ method: "GET" })
 export const $sendTestPushNotification = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
-    const { sendPushToUsers } = await import("./handlers");
+    const { sendPushToUsers } = await import("./service");
     await sendPushToUsers([context.user.id], {
       title: "Test powiadomienia 🔔",
       body: "Testowe powiadomienie z Splitiv działa poprawnie.",
       url: "/notifications",
     });
-  });
-
-export const markNotificationReadMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (id: string) => $markNotificationRead({ data: { id } }),
-  });
-
-export const markAllNotificationsReadMutationOptions = () =>
-  mutationOptions({
-    mutationFn: () => $markAllNotificationsRead(),
-  });
-
-export const subscribePushMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (data: { endpoint: string; p256dh: string; auth: string }) =>
-      $subscribePush({ data }),
-  });
-
-export const unsubscribePushMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (endpoint: string) => $unsubscribePush({ data: { endpoint } }),
-  });
-
-export const sendTestPushNotificationMutationOptions = () =>
-  mutationOptions({
-    mutationFn: () => $sendTestPushNotification(),
   });

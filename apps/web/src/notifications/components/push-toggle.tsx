@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import {
   subscribePushMutationOptions,
   unsubscribePushMutationOptions,
-} from "~/notifications/functions";
+} from "~/notifications/mutations";
 import {
   getPushSupport,
   subscribeToPush,

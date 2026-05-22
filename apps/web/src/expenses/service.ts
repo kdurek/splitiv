@@ -12,7 +12,7 @@ import {
   sendNotificationPushes,
   type NotificationEvent,
 } from "../notifications/events";
-import { canDeleteExpense, canSettleDebt, canUndoLog } from "./permissions";
+import { canDeleteExpense, canSettleDebt, canUndoLog } from "./utils/permissions";
 
 function getExpenseNotificationRecipientIds(
   data: { payerId: string; debts: ExpenseDebtInput[] },

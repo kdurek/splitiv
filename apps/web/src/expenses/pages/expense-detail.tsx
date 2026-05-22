@@ -19,12 +19,8 @@ import { Loader2Icon, RotateCcwIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
 
 import { UserAvatar } from "~/components/user-avatar";
-import {
-  $deleteExpense,
-  $settleDebt,
-  $undoDebtLog,
-  expenseQueryOptions,
-} from "~/expenses/functions";
+import { $deleteExpense, $settleDebt, $undoDebtLog } from "~/expenses/functions";
+import { expenseQueryOptions } from "~/expenses/queries";
 import { $markNotificationRead } from "~/notifications/functions";
 
 function formatAmount(amount: string) {

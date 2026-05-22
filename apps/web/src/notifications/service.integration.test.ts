@@ -11,7 +11,7 @@ import {
   markNotificationReadHandler,
   subscribePushHandler,
   unsubscribePushHandler,
-} from "./handlers";
+} from "./service";
 
 const U1 = "user-alice";
 const U2 = "user-bob";

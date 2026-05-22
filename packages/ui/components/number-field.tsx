@@ -4,7 +4,7 @@ import { cn } from "@repo/ui/lib/utils";
 import * as React from "react";
 
 function NumberField(props: React.ComponentProps<typeof NumberFieldPrimitive.Root>) {
-  return <NumberFieldPrimitive.Root data-slot="number-field" {...props} locale="pl" />;
+  return <NumberFieldPrimitive.Root data-slot="number-field" step="any" {...props} locale="pl" />;
 }
 
 function NumberFieldGroup({
@@ -34,7 +34,8 @@ function NumberFieldInput({
       data-slot="number-field-input"
       className={cn(inputVariants, className)}
       onFocus={(event) => {
-        event.currentTarget.select();
+        const input = event.currentTarget;
+        requestAnimationFrame(() => input.select());
         onFocus?.(event);
       }}
       onInput={(event) => {

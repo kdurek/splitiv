@@ -1,12 +1,11 @@
 import { Button } from "@repo/ui/components/button";
 import {
-  DrawerBackdrop,
+  Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerPopup,
-  DrawerPortal,
-  DrawerRoot,
-  DrawerViewport,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
 } from "@repo/ui/components/drawer";
 import {
   Empty,
@@ -71,63 +70,54 @@ function EditAmountDrawer({
   }
 
   return (
-    <DrawerRoot open={open} onOpenChange={(o) => !o && onClose()}>
-      <DrawerPortal>
-        <DrawerBackdrop />
-        <DrawerViewport>
-          <DrawerPopup>
-            <DrawerContent className="mx-auto w-full max-w-lg">
-              <p className="mb-4 text-lg font-semibold tracking-tight">
-                Zmień kwotę - {debt?.expenseName}
-              </p>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Kwota do rozliczenia</Label>
-                  <div className="relative">
-                    <NumberField
-                      aria-label="Kwota do rozliczenia"
-                      value={value}
-                      onValueChange={(v) => setValue(v ?? 0)}
-                      min={0.01}
-                      max={maxAmount}
-                      format={{
-                        style: "decimal",
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }}
-                    >
-                      <NumberFieldInput className="pr-10" />
-                    </NumberField>
-                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground">
-                      zł
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Maks. do spłaty: {formatAmount(maxAmount.toFixed(2))}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    className="w-full"
-                    onClick={() => onSave(value)}
-                    disabled={value <= 0 || value > maxAmount}
-                  >
-                    Zastosuj
-                  </Button>
-                  <DrawerClose
-                    render={
-                      <Button type="button" variant="outline" className="w-full">
-                        Anuluj
-                      </Button>
-                    }
-                  />
-                </div>
-              </div>
-            </DrawerContent>
-          </DrawerPopup>
-        </DrawerViewport>
-      </DrawerPortal>
-    </DrawerRoot>
+    <Drawer open={open} onOpenChange={(o) => !o && onClose()}>
+      <DrawerContent className="mx-auto w-full max-w-lg">
+        <DrawerHeader>
+          <DrawerTitle>Zmień kwotę - {debt?.expenseName}</DrawerTitle>
+        </DrawerHeader>
+        <div className="space-y-2 px-4">
+          <Label>Kwota do rozliczenia</Label>
+          <div className="relative">
+            <NumberField
+              aria-label="Kwota do rozliczenia"
+              value={value}
+              onValueChange={(v) => setValue(v ?? 0)}
+              min={0.01}
+              max={maxAmount}
+              format={{
+                style: "decimal",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }}
+            >
+              <NumberFieldInput className="pr-10" />
+            </NumberField>
+            <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground">
+              zł
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Maks. do spłaty: {formatAmount(maxAmount.toFixed(2))}
+          </p>
+        </div>
+        <DrawerFooter>
+          <Button
+            className="w-full"
+            onClick={() => onSave(value)}
+            disabled={value <= 0 || value > maxAmount}
+          >
+            Zastosuj
+          </Button>
+          <DrawerClose
+            render={
+              <Button type="button" variant="outline" className="w-full">
+                Anuluj
+              </Button>
+            }
+          />
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
@@ -479,106 +469,90 @@ export function SettleUser({ userId }: { userId: string }) {
       />
 
       {/* Submit confirmation drawer */}
-      <DrawerRoot open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DrawerPortal>
-          <DrawerBackdrop />
-          <DrawerViewport>
-            <DrawerPopup>
-              <DrawerContent className="mx-auto w-full max-w-lg">
-                <p className="mb-4 text-lg font-semibold tracking-tight">Potwierdź rozliczenie</p>
-                {(() => {
-                  const otherPerson = allPeople.find((p) => p.userId === userId);
-                  const otherName = otherPerson?.name.split(" ")[0] ?? "druga osoba";
-                  const netAbs = Math.abs(net).toFixed(2);
-                  return (
-                    <div className="mb-6 space-y-1 text-sm text-muted-foreground">
-                      {net < 0 && (
-                        <p>
-                          Ty płacisz{" "}
-                          <span className="font-semibold text-destructive">
-                            {formatAmount(netAbs)}
-                          </span>{" "}
-                          → <span className="font-semibold text-foreground">{otherName}</span>
-                        </p>
-                      )}
-                      {net > 0 && (
-                        <p>
-                          <span className="font-semibold text-foreground">{otherName}</span> płaci{" "}
-                          <span className="font-semibold text-primary">{formatAmount(netAbs)}</span>{" "}
-                          → Ty
-                        </p>
-                      )}
-                      {net === 0 && <p>Rozliczenie wyrównane — nikt nikomu nie płaci.</p>}
-                    </div>
-                  );
-                })()}
-                <div className="flex flex-col gap-2">
-                  <Button className="w-full" disabled={isSubmitting} onClick={handleSubmit}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2Icon className="size-4 animate-spin" />
-                        Rozliczanie...
-                      </>
-                    ) : (
-                      "Potwierdź"
-                    )}
-                  </Button>
-                  <DrawerClose
-                    render={
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full"
-                        disabled={isSubmitting}
-                      >
-                        Anuluj
-                      </Button>
-                    }
-                  />
-                </div>
-              </DrawerContent>
-            </DrawerPopup>
-          </DrawerViewport>
-        </DrawerPortal>
-      </DrawerRoot>
+      <Drawer open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DrawerContent className="mx-auto w-full max-w-lg">
+          <DrawerHeader>
+            <DrawerTitle>Potwierdź rozliczenie</DrawerTitle>
+          </DrawerHeader>
+          {(() => {
+            const otherPerson = allPeople.find((p) => p.userId === userId);
+            const otherName = otherPerson?.name.split(" ")[0] ?? "druga osoba";
+            const netAbs = Math.abs(net).toFixed(2);
+            return (
+              <div className="space-y-1 px-4 text-sm text-muted-foreground">
+                {net < 0 && (
+                  <p>
+                    Ty płacisz{" "}
+                    <span className="font-semibold text-destructive">{formatAmount(netAbs)}</span> →{" "}
+                    <span className="font-semibold text-foreground">{otherName}</span>
+                  </p>
+                )}
+                {net > 0 && (
+                  <p>
+                    <span className="font-semibold text-foreground">{otherName}</span> płaci{" "}
+                    <span className="font-semibold text-primary">{formatAmount(netAbs)}</span> → Ty
+                  </p>
+                )}
+                {net === 0 && <p>Rozliczenie wyrównane — nikt nikomu nie płaci.</p>}
+              </div>
+            );
+          })()}
+          <DrawerFooter>
+            <Button className="w-full" disabled={isSubmitting} onClick={handleSubmit}>
+              {isSubmitting ? (
+                <>
+                  <Loader2Icon className="size-4 animate-spin" />
+                  Rozliczanie...
+                </>
+              ) : (
+                "Potwierdź"
+              )}
+            </Button>
+            <DrawerClose
+              render={
+                <Button type="button" variant="outline" className="w-full" disabled={isSubmitting}>
+                  Anuluj
+                </Button>
+              }
+            />
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
       {/* Discard changes confirmation drawer */}
-      <DrawerRoot
+      <Drawer
         open={pendingUserId !== null}
         onOpenChange={(open) => !open && setPendingUserId(null)}
       >
-        <DrawerPortal>
-          <DrawerBackdrop />
-          <DrawerViewport>
-            <DrawerPopup>
-              <DrawerContent className="mx-auto w-full max-w-lg">
-                <p className="mb-2 text-lg font-semibold tracking-tight">Niezapisane zmiany</p>
-                <p className="mb-6 text-sm text-muted-foreground">
-                  Masz niezapisane zmiany. Zmiana osoby spowoduje ich utratę.
-                </p>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    className="w-full"
-                    onClick={() => {
-                      navigate({ to: "/settle/$userId", params: { userId: pendingUserId! } });
-                      setPendingUserId(null);
-                    }}
-                  >
-                    Zmień osobę
-                  </Button>
-                  <DrawerClose
-                    render={
-                      <Button type="button" variant="outline" className="w-full">
-                        Zostań
-                      </Button>
-                    }
-                  />
-                </div>
-              </DrawerContent>
-            </DrawerPopup>
-          </DrawerViewport>
-        </DrawerPortal>
-      </DrawerRoot>
+        <DrawerContent className="mx-auto w-full max-w-lg">
+          <DrawerHeader>
+            <DrawerTitle>Niezapisane zmiany</DrawerTitle>
+          </DrawerHeader>
+          <div className="px-4">
+            <p className="text-sm text-muted-foreground">
+              Masz niezapisane zmiany. Zmiana osoby spowoduje ich utratę.
+            </p>
+          </div>
+          <DrawerFooter>
+            <Button
+              className="w-full"
+              onClick={() => {
+                navigate({ to: "/settle/$userId", params: { userId: pendingUserId! } });
+                setPendingUserId(null);
+              }}
+            >
+              Zmień osobę
+            </Button>
+            <DrawerClose
+              render={
+                <Button type="button" variant="outline" className="w-full">
+                  Zostań
+                </Button>
+              }
+            />
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

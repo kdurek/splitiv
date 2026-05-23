@@ -1,14 +1,12 @@
 import { authQueryOptions } from "@repo/auth/tanstack/queries";
 import { Button } from "@repo/ui/components/button";
 import {
-  DrawerBackdrop,
+  Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerPopup,
-  DrawerPortal,
-  DrawerRoot,
+  DrawerFooter,
+  DrawerHeader,
   DrawerTitle,
-  DrawerViewport,
 } from "@repo/ui/components/drawer";
 import {
   Empty,
@@ -55,57 +53,50 @@ function CreateGroupDrawer() {
   };
 
   return (
-    <DrawerRoot open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen}>
       <Button onClick={() => setOpen(true)} className="w-full">
         Utwórz grupę
       </Button>
-      <DrawerPortal>
-        <DrawerBackdrop />
-        <DrawerViewport>
-          <DrawerPopup>
-            <DrawerContent className="mx-auto w-full max-w-lg">
-              <DrawerTitle className="mb-4 text-lg font-semibold tracking-tight">
-                Utwórz nową grupę
-              </DrawerTitle>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="group-name">Nazwa grupy</Label>
-                  <Input
-                    id="group-name"
-                    placeholder="np. Mieszkanie, Wyjazd, Rodzina"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col gap-2 pt-2">
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={!name.trim() || createGroupMutation.isPending}
-                  >
-                    {createGroupMutation.isPending ? (
-                      <>
-                        <Loader2Icon className="size-4 animate-spin" />
-                        Tworzenie...
-                      </>
-                    ) : (
-                      "Utwórz"
-                    )}
-                  </Button>
-                  <DrawerClose
-                    render={
-                      <Button type="button" variant="outline" className="w-full">
-                        Anuluj
-                      </Button>
-                    }
-                  />
-                </div>
-              </form>
-            </DrawerContent>
-          </DrawerPopup>
-        </DrawerViewport>
-      </DrawerPortal>
-    </DrawerRoot>
+      <DrawerContent className="mx-auto w-full max-w-lg">
+        <DrawerHeader>
+          <DrawerTitle>Utwórz nową grupę</DrawerTitle>
+        </DrawerHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-2 px-4">
+            <Label htmlFor="group-name">Nazwa grupy</Label>
+            <Input
+              id="group-name"
+              placeholder="np. Mieszkanie, Wyjazd, Rodzina"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <DrawerFooter>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={!name.trim() || createGroupMutation.isPending}
+            >
+              {createGroupMutation.isPending ? (
+                <>
+                  <Loader2Icon className="size-4 animate-spin" />
+                  Tworzenie...
+                </>
+              ) : (
+                "Utwórz"
+              )}
+            </Button>
+            <DrawerClose
+              render={
+                <Button type="button" variant="outline" className="w-full">
+                  Anuluj
+                </Button>
+              }
+            />
+          </DrawerFooter>
+        </form>
+      </DrawerContent>
+    </Drawer>
   );
 }
 

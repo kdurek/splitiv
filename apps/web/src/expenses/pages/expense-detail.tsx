@@ -1,13 +1,12 @@
 import { authQueryOptions } from "@repo/auth/tanstack/queries";
 import { Button } from "@repo/ui/components/button";
 import {
-  DrawerBackdrop,
+  Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerPopup,
-  DrawerPortal,
-  DrawerRoot,
-  DrawerViewport,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
 } from "@repo/ui/components/drawer";
 import { Label } from "@repo/ui/components/label";
 import { NumberField, NumberFieldInput } from "@repo/ui/components/number-field";
@@ -61,18 +60,19 @@ function SettleDebtForm({ debt, onSuccess }: { debt: Debt; onSuccess: () => void
 
   return (
     <DrawerContent className="mx-auto w-full max-w-lg">
-      <p className="mb-4 text-lg font-semibold tracking-tight">Rozlicz dług — {debt.debtorName}</p>
+      <DrawerHeader>
+        <DrawerTitle>Rozlicz dług — {debt.debtorName}</DrawerTitle>
+      </DrawerHeader>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="space-y-4"
       >
         <form.Field name="amount">
           {(field) => (
-            <div className="space-y-2">
+            <div className="space-y-2 px-4">
               <Label htmlFor={field.name}>Kwota do rozliczenia</Label>
               <div className="relative">
                 <NumberField
@@ -100,7 +100,7 @@ function SettleDebtForm({ debt, onSuccess }: { debt: Debt; onSuccess: () => void
           )}
         </form.Field>
 
-        <div className="flex flex-col gap-2 pt-2">
+        <DrawerFooter>
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
@@ -118,7 +118,7 @@ function SettleDebtForm({ debt, onSuccess }: { debt: Debt; onSuccess: () => void
               </Button>
             }
           />
-        </div>
+        </DrawerFooter>
       </form>
     </DrawerContent>
   );
@@ -140,20 +140,12 @@ function SettleDebtDrawer({ debt, expenseId }: { debt: Debt; expenseId: string }
   };
 
   return (
-    <DrawerRoot open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen}>
       <button type="button" onClick={handleOpen} className="w-full cursor-pointer text-left">
         <DebtCard debt={debt} />
       </button>
-
-      <DrawerPortal>
-        <DrawerBackdrop />
-        <DrawerViewport>
-          <DrawerPopup>
-            <SettleDebtForm key={formKey} debt={debt} onSuccess={handleSuccess} />
-          </DrawerPopup>
-        </DrawerViewport>
-      </DrawerPortal>
-    </DrawerRoot>
+      <SettleDebtForm key={formKey} debt={debt} onSuccess={handleSuccess} />
+    </Drawer>
   );
 }
 
@@ -190,7 +182,7 @@ function UndoLogDrawer({
   };
 
   return (
-    <DrawerRoot open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen}>
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -198,59 +190,53 @@ function UndoLogDrawer({
       >
         {children}
       </button>
-
-      <DrawerPortal>
-        <DrawerBackdrop />
-        <DrawerViewport>
-          <DrawerPopup>
-            <DrawerContent className="mx-auto w-full max-w-lg">
-              <p className="mb-4 text-lg font-semibold tracking-tight">Cofnij wpłatę</p>
-              <div className="mb-6 space-y-3">
-                <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                  <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
-                  <p>
-                    Ta akcja jest nieodwracalna. Wpłata zostanie usunięta z historii, a dług
-                    zostanie przywrócony.
-                  </p>
-                </div>
-                <div className="rounded-lg bg-muted/40 p-3 text-sm">
-                  <p className="text-muted-foreground">Dłużnik</p>
-                  <p className="font-semibold">{log.debtorName}</p>
-                </div>
-                <div className="rounded-lg bg-muted/40 p-3 text-sm">
-                  <p className="text-muted-foreground">Kwota</p>
-                  <p className="font-semibold">{formatAmount(log.amount)}</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <Button
-                  variant="destructive"
-                  className="w-full"
-                  onClick={handleUndo}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2Icon className="size-4 animate-spin" />
-                      Cofanie...
-                    </>
-                  ) : (
-                    "Cofnij wpłatę"
-                  )}
-                </Button>
-                <DrawerClose
-                  render={
-                    <Button type="button" variant="outline" className="w-full">
-                      Anuluj
-                    </Button>
-                  }
-                />
-              </div>
-            </DrawerContent>
-          </DrawerPopup>
-        </DrawerViewport>
-      </DrawerPortal>
-    </DrawerRoot>
+      <DrawerContent className="mx-auto w-full max-w-lg">
+        <DrawerHeader>
+          <DrawerTitle>Cofnij wpłatę</DrawerTitle>
+        </DrawerHeader>
+        <div className="space-y-3 px-4">
+          <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+            <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
+            <p>
+              Ta akcja jest nieodwracalna. Wpłata zostanie usunięta z historii, a dług zostanie
+              przywrócony.
+            </p>
+          </div>
+          <div className="rounded-lg bg-muted/40 p-3 text-sm">
+            <p className="text-muted-foreground">Dłużnik</p>
+            <p className="font-semibold">{log.debtorName}</p>
+          </div>
+          <div className="rounded-lg bg-muted/40 p-3 text-sm">
+            <p className="text-muted-foreground">Kwota</p>
+            <p className="font-semibold">{formatAmount(log.amount)}</p>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={handleUndo}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2Icon className="size-4 animate-spin" />
+                Cofanie...
+              </>
+            ) : (
+              "Cofnij wpłatę"
+            )}
+          </Button>
+          <DrawerClose
+            render={
+              <Button type="button" variant="outline" className="w-full">
+                Anuluj
+              </Button>
+            }
+          />
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
@@ -334,7 +320,7 @@ function DeleteExpenseDrawer({
   };
 
   return (
-    <DrawerRoot open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen}>
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -342,82 +328,77 @@ function DeleteExpenseDrawer({
       >
         Usuń wydatek
       </button>
-
-      <DrawerPortal>
-        <DrawerBackdrop />
-        <DrawerViewport>
-          <DrawerPopup>
-            <DrawerContent className="mx-auto w-full max-w-lg">
-              <p className="mb-4 text-lg font-semibold tracking-tight">Usuń wydatek</p>
-              {hasLogs ? (
-                <>
-                  <div className="mb-6 space-y-3">
-                    <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                      <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
-                      <p>
-                        Nie można usunąć wydatku, który ma zarejestrowane wpłaty. Najpierw cofnij
-                        wszystkie wpłaty.
-                      </p>
-                    </div>
-                  </div>
-                  <DrawerClose
-                    render={
-                      <Button type="button" variant="outline" className="w-full">
-                        Zamknij
-                      </Button>
-                    }
-                  />
-                </>
-              ) : (
-                <>
-                  <div className="mb-6 space-y-3">
-                    <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                      <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
-                      <p>
-                        Ta akcja jest nieodwracalna. Wydatek i wszystkie powiązane długi zostaną
-                        usunięte.
-                      </p>
-                    </div>
-                    <div className="rounded-lg bg-muted/40 p-3 text-sm">
-                      <p className="text-muted-foreground">Wydatek</p>
-                      <p className="font-semibold">{expenseName}</p>
-                    </div>
-                    <div className="rounded-lg bg-muted/40 p-3 text-sm">
-                      <p className="text-muted-foreground">Kwota</p>
-                      <p className="font-semibold">{formatAmount(expenseAmount)}</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="destructive"
-                      className="w-full"
-                      onClick={handleDelete}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2Icon className="size-4 animate-spin" />
-                          Usuwanie...
-                        </>
-                      ) : (
-                        "Usuń wydatek"
-                      )}
-                    </Button>
-                    <DrawerClose
-                      render={
-                        <Button type="button" variant="outline" className="w-full">
-                          Anuluj
-                        </Button>
-                      }
-                    />
-                  </div>
-                </>
-              )}
-            </DrawerContent>
-          </DrawerPopup>
-        </DrawerViewport>
-      </DrawerPortal>
-    </DrawerRoot>
+      <DrawerContent className="mx-auto w-full max-w-lg">
+        <DrawerHeader>
+          <DrawerTitle>Usuń wydatek</DrawerTitle>
+        </DrawerHeader>
+        {hasLogs ? (
+          <>
+            <div className="space-y-3 px-4">
+              <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
+                <p>
+                  Nie można usunąć wydatku, który ma zarejestrowane wpłaty. Najpierw cofnij
+                  wszystkie wpłaty.
+                </p>
+              </div>
+            </div>
+            <DrawerFooter>
+              <DrawerClose
+                render={
+                  <Button type="button" variant="outline" className="w-full">
+                    Zamknij
+                  </Button>
+                }
+              />
+            </DrawerFooter>
+          </>
+        ) : (
+          <>
+            <div className="space-y-3 px-4">
+              <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" />
+                <p>
+                  Ta akcja jest nieodwracalna. Wydatek i wszystkie powiązane długi zostaną usunięte.
+                </p>
+              </div>
+              <div className="rounded-lg bg-muted/40 p-3 text-sm">
+                <p className="text-muted-foreground">Wydatek</p>
+                <p className="font-semibold">{expenseName}</p>
+              </div>
+              <div className="rounded-lg bg-muted/40 p-3 text-sm">
+                <p className="text-muted-foreground">Kwota</p>
+                <p className="font-semibold">{formatAmount(expenseAmount)}</p>
+              </div>
+            </div>
+            <DrawerFooter>
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={handleDelete}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2Icon className="size-4 animate-spin" />
+                    Usuwanie...
+                  </>
+                ) : (
+                  "Usuń wydatek"
+                )}
+              </Button>
+              <DrawerClose
+                render={
+                  <Button type="button" variant="outline" className="w-full">
+                    Anuluj
+                  </Button>
+                }
+              />
+            </DrawerFooter>
+          </>
+        )}
+      </DrawerContent>
+    </Drawer>
   );
 }
 

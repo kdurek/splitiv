@@ -41,7 +41,23 @@ Action of recording payment from a debtor toward their outstanding debt(s).
 Increases `settled` on the relevant `expenseDebt` rows. Debt is closed when
 `settled == amount`.
 
+## Payment
+
+A single recorded act of a debtor paying back part (or all) of one Debt. Has
+an amount, the debt it targets, and a timestamp. The debtor is the person who
+made the Payment; the payee is that expense's Payer. A Debt may accrue several
+Payments over time. Polish UI: "spłata". Stored in the `expenseLog` table.
+
 ## Log
 
-Audit record of state-changing actions on an expense (created, settled, undo).
-Stored in the `expenseLog` table.
+Synonym for the `expenseLog` table — the running record of Payments. Despite
+the name it is **not** a general audit trail: only Payments are stored, never
+expense creation or edits. Undoing a Payment removes its row.
+
+## Profile
+
+A read-only view of one Member as seen by another Member of the same Group:
+their identity (name, avatar, email), the net balance between the viewer and
+that Member, and recent slices of their activity in the active Group
+(outstanding Debts they owe, Expenses they paid, Payments they made). Scoped
+to the viewer's active Group; only fellow Members are viewable.

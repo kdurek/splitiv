@@ -17,6 +17,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Loader2Icon, RotateCcwIcon, TriangleAlertIcon } from "lucide-react";
 import * as React from "react";
 
+import { MemberLink } from "#/components/member-link";
 import { UserAvatar } from "#/components/user-avatar";
 import { $deleteExpense, $settleDebt, $undoDebtLog } from "#/expenses/functions";
 import { expenseQueryOptions } from "#/expenses/queries";
@@ -136,7 +137,10 @@ function SettleDebtDrawer({ debt, expenseId }: { debt: Debt; expenseId: string }
 
   const handleSuccess = () => {
     setOpen(false);
-    queryClient.invalidateQueries({ queryKey: ["expense", expenseId] });
+    void Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["expense", expenseId] }),
+      queryClient.invalidateQueries({ queryKey: ["profile"] }),
+    ]);
   };
 
   return (
@@ -175,7 +179,10 @@ function UndoLogDrawer({
     try {
       await $undoDebtLog({ data: { logId: log.id } });
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["expense", expenseId] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["expense", expenseId] }),
+        queryClient.invalidateQueries({ queryKey: ["profile"] }),
+      ]);
     } finally {
       setIsSubmitting(false);
     }
@@ -250,7 +257,7 @@ function DebtCard({ debt }: { debt: Debt }) {
   return (
     <div className="space-y-4 rounded-xl bg-muted/40 p-5">
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
+        <MemberLink userId={debt.debtorId} className="flex items-center gap-3">
           <UserAvatar name={debt.debtorName} image={debt.debtorImage} size="lg" shape="square" />
           <div className="space-y-0.5">
             <p className="font-semibold">{debt.debtorName}</p>
@@ -262,7 +269,7 @@ function DebtCard({ debt }: { debt: Debt }) {
                   : "Brak wpłat"}
             </p>
           </div>
-        </div>
+        </MemberLink>
         <div className="text-right">
           <p className="text-lg font-bold">{formatAmount(debt.amount)}</p>
           <p
@@ -312,7 +319,10 @@ function DeleteExpenseDrawer({
     try {
       await $deleteExpense({ data: { expenseId } });
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["expenses"] }),
+        queryClient.invalidateQueries({ queryKey: ["profile"] }),
+      ]);
       navigate({ to: "/expenses" });
     } finally {
       setIsSubmitting(false);
@@ -471,7 +481,7 @@ export function ExpenseDetail({ expenseId, notificationId }: ExpenseDetailProps)
             <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
               Zapłacił(a)
             </span>
-            <div className="flex items-center gap-1.5">
+            <MemberLink userId={expense.payerId} className="flex items-center gap-1.5">
               <UserAvatar
                 name={expense.payerName}
                 image={expense.payerImage}
@@ -479,7 +489,7 @@ export function ExpenseDetail({ expenseId, notificationId }: ExpenseDetailProps)
                 shape="square"
               />
               <span className="font-semibold">{expense.payerName}</span>
-            </div>
+            </MemberLink>
           </div>
           <div className="h-8 w-px bg-border" />
           <div className="flex flex-col gap-0.5">

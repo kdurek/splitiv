@@ -288,6 +288,7 @@ export function SettleUser({ userId }: { userId: string }) {
         queryClient.invalidateQueries({ queryKey: ["debts-to-user", userId] }),
         queryClient.invalidateQueries({ queryKey: ["debts-from-user", userId] }),
         queryClient.invalidateQueries({ queryKey: ["expenses"] }),
+        queryClient.invalidateQueries({ queryKey: ["profile"] }),
       ]);
       navigate({ to: "/" });
     } finally {

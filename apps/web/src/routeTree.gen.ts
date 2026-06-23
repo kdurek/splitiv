@@ -22,6 +22,7 @@ import { Route as AuthSettleIndexRouteImport } from './routes/_auth/settle/index
 import { Route as AuthExpensesIndexRouteImport } from './routes/_auth/expenses/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthSettleUserIdRouteImport } from './routes/_auth/settle/$userId'
+import { Route as AuthProfilesUserIdRouteImport } from './routes/_auth/profiles/$userId'
 import { Route as AuthGroupSelectRouteImport } from './routes/_auth/group/select'
 import { Route as AuthExpensesCreateRouteImport } from './routes/_auth/expenses/create'
 import { Route as AuthExpensesExpenseIdRouteImport } from './routes/_auth/expenses/$expenseId'
@@ -89,6 +90,11 @@ const AuthSettleUserIdRoute = AuthSettleUserIdRouteImport.update({
   path: '/settle/$userId',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthProfilesUserIdRoute = AuthProfilesUserIdRouteImport.update({
+  id: '/profiles/$userId',
+  path: '/profiles/$userId',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthGroupSelectRoute = AuthGroupSelectRouteImport.update({
   id: '/group/select',
   path: '/group/select',
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/expenses/$expenseId': typeof AuthExpensesExpenseIdRoute
   '/expenses/create': typeof AuthExpensesCreateRoute
   '/group/select': typeof AuthGroupSelectRoute
+  '/profiles/$userId': typeof AuthProfilesUserIdRoute
   '/settle/$userId': typeof AuthSettleUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/expenses/': typeof AuthExpensesIndexRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/expenses/$expenseId': typeof AuthExpensesExpenseIdRoute
   '/expenses/create': typeof AuthExpensesCreateRoute
   '/group/select': typeof AuthGroupSelectRoute
+  '/profiles/$userId': typeof AuthProfilesUserIdRoute
   '/settle/$userId': typeof AuthSettleUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/expenses': typeof AuthExpensesIndexRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/_auth/expenses/$expenseId': typeof AuthExpensesExpenseIdRoute
   '/_auth/expenses/create': typeof AuthExpensesCreateRoute
   '/_auth/group/select': typeof AuthGroupSelectRoute
+  '/_auth/profiles/$userId': typeof AuthProfilesUserIdRoute
   '/_auth/settle/$userId': typeof AuthSettleUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/expenses/': typeof AuthExpensesIndexRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/expenses/$expenseId'
     | '/expenses/create'
     | '/group/select'
+    | '/profiles/$userId'
     | '/settle/$userId'
     | '/api/auth/$'
     | '/expenses/'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/expenses/$expenseId'
     | '/expenses/create'
     | '/group/select'
+    | '/profiles/$userId'
     | '/settle/$userId'
     | '/api/auth/$'
     | '/expenses'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/_auth/expenses/$expenseId'
     | '/_auth/expenses/create'
     | '/_auth/group/select'
+    | '/_auth/profiles/$userId'
     | '/_auth/settle/$userId'
     | '/api/auth/$'
     | '/_auth/expenses/'
@@ -306,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSettleUserIdRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/profiles/$userId': {
+      id: '/_auth/profiles/$userId'
+      path: '/profiles/$userId'
+      fullPath: '/profiles/$userId'
+      preLoaderRoute: typeof AuthProfilesUserIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/group/select': {
       id: '/_auth/group/select'
       path: '/group/select'
@@ -352,6 +371,7 @@ interface AuthRouteRouteChildren {
   AuthSettingsRoute: typeof AuthSettingsRoute
   AuthIndexRoute: typeof AuthIndexRoute
   AuthGroupSelectRoute: typeof AuthGroupSelectRoute
+  AuthProfilesUserIdRoute: typeof AuthProfilesUserIdRoute
   AuthSettleUserIdRoute: typeof AuthSettleUserIdRoute
   AuthSettleIndexRoute: typeof AuthSettleIndexRoute
 }
@@ -363,6 +383,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthSettingsRoute: AuthSettingsRoute,
   AuthIndexRoute: AuthIndexRoute,
   AuthGroupSelectRoute: AuthGroupSelectRoute,
+  AuthProfilesUserIdRoute: AuthProfilesUserIdRoute,
   AuthSettleUserIdRoute: AuthSettleUserIdRoute,
   AuthSettleIndexRoute: AuthSettleIndexRoute,
 }

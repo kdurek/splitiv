@@ -2,6 +2,7 @@ import { Empty, EmptyDescription } from "@repo/ui/components/empty";
 import { cn } from "@repo/ui/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { MemberLink } from "#/components/member-link";
 import { UserAvatar } from "#/components/user-avatar";
 import { dashboardBalanceQueryOptions } from "#/dashboard/queries";
 
@@ -10,11 +11,13 @@ function formatAmount(amount: string) {
 }
 
 function PersonRow({
+  userId,
   name,
   image,
   amount,
   variant,
 }: {
+  userId: string;
   name: string;
   image: string | null;
   amount: string;
@@ -22,10 +25,10 @@ function PersonRow({
 }) {
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-3">
+      <MemberLink userId={userId} className="flex items-center gap-3">
         <UserAvatar name={name} image={image} size="md" shape="square" />
         <span className="text-sm font-medium">{name}</span>
-      </div>
+      </MemberLink>
       <span
         className={cn(
           "text-sm font-bold",
@@ -83,6 +86,7 @@ export function DashboardHome() {
               {owedToYou.map((person) => (
                 <PersonRow
                   key={person.userId}
+                  userId={person.userId}
                   name={person.name}
                   image={person.image}
                   amount={person.amount}
@@ -108,6 +112,7 @@ export function DashboardHome() {
               {youOwe.map((person) => (
                 <PersonRow
                   key={person.userId}
+                  userId={person.userId}
                   name={person.name}
                   image={person.image}
                   amount={person.amount}

@@ -67,6 +67,7 @@ export function ExpenseCreateWizard() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["expenses"] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard-balance"] }),
+        queryClient.invalidateQueries({ queryKey: ["profile"] }),
       ]);
       navigate({ to: "/expenses/$expenseId", params: { expenseId } });
     },

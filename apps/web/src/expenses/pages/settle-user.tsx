@@ -33,6 +33,7 @@ import { UserAvatar } from "#/components/user-avatar";
 import { dashboardBalanceQueryOptions } from "#/dashboard/queries";
 import { $settleDebts } from "#/expenses/functions";
 import { debtsFromUserQueryOptions, debtsToUserQueryOptions } from "#/expenses/queries";
+import { allocateExact } from "#/expenses/utils/allocate-exact";
 
 function formatAmount(amount: string) {
   return `${Number(amount).toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
@@ -64,8 +65,11 @@ function EditAmountDrawer({
   onClose: () => void;
 }) {
   const [value, setValue] = useState(initialAmount);
+  const debtId = debt?.debtId ?? null;
+  const [prevDebtId, setPrevDebtId] = useState(debtId);
 
-  if (open && value !== initialAmount && debt) {
+  if (debtId !== prevDebtId) {
+    setPrevDebtId(debtId);
     setValue(initialAmount);
   }
 
@@ -104,6 +108,82 @@ function EditAmountDrawer({
           <Button
             className="w-full"
             onClick={() => onSave(value)}
+            disabled={value <= 0 || value > maxAmount}
+          >
+            Zastosuj
+          </Button>
+          <DrawerClose
+            render={
+              <Button type="button" variant="outline" className="w-full">
+                Anuluj
+              </Button>
+            }
+          />
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+function ExactAmountDrawer({
+  open,
+  maxAmount,
+  hasChanges,
+  onApply,
+  onClose,
+}: {
+  open: boolean;
+  maxAmount: number;
+  hasChanges: boolean;
+  onApply: (value: number) => void;
+  onClose: () => void;
+}) {
+  const [value, setValue] = useState(0);
+  const [prevOpen, setPrevOpen] = useState(open);
+
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) setValue(0);
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={(o) => !o && onClose()}>
+      <DrawerContent className="mx-auto w-full max-w-lg">
+        <DrawerHeader>
+          <DrawerTitle>Konkretna kwota</DrawerTitle>
+        </DrawerHeader>
+        <div className="space-y-2 px-4">
+          <Label>Kwota do rozliczenia</Label>
+          <div className="relative">
+            <NumberField
+              aria-label="Kwota do rozliczenia"
+              value={value}
+              onValueChange={(v) => setValue(v ?? 0)}
+              min={0.01}
+              max={maxAmount}
+              format={{
+                style: "decimal",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }}
+            >
+              <NumberFieldInput className="pr-10" />
+            </NumberField>
+            <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-muted-foreground">
+              zł
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Maks. do spłaty: {formatAmount(maxAmount.toFixed(2))}
+          </p>
+          {hasChanges && (
+            <p className="text-xs text-muted-foreground">Twoje ręczne zmiany zostaną nadpisane.</p>
+          )}
+        </div>
+        <DrawerFooter>
+          <Button
+            className="w-full"
+            onClick={() => onApply(value)}
             disabled={value <= 0 || value > maxAmount}
           >
             Zastosuj
@@ -232,6 +312,7 @@ export function SettleUser({ userId }: { userId: string }) {
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [exactAmountOpen, setExactAmountOpen] = useState(false);
 
   const hasChanges = customAmounts.size > 0 || allDebts.some((d) => !selectedIds.has(d.debtId));
 
@@ -261,6 +342,15 @@ export function SettleUser({ userId }: { userId: string }) {
       else next.add(debtId);
       return next;
     });
+  };
+
+  const maxExactAmount = debtsTo.reduce((sum, d) => sum + Number(getRemaining(d)), 0);
+
+  const handleApplyExact = (value: number) => {
+    const { selectedIds: ids, partial } = allocateExact(debtsTo, value);
+    setSelectedIds(new Set(ids));
+    setCustomAmounts(partial ? new Map([[partial.debtId, partial.amount]]) : new Map());
+    setExactAmountOpen(false);
   };
 
   const handleSaveAmount = (debt: DebtItem, value: number) => {
@@ -362,6 +452,15 @@ export function SettleUser({ userId }: { userId: string }) {
           </div>
         )}
       </div>
+
+      {/* Exact amount */}
+      {debtsTo.length > 0 && (
+        <div className="px-4">
+          <Button variant="outline" className="w-full" onClick={() => setExactAmountOpen(true)}>
+            Wybierz kwotę do oddania
+          </Button>
+        </div>
+      )}
 
       {/* Debt sections */}
       <div className="space-y-6 px-4">
@@ -467,6 +566,15 @@ export function SettleUser({ userId }: { userId: string }) {
         maxAmount={editingDebt ? Number(getRemaining(editingDebt)) : 0}
         onSave={(value) => editingDebt && handleSaveAmount(editingDebt, value)}
         onClose={() => setEditingDebt(null)}
+      />
+
+      {/* Exact amount drawer */}
+      <ExactAmountDrawer
+        open={exactAmountOpen}
+        maxAmount={maxExactAmount}
+        hasChanges={hasChanges}
+        onApply={handleApplyExact}
+        onClose={() => setExactAmountOpen(false)}
       />
 
       {/* Submit confirmation drawer */}

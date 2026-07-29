@@ -12,6 +12,7 @@ import {
   sendNotificationPushes,
   type NotificationEvent,
 } from "../notifications/events";
+import { toGrosz } from "./utils/money";
 import { canDeleteExpense, canSettleDebt, canUndoLog } from "./utils/permissions";
 
 function getExpenseNotificationRecipientIds(
@@ -140,8 +141,8 @@ export async function settleDebtHandler(
     throw new Error("Not authorized to settle this debt");
   }
 
-  const remaining = parseFloat(debt.amount) - parseFloat(debt.settled);
-  const settleAmount = parseFloat(data.amount);
+  const remaining = toGrosz(debt.amount) - toGrosz(debt.settled);
+  const settleAmount = toGrosz(data.amount);
 
   if (settleAmount <= 0 || settleAmount > remaining) {
     throw new Error("Invalid settlement amount");
@@ -193,8 +194,8 @@ export async function settleDebtsHandler(
       throw new Error("Not authorized");
     }
 
-    const remaining = parseFloat(debt.amount) - parseFloat(debt.settled);
-    const settleAmount = parseFloat(item.amount);
+    const remaining = toGrosz(debt.amount) - toGrosz(debt.settled);
+    const settleAmount = toGrosz(item.amount);
     if (settleAmount <= 0 || settleAmount > remaining) {
       throw new Error("Invalid settlement amount");
     }

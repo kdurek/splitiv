@@ -5,6 +5,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
+import { openDebt } from "#/expenses/utils/money";
+
 export const $getProfile = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .inputValidator(z.object({ userId: z.string().min(1) }))
@@ -45,7 +47,7 @@ export const $getProfile = createServerFn({ method: "GET" })
             eq(expense.groupId, activeGroupId),
             eq(expense.payerId, currentUser.id),
             eq(expenseDebt.debtorId, data.userId),
-            sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
+            openDebt,
           ),
         );
 
@@ -60,7 +62,7 @@ export const $getProfile = createServerFn({ method: "GET" })
             eq(expense.groupId, activeGroupId),
             eq(expense.payerId, data.userId),
             eq(expenseDebt.debtorId, currentUser.id),
-            sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
+            openDebt,
           ),
         );
 
@@ -85,11 +87,7 @@ export const $getProfile = createServerFn({ method: "GET" })
       .from(expenseDebt)
       .innerJoin(expense, eq(expense.id, expenseDebt.expenseId))
       .where(
-        and(
-          eq(expenseDebt.debtorId, data.userId),
-          eq(expense.groupId, activeGroupId),
-          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
-        ),
+        and(eq(expenseDebt.debtorId, data.userId), eq(expense.groupId, activeGroupId), openDebt),
       )
       .orderBy(desc(expense.createdAt))
       .limit(3);

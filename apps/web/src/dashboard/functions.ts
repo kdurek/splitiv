@@ -4,6 +4,8 @@ import { expense, expenseDebt, user } from "@repo/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { and, eq, sql } from "drizzle-orm";
 
+import { openDebt } from "#/expenses/utils/money";
+
 export const $getDashboardBalance = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
@@ -24,13 +26,7 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       .from(expenseDebt)
       .innerJoin(expense, eq(expense.id, expenseDebt.expenseId))
       .innerJoin(user, eq(user.id, expenseDebt.debtorId))
-      .where(
-        and(
-          eq(expense.groupId, activeGroupId),
-          eq(expense.payerId, currentUser.id),
-          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
-        ),
-      )
+      .where(and(eq(expense.groupId, activeGroupId), eq(expense.payerId, currentUser.id), openDebt))
       .groupBy(expenseDebt.debtorId, user.name, user.image);
 
     const youOweRows = await db
@@ -44,11 +40,7 @@ export const $getDashboardBalance = createServerFn({ method: "GET" })
       .innerJoin(expense, eq(expense.id, expenseDebt.expenseId))
       .innerJoin(user, eq(user.id, expense.payerId))
       .where(
-        and(
-          eq(expense.groupId, activeGroupId),
-          eq(expenseDebt.debtorId, currentUser.id),
-          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
-        ),
+        and(eq(expense.groupId, activeGroupId), eq(expenseDebt.debtorId, currentUser.id), openDebt),
       )
       .groupBy(expense.payerId, user.name, user.image);
 

@@ -12,6 +12,7 @@ import {
   settleDebtsHandler,
   undoDebtLogHandler,
 } from "./service";
+import { openDebt } from "./utils/money";
 import { parseSearchQuery } from "./utils/search";
 
 export const $getDebtsToUser = createServerFn({ method: "GET" })
@@ -39,7 +40,7 @@ export const $getDebtsToUser = createServerFn({ method: "GET" })
           eq(expenseDebt.debtorId, currentUser.id),
           eq(expense.payerId, data.targetUserId),
           eq(expense.groupId, activeGroupId),
-          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
+          openDebt,
         ),
       )
       .orderBy(desc(expense.createdAt));
@@ -70,7 +71,7 @@ export const $getDebtsFromUser = createServerFn({ method: "GET" })
           eq(expenseDebt.debtorId, data.targetUserId),
           eq(expense.payerId, currentUser.id),
           eq(expense.groupId, activeGroupId),
-          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
+          openDebt,
         ),
       )
       .orderBy(desc(expense.createdAt));
@@ -100,12 +101,7 @@ export const $getExpenses = createServerFn({ method: "GET" })
       db
         .select({ one: sql`1` })
         .from(expenseDebt)
-        .where(
-          and(
-            eq(expenseDebt.expenseId, expense.id),
-            sql`${expenseDebt.amount} > ${expenseDebt.settled}`,
-          ),
-        ),
+        .where(and(eq(expenseDebt.expenseId, expense.id), openDebt)),
     );
 
     const myDebt = db
@@ -117,7 +113,7 @@ export const $getExpenses = createServerFn({ method: "GET" })
         and(
           eq(expenseDebt.expenseId, expense.id),
           eq(expenseDebt.debtorId, currentUser.id),
-          sql`${expenseDebt.amount} > ${expenseDebt.settled}`,
+          openDebt,
         ),
       );
 

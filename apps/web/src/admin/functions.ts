@@ -7,6 +7,8 @@ import { getRequest } from "@tanstack/react-start/server";
 import { and, eq, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
+import { openDebt } from "#/expenses/utils/money";
+
 const creditor = alias(user, "creditor");
 
 export const $getAdminBalance = createServerFn({ method: "GET" })
@@ -47,7 +49,7 @@ export const $getAdminBalance = createServerFn({ method: "GET" })
       .where(
         and(
           eq(expense.groupId, activeGroupId),
-          sql`${expenseDebt.amount} - ${expenseDebt.settled} > 0`,
+          openDebt,
           sql`${expenseDebt.debtorId} != ${expense.payerId}`,
         ),
       )
